@@ -88,10 +88,18 @@ vim.g.did_load_netrwFileHandlers = 1
 vim.g.do_filetype_lua = 1
 --vim.g.did_load_filetypes = 1
 
+local function isempty(s)
+  return s == nil or s == ''
+end
+
 -- faster startup
 vim.g.python_host_skip_check = 1
-vim.g.python3_host_prog = '/usr/bin/python3'
-vim.g.python_host_prog = '/usr/bin/python3'
+if not isempty(vim.env.CONDA_PREFIX) then
+  vim.g.python3_host_prog  = vim.env.CONDA_PREFIX .. '/bin/python'
+  -- print(vim.g.python3_host_prog)
+else
+  vim.g.python3_host_prog = '/usr/bin/python3'
+end
 -- also faster startup, since I don't need to load indent/ & ftplugin
 -- vim.cmd [[filetype plugin indent on]]
 

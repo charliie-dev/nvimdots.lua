@@ -56,3 +56,9 @@ local python = Terminal:new({ cmd = "python", hidden = true })
 function _PYTHON_TOGGLE()
 	python:toggle()
 end
+
+local nvsmi = Terminal:new({ cmd = "watch -n 1 nvidia-smi", hidden = true })
+
+function _NVSMI_TOGGLE()
+	nvsmi:toggle()
+end
