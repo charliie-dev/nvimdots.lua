@@ -151,52 +151,6 @@ export EDITOR='nvim'
 
 ---
 
-### Clipboard
-
-- [win32yank](https://github.com/equalsraf/win32yank)
-
-  If you're in WSL, you can use win32yank to access Windows clipboard in nvim. [reference](https://stackoverflow.com/a/67229362/9268330)
-
-  ```vim
-  " Use Windows clipboard to copy and to paste
-  set clipboard^=unnamed,unnamedplus
-
-  let g:clipboard = {
-      \   'name': 'win32yank-wsl',
-      \   'copy': {
-      \      '+': '/mnt/d/Apps/win32yank-x86/win32yank.exe -i --crlf',
-      \      '*': '/mnt/d/Apps/win32yank-x86/win32yank.exe -i --crlf',
-      \    },
-      \   'paste': {
-      \      '+': '/mnt/d/Apps/win32yank-x86/win32yank.exe -o --lf',
-      \      '*': '/mnt/d/Apps/win32yank-x86/win32yank.exe -o --lf',
-      \   },
-      \   'cache_enabled': 0,
-      \ }
-  ```
-
-  Other workaround, check [this link](https://github.com/neovim/neovim/wiki/FAQ#how-to-use-the-windows-clipboard-from-wsl).
-
----
-
-### [vim-plug](https://github.com/junegunn/vim-plug)
-
-#### Neovim
-
-###### Unix, Linux
-
-```sh
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-```
-
-###### Windows (PowerShell)
-
-```powershell
-iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-    ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
-```
-
 ### Plugins setup
 
 - [tree-sitter](https://tree-sitter.github.io/tree-sitter/creating-parsers#installation)
@@ -333,18 +287,6 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
   ```
 
 ### Plugin bug
-
-- [vim-startify](https://github.com/mhinz/vim-startify)
-
-  Fix `startify: Can't read viminfo file. Read :help startify-faq-02`, [ref](https://github.com/mhinz/vim-startify/issues/306#issuecomment-450303666)
-
-  ```bash
-  $ sudo rm ~/.viminfo
-  $ vim
-  :q
-  $ chmod 700 ~/.viminfo
-  $ vim
-  ```
 
 - `ERROR: Locale does not support UTF-8. Unicode characters may not display correctly.`, [ref](https://github.com/neovim/neovim/issues/1858#issuecomment-70811623)
 
