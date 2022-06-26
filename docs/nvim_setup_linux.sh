@@ -89,35 +89,35 @@ fi
 #######################################################################
 #                Install node and js-based language server            #
 #######################################################################
-NODE_DIR=$HOME/tools/nodejs
-NODE_SRC_NAME=$HOME/packages/nodejs.tar.gz
-NODE_LINK="https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz"
-if [[ -z "$(command -v node)" ]]; then
-    echo "Install Node.js"
-    if [[ ! -f $NODE_SRC_NAME ]]; then
-        echo "Downloading Node.js and renaming"
-        wget $NODE_LINK -O "$NODE_SRC_NAME"
-    fi
-
-    if [[ ! -d "$NODE_DIR" ]]; then
-        echo "Creating Node.js directory under tools directory"
-        mkdir -p "$NODE_DIR"
-        echo "Extracting to $HOME/tools/nodejs directory"
-        tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
-    fi
-
-    if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
-    fi
-else
-    echo "Node.js is already installed. Skip installing it."
-fi
-
-# Install vim-language-server
-"$NODE_DIR/bin/npm" install -g vim-language-server
-
-# Install bash-language-server
-"$NODE_DIR/bin/npm" install -g bash-language-server
+# NODE_DIR=$HOME/tools/nodejs
+# NODE_SRC_NAME=$HOME/packages/nodejs.tar.gz
+# NODE_LINK="https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz"
+# if [[ -z "$(command -v node)" ]]; then
+#     echo "Install Node.js"
+#     if [[ ! -f $NODE_SRC_NAME ]]; then
+#         echo "Downloading Node.js and renaming"
+#         wget $NODE_LINK -O "$NODE_SRC_NAME"
+#     fi
+#
+#     if [[ ! -d "$NODE_DIR" ]]; then
+#         echo "Creating Node.js directory under tools directory"
+#         mkdir -p "$NODE_DIR"
+#         echo "Extracting to $HOME/tools/nodejs directory"
+#         tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
+#     fi
+#
+#     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+#         echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
+#     fi
+# else
+#     echo "Node.js is already installed. Skip installing it."
+# fi
+#
+# # Install vim-language-server
+# "$NODE_DIR/bin/npm" install vim-language-server --location=global
+#
+# # Install bash-language-server
+# "$NODE_DIR/bin/npm" install bash-language-server --location=global
 
 #######################################################################
 #                            Ripgrep part                             #
