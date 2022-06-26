@@ -60,7 +60,7 @@ if [[ ! "$PYTHON_INSTALLED" = true ]]; then
 
     # Setting up environment variables
     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$CONDA_DIR/bin:\$PATH\"" >> "$HOME/.bash_profile"
+        echo "export PATH=\"$CONDA_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
     fi
 else
     echo "Python is already installed. Skip installing it."
@@ -107,7 +107,7 @@ if [[ -z "$(command -v node)" ]]; then
     fi
 
     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bash_profile"
+        echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
     fi
 else
     echo "Node.js is already installed. Skip installing it."
@@ -140,7 +140,7 @@ if [[ -z "$(command -v rg)" ]] && [[ ! -f "$RIPGREP_DIR/rg" ]]; then
     fi
 
     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$RIPGREP_DIR:\$PATH\"" >> "$HOME/.bash_profile"
+        echo "export PATH=\"$RIPGREP_DIR:\$PATH\"" >> "$HOME/.bashrc"
     fi
 
     # set up manpath and zsh completion for ripgrep
@@ -148,7 +148,7 @@ if [[ -z "$(command -v rg)" ]] && [[ ! -f "$RIPGREP_DIR/rg" ]]; then
     mv $HOME/tools/ripgrep/doc/rg.1 $HOME/tools/ripgrep/doc/man/man1
 
     if [[ "$USE_BASH_SHELL" = true ]]; then
-        echo 'export MANPATH=$HOME/tools/ripgrep/doc/man:$MANPATH' >> "$HOME/.bash_profile"
+        echo 'export MANPATH=$HOME/tools/ripgrep/doc/man:$MANPATH' >> "$HOME/.bashrc"
     else
         echo 'export MANPATH=$HOME/tools/ripgrep/doc/man:$MANPATH' >> "$HOME/.zshrc"
         echo 'export FPATH=$HOME/tools/ripgrep/complete:$FPATH' >> "$HOME/.zshrc"
@@ -180,7 +180,7 @@ if [[ ! -f "$NVIM_DIR/bin/nvim" ]]; then
     tar zxvf "$NVIM_SRC_NAME" --strip-components 1 -C "$NVIM_DIR"
 
     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$NVIM_DIR/bin:\$PATH\"" >> "$HOME/.bash_profile"
+        echo "export PATH=\"$NVIM_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
     fi
 else
     echo "Nvim is already installed. Skip installing it."
