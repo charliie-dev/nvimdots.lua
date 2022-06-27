@@ -169,7 +169,7 @@ export EDITOR='nvim'
 
   ```sh
   pip3 install -U jedi-language-server
-  pip3 install pynvim python-lsp-server[all] black vim-vint pyls-isort pylsp-mypy reorder-python-importsy
+  pip3 install pynvim python-lsp-server[all] black vim-vint pyls-isort pylsp-mypy reorder-python-imports
   ```
 
 - [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer)
