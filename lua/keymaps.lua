@@ -127,13 +127,12 @@ keymap("n", "<leader><tab>", ":BufferLinePick<cr>", opts)
 --- }}}
 
 --- Commnet keymap {{{
-if vim.fn.has("win32") then
-	keymap("n", "<C-/>", "gcc", opts)
-	keymap("v", "<C-/>", "gc", opts)
-else
-	keymap("n", "<C-_>", "gcc", opts) -- Unix style
-	keymap("v", "<C-_>", "gc", opts)
-end
+---Line-comment toggle keymap, line = "gcc",
+---Block-comment toggle keymap, block = "gbc",
+---Add comment on the line above, above = "gcO",
+---Add comment on the line below, below = "gco",
+---Add comment at the end of line,	eol = "gcA",
+
 --- }}}
 
 --- surround keymap {{{

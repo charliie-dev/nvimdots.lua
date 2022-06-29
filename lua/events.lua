@@ -126,7 +126,6 @@ au BufRead *.md :call OpenMd()
 
 function! OpenMd()
   setlocal foldlevel=1
-  " :MarkdownPreview
-  SymbolsOutline
+  " SymbolsOutline
 endfunction
 ]]

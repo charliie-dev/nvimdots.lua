@@ -106,7 +106,6 @@ return packer.startup(function(use)
   use({ "RRethy/vim-illuminate" })
   use({ "b0o/schemastore.nvim" }) -- json support
   use({ "folke/lsp-colors.nvim" })
-  -- use({ "folke/trouble.nvim", cmd = "TroubleToggle", })
   use({ "j-hui/fidget.nvim" })
   use({ "jose-elias-alvarez/null-ls.nvim" })
   use({ "neovim/nvim-lspconfig" })
@@ -176,7 +175,6 @@ return packer.startup(function(use)
 
   -- Markdown & Latex {{{
   use({ "cespare/vim-toml" })
-  use({ "ellisonleao/glow.nvim" })
   use({ "elzr/vim-json" })
   use({ "godlygeek/tabular" })
   use({ "iamcco/markdown-preview.nvim", run = function() vim.fn["mkdp#util#install"]() end, })

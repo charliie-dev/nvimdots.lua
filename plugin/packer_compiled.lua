@@ -186,11 +186,6 @@ _G.packer_plugins = {
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/glow-hover",
     url = "https://github.com/JASONews/glow-hover"
   },
-  ["glow.nvim"] = {
-    loaded = true,
-    path = "/home/charles/.local/share/nvim/site/pack/packer/start/glow.nvim",
-    url = "https://github.com/ellisonleao/glow.nvim"
-  },
   ["gruvbox-material"] = {
     loaded = true,
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/gruvbox-material",

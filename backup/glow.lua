@@ -1,4 +1,4 @@
-local status, glow = pcall(require, "glow")
+local status, _ = pcall(require, "glow")
 if not status then
 	return
 end

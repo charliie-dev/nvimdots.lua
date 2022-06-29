@@ -13,12 +13,12 @@ autotag.setup({})
 treesitter.setup({
 	highlight = {
 		enable = true,
-		disable = {},
+		disable = { "markdown" },
 		additional_vim_regex_highlighting = true,
 	},
 	indent = {
 		enable = true,
-		disable = {},
+		disable = { "markdown" },
 	},
 	autopairs = {
 		enable = true,
@@ -26,7 +26,7 @@ treesitter.setup({
 	},
 	autotag = {
 		enable = true,
-		disable = { "xml" },
+		-- disable = { "xml", "markdown" },
 	},
 	context_commentstring = {
 		enable = true,
@@ -43,7 +43,6 @@ treesitter.setup({
 	ensure_installed = {
 		"yaml",
 		"toml",
-		"markdown",
 		"bash",
 		"c",
 		"cpp",
@@ -59,8 +58,8 @@ treesitter.setup({
     "zig",
 	},
 	sync_install = true,
-	ignore_install = { "" },
+	ignore_install = { "markdown" },
 })
 
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-parser_config.tsx.filetype_to_parsername = { "javascript", "typescript.tsx" }
+-- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+-- parser_config.tsx.filetype_to_parsername = { "javascript", "typescript.tsx" }

@@ -9,7 +9,6 @@ local options = {
   colorcolumn = "80",
   compatible = false,
   completeopt = "menu,menuone,noselect",
-  conceallevel = 0,
   cursorline = true,
   encoding = "utf-8",
   expandtab = true,
