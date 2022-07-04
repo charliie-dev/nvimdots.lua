@@ -2,17 +2,17 @@
 let g:vim_markdown_folding_disabled = 0
 
 " do not use conceal feature, the implementation is not so good
-let g:vim_markdown_conceal = 1
-let g:vim_markdown_conceal_code_blocks = 1
+let g:vim_markdown_conceal = 2
+let g:vim_markdown_conceal_code_blocks = 0
 
 " document title is expanded
-let g:vim_markdown_folding_level = 1
+let g:vim_markdown_folding_level = 2
 
 " Allow for the TOC window to auto-fit when it's possible for it to shrink.
 let g:vim_markdown_toc_autofit = 0
 
-" To enable conceal use Vim's standard conceal configuration.
-set conceallevel=1
+" To enable conceal use Vim's standard conceal configuration, if vim_markdown_conceal is not set
+" setlocal conceallevel=2
 
 " disable math tex conceal feature
 let g:tex_conceal = "abdmg"

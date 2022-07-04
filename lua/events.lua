@@ -125,7 +125,6 @@ vim.cmd [[
 au BufRead *.md :call OpenMd()
 
 function! OpenMd()
-  setlocal foldlevel=1
   " SymbolsOutline
 endfunction
 ]]
