@@ -151,6 +151,11 @@ _G.packer_plugins = {
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/copilot.lua",
     url = "https://github.com/zbirenbaum/copilot.lua"
   },
+  decay = {
+    loaded = true,
+    path = "/home/charles/.local/share/nvim/site/pack/packer/start/decay",
+    url = "https://github.com/decaycs/decay.nvim"
+  },
   ["fidget.nvim"] = {
     loaded = true,
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/fidget.nvim",
@@ -215,6 +220,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",
     url = "https://github.com/lukas-reineke/indent-blankline.nvim"
+  },
+  ["kanagawa.nvim"] = {
+    loaded = true,
+    path = "/home/charles/.local/share/nvim/site/pack/packer/start/kanagawa.nvim",
+    url = "https://github.com/rebelot/kanagawa.nvim"
   },
   ["lsp-colors.nvim"] = {
     loaded = true,
