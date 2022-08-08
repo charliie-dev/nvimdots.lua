@@ -114,6 +114,8 @@ return packer.startup(function(use)
 	use({ "ray-x/lsp_signature.nvim" })
 	use({ "simrat39/symbols-outline.nvim" })
 	use({ "williamboman/nvim-lsp-installer" })
+  use({ "williamboman/mason.nvim" })
+  use({ "williamboman/mason-lspconfig.nvim" })
 	use({ "zbirenbaum/copilot.lua" }) -- You need the github/copilot to auth first
 	-- }}}
 
