@@ -157,6 +157,8 @@ cmp.setup({
 		{ name = "nvim_lua" },
 		{ name = "luasnip" },
 		{ name = "path" },
+    { name = "spell" },
+    { name = "tmux" },
   	{ name = 'buffer',
       filter = function(entry, ctx)
         if not contains(buffer_fts, ctx.prev_context.filetype) then
@@ -180,13 +182,14 @@ cmp.setup({
 			-- vim_item.kind = lspkind.presets.default[vim_item.kind]
 			-- NOTE: order matters
 			vim_item.menu = ({
-				path = "[Path]",
 				nvim_lsp = "[LSP]",
-				nvim_lua = "[api]",
-				buffer = "[Buf]",
+				nvim_lua = "[LUA]",
+				luasnip = "[SNIP]",
+				path = "[PATH]",
+				buffer = "[BUF]",
+        tmux = "[TMUX]",
 				dap = "[DAP]",
-				luasnip = "[Snip]",
-				spell = "[Lang]",
+				spell = "[SPELL]",
 			})[entry.source.name]
 			return vim_item
 		end,

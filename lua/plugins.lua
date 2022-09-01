@@ -82,6 +82,7 @@ return packer.startup(function(use)
 	use({ "hrsh7th/cmp-nvim-lsp" })
 	use({ "hrsh7th/cmp-nvim-lua" })
 	use({ "hrsh7th/cmp-path" })
+  use({ "andersevenrud/cmp-tmux" })
 	use({ "saadparwaiz1/cmp_luasnip" })
 	use({ "zbirenbaum/copilot-cmp", module = "copilot_cmp" })
 
