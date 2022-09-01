@@ -8,6 +8,11 @@ if not gb_status then
 	return
 end
 
+local be_status, better_escape = pcall(require, "better_escape")
+if not be_status then
+  return
+end
+
 local hide_in_width = function()
   return vim.fn.winwidth(0) > 80
 end
@@ -148,6 +153,14 @@ local filename = {
 --   return sig.label .. sig.hint
 -- end
 
+local escape_status = {
+  function ()
+    return better_escape.waiting and '✺ ' or ""
+  end,
+  padding = { left = 2, right = 0 },
+  color = "SLbg2",
+}
+
 local spaces = {
   function()
     return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
@@ -187,7 +200,7 @@ lualine.setup({
     lualine_a = {
       { "mode", separator = { left = "" }, right_padding = 2 },
     },
-    lualine_b = { diagnostics, branch, diff },
+    lualine_b = { diagnostics, escape_status, branch, diff },
     lualine_c = {
       -- { filename, cond = hide_in_width },
       -- { current_signature, cond = hide_in_width },
@@ -210,3 +223,4 @@ lualine.setup({
   tabline = {},
   extensions = {},
 })
+

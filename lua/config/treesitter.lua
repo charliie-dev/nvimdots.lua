@@ -3,22 +3,44 @@ if not status then
 	return
 end
 
-local autotag_status, autotag = pcall(require, "nvim-ts-autotag")
-if not autotag_status then
-	return
-end
-
-autotag.setup({})
+-- Don't forget to do a :TSupdate after plugin update!
 
 treesitter.setup({
+	ensure_installed = {
+		"yaml",
+		"toml",
+		"bash",
+		"c",
+		"cpp",
+		"tsx",
+		"python",
+		"html",
+		"scss",
+		"lua",
+    "go",
+    "rust",
+    "vim",
+    "zig",
+	},
+	sync_install = true,
+	ignore_install = { "markdown" },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = ',s',
+      node_incremental = ',s',
+      scope_incremental = ',n',
+      node_decremental = ',n',
+    },
+  },
 	highlight = {
 		enable = true,
 		disable = { "markdown" },
-		additional_vim_regex_highlighting = true,
+		-- additional_vim_regex_highlighting = true,
 	},
 	indent = {
 		enable = true,
-		disable = { "markdown" },
+    disable = { "markdown" },
 	},
 	autopairs = {
 		enable = true,
@@ -26,7 +48,7 @@ treesitter.setup({
 	},
 	autotag = {
 		enable = true,
-		-- disable = { "xml", "markdown" },
+		disable = { "xml", "markdown" },
 	},
 	context_commentstring = {
 		enable = true,
@@ -40,25 +62,67 @@ treesitter.setup({
 		-- colors = {}, -- table of hex strings
 		-- termcolors = {} -- table of colour name strings
 	},
-	ensure_installed = {
-		"yaml",
-		"toml",
-		"bash",
-		"c",
-		"cpp",
-		"tsx",
-		"php",
-		"python",
-		"html",
-		"scss",
-		"lua",
-    "go",
-    "rust",
-    "vim",
-    "zig",
-	},
-	sync_install = true,
-	ignore_install = { "markdown" },
+  textobjects = {
+    select = {
+      enable = true,
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["at"] = "@class.outer",
+        ["it"] = "@class.inner",
+        ["ac"] = "@call.outer",
+        ["ic"] = "@call.inner",
+        ["aa"] = "@parameter.outer",
+        ["ia"] = "@parameter.inner",
+        ["al"] = "@loop.outer",
+        ["il"] = "@loop.inner",
+        ["ai"] = "@conditional.outer",
+        ["ii"] = "@conditional.inner",
+        ["a/"] = "@comment.outer",
+        ["i/"] = "@comment.inner",
+        ["ab"] = "@block.outer",
+        ["ib"] = "@block.inner",
+        ["as"] = "@statement.outer",
+        ["is"] = "@scopename.inner",
+        ["aA"] = "@attribute.outer",
+        ["iA"] = "@attribute.inner",
+        ["aF"] = "@frame.outer",
+        ["iF"] = "@frame.inner",
+      },
+    },
+      move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        ["]m"] = "@function.outer",
+        ["]]"] = "@class.outer",
+      },
+      goto_next_end = {
+        ["]M"] = "@function.outer",
+        ["]["] = "@class.outer",
+      },
+      goto_previous_start = {
+        ["[m"] = "@function.outer",
+        ["[["] = "@class.outer",
+      },
+      goto_previous_end = {
+        ["[M"] = "@function.outer",
+        ["[]"] = "@class.outer",
+      },
+    },
+    swap = {
+      enable = true,
+      swap_next = {
+        ["<leader>."] = "@parameter.inner",
+      },
+      swap_previous = {
+        ["<leader>,"] = "@parameter.inner",
+      },
+    },
+  },
 })
 
 -- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()

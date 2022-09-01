@@ -2,7 +2,6 @@ local color_config = {
 	background = "dark",
 	pumblend = 10,
 	termguicolors = true,
-	wildoptions = "pum",
 	winblend = 0,
 }
 

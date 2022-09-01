@@ -39,7 +39,17 @@ end
 vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
 
 local Terminal = require("toggleterm.terminal").Terminal
-local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
+local lazygit = Terminal:new({
+  auto_scrollcmd = "lazygit",
+  hidden = true,
+  on_open = function(_)
+    vim.cmd("startinset!")
+  end,
+  on_close = function(_)
+    -- vim.cmd("stopinset!")
+  end,
+  count = 99,
+})
 
 function _LAZYGIT_TOGGLE()
 	lazygit:toggle()

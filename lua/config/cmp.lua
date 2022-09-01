@@ -29,7 +29,11 @@ local function contains(t, value)
   return false
 end
 
+local compare = require "cmp.config.compare"
+
 require("luasnip/loaders/from_vscode").lazy_load()
+require("luasnip.loaders.from_lua").lazy_load()
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- local check_backspace = function()
 -- 	local col = vim.fn.col(".") - 1
@@ -77,7 +81,6 @@ cmp.setup({
     -- Accept currently selected item. If none selected, `select` first item.
     -- Set `select` to `false` to only confirm explicitly selected items.
     ["<CR>"] = cmp.mapping.confirm { select = false },
-    ["<Right>"] = cmp.mapping.confirm { select = true },
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -111,7 +114,34 @@ cmp.setup({
     }),
   }),
 	sources = cmp.config.sources({
-		{ name = "copilot", max_item_count = 3,},
+		{ name = "copilot",
+      max_item_count = 3,
+      trigger_characters = {
+        {
+          ".",
+          ":",
+          "(",
+          "'",
+          '"',
+          "[",
+          ",",
+          "#",
+          "*",
+          "@",
+          "|",
+          "=",
+          "-",
+          "{",
+          "/",
+          "\\",
+          "+",
+          "?",
+          " ",
+          -- "\t",
+          -- "\n",
+        },
+      },
+    },
 		{ name = "nvim_lsp",
       filter = function(entry, ctx)
         local kind = require("cmp.types.lsp").CompletionItemKind[entry:get_kind()]
@@ -137,16 +167,16 @@ cmp.setup({
 		-- { name = 'spell'},
 	}),
 	formatting = {
-		fields = { "kind", "abbr", "menu" },
+		fields = { "abbr", "kind", "menu" },
 		format = function(entry, vim_item)
 			if entry.source.name == "copilot" then
-				vim_item.kind = string.format("%s", kind_icons.Copilot)
+				vim_item.kind = string.format("%s Copilot", kind_icons.Copilot)
 				vim_item.menu = "[Copilot]"
 				vim_item.kind_hl_group = "CmpItemKindCopilot"
 				return vim_item
 			end
 			-- Kind icons
-			vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+			vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
 			-- vim_item.kind = lspkind.presets.default[vim_item.kind]
 			-- NOTE: order matters
 			vim_item.menu = ({
@@ -161,6 +191,25 @@ cmp.setup({
 			return vim_item
 		end,
 	},
+  sorting = {
+    priority_weight = 2,
+    comparators = {
+      -- require("copilot_cmp.comparators").prioritize,
+      -- require("copilot_cmp.comparators").score,
+      compare.offset,
+      compare.exact,
+      -- compare.scopes,
+      compare.score,
+      compare.recently_used,
+      compare.locality,
+      -- compare.kind,
+      compare.sort_text,
+      compare.length,
+      compare.order,
+      -- require("copilot_cmp.comparators").prioritize,
+      -- require("copilot_cmp.comparators").score,
+    },
+  },
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
     select = false,
@@ -182,3 +231,9 @@ cmp.setup({
 		ghost_text = true,
 	},
 })
+
+-- cmp.setup.cmdline('/', {
+--   sources = {
+--     { name = 'buffer' },
+--   }
+-- })

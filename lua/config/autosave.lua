@@ -1,4 +1,4 @@
-local status, autosave = pcall(require, "autosave")
+local status, autosave = pcall(require, "AutoSave")
 if not status then
 	return
 end

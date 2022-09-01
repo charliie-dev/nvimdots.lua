@@ -12,7 +12,6 @@ local icons = require("icons")
 
 local actions = require("telescope.actions")
 local builtin = require("telescope.builtin")
--- local trouble = require("trouble.providers.telescope") -- LSP trouble diagnostics
 
 telescope.setup({
   defaults = {
@@ -74,19 +73,6 @@ telescope.setup({
       case_mode = "smart_case", -- or "ignore_case" or "respect_case"
       -- the default case_mode is "smart_case"
     },
-    -- file_browser = {
-    --   -- theme = "ivy",
-    --   -- disables netrw and use telescope-file-browser in its place
-    --   hijack_netrw = false,
-    --   mappings = {
-    --     ["i"] = {
-    --       -- your custom insert mode mappings
-    --     },
-    --     ["n"] = {
-    --       -- your custom normal mode mappings
-    --     },
-    --   },
-    -- },
     ctags_outline = {
       --ctags option
       ctags = { "ctags" },
@@ -123,52 +109,11 @@ telescope.setup({
       -- jump to entry where hoop loop was started from
       reset_selection = true,
     },
-    command_palette = {
-      {
-        "File",
-        { "entire selection (C-a)", ':call feedkeys("GVgg")' },
-        { "save current file (C-s)", ":w" },
-        { "save all files (C-A-s)", ":wa" },
-        { "quit (C-q)", ":qa" },
-        { "file browser (C-i)", ":lua require'telescope'.extensions.file_browser.file_browser()", 1 },
-        { "search word (A-w)", ":lua require('telescope.builtin').live_grep()", 1 },
-        { "git files (A-f)", ":lua require('telescope.builtin').git_files()", 1 },
-        { "files (C-f)", ":lua require('telescope.builtin').find_files()", 1 },
-      },
-      {
-        "Help",
-        { "tips", ":help tips" },
-        { "cheatsheet", ":help index" },
-        { "tutorial", ":help tutor" },
-        { "summary", ":help summary" },
-        { "quick reference", ":help quickref" },
-        { "search help(F1)", ":lua require('telescope.builtin').help_tags()", 1 },
-      },
-      {
-        "Vim",
-        { "reload vimrc", ":source $MYVIMRC" },
-        { "check health", ":checkhealth" },
-        { "jumps (Alt-j)", ":lua require('telescope.builtin').jumplist()" },
-        { "commands", ":lua require('telescope.builtin').commands()" },
-        { "command history", ":lua require('telescope.builtin').command_history()" },
-        { "registers (A-e)", ":lua require('telescope.builtin').registers()" },
-        { "colorshceme", ":lua require('telescope.builtin').colorscheme()", 1 },
-        { "vim options", ":lua require('telescope.builtin').vim_options()" },
-        { "keymaps", ":lua require('telescope.builtin').keymaps()" },
-        { "buffers", ":Telescope buffers" },
-        { "search history (C-h)", ":lua require('telescope.builtin').search_history()" },
-        { "paste mode", ":set paste!" },
-        { "cursor line", ":set cursorline!" },
-        { "cursor column", ":set cursorcolumn!" },
-        { "spell checker", ":set spell!" },
-        { "relative number", ":set relativenumber!" },
-        { "search highlighting (F12)", ":set hlsearch!" },
-      },
-    },
+    command_palette = require("config.command_palette"),
   },
 })
 
--- zoxide config {{{
+-- zoxide config
 local z_utils = require("telescope._extensions.zoxide.utils")
 
 require("telescope._extensions.zoxide.config").setup({
@@ -202,20 +147,13 @@ require("telescope._extensions.zoxide.config").setup({
     },
   },
 })
--- }}}
 
--- emogi config {{{
--- :Telescope emoji
-
--- }}}
-
--- symbols config {{{
+-- symbols config
 -- :Telescope symbols
 -- :lua require'telescope.builtin'.symbols{ sources = {'emoji'} }
 -- :lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
--- }}}
 
--- Project config {{{
+-- Project config
 project_nvim.setup({
   -- Manual mode doesn't automatically change your root directory, so you have
   -- the option to manually do so using `:ProjectRoot` command.
@@ -250,9 +188,8 @@ project_nvim.setup({
   -- telescope
   datapath = vim.fn.stdpath("data"),
 })
--- }}}
 
--- {{{
+-- yanky mapping
 local yanky_mapping = require("yanky.telescope.mapping")
 
 require("yanky").setup({
@@ -275,7 +212,6 @@ require("yanky").setup({
   }
 })
 
--- }}}
 
 -- plugins should load after setup function
 telescope.load_extension("zoxide")
@@ -286,7 +222,6 @@ telescope.load_extension("env")
 telescope.load_extension("fzf")
 telescope.load_extension("hop")
 telescope.load_extension("emoji")
--- telescope.load_extension("file_browser")
 telescope.load_extension("harpoon")
 telescope.load_extension("notify")
 telescope.load_extension("yank_history")

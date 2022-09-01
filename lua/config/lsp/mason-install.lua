@@ -1,0 +1,61 @@
+local status, mason_install = pcall(require, "mason-tool-installer")
+if not status then
+  return
+end
+
+mason_install.setup({
+  -- a list of all tools you want to ensure are installed upon
+  -- start; they should be the names Mason uses for each tool
+  ensure_installed = {
+
+    -- you can pin a tool to a particular version
+    -- { 'golangci-lint', version = '1.47.0' },
+
+    -- you can turn off/on auto_update per tool
+    -- { "bash-language-server", auto_update = true },
+
+    -- LSP
+    "bash-language-server",
+    "lua-language-server",  -- equals sumneko_lua
+    -- "vim-language-server",
+    "yaml-language-server",
+    "json-lsp",
+    "emmet-ls",  -- HTML lsp
+
+    -- Formatter
+    "stylua",  -- An opinionated Lua code formatter.
+    "prettierd",
+    "black",
+    "shfmt",  -- A shell parser, formatter, and interpreter with bash support.
+    "flake8",  -- for catching errors & check some PEP8 violations
+    "isort",  -- Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.
+    "misspell",  -- Correct commonly misspelled English words in source files.
+    "codespell",  -- check code for common misspellings.
+    "markdownlint",  -- A Node.js style checker and lint tool for Markdown/CommonMark files.
+
+    -- Linter
+    "shellcheck",  -- ShellCheck, a static analysis tool for shell scripts.
+    "pylint",  -- focus more on checking PEP8 violations
+    "pyright",  -- Static type checker for Python
+    "eslint_d",  -- Javascript Linter, but faster
+
+  },
+
+  -- if set to true this will check each tool for updates. If updates
+  -- are available the tool will be updated. This setting does not
+  -- affect :MasonToolsUpdate or :MasonToolsInstall.
+  -- Default: false
+  auto_update = false,
+
+  -- automatically install / update on startup. If set to false nothing
+  -- will happen on startup. You can use :MasonToolsInstall or
+  -- :MasonToolsUpdate to install tools and check for updates.
+  -- Default: true
+  run_on_start = true,
+
+  -- set a delay (in ms) before the installation starts. This is only
+  -- effective if run_on_start is set to true.
+  -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
+  -- Default: 0
+  -- start_delay = 3000,  -- 3 second delay
+})

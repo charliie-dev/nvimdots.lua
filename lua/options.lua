@@ -1,19 +1,22 @@
 local options = {
+  -- foldmethod = "marker",
   autoindent = true,
   autoread = true,
   backspace = {"start", "eol", "indent"},
   backup = false,
   backupskip = "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim",
+  breakindent = true,
   cindent = true,
   cmdheight = 1,
   colorcolumn = "80",
   compatible = false,
-  completeopt = "menu,menuone,noselect",
+  completeopt = {"menu", "menuone", "noselect"},  -- required by nvim-cmp
   cursorline = true,
   encoding = "utf-8",
   expandtab = true,
-  foldlevel = 0,
-  foldmethod = "marker",
+  foldexpr = "nvim_treesitter#foldexpr()",
+  foldlevel = 3,
+  foldmethod = "expr",
   hlsearch = false,
   ignorecase = true,
   inccommand = "split",
@@ -50,11 +53,13 @@ local options = {
   undofile = true,
   updatetime = 300,
   whichwrap = "<,>,[,]",
+  wildignore = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**",
+  wildignorecase = true,
   wildmenu = true,
+  wildmode = "longest:full,full",
+  wildoptions = "pum",
   wrap = false,
   writebackup = false,
-  wildignorecase = true,
-  wildignore = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**",
 }
 for k, v in pairs(options) do
   vim.opt[k] = v
@@ -84,8 +89,8 @@ vim.g.did_load_netrwSettings = 1
 vim.g.did_load_netrwFileHandlers = 1
 
 -- use filetype.lua instead and disable filetype.vim
-vim.g.do_filetype_lua = 1
---vim.g.did_load_filetypes = 1
+-- vim.g.do_filetype_lua = 1
+-- vim.g.did_load_filetypes = 1
 
 local function isempty(s)
   return s == nil or s == ''
