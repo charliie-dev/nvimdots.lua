@@ -105,3 +105,7 @@ for _, server in pairs(servers) do
   lspconfig[server].setup(opts)
   ::continue::
 end
+
+-- A workaround for multi-sumneko_lua process from spawning, check this thread for more.
+-- INFO: https://github.com/nvim-lua/kickstart.nvim/issues/4#issuecomment-1235970205
+
