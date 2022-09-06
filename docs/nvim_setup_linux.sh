@@ -19,7 +19,7 @@ ADD_TO_SYSTEM_PATH=true
 
 # select which shell we are using
 USE_ZSH_SHELL=false
-USE_BASH_SHELL=ture
+USE_BASH_SHELL=true
 
 if [[ ! -d "$HOME/packages/" ]]; then
     mkdir -p "$HOME/packages/"
