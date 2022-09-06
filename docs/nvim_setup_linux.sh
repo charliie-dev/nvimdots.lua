@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -i
 # INFO: https://dywang.csie.cyut.edu.tw/dywang/linuxProgram/node61.html
 set -exu
 set -o pipefail
@@ -18,53 +18,52 @@ INSTALL_ANACONDA=true
 ADD_TO_SYSTEM_PATH=true
 
 # select which shell we are using
-USE_ZSH_SHELL=false
 USE_BASH_SHELL=true
 
 if [[ ! -d "$HOME/packages/" ]]; then
-    mkdir -p "$HOME/packages/"
+	mkdir -p "$HOME/packages/"
 fi
 
 if [[ ! -d "$HOME/tools/" ]]; then
-    mkdir -p "$HOME/tools/"
+	mkdir -p "$HOME/tools/"
 fi
 
 #######################################################################
 #                    Anaconda or miniconda install                    #
 #######################################################################
 if [[ "$INSTALL_ANACONDA" = true ]]; then
-    CONDA_DIR=$HOME/tools/anaconda
-    CONDA_NAME=Anaconda.sh
-    CONDA_LINK="https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh"
+	CONDA_DIR=$HOME/tools/anaconda
+	CONDA_NAME=Anaconda.sh
+	CONDA_LINK="https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh"
 else
-    CONDA_DIR=$HOME/tools/miniconda
-    CONDA_NAME=Miniconda.sh
-    CONDA_LINK="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+	CONDA_DIR=$HOME/tools/miniconda
+	CONDA_NAME=Miniconda.sh
+	CONDA_LINK="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 fi
 
 if [[ ! "$PYTHON_INSTALLED" = true ]]; then
-    echo "Installing Python in user HOME"
+	echo "Installing Python in user HOME"
 
-    SYSTEM_PYTHON=false
+	SYSTEM_PYTHON=false
 
-    echo "Downloading and installing conda"
+	echo "Downloading and installing conda"
 
-    if [[ ! -f "$HOME/packages/$CONDA_NAME" ]]; then
-        curl -Lo "$HOME/packages/$CONDA_NAME" $CONDA_LINK
-    fi
+	if [[ ! -f "$HOME/packages/$CONDA_NAME" ]]; then
+		curl -Lo "$HOME/packages/$CONDA_NAME" $CONDA_LINK
+	fi
 
-    # Install conda silently
-    if [[ -d $CONDA_DIR ]]; then
-        rm -rf "$CONDA_DIR"
-    fi
-    bash "$HOME/packages/$CONDA_NAME" -b -p "$CONDA_DIR"
+	# Install conda silently
+	if [[ -d $CONDA_DIR ]]; then
+		rm -rf "$CONDA_DIR"
+	fi
+	bash "$HOME/packages/$CONDA_NAME" -b -p "$CONDA_DIR"
 
-    # Setting up environment variables
-    if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$CONDA_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
-    fi
+	# Setting up environment variables
+	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+		echo "export PATH=\"$CONDA_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+	fi
 else
-    echo "Python is already installed. Skip installing it."
+	echo "Python is already installed. Skip installing it."
 fi
 
 # Install some Python packages used by Nvim plugins.
@@ -72,19 +71,19 @@ echo "Installing Python packages"
 declare -a py_packages=("pynvim" "yarp")
 
 if [[ "$SYSTEM_PYTHON" = true ]]; then
-    echo "Using system Python to install $(PY_PACKAGES)"
+	echo "Using system Python to install $(PY_PACKAGES)"
 
-    # If we use system Python, we need to install these Python packages under
-    # user HOME, since we do not have permissions to install them under system
-    # directories.
-    for p in "${py_packages[@]}"; do
-        pip3 install --user "$p"
-    done
+	# If we use system Python, we need to install these Python packages under
+	# user HOME, since we do not have permissions to install them under system
+	# directories.
+	for p in "${py_packages[@]}"; do
+		pip3 install --user "$p"
+	done
 else
-    echo "Using custom Python to install $(PY_PACKAGES)"
-    for p in "${py_packages[@]}"; do
-        "$CONDA_DIR/bin/pip3" install "$p"
-    done
+	echo "Using custom Python to install $(PY_PACKAGES)"
+	for p in "${py_packages[@]}"; do
+		"$CONDA_DIR/bin/pip3" install "$p"
+	done
 fi
 
 #######################################################################
@@ -94,69 +93,31 @@ NODE_DIR=$HOME/tools/nodejs
 NODE_SRC_NAME=$HOME/packages/nodejs.tar.gz
 NODE_LINK="https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz"
 if [[ -z "$(command -v node)" ]]; then
-    echo "Install Node.js"
-    if [[ ! -f $NODE_SRC_NAME ]]; then
-        echo "Downloading Node.js and renaming"
-        wget $NODE_LINK -O "$NODE_SRC_NAME"
-    fi
+	echo "Install Node.js"
+	if [[ ! -f $NODE_SRC_NAME ]]; then
+		echo "Downloading Node.js and renaming"
+		wget $NODE_LINK -O "$NODE_SRC_NAME"
+	fi
 
-    if [[ ! -d "$NODE_DIR" ]]; then
-        echo "Creating Node.js directory under tools directory"
-        mkdir -p "$NODE_DIR"
-        echo "Extracting to $HOME/tools/nodejs directory"
-        tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
-    fi
+	if [[ ! -d "$NODE_DIR" ]]; then
+		echo "Creating Node.js directory under tools directory"
+		mkdir -p "$NODE_DIR"
+		echo "Extracting to $HOME/tools/nodejs directory"
+		tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
+	fi
 
-    if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
-    fi
+	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+		echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+	fi
 else
-    echo "Node.js is already installed. Skip installing it."
+	echo "Node.js is already installed. Skip installing it."
 fi
 
 # Install neovim support for node plugins
 "$NODE_DIR/bin/npm" install neovim --location=global
 
 # Install tree-sitter-cli
-"$NODE_DIR/bin/npm" install tree-sitter-cli --location=global
-
-#######################################################################
-#                            Ripgrep part                             #
-#######################################################################
-RIPGREP_DIR=$HOME/tools/ripgrep
-RIPGREP_SRC_NAME=$HOME/packages/ripgrep.tar.gz
-RIPGREP_LINK="https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz"
-if [[ -z "$(command -v rg)" ]] && [[ ! -f "$RIPGREP_DIR/rg" ]]; then
-    echo "Install ripgrep"
-    if [[ ! -f $RIPGREP_SRC_NAME ]]; then
-        echo "Downloading ripgrep and renaming"
-        wget $RIPGREP_LINK -O "$RIPGREP_SRC_NAME"
-    fi
-
-    if [[ ! -d "$RIPGREP_DIR" ]]; then
-        echo "Creating ripgrep directory under tools directory"
-        mkdir -p "$RIPGREP_DIR"
-        echo "Extracting to $HOME/tools/ripgrep directory"
-        tar zxvf "$RIPGREP_SRC_NAME" -C "$RIPGREP_DIR" --strip-components 1
-    fi
-
-    if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$RIPGREP_DIR:\$PATH\"" >> "$HOME/.bashrc"
-    fi
-
-    # # set up manpath and zsh completion for ripgrep
-    # mkdir -p $HOME/tools/ripgrep/doc/man/man1
-    # mv $HOME/tools/ripgrep/doc/rg.1 $HOME/tools/ripgrep/doc/man/man1
-
-    if [[ "$USE_BASH_SHELL" = true ]]; then
-        echo 'export MANPATH=$HOME/tools/ripgrep/doc/man:$MANPATH' >> "$HOME/.bashrc"
-    else
-        echo 'export MANPATH=$HOME/tools/ripgrep/doc/man:$MANPATH' >> "$HOME/.zshrc"
-        echo 'export FPATH=$HOME/tools/ripgrep/complete:$FPATH' >> "$HOME/.zshrc"
-    fi
-else
-    echo "ripgrep is already installed. Skip installing it."
-fi
+# "$NODE_DIR/bin/npm" install tree-sitter-cli --location=global
 
 #######################################################################
 #                                Nvim install                         #
@@ -166,41 +127,43 @@ NVIM_SRC_NAME=$HOME/packages/nvim-linux64.tar.gz
 NVIM_CONFIG_DIR=$HOME/.config/nvim
 NVIM_LINK="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
 if [[ ! -f "$NVIM_DIR/bin/nvim" ]]; then
-    echo "Installing Nvim"
-    echo "Creating nvim directory under tools directory"
+	echo "Installing Nvim"
+	echo "Creating nvim directory under tools directory"
 
-    if [[ ! -d "$NVIM_DIR" ]]; then
-        mkdir -p "$NVIM_DIR"
-    fi
+	if [[ ! -d "$NVIM_DIR" ]]; then
+		mkdir -p "$NVIM_DIR"
+	fi
 
-    if [[ ! -f $NVIM_SRC_NAME ]]; then
-        echo "Downloading Nvim"
-        wget "$NVIM_LINK" -O "$NVIM_SRC_NAME"
-    fi
-    echo "Extracting neovim"
-    tar zxvf "$NVIM_SRC_NAME" --strip-components 1 -C "$NVIM_DIR"
+	if [[ ! -f $NVIM_SRC_NAME ]]; then
+		echo "Downloading Nvim"
+		wget "$NVIM_LINK" -O "$NVIM_SRC_NAME"
+	fi
+	echo "Extracting neovim"
+	tar zxvf "$NVIM_SRC_NAME" --strip-components 1 -C "$NVIM_DIR"
 
-    if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-        echo "export PATH=\"$NVIM_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
-    fi
+	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+		echo "export PATH=\"$NVIM_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+	fi
 else
-    echo "Nvim is already installed. Skip installing it."
+	echo "Nvim is already installed. Skip installing it."
 fi
 
 echo "Setting up config and installing plugins"
 if [[ -d "$NVIM_CONFIG_DIR" ]]; then
-    mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
+	mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
 fi
 
 git clone --depth=1 git@github.com:CharlesChiuGit/nvimdots.git "$NVIM_CONFIG_DIR"
 
 echo "Installing packer.nvim"
 if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
-    git clone --depth=1 https://github.com/wbthomason/packer.nvim \
-        ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+	git clone --depth=1 https://github.com/wbthomason/packer.nvim \
+		~/.local/share/nvim/site/pack/packer/start/packer.nvim
 fi
 
 echo "Installing nvim plugins, please wait"
 "$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
 
 echo "Finished installing Nvim and its dependencies!"
+
+source "$HOME/.bashrc"
