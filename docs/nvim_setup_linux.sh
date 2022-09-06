@@ -197,7 +197,7 @@ git clone --depth=1 git@github.com:CharlesChiuGit/nvimdots.git "$NVIM_CONFIG_DIR
 echo "Installing packer.nvim"
 if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
     git clone --depth=1 https://github.com/wbthomason/packer.nvim \
-        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
+        ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 fi
 
 echo "Installing nvim plugins, please wait"

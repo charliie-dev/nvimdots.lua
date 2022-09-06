@@ -1,5 +1,6 @@
 -- Remove ALL autocommands for the current group to prevent autocmds loading twice.
 vim.cmd([[autocmd!]])
+require("plugins")
 
 -- Fast startup
 --- impatient needs to be setup before any other lua plugin is loaded
@@ -13,7 +14,6 @@ require("events")
 require("icons")
 require("keymaps")
 require("options")
-require("plugins")
 
 -- Plugin Config
 require("config.alpha")
