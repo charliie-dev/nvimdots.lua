@@ -1,4 +1,5 @@
 #!/bin/bash
+# INFO: https://dywang.csie.cyut.edu.tw/dywang/linuxProgram/node61.html
 set -exu
 set -o pipefail
 
@@ -68,7 +69,7 @@ fi
 
 # Install some Python packages used by Nvim plugins.
 echo "Installing Python packages"
-declare -a py_packages=("pynvim" 'python-lsp-server[all]' "black" "vim-vint" "pyls-isort" "pylsp-mypy")
+declare -a py_packages=("pynvim" "yarp")
 
 if [[ "$SYSTEM_PYTHON" = true ]]; then
     echo "Using system Python to install $(PY_PACKAGES)"
@@ -77,47 +78,47 @@ if [[ "$SYSTEM_PYTHON" = true ]]; then
     # user HOME, since we do not have permissions to install them under system
     # directories.
     for p in "${py_packages[@]}"; do
-        pip install --user "$p"
+        pip3 install --user "$p"
     done
 else
     echo "Using custom Python to install $(PY_PACKAGES)"
     for p in "${py_packages[@]}"; do
-        "$CONDA_DIR/bin/pip" install "$p"
+        "$CONDA_DIR/bin/pip3" install "$p"
     done
 fi
 
 #######################################################################
 #                Install node and js-based language server            #
 #######################################################################
-# NODE_DIR=$HOME/tools/nodejs
-# NODE_SRC_NAME=$HOME/packages/nodejs.tar.gz
-# NODE_LINK="https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz"
-# if [[ -z "$(command -v node)" ]]; then
-#     echo "Install Node.js"
-#     if [[ ! -f $NODE_SRC_NAME ]]; then
-#         echo "Downloading Node.js and renaming"
-#         wget $NODE_LINK -O "$NODE_SRC_NAME"
-#     fi
-#
-#     if [[ ! -d "$NODE_DIR" ]]; then
-#         echo "Creating Node.js directory under tools directory"
-#         mkdir -p "$NODE_DIR"
-#         echo "Extracting to $HOME/tools/nodejs directory"
-#         tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
-#     fi
-#
-#     if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-#         echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
-#     fi
-# else
-#     echo "Node.js is already installed. Skip installing it."
-# fi
-#
-# # Install vim-language-server
-# "$NODE_DIR/bin/npm" install vim-language-server --location=global
-#
-# # Install bash-language-server
-# "$NODE_DIR/bin/npm" install bash-language-server --location=global
+NODE_DIR=$HOME/tools/nodejs
+NODE_SRC_NAME=$HOME/packages/nodejs.tar.gz
+NODE_LINK="https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz"
+if [[ -z "$(command -v node)" ]]; then
+    echo "Install Node.js"
+    if [[ ! -f $NODE_SRC_NAME ]]; then
+        echo "Downloading Node.js and renaming"
+        wget $NODE_LINK -O "$NODE_SRC_NAME"
+    fi
+
+    if [[ ! -d "$NODE_DIR" ]]; then
+        echo "Creating Node.js directory under tools directory"
+        mkdir -p "$NODE_DIR"
+        echo "Extracting to $HOME/tools/nodejs directory"
+        tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
+    fi
+
+    if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+        echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
+    fi
+else
+    echo "Node.js is already installed. Skip installing it."
+fi
+
+# Install neovim support for node plugins
+"$NODE_DIR/bin/npm" install neovim --location=global
+
+# Install tree-sitter-cli
+"$NODE_DIR/bin/npm" install tree-sitter-cli --location=global
 
 #######################################################################
 #                            Ripgrep part                             #
@@ -143,9 +144,9 @@ if [[ -z "$(command -v rg)" ]] && [[ ! -f "$RIPGREP_DIR/rg" ]]; then
         echo "export PATH=\"$RIPGREP_DIR:\$PATH\"" >> "$HOME/.bashrc"
     fi
 
-    # set up manpath and zsh completion for ripgrep
-    mkdir -p $HOME/tools/ripgrep/doc/man/man1
-    mv $HOME/tools/ripgrep/doc/rg.1 $HOME/tools/ripgrep/doc/man/man1
+    # # set up manpath and zsh completion for ripgrep
+    # mkdir -p $HOME/tools/ripgrep/doc/man/man1
+    # mv $HOME/tools/ripgrep/doc/rg.1 $HOME/tools/ripgrep/doc/man/man1
 
     if [[ "$USE_BASH_SHELL" = true ]]; then
         echo 'export MANPATH=$HOME/tools/ripgrep/doc/man:$MANPATH' >> "$HOME/.bashrc"
@@ -163,7 +164,7 @@ fi
 NVIM_DIR=$HOME/tools/nvim
 NVIM_SRC_NAME=$HOME/packages/nvim-linux64.tar.gz
 NVIM_CONFIG_DIR=$HOME/.config/nvim
-NVIM_LINK="https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz"
+NVIM_LINK="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
 if [[ ! -f "$NVIM_DIR/bin/nvim" ]]; then
     echo "Installing Nvim"
     echo "Creating nvim directory under tools directory"
@@ -191,7 +192,7 @@ if [[ -d "$NVIM_CONFIG_DIR" ]]; then
     mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
 fi
 
-# git clone --depth=1 https://github.com/jdhao/nvim-config.git "$NVIM_CONFIG_DIR"
+git clone --depth=1 git@github.com:CharlesChiuGit/nvimdots.git "$NVIM_CONFIG_DIR"
 
 echo "Installing packer.nvim"
 if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then

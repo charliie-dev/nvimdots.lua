@@ -3,9 +3,9 @@ if not status then
 	return
 end
 
-colorizer.setup(
-	{ "*" },
-	{
+colorizer.setup({
+  filetypes = { "*" },
+  user_default_options = {
 		RGB = true, -- #RGB hex codes
 		RRGGBB = true, -- #RRGGBB hex codes
 		names = false, -- "Name" codes like Blue or blue
@@ -16,5 +16,6 @@ colorizer.setup(
 		css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
 		-- Available modes: foreground, background
 		mode = "background", -- Set the display mode.
-	} -- syntax colorization
-)
+    virtualtext = "■",
+  }
+})

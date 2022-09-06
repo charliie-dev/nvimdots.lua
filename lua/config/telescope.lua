@@ -110,6 +110,7 @@ telescope.setup({
       reset_selection = true,
     },
     command_palette = require("config.command_palette"),
+
   },
 })
 
@@ -225,3 +226,4 @@ telescope.load_extension("emoji")
 telescope.load_extension("harpoon")
 telescope.load_extension("notify")
 telescope.load_extension("yank_history")
+telescope.load_extension("dap")

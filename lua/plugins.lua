@@ -122,18 +122,21 @@ return packer.startup(function(use)
   use({ "ibhagwan/fzf-lua" })
 
 
-	-- Debugging
+	-- DAP/Debugging
 	use({ "mfussenegger/nvim-dap" })
-	use({ "Pocco81/DAPInstall.nvim" })
+	-- use({ "Pocco81/dap-buddy.nvim" })  -- plugin being rewritten
 	use({ "rcarriga/nvim-dap-ui" })
-	-- use({ "thehamsta/nvim-dap-virtual-text" })
+	use({ "thehamsta/nvim-dap-virtual-text" })
+  use({ "nvim-telescope/telescope-dap.nvim" })
+
+  -- python debugger config
+  use({ "mfussenegger/nvim-dap-python" })
 
 
 	-- Git
   use({ "dinhhuy258/git.nvim" })
 	use({ "f-person/git-blame.nvim" })
 	use({ "lewis6991/gitsigns.nvim" })
-	-- use({ "rhysd/conflict-marker.vim" })
   use({ "akinsho/git-conflict.nvim" })
 	-- use({ "sindrets/diffview.nvim" })
 
@@ -228,13 +231,13 @@ return packer.startup(function(use)
 	})
 	use({
     "lervag/vimtex",
-    opt = true,
-    ft = "tex",
+    -- opt = true,
+    -- ft = "tex",
   }) -- Latex on vim
 	use({
     "plasticboy/vim-markdown",
-    opt = true,
-    ft = "markdown",
+    -- opt = true,
+    -- ft = "markdown",
   })
   -- use({
     -- "jakewvincent/mkdnflow.nvim",

@@ -32,6 +32,7 @@ dapui.setup({
 	layouts = {
 		{
 			elements = {
+        -- Elements can be strings or table with id and size keys.
         { id = "scopes", size = 0.25 },
 				"breakpoints",
 				-- "stacks",
@@ -73,3 +74,12 @@ end
 dap.listeners.before.event_exited["dapui_config"] = function()
 	dapui.close({})
 end
+
+
+-- Python debugger
+local status, dap_python = pcall(require, "dap-python")
+if not status then
+  return
+end
+
+dap_python.setup("/usr/bin/python3")

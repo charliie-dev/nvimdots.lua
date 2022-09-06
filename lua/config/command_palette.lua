@@ -37,7 +37,7 @@ return {
 		{ "Telescope live_grep (lg)", ":Telescope live_grep" },
 		{ "Telescope buffers (<leader>\\)", ":Telescope buffers" },
 		{ "Telescope help_tags (<leader>;)", ":Telescope help_tags" },
-		{ "Telescope zoxide (<leader>z)", ":lua require('telescope').extensions.zoxide.list{}" },
+		{ "Telescope zoxide (<leader>z)", ":Telescope zoxide list" },
 		{ "Telescope projects (<leader>p)", ":Telescope projects" },
 		{ "Telescope harpoon marks (<leader>hp)", ":Telescope harpoon marks" },
 		{ "Telescope command_palette (<leader>cp)", ":Telescope command_palette" },
@@ -48,6 +48,7 @@ return {
 		{ "Telescope emoji", ":Telescope emoji" },
 		{ "Telescope notify", ":Telescope notify" },
     { "Fzf-lua (fz)", ":FzfLua files" },
+    { "Telescope diagnostics of the whole workspace", ":Telescope diagnostics" },
 	},
 	{  -- Editing Support
 		"Editing Support",
@@ -80,7 +81,10 @@ return {
     "Lsp & Lspsaga",
     -- Lsp
     { "Telescope lsp_definitions (gd)", ":Telescope lsp_definitions" },
-    { "Telescope lsp_implementations (gI)", ":Telescope lsp_implementations" },
+    { "vim.lsp.buf.type_definition() (gT)", ":lua vim.lsp.buf.type_definition()" },
+    { "Go back to where the (definition) jump happened, in the tagstack (<C-t>)", "" },
+    -- { "Go back to where the (movement) jump happened, in the jumplist (<C-o>)", "" }, -- overwrite by ":so %"
+    { "Telescope lsp_implementations (gi)", ":Telescope lsp_implementations" },
     { "Telescope lsp_references (gr)", ":Telescope lsp_references" },
     { "Open signature_help (gs)", ":lua vim.lsp.buf.signature_help()" },
     { "Format (<leader>-f)", ":Format" },
@@ -124,6 +128,14 @@ return {
     { "Move to the next conflict ([x)", ":GitConflictNextConflict" },
     { "Move to the previous conflict (]x)", ":GitConflictPrevConflict" },
     { "Get all conflict to quickfix", ":GitConflictListQf" },
+  },
+  {  -- DAP
+    "DAP",
+    { "Telescope dap commands", ":Telescope dap commands" },
+    { "Telescope dap configurations", ":Telescope dap configurations" },
+    { "Telescope dap list_breakpoints", ":Telescope dap list_breakpoints" },
+    { "Telescope dap variables", ":Telescope dap variables" },
+    { "Telescope dap frames", ":Telescope dap frames" },
   },
   {  -- Hop
     "Hop",
