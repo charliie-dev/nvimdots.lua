@@ -3,19 +3,8 @@
 set -exu
 set -o pipefail
 
-# Whether python3 has been installed on the system
-PYTHON_INSTALLED=false
-
-# If Python has been installed, then we need to know whether Python is provided
-# by the system, or you have already installed Python under your HOME.
-SYSTEM_PYTHON=false
-
-# If SYSTEM_PYTHON is false, we need to decide whether to install
-# Anaconda (INSTALL_ANACONDA=true) or Miniconda (INSTALL_ANACONDA=false)
-INSTALL_ANACONDA=true
-
 # Whether to add the path of the installed executables to system PATH
-ADD_TO_SYSTEM_PATH=true
+ADD_TO_SYSTEM_PATH=false
 
 # select which shell we are using
 USE_BASH_SHELL=true
@@ -31,6 +20,18 @@ fi
 #######################################################################
 #                    Anaconda or miniconda install                    #
 #######################################################################
+
+# Whether python3 has been installed on the system
+PYTHON_INSTALLED=true
+
+# If Python has been installed, then we need to know whether Python is provided
+# by the system, or you have already installed Python under your HOME.
+SYSTEM_PYTHON=false
+
+# If SYSTEM_PYTHON is false, we need to decide whether to install
+# Anaconda (INSTALL_ANACONDA=true) or Miniconda (INSTALL_ANACONDA=false)
+INSTALL_ANACONDA=true
+
 if [[ "$INSTALL_ANACONDA" = true ]]; then
 	CONDA_DIR=$HOME/tools/anaconda
 	CONDA_NAME=Anaconda.sh
@@ -61,6 +62,7 @@ if [[ ! "$PYTHON_INSTALLED" = true ]]; then
 	# Setting up environment variables
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$CONDA_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$CONDA_DIR/bin:$PATH"
 	fi
 else
 	echo "Python is already installed. Skip installing it."
@@ -87,31 +89,9 @@ else
 fi
 
 #######################################################################
-#                Install node and js-based language server            #
+#                      Node install packages                          #
 #######################################################################
 NODE_DIR=$HOME/tools/nodejs
-NODE_SRC_NAME=$HOME/packages/nodejs.tar.gz
-NODE_LINK="https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz"
-if [[ -z "$(command -v node)" ]]; then
-	echo "Install Node.js"
-	if [[ ! -f $NODE_SRC_NAME ]]; then
-		echo "Downloading Node.js and renaming"
-		wget $NODE_LINK -O "$NODE_SRC_NAME"
-	fi
-
-	if [[ ! -d "$NODE_DIR" ]]; then
-		echo "Creating Node.js directory under tools directory"
-		mkdir -p "$NODE_DIR"
-		echo "Extracting to $HOME/tools/nodejs directory"
-		tar xvf "$NODE_SRC_NAME" -C "$NODE_DIR" --strip-components 1
-	fi
-
-	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-		echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
-	fi
-else
-	echo "Node.js is already installed. Skip installing it."
-fi
 
 # Install neovim support for node plugins
 "$NODE_DIR/bin/npm" install neovim --location=global
@@ -120,7 +100,49 @@ fi
 # "$NODE_DIR/bin/npm" install tree-sitter-cli --location=global
 
 #######################################################################
-#                                Nvim install                         #
+#                      Perl install packages                          #
+#######################################################################
+PLENV_DIR=$HOME/.plenv
+eval "$(plenv init -)"
+
+
+#######################################################################
+#                      Ruby install packages                          #
+#######################################################################
+
+
+#######################################################################
+#                        Go install packages                          #
+#######################################################################
+
+
+#######################################################################
+#                      Rust install packages                          #
+#######################################################################
+
+
+#######################################################################
+#                      Java install packages                          #
+#######################################################################
+
+
+#######################################################################
+#                     Julia install packages                          #
+#######################################################################
+
+
+#######################################################################
+#                   Lua, LuaJIT install packages                      #
+#######################################################################
+
+
+#######################################################################
+#                       PHP install packages                          #
+#######################################################################
+
+
+#######################################################################
+#                           Nvim install                              #
 #######################################################################
 NVIM_DIR=$HOME/tools/nvim
 NVIM_SRC_NAME=$HOME/packages/nvim-linux64.tar.gz
@@ -143,6 +165,7 @@ if [[ ! -f "$NVIM_DIR/bin/nvim" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$NVIM_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$NVIM_DIR/bin:$PATH"
 	fi
 else
 	echo "Nvim is already installed. Skip installing it."

@@ -1,20 +1,28 @@
 #!/usr/bin/env bash
 # INFO: https://dywang.csie.cyut.edu.tw/dywang/linuxProgram/node61.html
-set -exu
+set -eu
 set -o pipefail
 
 # Whether to add the path of the installed executables to system PATH
-ADD_TO_SYSTEM_PATH=true
+ADD_TO_SYSTEM_PATH=false
 
 # select which shell we are using
 USE_BASH_SHELL=true
+
+if [[ ! -d "$HOME/packages/" ]]; then
+	mkdir -p "$HOME/packages/"
+fi
+
+if [[ ! -d "$HOME/tools/" ]]; then
+	mkdir -p "$HOME/tools/"
+fi
 
 #######################################################################
 #                            batcat part                             #
 #######################################################################
 BATCAT_DIR=$HOME/tools/batcat
 BATCAT_SRC_NAME=$HOME/packages/batcat.tar.gz
-BATCAT_LINK="https://github.com/sharkdp/bat/releases/download/v0.21.0/bat-v0.21.0-x86_64-unknown-linux-musl.tar.gz"
+BATCAT_LINK="https://github.com/sharkdp/bat/releases/download/v0.22.0/bat-v0.22.0-x86_64-unknown-linux-musl.tar.gz"
 if [[ -z "$(command -v bat)" ]] && [[ ! -f "$BATCAT_DIR/bat" ]]; then
 	echo "Install batcat"
 	if [[ ! -f $BATCAT_SRC_NAME ]]; then
@@ -31,6 +39,7 @@ if [[ -z "$(command -v bat)" ]] && [[ ! -f "$BATCAT_DIR/bat" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$BATCAT_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$BATCAT_DIR:$PATH"
 	fi
 
 	# # set up manpath and zsh completion for batcat
@@ -63,6 +72,7 @@ if [[ -z "$(command -v fd)" ]] && [[ ! -f "$FDFIND_DIR/fd" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$FDFIND_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$FDFIND_DIR:$PATH"
 	fi
 
 else
@@ -91,6 +101,7 @@ if [[ -z "$(command -v fzf)" ]] && [[ ! -f "$FZF_DIR/fzf" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$FZF_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$FZF_DIR:$PATH"
 	fi
 
 else
@@ -120,6 +131,7 @@ if [[ -z "$(command -v fzy)" ]] && [[ ! -f "$FZY_DIR/fzy" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$FZY_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$FZY_DIR:$PATH"
 	fi
 
 else
@@ -148,6 +160,7 @@ if [[ -z "$(command -v delta)" ]] && [[ ! -f "$GITDELTA_DIR/delta" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$GITDELTA_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$GITDELTA_DIR:$PATH"
 	fi
 
 else
@@ -176,6 +189,7 @@ if [[ -z "$(command -v glow)" ]] && [[ ! -f "$GLOW_DIR/glow" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$GLOW_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$GLOW_DIR:$PATH"
 	fi
 
 else
@@ -204,6 +218,7 @@ if [[ -z "$(command -v lazygit)" ]] && [[ ! -f "$LAZYGIT_DIR/lazygit" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$LAZYGIT_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$LAZYGIT_DIR:$PATH"
 	fi
 
 else
@@ -232,6 +247,7 @@ if [[ -z "$(command -v lsd)" ]] && [[ ! -f "$LSD_DIR/lsd" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$LSD_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$LSD_DIR:$PATH"
 	fi
 
 else
@@ -260,6 +276,7 @@ if [[ -z "$(command -v rg)" ]] && [[ ! -f "$RIPGREP_DIR/rg" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$RIPGREP_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$RIPGREP_DIR:$PATH"
 	fi
 
 	# # set up manpath and zsh completion for ripgrep
@@ -300,35 +317,11 @@ if [[ -z "$(command -v tree-sitter)" ]] && [[ ! -f "$TS_DIR/tree-sitter" ]]; the
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$TS_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$TS_DIR:$PATH"
 	fi
 
 else
 	echo "tree-sitter is already installed. Skip installing it."
-fi
-
-#######################################################################
-#                            viu part                                 #
-#######################################################################
-VIU_DIR=$HOME/tools/viu
-VIU_LINK="https://github.com/atanunq/viu/releases/download/v1.4.0/viu"
-if [[ -z "$(command -v viu)" ]] && [[ ! -f "$VIU_DIR/viu" ]]; then
-	echo "Install viu"
-	echo "Downloading viu and renaming"
-	wget $VIU_LINK -P "$HOME/packages"
-
-	if [[ ! -d "$VIU_DIR" ]]; then
-		echo "Creating viu directory under tools directory"
-		mkdir -p "$VIU_DIR"
-		mv "$HOME/packages/viu" "$VIU_DIR/"
-		chmod +x "$VIU_DIR/viu"
-	fi
-
-	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
-		echo "export PATH=\"$VIU_DIR:\$PATH\"" >>"$HOME/.bashrc"
-	fi
-
-else
-	echo "viu is already installed. Skip installing it."
 fi
 
 #######################################################################
@@ -355,10 +348,158 @@ if [[ -z "$(command -v zoxide)" ]] && [[ ! -f "$ZOXIDE_DIR/zoxide" ]]; then
 
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$ZOXIDE_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$ZOXIDE_DIR:$PATH"
 	fi
 
 else
 	echo "zoxide is already installed. Skip installing it."
 fi
 
-source "$HOME/.bashrc"
+#######################################################################
+#                       Pandoc part                                 #
+#######################################################################
+# PANDOC_DIR=$HOME/tools/pandoc
+# PANDOC_SRC_NAME=$HOME/packages/pandoc.tar.gz
+# PANDOC_LINK="https://github.com/jgm/pandoc/releases/download/2.19.2/pandoc-2.19.2-linux-amd64.tar.gz"
+# if [[ -z "$(command -v pandoc)" ]] && [[ ! -f "$PANDOC_DIR/pandoc" ]]; then
+# 	echo "Install pandoc"
+# 	if [[ ! -f $PANDOC_SRC_NAME ]]; then
+# 		echo "Downloading pandoc and renaming"
+# 		wget $PANDOC_LINK -O "$PANDOC_SRC_NAME"
+# 	fi
+
+# 	if [[ ! -d "$PANDOC_DIR" ]]; then
+# 		echo "Creating pandoc directory under tools directory"
+# 		mkdir -p "$PANDOC_DIR"
+# 		echo "Extracting to $HOME/tools/pandoc directory"
+# 		tar zxvf "$PANDOC_SRC_NAME" -C "$PANDOC_DIR" --strip-components 1
+# 	fi
+
+# 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+# 		echo "export PATH=\"$PANDOC_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+#     export PATH="$PANDOC_DIR/bin:$PATH"
+# 	fi
+
+# else
+# 	echo "pandoc is already installed. Skip installing it."
+# fi
+
+#######################################################################
+#                           nala part                                 #
+#######################################################################
+# NOTE: Make sure the following build depends are installed.
+# NOTE: sudo apt install git python3-apt pandoc -y
+# NALA_DIR=$HOME/tools/nala
+# NALA_LINK="https://gitlab.com/volian/nala.git"
+# if [[ -z "$(command -v nala)" ]]; then
+# 	echo "Install nala"
+
+# 	if [[ ! -d "$NALA_DIR" ]]; then
+# 		echo "Creating nala directory under tools directory"
+# 		mkdir -p "$NALA_DIR"
+# 		echo "git clone nala repo under tools directory"
+#     git clone --depth=1 "$NALA_LINK" "$NALA_DIR"
+#     make install -C "$NALA_DIR" # might need sudo for this
+
+# 	fi
+
+# 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+# 		echo "export PATH=\"$NALA_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+# 	fi
+
+# else
+# 	echo "nala is already installed. Skip installing it."
+# fi
+
+#######################################################################
+#                           tmux part                                 #
+#######################################################################
+# NOTE: sudo apt install libevent-dev
+TMUX_DIR=$HOME/tools/tmux
+TMUX_SRC_NAME=$HOME/packages/tmux.tar.gz
+TMUX_LINK="https://github.com/tmux/tmux/releases/download/3.3a/tmux-3.3a.tar.gz"
+if [[ -z "$(command -v tmux)" ]]; then
+	echo "Install tmux"
+	if [[ ! -f $TMUX_SRC_NAME ]]; then
+		echo "Downloading tmux and renaming"
+		wget $TMUX_LINK -O "$TMUX_SRC_NAME"
+	fi
+
+	if [[ ! -d "$TMUX_DIR" ]]; then
+		echo "Creating tmux directory under tools directory"
+		mkdir -p "$TMUX_DIR"
+		echo "Extracting to $HOME/tools/tmux directory"
+		tar zxvf "$TMUX_SRC_NAME" -C "$TMUX_DIR" --strip-components 1
+    cd "$TMUX_DIR"
+    ./configure --prefix="$TMUX_DIR"
+    make
+    make install
+	fi
+
+	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+		echo "export PATH=\"$TMUX_DIR:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$TMUX_DIR:$PATH"
+	fi
+
+else
+	echo "tmux is already installed. Skip installing it."
+fi
+
+#######################################################################
+#                       GNU stow part                                 #
+#######################################################################
+# NOTE: make sure perl is installed
+# NOTE: also, cpanm install Test::Output
+STOW_DIR=$HOME/tools/stow
+STOW_SRC_NAME=$HOME/packages/stow.tar.gz
+STOW_LINK="https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz"
+if [[ -z "$(command -v stow)" ]]; then
+	echo "Install GNU stow"
+	if [[ ! -f $STOW_SRC_NAME ]]; then
+		echo "Downloading stow and renaming"
+		wget $STOW_LINK -O "$STOW_SRC_NAME"
+	fi
+
+	if [[ ! -d "$STOW_DIR" ]]; then
+		echo "Creating stow directory under tools directory"
+		mkdir -p "$STOW_DIR"
+		echo "Extracting to $HOME/tools/stow directory"
+		tar zxvf "$STOW_SRC_NAME" -C "$STOW_DIR" --strip-components 1
+    cd "$STOW_DIR"
+    echo "Assign perl location"
+    export PERL_PREFIX="$HOME/.plenv/versions/5.36.0"
+    ./configure --prefix="$PERL_PREFIX"
+    make
+    make install
+	fi
+
+	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+		echo "export PATH=\"$STOW_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$STOW_DIR/bin:$PATH"
+	fi
+
+else
+	echo "GNU stow is already installed. Skip installing it."
+fi
+
+#######################################################################
+#                         Ranger part                                 #
+#######################################################################
+# NOTE: sudo apt install caca-utils imagemagick ffmpeg librsvg2-bin atool unrar p7zip-full p7zip-rar
+RANGER_DIR=$HOME/tools/ranger
+RANGER_LINK="https://github.com/ranger/ranger.git"
+if [[ -z "$(command -v ranger)" ]]; then
+	echo "Install ranger"
+
+	if [[ ! -d "$RANGER_DIR" ]]; then
+		echo "Creating ranger directory under tools directory"
+		mkdir -p "$RANGER_DIR"
+		echo "git clone ranger repo under tools directory"
+    git clone --depth=1 "$RANGER_LINK" "$RANGER_DIR"
+    cd "$RANGER_DIR"
+    sudo make install -C "$RANGER_DIR" # NOTE: Need sudo for this
+	fi
+
+else
+	echo "ranger is already installed. Skip installing it."
+fi
