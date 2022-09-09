@@ -22,7 +22,7 @@ fi
 #######################################################################
 
 # Whether python3 has been installed on the system
-PYTHON_INSTALLED=true
+PYTHON_INSTALLED=false
 
 # If Python has been installed, then we need to know whether Python is provided
 # by the system, or you have already installed Python under your HOME.
