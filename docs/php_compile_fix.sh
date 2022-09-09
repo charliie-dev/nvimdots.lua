@@ -1,16 +1,18 @@
-#!/usr/bin/sudo bash
+#!/usr/bin/env bash
 
-mkdir -p /var/swap # 创建目录
+# NOTE: use sudo sh script.sh to run scripts with sudo privileges.
 
-cd /var/swap # 进入目录
+mkdir -p /var/swap # make swap dir
 
-dd if=/dev/zero of=/var/swap/swapfile bs=1M count=1024 # 分配个1024*1M的文件
+cd /var/swap # enter swap dir
 
-chmod 600 swapfile # （推荐）修改权限为 0600
+dd if=/dev/zero of=/var/swap/swapfile bs=1M count=1024 # assign swap with 1024*1M
 
-mkswap swapfile # 格式化为交换区格式
+chmod 600 swapfile
 
-swapon /var/swap/swapfile # 开启交换区
+mkswap swapfile # change it into swap format
+
+swapon /var/swap/swapfile # activate swap
 
 echo "/var/swap/swapfile swap swap defaults 0 0" >>/etc/fstab # set for auto-mount while system reboot
 
