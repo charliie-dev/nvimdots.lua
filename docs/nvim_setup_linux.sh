@@ -105,7 +105,8 @@ NODE_DIR=$HOME/tools/nodejs
 PLENV_DIR=$HOME/.plenv
 CPANM_DIR=$PLENV_DIR/shims/cpanm
 
-# "$CPANM_DIR" install
+"$CPANM_DIR" -n Neovim::Ext
+"$CPANM_DIR" -n App::cpanminus
 
 
 #######################################################################
