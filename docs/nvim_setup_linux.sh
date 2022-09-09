@@ -100,46 +100,66 @@ NODE_DIR=$HOME/tools/nodejs
 # "$NODE_DIR/bin/npm" install tree-sitter-cli --location=global
 
 #######################################################################
-#                      Perl install packages                          #
+#                  Perl/cpanm install packages                        #
 #######################################################################
 PLENV_DIR=$HOME/.plenv
-eval "$(plenv init -)"
+CPANM_DIR=$PLENV_DIR/shims/cpanm
+
+# "$CPANM_DIR" install
 
 
 #######################################################################
-#                      Ruby install packages                          #
+#                   Ruby/gem install packages                         #
 #######################################################################
+RBENV_DIR=$HOME/.rbenv
+
+"$RBENV_DIR/shims/gem" install neovim
 
 
 #######################################################################
-#                        Go install packages                          #
+#                      Go install packages                            #
 #######################################################################
+GVM_DIR=$HOME/.gvm
 
+# "$GVM_DIR/gos/go1.19.1/bin/go" install
 
 #######################################################################
-#                      Rust install packages                          #
+#                   Rust/cargo install packages                       #
 #######################################################################
+RUSTUP_HOME=$HOME/tools/rustup
+CARGO_HOME=$HOME/tools/cargo
 
+# "$CARGO_HOME/bin/cargo" install
 
 #######################################################################
 #                      Java install packages                          #
 #######################################################################
+JDK_DIR=$HOME/tools/jdk
 
+# "$JDK_DIR/bin/java" install
 
 #######################################################################
 #                     Julia install packages                          #
 #######################################################################
+JULIA_DIR=$HOME/tools/julia
+
+# "$JULIA_DIR/bin/julia" install
+
+#######################################################################
+#             Lua, LuaJIT/luarocks install packages                   #
+#######################################################################
+LUA_DIR=$HOME/tools/lua
+LUAJIT_DIR=$HOME/tools/luajit
+LUAROCKS_DIR=$HOME/tools/luarocks/luarocks
 
 
 #######################################################################
-#                   Lua, LuaJIT install packages                      #
+#                 PHP/composer install packages                       #
 #######################################################################
+PHP_DIR=$HOME/tools/php
+COMPOSER_DIR=$PHP_DIR/bin/composer
 
-
-#######################################################################
-#                       PHP install packages                          #
-#######################################################################
-
+# "$COMPOSER_DIR" install
 
 #######################################################################
 #                           Nvim install                              #
@@ -176,7 +196,7 @@ if [[ -d "$NVIM_CONFIG_DIR" ]]; then
 	mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
 fi
 
-git clone --depth=1 git@github.com:CharlesChiuGit/nvimdots.git "$NVIM_CONFIG_DIR"
+git clone https://github.com/CharlesChiuGit/nvimdots.git "$NVIM_CONFIG_DIR"
 
 echo "Installing packer.nvim"
 if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
@@ -188,5 +208,3 @@ echo "Installing nvim plugins, please wait"
 "$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
 
 echo "Finished installing Nvim and its dependencies!"
-
-source "$HOME/.bashrc"
