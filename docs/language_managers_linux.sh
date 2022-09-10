@@ -89,6 +89,7 @@ if [[ -z "$(command -v node)" ]]; then
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$NODE_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
     export PATH="$NODE_DIR/bin:$PATH"
+    npm config set fund false
 	fi
 else
 	echo "Node.js is already installed. Skip installing it."
@@ -142,7 +143,7 @@ RBENV_DIR=$HOME/.rbenv
 RBENV_LINK="https://github.com/rbenv/rbenv.git"
 RBENV_BUILD_DIR=$RBENV_DIR/plugins/ruby-build
 RBENV_BUILD_LINK="https://github.com/rbenv/ruby-build.git"
-if [[ -z "$(command -v ruby)" ]]; then
+if [[ -z "$(command -v rbenv)" ]]; then
 	echo "Install rbenv"
 
 	if [[ ! -d "$RBENV_DIR" ]]; then
@@ -158,10 +159,11 @@ if [[ -z "$(command -v ruby)" ]]; then
 	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
 		echo "export PATH=\"$RBENV_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
     export PATH="$RBENV_DIR/bin:$PATH"
+    eval "$(rbenv init - bash)"
 	fi
 
     # Setup rbenv in current shell
-  "$RBENV_DIR/bin/rbenv" init
+  # "$RBENV_DIR/bin/rbenv" init
   # List latest stable versions
   "$RBENV_DIR/bin/rbenv" install -l
   # Install ruby
@@ -175,26 +177,31 @@ else
 fi
 
 #######################################################################
-#                     Install gvm for Go                              #
+#                          Install Go                                 #
 #######################################################################
-GVM_DIR=$HOME/.gvm
-GVM_LINK="https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer"
+GO_DIR=$HOME/tools/golang
+GO_SRC_NAME=$HOME/packages/golang.tar.gz
+GO_LINK="https://go.dev/dl/go1.19.1.linux-amd64.tar.gz"
 if [[ -z "$(command -v go)" ]]; then
+	echo "Install Golang"
+	if [[ ! -f $GO_SRC_NAME ]]; then
+		echo "Downloading go and renaming"
+		wget $GO_LINK -O "$GO_SRC_NAME"
+	fi
 
-  if [[ ! -d "$GVM_DIR" ]]; then
-    echo "Installing gvm"
-    bash < <(curl -s -S -L "$GVM_LINK")
+	if [[ ! -d "$GO_DIR" ]]; then
+		echo "Creating golang directory under tools directory"
+		mkdir -p "$GO_DIR"
+		echo "Extracting to $HOME/tools/golang directory"
+		tar xvf "$GO_SRC_NAME" -C "$GO_DIR" --strip-components 1
+	fi
 
-  fi
-
-  [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
-    # List latest stable versions
-  "$GVM_DIR/bin/gvm" listall
-  # Install go, use -B because you need go for go compiling after go1.4
-  "$GVM_DIR/bin/gvm" install go1.19.1 -B
-  # Set go for current user
-  chmod +x "$GVM_DIR/scripts/gvm"
-  "$GVM_DIR/scripts/gvm" use go1.19.1 [--default]
+	if [[ "$ADD_TO_SYSTEM_PATH" = true ]] && [[ "$USE_BASH_SHELL" = true ]]; then
+		echo "export PATH=\"$GO_DIR/bin:\$PATH\"" >>"$HOME/.bashrc"
+    export PATH="$GO_DIR/bin:$PATH"
+	fi
+else
+	echo "Golang is already installed. Skip installing it."
 fi
 
 
@@ -217,9 +224,11 @@ if [[ -z "$(command -v cargo)" ]]; then
 		echo "Creating rustup & cargo directory under tools directory"
 		mkdir -p "$RUSTUP_HOME"
     mkdir -p "$CARGO_HOME"
-    echo "Installing cargo"
+    echo "Installing rustup"
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
+    echo "Install cargo"
+    rustup default stable
     # Configure current shell
     source "$CARGO_HOME/env"
   fi
