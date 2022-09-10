@@ -15,7 +15,7 @@ autoconf libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev \
 libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev libsqlite3-dev -y
 
 # Cool stuff
-sudo nala install neofetch hollywood cmatrix jp2a speedtest-cli -y
+# sudo nala install neofetch hollywood cmatrix jp2a speedtest-cli -y
 
 # Ranger utils support
 sudo nala install caca-utils imagemagick ffmpeg librsvg2-bin atool unrar p7zip-full p7zip-rar -y
