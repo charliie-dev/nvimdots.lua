@@ -73,6 +73,8 @@ return {
   },
   {  -- TODO-comment
     "TODO-comment",
+    { "**cwd** arguments: Specify the directory to search for comments", ":TodoTrouble cwd=~/projects/foobar"  },
+    { "**keywords** arguments: Comma separated list of keywords to filter results by. Keywords are case-sensitive.", ":TodoTelescope keywords=TODO,FIX" },
     { "A quickfix list to show all todos in your project.", ":TodoQuickFix" },
     { "A location list to show all todos in your project.", ":TodoLocList" },
     { "Search through all project todos with Telescope", ":TodoTelescope" },

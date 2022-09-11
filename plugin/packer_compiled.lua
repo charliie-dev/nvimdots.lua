@@ -506,7 +506,7 @@ _G.packer_plugins = {
   ["todo-comments.nvim"] = {
     loaded = true,
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/todo-comments.nvim",
-    url = "https://github.com/B4mbus/todo-comments.nvim"
+    url = "https://github.com/folke/todo-comments.nvim"
   },
   ["toggleterm.nvim"] = {
     loaded = true,
