@@ -107,6 +107,9 @@ end
 -- also faster startup, since I don't need to load indent/ & ftplugin
 -- vim.cmd [[filetype plugin indent on]]
 
+-- custom perl path
+vim.g.perl_host_prog = vim.env.HOME .. '/tools/perl/bin/perl'
+
 -- Access system clipboard
 vim.cmd [[set clipboard=unnamedplus]]
 vim.cmd [[set t_BE= ]]
