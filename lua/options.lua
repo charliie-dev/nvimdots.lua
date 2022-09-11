@@ -110,6 +110,9 @@ end
 -- custom perl path
 vim.g.perl_host_prog = vim.env.HOME .. '/tools/perl/bin/perl'
 
+-- custom ruby path
+vim.g.ruby_host_prog = vim.env.HOME .. 'tools/ruby/bin/ruby'
+
 -- Access system clipboard
 vim.cmd [[set clipboard=unnamedplus]]
 vim.cmd [[set t_BE= ]]
