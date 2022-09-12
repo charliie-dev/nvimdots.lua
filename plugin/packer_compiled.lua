@@ -150,9 +150,10 @@ _G.packer_plugins = {
     url = "https://github.com/nvim-colortils/colortils.nvim"
   },
   ["copilot-cmp"] = {
-    loaded = false,
+    config = { "\27LJ\2\n]\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\vmethod\26getCompletionsCycling\nsetup\16copilot_cmp\frequire\0" },
+    load_after = {},
+    loaded = true,
     needs_bufread = false,
-    only_cond = false,
     path = "/home/charles/.local/share/nvim/site/pack/packer/opt/copilot-cmp",
     url = "https://github.com/zbirenbaum/copilot-cmp"
   },
@@ -245,11 +246,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/charles/.local/share/nvim/site/pack/packer/start/lsp-inlayhints.nvim",
     url = "https://github.com/lvimuser/lsp-inlayhints.nvim"
-  },
-  ["lsp_lines.nvim"] = {
-    loaded = true,
-    path = "/home/charles/.local/share/nvim/site/pack/packer/start/lsp_lines.nvim",
-    url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
   },
   ["lsp_signature.nvim"] = {
     loaded = true,
@@ -551,34 +547,16 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
-local module_lazy_loads = {
-  ["^copilot_cmp"] = "copilot-cmp"
-}
-local lazy_load_called = {['packer.load'] = true}
-local function lazy_load_module(module_name)
-  local to_load = {}
-  if lazy_load_called[module_name] then return nil end
-  lazy_load_called[module_name] = true
-  for module_pat, plugin_name in pairs(module_lazy_loads) do
-    if not _G.packer_plugins[plugin_name].loaded and string.match(module_name, module_pat) then
-      to_load[#to_load + 1] = plugin_name
-    end
-  end
+-- Load plugins in order defined by `after`
+time([[Sequenced loading]], true)
+vim.cmd [[ packadd nvim-cmp ]]
+vim.cmd [[ packadd copilot.lua ]]
+vim.cmd [[ packadd copilot-cmp ]]
 
-  if #to_load > 0 then
-    require('packer.load')(to_load, {module = module_name}, _G.packer_plugins)
-    local loaded_mod = package.loaded[module_name]
-    if loaded_mod then
-      return function(modname) return loaded_mod end
-    end
-  end
-end
+-- Config for: copilot-cmp
+try_loadstring("\27LJ\2\n]\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\vmethod\26getCompletionsCycling\nsetup\16copilot_cmp\frequire\0", "config", "copilot-cmp")
 
-if not vim.g.packer_custom_loader_enabled then
-  table.insert(package.loaders, 1, lazy_load_module)
-  vim.g.packer_custom_loader_enabled = true
-end
-
+time([[Sequenced loading]], false)
 vim.cmd [[augroup packer_load_aucmds]]
 vim.cmd [[au!]]
   -- Filetype lazy-loads

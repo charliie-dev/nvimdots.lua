@@ -35,14 +35,15 @@ require("luasnip/loaders/from_vscode").lazy_load()
 require("luasnip.loaders.from_lua").lazy_load()
 require("luasnip.loaders.from_snipmate").lazy_load()
 
--- local check_backspace = function()
--- 	local col = vim.fn.col(".") - 1
--- 	return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
--- end
-
 local check_backspace = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
+end
+
+local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
 end
 
 local icons = require("icons")
@@ -92,6 +93,8 @@ cmp.setup({
         luasnip.expand()
       elseif check_backspace() then
         -- cmp.complete()
+      elseif cmp.visible() and has_words_before then
+        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
         fallback()
       else
         fallback()
@@ -197,20 +200,19 @@ cmp.setup({
   sorting = {
     priority_weight = 2,
     comparators = {
-      -- require("copilot_cmp.comparators").prioritize,
-      -- require("copilot_cmp.comparators").score,
+      require("copilot_cmp.comparators").prioritize,
+      require("copilot_cmp.comparators").score,
+
+      -- Below is the default comparitor list and order for nvim-cmp
       compare.offset,
       compare.exact,
-      -- compare.scopes,
       compare.score,
       compare.recently_used,
       compare.locality,
-      -- compare.kind,
+      compare.kind,
       compare.sort_text,
       compare.length,
       compare.order,
-      -- require("copilot_cmp.comparators").prioritize,
-      -- require("copilot_cmp.comparators").score,
     },
   },
   confirm_opts = {

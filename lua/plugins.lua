@@ -73,7 +73,7 @@ return packer.startup(function(use)
 	use({ "j-hui/fidget.nvim" })
   use({ "folke/lua-dev.nvim" })
   use({ "lvimuser/lsp-inlayhints.nvim" })
-  use({ "https://git.sr.ht/~whynothugo/lsp_lines.nvim" })
+  -- use({ "https://git.sr.ht/~whynothugo/lsp_lines.nvim" })
 
 
 	-- Completion
@@ -84,10 +84,20 @@ return packer.startup(function(use)
 	use({ "hrsh7th/cmp-path" })
   use({ "andersevenrud/cmp-tmux" })
 	use({ "saadparwaiz1/cmp_luasnip" })
-	use({ "zbirenbaum/copilot-cmp", module = "copilot_cmp" })
 
   -- use({ "github/copilot.vim" }) -- Node 18 isn't supported yet
 	use({ "zbirenbaum/copilot.lua" }) -- You need the github/copilot to auth first
+	use({ "zbirenbaum/copilot-cmp",
+    after = {
+      "copilot.lua",
+      "nvim-cmp",
+    },
+		config = function()
+			require("copilot_cmp").setup {
+				method = "getCompletionsCycling",
+			}
+    end,
+  })
 
 
 	-- Snippets
