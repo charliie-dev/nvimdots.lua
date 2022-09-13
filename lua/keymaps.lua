@@ -54,6 +54,9 @@ keymap("n", "tj", ":tabprevious<cr>", opts)
 -- Only keep current tab
 keymap("n", "to", ":tabonly<cr>", opts)
 
+-- NOTE: Keep things in paste register after paste it when visual selecting things to replace.
+-- useful keymaps to replace text after copying thing
+keymap("x", "<leader>p", "\"_dP", opts)
 
 -- Insert mode
 -- Save in insert mode
@@ -86,7 +89,7 @@ keymap("n", "<leader>;", "<cmd>Telescope help_tags<cr>", opts)
 -- Telescope zoxide
 keymap("n", "<leader>z", "<cmd>lua require('telescope').extensions.zoxide.list{}<cr>", opts)
 -- Telescope project
-keymap("n", "<leader>p", "<cmd>Telescope projects<cr>", opts)
+keymap("n", "<leader>pj", "<cmd>Telescope projects<cr>", opts)
 -- Telescope harpoon
 keymap("n", "<leader>hp", "<cmd>Telescope harpoon marks<cr>", opts)
 -- Telescope command palette
