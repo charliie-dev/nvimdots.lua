@@ -25,6 +25,7 @@ null_ls.setup({
 		diagnostics.flake8,
 		diagnostics.pylint,
     diagnostics.shellcheck,
+    null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim
 	},
 })
 

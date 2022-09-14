@@ -124,11 +124,12 @@ return packer.startup(function(use)
 	use({ "fcying/telescope-ctags-outline.nvim" })
 	use({ "jvgrootveld/telescope-zoxide" })
 	use({ "nvim-telescope/telescope-symbols.nvim" })
-	use({ "nvim-telescope/telescope.nvim" })
+	use({ "nvim-telescope/telescope.nvim", branch = '0.1.x' })
 	use({ "sudormrfbin/cheatsheet.nvim" })
 	use({ "xiyaowong/telescope-emoji.nvim" })
 
-  use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
+  -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
+  use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable "make" == 1 })
   use({ "ibhagwan/fzf-lua" })
 
 
