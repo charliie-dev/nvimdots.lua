@@ -22,7 +22,7 @@ ntree.setup({
 		adaptive_size = false,
 		centralize_selection = false,
 		width = 32,
-		height = 32,
+		-- height = 32,
 		hide_root_folder = false,
 		side = "left",
 		preserve_window_proportions = false,
