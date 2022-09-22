@@ -164,6 +164,7 @@ return packer.startup(function(use)
   use({ "max397574/better-escape.nvim" })
   use({ "akinsho/bufferline.nvim", tag = "v2.*" })
 	use({ "aserowy/tmux.nvim" })
+  use({ "is0n/fm-nvim" })
 
 
   -- Color
