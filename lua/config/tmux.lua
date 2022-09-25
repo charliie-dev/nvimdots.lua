@@ -25,7 +25,7 @@ tmux.setup({
 		-- sync clipboard overwrites vim.g.clipboard to handle * and +
 		-- registers. If you sync your system clipboard without tmux, disable
 		-- this option!
-		sync_clipboard = true,
+		sync_clipboard = false,
 
 		-- syncs deletes with tmux clipboard as well, it is adviced to
 		-- do so. Nvim does not allow syncing registers 0 and 1 without
