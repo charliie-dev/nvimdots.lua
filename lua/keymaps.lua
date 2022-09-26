@@ -197,3 +197,11 @@ end, { expr = true })
 --- yanky keymap
 keymap("n", "y", "<Plug>(YankyYank)", opts)
 keymap("x", "y", "<Plug>(YankyYank)", opts)
+
+--- nvim-osc52 keymap
+-- In normal mode, <leader>c is an operator that will copy the given text to the clipboard.
+keymap("n", "<leader>c", require('osc52').copy_operator, { expr = true })
+-- In normal mode, <leader>cc will copy the current line.
+keymap("n", "<leader>cc", "<leader>c_", { remap = true })
+-- In visual mode, <leader>c will copy the current selection.
+keymap("x", "<leader>c", require('osc52').copy_visual)

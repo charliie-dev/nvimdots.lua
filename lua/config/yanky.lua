@@ -3,6 +3,9 @@ if not status then
   return
 end
 
+local utils = require("yanky.utils")
+local mapping = require("yanky.telescope.mapping")
+
 yanky.setup({
   ring = {
     history_length = 10,
@@ -14,7 +17,20 @@ yanky.setup({
       action = nil, -- nil to use default put action
     },
     telescope = {
-      mappings = nil, -- nil to use default mappings
+      mappings = {
+        i = {
+          ["<c-p>"] = mapping.put("p"),
+          ["<c-k>"] = mapping.put("P"),
+          ["<c-x>"] = mapping.delete(),
+          ["<c-r>"] = mapping.set_register(utils.get_default_register()),
+        },
+        n = {
+          p = mapping.put("p"),
+          P = mapping.put("P"),
+          d = mapping.delete(),
+          r = mapping.set_register(utils.get_default_register())
+        },
+      },
     },
   },
   system_clipboard = {

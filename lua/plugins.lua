@@ -220,6 +220,7 @@ return packer.startup(function(use)
 	use({ "nacro90/numb.nvim" })
   use({ "ethanholz/nvim-lastplace" })
 	use({ "gbprod/yanky.nvim" })
+  use({ "ojroques/nvim-osc52" })
   use({ "kevinhwang91/nvim-hlslens" })
   use({ "smjonas/inc-rename.nvim" })
 
