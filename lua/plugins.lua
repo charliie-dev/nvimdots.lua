@@ -75,7 +75,6 @@ return packer.startup(function(use)
   use({ "lvimuser/lsp-inlayhints.nvim" })
   -- use({ "https://git.sr.ht/~whynothugo/lsp_lines.nvim" })
 
-
 	-- Completion
   use({ "hrsh7th/nvim-cmp" })
 	use({ "hrsh7th/cmp-buffer" })
@@ -93,12 +92,11 @@ return packer.startup(function(use)
       "nvim-cmp",
     },
 		config = function()
-			require("copilot_cmp").setup {
-				method = "getCompletionsCycling",
-			}
+			require("copilot_cmp").setup({
+        method = "getCompletionsCycling",
+      })
     end,
   })
-
 
 	-- Snippets
   use({ "michaelb/sniprun", run = "bash ./install.sh" })
