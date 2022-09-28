@@ -65,11 +65,27 @@ return {
 	},
   {  -- Comment
     "Comment",
-    { "Line-comment (gcc)", "" },
-    { "Block-comment (gbc)", "" },
+    { "Toggles the current line using linewise comment (Normal:gcc)", "gcc" },
+    { "Toggles the current line using blockwise comment (Normal:gbc)", "gbc" },
+    { "Toggles the number of line given as a prefix-count using linewise (Normal:[count]gcc)", "" },
+    { "Toggles the number of line given as a prefix-count using blockwise (Normal:[count]gbc)", "" },
+    { "(Op-pending) Toggles the region using linewise comment (Normal:gc[count]{motion})", "" },
+    { "(Op-pending) Toggles the region using blockwise comment (Normal:gb[count]{motion})", "" },
+    { "Insert comment to the next line and enters INSERT mode (Normal:gco)", "gco" },
+    { "Insert comment to the previous line and enters INSERT mode (Normal:gcO)", "gcO" },
     { "Add comment on the line above (gcO)", "" },
     { "Add comment on the line below (gco)", "" },
     { "Add comment at the end of the line (gcA)", "" },
+
+
+-- VISUAL mode:
+-- `gc` - Toggles the region using linewise comment
+-- `gb` - Toggles the region using blockwise comment
+
+-- Extra mappings
+-- NORMAL mode:
+-- `gcA` - Insert comment to end of the current line and enters INSERT mode
+
   },
   {  -- TODO-comment
     "TODO-comment",
