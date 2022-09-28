@@ -212,7 +212,8 @@ return packer.startup(function(use)
 
   -- Editing Support
 	use({ "Pocco81/AutoSave.nvim" })
-	use({ "karb94/neoscroll.nvim" })
+	-- use({ "karb94/neoscroll.nvim" })
+  use({ "declancm/cinnamon.nvim" })
 	use({ "nacro90/numb.nvim" })
   use({ "ethanholz/nvim-lastplace" })
 	use({ "gbprod/yanky.nvim" })
