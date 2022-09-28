@@ -208,12 +208,6 @@ return packer.startup(function(use)
   -- Terminal
 	use({ "akinsho/toggleterm.nvim" })
 
-
-  -- Project
-	use({ "ahmedkhalf/project.nvim" })
-	use({ "nvim-pack/nvim-spectre" })
-
-
   -- Editing Support
 	use({ "Pocco81/AutoSave.nvim" })
 	use({ "karb94/neoscroll.nvim" })
@@ -223,6 +217,7 @@ return packer.startup(function(use)
   use({ "ojroques/nvim-osc52" })
   use({ "kevinhwang91/nvim-hlslens" })
   use({ "smjonas/inc-rename.nvim" })
+	use({ "nvim-pack/nvim-spectre" })
 
   -- Motion
 	use({ "phaazon/hop.nvim" })

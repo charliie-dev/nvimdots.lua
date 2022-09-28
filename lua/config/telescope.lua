@@ -3,11 +3,6 @@ if not status then
   return
 end
 
-local project_status, project_nvim = pcall(require, "project_nvim")
-if not project_status then
-  return
-end
-
 local icons = require("icons")
 
 local actions = require("telescope.actions")
@@ -153,42 +148,6 @@ require("telescope._extensions.zoxide.config").setup({
 -- :Telescope symbols
 -- :lua require'telescope.builtin'.symbols{ sources = {'emoji'} }
 -- :lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
-
--- Project config
-project_nvim.setup({
-  -- Manual mode doesn't automatically change your root directory, so you have
-  -- the option to manually do so using `:ProjectRoot` command.
-  manual_mode = false,
-
-  -- Methods of detecting the root directory. **"lsp"** uses the native neovim
-  -- lsp, while **"pattern"** uses vim-rooter like glob pattern matching. Here
-  -- order matters: if one is not detected, the other is used as fallback. You
-  -- can also delete or rearangne the detection methods.
-  detection_methods = { "lsp", "pattern" },
-
-  -- All the patterns used to detect root dir, when **"pattern"** is in
-  -- detection_methods
-  patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", --[[ "package.json" ]] },
-
-  -- Table of lsp clients to ignore by name
-  -- eg: { "efm", ... }
-  ignore_lsp = { "null-ls" },
-
-  -- Don't calculate root dir on specific directories
-  -- Ex: { "~/.cargo/*", ... }
-  exclude_dirs = { "~/.config/*" },
-
-  -- Show hidden files in telescope
-  show_hidden = true,
-
-  -- When set to false, you will get a message when project.nvim changes your
-  -- directory.
-  silent_chdir = false,
-
-  -- Path where project.nvim will store the project history for use in
-  -- telescope
-  datapath = vim.fn.stdpath("data"),
-})
 
 -- yanky mapping
 local yanky_mapping = require("yanky.telescope.mapping")

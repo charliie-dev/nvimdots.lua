@@ -38,7 +38,6 @@ return {
 		{ "Telescope buffers (<leader>\\)", ":Telescope buffers" },
 		{ "Telescope help_tags (<leader>;)", ":Telescope help_tags" },
 		{ "Telescope zoxide (<leader>z)", ":Telescope zoxide list" },
-		{ "Telescope projects (<leader>pj)", ":Telescope projects" },
 		{ "Telescope harpoon marks (<leader>hp)", ":Telescope harpoon marks" },
 		{ "Telescope command_palette (<leader>cp)", ":Telescope command_palette" },
 		{ "Telescope hop (C-h)", "" },

@@ -88,8 +88,6 @@ keymap("n", "<leader>\\", "<cmd>Telescope buffers<cr>", opts)
 keymap("n", "<leader>;", "<cmd>Telescope help_tags<cr>", opts)
 -- Telescope zoxide
 keymap("n", "<leader>z", "<cmd>lua require('telescope').extensions.zoxide.list{}<cr>", opts)
--- Telescope project
-keymap("n", "<leader>pj", "<cmd>Telescope projects<cr>", opts)
 -- Telescope harpoon
 keymap("n", "<leader>hp", "<cmd>Telescope harpoon marks<cr>", opts)
 -- Telescope command palette
