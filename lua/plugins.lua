@@ -123,6 +123,8 @@ return packer.startup(function(use)
 	use({ "jvgrootveld/telescope-zoxide" })
 	use({ "nvim-telescope/telescope-symbols.nvim" })
 	use({ "nvim-telescope/telescope.nvim", branch = '0.1.x' })
+  use({ "nvim-telescope/telescope-file-browser.nvim" })
+  use({ "nvim-telescope/telescope-project.nvim" })
 	use({ "sudormrfbin/cheatsheet.nvim" })
 	use({ "xiyaowong/telescope-emoji.nvim" })
 

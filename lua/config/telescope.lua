@@ -89,6 +89,28 @@ telescope.setup({
         -- vim.api.nvim_put({ emoji.value }, 'c', false, true)
       end,
     },
+    file_browser = {
+      theme = "ivy",
+      -- disables netrw and use telescope-file-browser in its place
+      hijack_netrw = false,
+      mappings = {
+        ["i"] = {
+          -- your custom insert mode mappings
+        },
+        ["n"] = {
+          -- your custom normal mode mappings
+        },
+      },
+    },
+    project = {
+      base_dirs = {
+        { '~', max_depth = 1 },
+        { '~/Workspace', max_depth = 1 },
+      },
+      hidden_files = true, -- default: false
+      theme = "dropdown",
+      order_by = "asc"
+    },
     hop = {
       -- Highlight groups to link to signs and lines; the below configuration refers to demo
       -- sign_hl typically only defines foreground to possibly be combined with line_hl
@@ -177,7 +199,7 @@ require("yanky").setup({
 telescope.load_extension("zoxide")
 telescope.load_extension("command_palette")
 telescope.load_extension("ctags_outline")
-telescope.load_extension("projects")
+telescope.load_extension("project")
 telescope.load_extension("env")
 telescope.load_extension("fzf")
 telescope.load_extension("hop")
