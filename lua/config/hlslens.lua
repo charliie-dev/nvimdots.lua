@@ -4,9 +4,8 @@ if not status then
 end
 
 hlslens.setup({
-  calm_down = true,
-  -- nearest_only = true, -- comment this to make virtual text valid
-  -- nearest_float_when = 'always',  -- comment this to make virtual text valid
+  auto_enable = true,
+  enable_incsearch = true,
   override_lens = function(render, posList, nearest, idx, relIdx)
     local sfw = vim.v.searchforward == 1
     local indicator, text, chunks

@@ -189,7 +189,7 @@ keymap("n", "<leader>S", '<cmd>lua require("spectre").open()<cr>', opts)
 keymap("n", "<leader>s", '<cmd>lua require("spectre").open_file_search()<cr>', opts)
 
 --- Inc-rename keymap
-keymap("n", "rn", function()
+keymap("n", "irn", function()
   return ":IncRename " .. vim.fn.expand("<cword>")
 end, { expr = true })
 -- keymap("n", "rn", ":IncRename ")
@@ -205,3 +205,12 @@ keymap("n", "<leader>c", require('osc52').copy_operator, { expr = true })
 keymap("n", "<leader>cc", "<leader>c_", { remap = true })
 -- In visual mode, <leader>c will copy the current selection.
 keymap("x", "<leader>c", require('osc52').copy_visual)
+
+--- hlslens keymap
+keymap('n', 'n', [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], opts)
+keymap('n', 'N', [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], opts)
+keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], opts)
+keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], opts)
+keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
+keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
+keymap('n', 'nl', ':noh<CR>', opts)

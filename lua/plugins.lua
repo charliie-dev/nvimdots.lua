@@ -165,6 +165,8 @@ return packer.startup(function(use)
   use({ "akinsho/bufferline.nvim", tag = "v2.*" })
 	use({ "aserowy/tmux.nvim" })
   use({ "is0n/fm-nvim" })
+  -- use({ "folke/which-key.nvim" })
+  -- use({ "linty-org/key-menu.nvim" })
 
 
   -- Color
