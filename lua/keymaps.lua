@@ -212,3 +212,7 @@ keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap('n', 'nl', ':noh<CR>', opts)
+
+--- fm-nvim keymap
+keymap("n", "lf", "<cmd>Lf<cr>", opts)
+keymap("n", "lg", "<cmd>Lazygit<cr>", opts)
