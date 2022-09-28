@@ -98,7 +98,7 @@ ntree.setup({
 	},
 	update_focused_file = {
     update_root = true,
-		enable = false,
+		enable = true,
 		ignore_list = { "help" },
 	},
 	ignore_ft_on_setup = {
