@@ -215,6 +215,5 @@ keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap('n', 'nl', ':noh<CR>', opts)
 
---- fm-nvim keymap
-keymap("n", "lf", "<cmd>Lf<cr>", opts)
-keymap("n", "lg", "<cmd>Lazygit<cr>", opts)
+--- Toggleterm keymap
+keymap("n", "lg", "<cmd>lua _LAZYGIT_TOGGLE()<cr>", opts)
