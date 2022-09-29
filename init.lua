@@ -29,7 +29,7 @@ require("config.comment")
 require("config.copilot")
 require("config.cinnamon")
 require("config.dap")  -- TODO:
-require("config.fm-nvim")
+-- require("config.fm-nvim")
 require("config.git-nvim")
 require("config.gitblame")
 require("config.gitconflict")
@@ -44,7 +44,6 @@ require("config.indentline")
 require("config.lastplace")
 require("config.lsp")
 require("config.lualine")
--- require("config.mkdnflow")  -- TODO:
 require("config.notify")
 require("config.numb")
 require("config.nvim-tree")
@@ -62,6 +61,7 @@ require("config.toggleterm")
 require("config.treesitter")
 require("config.wilder")
 require("config.yanky")
+require("config.pretty-fold")
 
 vim.cmd [[source $HOME/.config/nvim/lua/config/mkdp.vim]]
 vim.cmd [[source $HOME/.config/nvim/lua/config/vimtex.vim]]
