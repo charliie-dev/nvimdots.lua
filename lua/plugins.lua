@@ -159,12 +159,15 @@ return packer.startup(function(use)
 	use({ "lewis6991/impatient.nvim" })
 	use({ "rcarriga/nvim-notify" })
   use({ "dstein64/vim-startuptime" })
-	-- use({ "fgheng/winbar.nvim" })
+  -- use({ "https://git.sr.ht/~henriquehbr/nvim-startup.lua",
+  --   config = function()
+		-- 	require("nvim-startup").setup()
+  --   end,
+  -- })
 	use({ "gelguy/wilder.nvim", requires = {{"romgrk/fzy-lua-native"}} })
   use({ "max397574/better-escape.nvim" })
   use({ "akinsho/bufferline.nvim", tag = "v2.*" })
 	use({ "aserowy/tmux.nvim" })
-  use({ "is0n/fm-nvim" })
   -- use({ "folke/which-key.nvim" })
   -- use({ "linty-org/key-menu.nvim" })
 
@@ -196,6 +199,9 @@ return packer.startup(function(use)
   -- Indent
 	use({ "lukas-reineke/indent-blankline.nvim" })
 
+  -- Fold
+  use({ "anuvyklack/pretty-fold.nvim" })
+  -- use({ "anuvyklack/fold-preview.nvim" })
 
   -- File Explorer
 	use({ "kyazdani42/nvim-tree.lua" })
