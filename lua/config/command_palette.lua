@@ -73,19 +73,9 @@ return {
     { "(Op-pending) Toggles the region using blockwise comment (Normal:gb[count]{motion})", "" },
     { "Insert comment to the next line and enters INSERT mode (Normal:gco)", "gco" },
     { "Insert comment to the previous line and enters INSERT mode (Normal:gcO)", "gcO" },
-    { "Add comment on the line above (gcO)", "" },
-    { "Add comment on the line below (gco)", "" },
-    { "Add comment at the end of the line (gcA)", "" },
-
-
--- VISUAL mode:
--- `gc` - Toggles the region using linewise comment
--- `gb` - Toggles the region using blockwise comment
-
--- Extra mappings
--- NORMAL mode:
--- `gcA` - Insert comment to end of the current line and enters INSERT mode
-
+    { "Insert comment to end of the current line and enters INSERT mode (Normal:gcA)", "gcA" },
+    { "Toggles the region using linewise comment (Visual:gc)", "gc" },
+    { "Toggles the region using blockwise comment (Visual:gb)", "gb" },
   },
   {  -- TODO-comment
     "TODO-comment",
