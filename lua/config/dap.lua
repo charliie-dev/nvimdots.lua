@@ -9,7 +9,7 @@ if not dap_ui_status then
 end
 
 dapui.setup({
-	icons = { expanded = "▾", collapsed = "▸" },
+	icons = { expanded = "▾", collapsed = "▸", current_frame = "ඞ" },
 	mappings = {
 		-- Use a table to apply multiple mappings
 		expand = { "<CR>", "<2-LeftMouse>" },
@@ -35,11 +35,11 @@ dapui.setup({
         -- Elements can be strings or table with id and size keys.
         { id = "scopes", size = 0.25 },
 				"breakpoints",
-				-- "stacks",
-				-- "watches",
+				"stacks",
+				"watches",
 			},
 			size = 40, -- 40 columns
-			position = "right",
+			position = "left",
 		},
 		{
 			elements = {
@@ -50,6 +50,22 @@ dapui.setup({
 			position = "bottom",
 		},
 	},
+  controls = {
+    -- Requires Neovim nightly (or 0.8 when released)
+    enabled = true,
+    -- Display controls in this element
+    element = "repl",
+    icons = {
+      pause = "",
+      play = "",
+      step_into = "",
+      step_over = "",
+      step_out = "",
+      step_back = "",
+      run_last = "↻",
+      terminate = "□",
+    },
+  },
 	floating = {
 		max_height = nil, -- These can be integers or a float between 0 and 1.
 		max_width = nil, -- Floats will be treated as percentage of your screen.
@@ -59,11 +75,18 @@ dapui.setup({
 		},
 	},
 	windows = { indent = 1 },
+  render = {
+    max_type_length = nil, -- Can be integer or nil.
+    max_value_lines = 100, -- Can be integer or nil.
+  }
 })
 
-local icons = require("icons")
+-- local icons = require("icons")
 
-vim.fn.sign_define("DapBreakpoint", { text = icons.ui.Bug, texthl = "DiagnosticSignError", linehl = "", numhl = "" })
+vim.fn.sign_define("DapBreakpoint", { text = "ß", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
+vim.fn.sign_define("DapBreakpointCondition", { text = "ü", texthl = "", linehl = "", numhl = "" })
+vim.fn.sign_define("DapStopped", { text = "ඞ", texthl = "Error" })
+-- vim.fn.sign_define("DapBreakpoint", { text = icons.ui.Bug, texthl = "DiagnosticSignError", linehl = "", numhl = "" })
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
 	dapui.open({})
@@ -74,12 +97,3 @@ end
 dap.listeners.before.event_exited["dapui_config"] = function()
 	dapui.close({})
 end
-
-
--- Python debugger
-local status, dap_python = pcall(require, "dap-python")
-if not status then
-  return
-end
-
-dap_python.setup("/usr/bin/python3")

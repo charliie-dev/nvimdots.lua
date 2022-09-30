@@ -135,9 +135,9 @@ return packer.startup(function(use)
 
 	-- DAP/Debugging
 	use({ "mfussenegger/nvim-dap" })
-	-- use({ "Pocco81/dap-buddy.nvim" })  -- plugin being rewritten
+	use({ "Pocco81/dap-buddy.nvim", run = "make" })
 	use({ "rcarriga/nvim-dap-ui" })
-	use({ "thehamsta/nvim-dap-virtual-text" })
+	-- use({ "theHamsta/nvim-dap-virtual-text" })
   use({ "nvim-telescope/telescope-dap.nvim" })
 
   -- python debugger config
@@ -217,7 +217,7 @@ return packer.startup(function(use)
 	use({ "akinsho/toggleterm.nvim" })
 
   -- Editing Support
-	use({ "Pocco81/AutoSave.nvim" })
+	use({ "Pocco81/auto-save.nvim" })
   use({ "declancm/cinnamon.nvim" })
   use({ "petertriho/nvim-scrollbar" })
 	use({ "nacro90/numb.nvim" })
