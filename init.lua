@@ -1,5 +1,6 @@
 -- Remove ALL autocommands for the current group to prevent autocmds loading twice.
 vim.cmd([[autocmd!]])
+
 require("plugins")
 
 -- Fast startup
