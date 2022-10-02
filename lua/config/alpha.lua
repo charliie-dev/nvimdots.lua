@@ -5,6 +5,7 @@ end
 
 local icons = require("icons")
 
+vim.cmd([[source $HOME/.config/nvim/plugin/packer_compiled.lua]])
 -- Header
 local dashboard = require("alpha.themes.dashboard")
 dashboard.section.header.val = {
