@@ -3,8 +3,8 @@ if not dap_status then
 	return
 end
 
-local dap_ui_status, dapui = pcall(require, "dapui")
-if not dap_ui_status then
+local dapui_status, dapui = pcall(require, "dapui")
+if not dapui_status then
 	return
 end
 
@@ -34,9 +34,9 @@ dapui.setup({
 			elements = {
         -- Elements can be strings or table with id and size keys.
         { id = "scopes", size = 0.25 },
+				"watches",
 				"breakpoints",
 				"stacks",
-				"watches",
 			},
 			size = 40, -- 40 columns
 			position = "left",
@@ -46,7 +46,7 @@ dapui.setup({
 				"repl",
 				"console",
 			},
-			size = 0.25, -- 25% of total lines
+			size = 10, -- 25% of total lines
 			position = "bottom",
 		},
 	},
@@ -81,12 +81,9 @@ dapui.setup({
   }
 })
 
--- local icons = require("icons")
-
 vim.fn.sign_define("DapBreakpoint", { text = "ß", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
 vim.fn.sign_define("DapBreakpointCondition", { text = "ü", texthl = "", linehl = "", numhl = "" })
 vim.fn.sign_define("DapStopped", { text = "ඞ", texthl = "Error" })
--- vim.fn.sign_define("DapBreakpoint", { text = icons.ui.Bug, texthl = "DiagnosticSignError", linehl = "", numhl = "" })
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
 	dapui.open({})
@@ -97,3 +94,6 @@ end
 dap.listeners.before.event_exited["dapui_config"] = function()
 	dapui.close({})
 end
+
+-- python dap config
+require("config.dap.dap-python")

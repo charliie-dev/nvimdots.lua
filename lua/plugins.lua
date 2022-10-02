@@ -135,14 +135,10 @@ return packer.startup(function(use)
 
 	-- DAP/Debugging
 	use({ "mfussenegger/nvim-dap" })
-	use({ "Pocco81/dap-buddy.nvim", run = "make" })
+	-- use({ "Pocco81/dap-buddy.nvim", run = "make" })
 	use({ "rcarriga/nvim-dap-ui" })
 	-- use({ "theHamsta/nvim-dap-virtual-text" })
   use({ "nvim-telescope/telescope-dap.nvim" })
-
-  -- python debugger config
-  use({ "mfussenegger/nvim-dap-python" })
-
 
 	-- Git
   use({ "dinhhuy258/git.nvim" })

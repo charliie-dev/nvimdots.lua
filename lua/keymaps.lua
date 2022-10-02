@@ -82,14 +82,16 @@ keymap("t", "jk", "<esc>:q<cr>", term_opts)
 -- Plugin keymaps
 
 --- DAP keymaps
-keymap("n", "<F5>", "<cmd>lua require('dap').continue()<cr>", opts)
-keymap("n", "<F10>", "<cmd>lua require('dap').step_over()<cr>", opts)
-keymap("n", "<F11>", "<cmd>lua require('dap').step_into()<cr>", opts)
-keymap("n", "<F12>", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<F9>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
+keymap("n", "<F10>", "<cmd>lua require('dap').step_into()<cr>", opts)
+keymap("n", "<F11>", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<F12>", "<cmd>lua require('dap').step_over()<<r>", opts)
+keymap("n", "<F8>", "<cmd>lua require('dap').terminate()<cr>", opts)
 keymap("n", "<leader>b", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
 keymap("n", "<leader>B", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>", opts)
 keymap("n", "<leader>lp", "<cmd>lua require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<cr>", opts)
 keymap("n", "<leader>dr", "<cmd>lua require('dap').repl.open()<cr>", opts)
+keymap("n", "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", opts)
 
 --- Telescope keymap
 keymap("n", "ff", "<cmd>Telescope find_files<cr>", opts)
@@ -108,11 +110,11 @@ keymap("n", "<leader>cp", "<cmd>Telescope command_palette<cr>", opts)
 
 --- NvimTree
 keymap("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", opts)
-keymap("n", "<F5>", "<cmd>NvimTreeRefresh<cr>", opts)
+-- keymap("n", "<F5>", "<cmd>NvimTreeRefresh<cr>", opts)
 keymap("n", "<leader>n", "<cmd>NvimTreeFindFile<cr>", opts)
 
 --- SymbolsOutline keymap
-keymap("n", "<F8>", "<cmd>SymbolsOutline<cr>", opts)
+keymap("n", "<F7>", "<cmd>SymbolsOutline<cr>", opts)
 
 --- fzf-lua
 keymap("n", "fz", "<cmd>lua require('fzf-lua').files()<cr>", opts)
