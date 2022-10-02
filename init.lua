@@ -6,9 +6,6 @@ require("plugins")
 -- Fast startup
 --- impatient needs to be setup before any other lua plugin is loaded
 require("config.impatient")
---vim.cmd([[source $HOME/.config/nvim/lua/autocommands.vim]])
-vim.cmd([[source $HOME/.config/nvim/plugin/packer_compiled.lua]])
-
 
 require("colors")
 require("events")
