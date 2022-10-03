@@ -35,7 +35,7 @@ require("config.colorizer")
 require("config.colortils")
 require("config.comment")
 require("config.copilot")
-require("config.dap")  -- TODO:
+require("config.dap")
 require("config.git-nvim")
 require("config.gitblame")
 require("config.gitconflict")
