@@ -47,6 +47,7 @@ packer.init({
 		threshold = 1, -- integer in milliseconds, plugins which load faster than this won't be shown in profile output
 	},
 	autoremove = true, -- Remove disabled or unused plugins without prompting the user
+  compile_path = vim.fn.stdpath('config') .. '/lua' .. '/packer_compiled.lua',
 })
 
 return packer.startup(function(use)
