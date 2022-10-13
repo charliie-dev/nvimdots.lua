@@ -10,7 +10,6 @@
 
 Installation script could be found [here](https://github.com/CharlesChiuGit/nvimdots/blob/4d2dea01eb93fb3e5bc893553750e10f019023f4/docs/nvim_setup_linux.sh#L164).
 
-
 **[Neovim Providers](https://neovim.io/doc/user/provider.html)**
 
 Install python(`:python`) support, [script](https://github.com/CharlesChiuGit/nvimdots/blob/4d2dea01eb93fb3e5bc893553750e10f019023f4/docs/nvim_setup_linux.sh#L72)
@@ -67,7 +66,7 @@ export EDITOR='nvim'
 
 ### Plugins setup
 
-Please refer to [nvim_setup_linux.sh](https://github.com/CharlesChiuGit/nvimdots/blob/main/docs/nvim_setup_linux.sh).
+Please refer to [nvim_setup_linux.sh](https://github.com/CharlesChiuGit/dotfiles/blob/main/install_scripts/nvim_setup_linux.sh).
 
 ### Neovim bugs and workarounds
 
@@ -81,14 +80,3 @@ Please refer to [nvim_setup_linux.sh](https://github.com/CharlesChiuGit/nvimdots
   ```
 
 - [`Search and replace across multiply files #18`](https://github.com/nvim-lua/wishlist/issues/18#issuecomment-812092951)
-
-- [For those having hard triggering keymaps. (timeoutlen = 100)](https://github.com/ChristianChiarulli/nvim/issues/30#issue-1275676805)
-
-  ```vim
-  set timeoutlen=1000 ttimeoutlen=0
-  ```
-
-  ```lua
-  vim.opt.timeoutlen = 1000,
-  vim.opt.ttimeoutlen = 0,
-  ```
