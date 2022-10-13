@@ -24,11 +24,12 @@ lang["lervag/vimtex"] = {
 		require("modules.lang.vimtex")
 	end,
 }
--- lang["jbyuki/nabla.nvim"] = { --TODO:
--- 	opt = true,
--- 	ft = "tex",
--- 	requires = "nvim-treesitter/nvim-treesitter",
--- }
+lang["jbyuki/nabla.nvim"] = {
+	opt = true,
+	after = "nvim-treesitter",
+	ft = "tex",
+	requires = "nvim-treesitter/nvim-treesitter",
+}
 lang["ranelpadon/python-copy-reference.vim"] = {
 	opt = true,
 	ft = "python",
