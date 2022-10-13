@@ -80,3 +80,5 @@ Please refer to [nvim_setup_linux.sh](https://github.com/CharlesChiuGit/dotfiles
   ```
 
 - [`Search and replace across multiply files #18`](https://github.com/nvim-lua/wishlist/issues/18#issuecomment-812092951)
+
+- Why is stylua so hard to pass???
