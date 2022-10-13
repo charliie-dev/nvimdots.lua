@@ -63,14 +63,13 @@ if vim.g.use_nerd_icons then
 			FileTree = "פּ",
 		},
 		git = {
-			-- Mod = "",
-			Add = "", -- Staged
+			Add = "",
 			Branch = "",
 			Diff = "",
 			Git = "",
 			Ignore = "",
-			Mod = "M", -- Unstaged
-			Remove = "", -- Deleted
+			Mod = "",
+			Remove = "",
 			Rename = "",
 			Repo = "",
 			Unmerged = "",
