@@ -86,8 +86,11 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 		-- Workaround for clangd warning: multiple different client offset_encodings detected for buffer, this is not supported yet
 		clangd_capabilities.offsetEncoding = { "utf-16" }
 		local clangd_opts = require("modules.completion.server-settings.clangd")
-		local extra_opts =
-			vim.tbl_deep_extend("force", clangd_opts, { on_attach = opts.on_attach, capabilities = clangd_capabilities })
+		local extra_opts = vim.tbl_deep_extend(
+			"force",
+			clangd_opts,
+			{ on_attach = opts.on_attach, capabilities = clangd_capabilities }
+		)
 		lspconfig.clangd.setup(extra_opts)
 	end
 
