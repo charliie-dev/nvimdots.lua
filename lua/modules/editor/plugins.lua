@@ -136,11 +136,8 @@ editor["abecodes/tabout.nvim"] = {
 }
 editor["andymass/vim-matchup"] = {
 	opt = true,
-	after = "nvim-treesitter",
 	cmd = { "MatchupWhereAmI" },
-	config = function()
-		require("modules.editor.matchup")
-	end,
+	after = "nvim-treesitter",
 }
 editor["romainl/vim-cool"] = {
 	opt = true,

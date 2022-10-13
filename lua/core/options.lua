@@ -52,7 +52,7 @@ local function load_options()
 		list = true,
 		listchars = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←",
 		magic = true,
-		-- mouse = "nv",
+		mouse = "nv",
 		mousescroll = "ver:3,hor:6",
 		number = true,
 		previewheight = 12,

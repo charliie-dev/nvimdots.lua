@@ -5,7 +5,6 @@ require("osc52").setup({
 })
 
 --- nvim-osc52 keymap
-local keymap = vim.keymap.set
 -- In normal mode, <leader>c is an operator that will copy the given text to the clipboard.
 vim.keymap.set("n", "<leader>c", require("osc52").copy_operator, { expr = true })
 -- In normal mode, <leader>cc will copy the current line.
