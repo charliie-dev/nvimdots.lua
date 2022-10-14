@@ -25,7 +25,7 @@ require("telescope").setup({
 	defaults = {
 		initial_mode = "insert",
 		prompt_prefix = icon.ui.Telescope .. " ",
-		selection_caret = " ",
+		selection_caret = icon.ui.ChevronRight .. " ",
 		entry_prefix = " ",
 		scroll_strategy = "limit",
 		results_title = false,

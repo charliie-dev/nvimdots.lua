@@ -15,11 +15,11 @@ require("bufferline").setup({
 			icon = "%#BLIndicatorIcon#" .. " " .. icon.ui.Indicator .. " ",
 			style = "icon",
 		},
-		buffer_close_icon = "",
-		modified_icon = "✥",
-		close_icon = "",
-		left_trunc_marker = "",
-		right_trunc_marker = "",
+		buffer_close_icon = icon.ui.Close,
+		modified_icon = icon.ui.Modified,
+		close_icon = icon.ui.Close_alt,
+		left_trunc_marker = icon.ui.Left,
+		right_trunc_marker = icon.ui.Right,
 
 		max_name_length = 14,
 		max_prefix_length = 13, -- prefix used when a buffer is de-duplicated

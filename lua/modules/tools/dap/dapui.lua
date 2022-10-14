@@ -1,5 +1,7 @@
+local icon = require("modules.ui.icons")
+
 require("dapui").setup({
-	icons = { expanded = "▾", collapsed = "▸", current_frame = "ඞ" },
+	icons = { expanded = icon.ui.ArrowOpen, collapsed = icon.ui.ArrowClosed, current_frame = icon.ui.Indicator },
 	mappings = {
 		-- Use a table to apply multiple mappings
 		expand = { "<CR>", "<2-LeftMouse>" },
@@ -32,14 +34,14 @@ require("dapui").setup({
 		-- Display controls in this session
 		element = "repl",
 		icons = {
-			pause = "",
-			play = "",
-			step_into = "",
-			step_over = "",
-			step_out = "",
-			step_back = "",
-			run_last = "↻",
-			terminate = "ﱢ",
+			pause = icon.dap.Pause,
+			play = icon.dap.Play,
+			step_into = icon.dap.StepInto,
+			step_over = icon.dap.StepOver,
+			step_out = icon.dap.StepOut,
+			step_back = icon.dap.StepBack,
+			run_last = icon.dap.RunLast,
+			terminate = icon.dap.Terminate,
 		},
 	},
 	floating = {

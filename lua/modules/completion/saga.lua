@@ -33,7 +33,7 @@ local colors = get_palette()
 
 require("lspsaga").init_lsp_saga({
 	border_style = "plus",
-	code_action_icon = "💡",
+	code_action_icon = icon.ui.CodeAction,
 	diagnostic_header = {
 		icon.diagnostics.Error_alt .. " ",
 		icon.diagnostics.Warning_alt .. " ",
