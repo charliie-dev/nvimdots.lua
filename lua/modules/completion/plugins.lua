@@ -54,7 +54,6 @@ completion["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
 	end,
 }
 completion["hrsh7th/nvim-cmp"] = {
-	-- event = "InsertEnter",
 	event = "BufReadPost",
 	after = { "LuaSnip" },
 	-- module = "cmp",
@@ -95,7 +94,7 @@ completion["windwp/nvim-autopairs"] = {
 	end,
 }
 completion["zbirenbaum/copilot.lua"] = {
-	-- The options in cmp is still slow with VimEnter, so use BufReadPre for faster startup time.
+	-- The options in cmp panel is still slow with VimEnter, so use BufReadPre for faster startup time.
 	-- event = "VimEnter",
 	event = "BufReadPre",
 	module = {

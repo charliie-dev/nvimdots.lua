@@ -24,7 +24,6 @@ ui["declancm/cinnamon.nvim"] = {
 }
 ui["NvChad/nvim-colorizer.lua"] = {
 	opt = true,
-	-- opt = false,
 	event = "BufReadPost",
 	config = function()
 		require("modules.ui.colorizer")
@@ -104,7 +103,8 @@ ui["AckslD/messages.nvim"] = {
 	end,
 }
 ui["rcarriga/nvim-notify"] = {
-	opt = false,
+	opt = true,
+	event = "BufReadPre",
 	module = "notify",
 	config = function()
 		require("modules.ui.notify")
