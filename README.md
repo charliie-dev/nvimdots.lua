@@ -85,9 +85,39 @@ NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to ad
 
 # 🕵️ Details
 
-Refer to [wiki](https://github.com/CharlesChiuGit/nvimdots/wiki) for plugin details. (WIP)
+<h3 align="center">
+    🎩 Suit up
+</h3>
 
-#### Startup time Demo
+Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffer ☕.
+
+<h3 align="center">
+    🧑‍🍳 Cook it
+</h3>
+
+Follow [Usage](https://github.com/CharlesChiuGit/nvimdots/wiki/Usage) to spice it into your own flavor.
+
+<h3 align="center">
+    🛠️ Toolbox
+</h3>
+
+Lists of [Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins).
+
+<h3 align="center">
+    🗝️🗺️
+</h3>
+
+Brief intro of [Core Keymaps](https://github.com/CharlesChiuGit/nvimdots/wiki/Keymaps).
+
+<h3 align="center">
+    🤔 FAQ
+</h3>
+
+Check [FAQ](https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ) for more.
+
+<h3 align="center">
+    ⏱️ Startup Time
+</h3>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/startuptime.png"
