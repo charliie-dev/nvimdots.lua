@@ -85,7 +85,7 @@ NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to ad
 
 # 🕵️ Details
 
-Refer to [wiki](https://github.com/CharlesChiuGit/nvimdots/wiki). (WIP)
+Refer to [wiki](https://github.com/CharlesChiuGit/nvimdots/wiki) for plugin details. (WIP)
 
 #### Startup time Demo
 
