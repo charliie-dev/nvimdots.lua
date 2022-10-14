@@ -90,31 +90,31 @@ NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to ad
     🎩 Suit up
 </h3>
 
-Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffer ☕.
+Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffer ☕. (WIP)
 
 <h3 align="center">
     🧑‍🍳 Cook it
 </h3>
 
-Follow [Usage](https://github.com/CharlesChiuGit/nvimdots/wiki/Usage) to spice it into your own flavor.
+Follow [Usage](https://github.com/CharlesChiuGit/nvimdots/wiki/Usage) to spice it into your own flavor. (WIP)
 
 <h3 align="center">
     🛠️ Toolbox
 </h3>
 
-Lists of [Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins).
+Lists of [Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins). (WIP)
 
 <h3 align="center">
     🗝️🗺️
 </h3>
 
-Brief intro of [Core Keymaps](https://github.com/CharlesChiuGit/nvimdots/wiki/Keymaps).
+Brief intro of [Core Keymaps](https://github.com/CharlesChiuGit/nvimdots/wiki/Keymaps). (WIP)
 
 <h3 align="center">
     🤔 FAQ
 </h3>
 
-Check [FAQ](https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ) for more.
+Check [FAQ](https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ) for more FAQ. (WIP)
 
 <h3 align="center">
     ⏱️ Startup Time
