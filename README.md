@@ -90,7 +90,7 @@ NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to ad
     🎩 Suit up
 </h3>
 
-Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffer ☕. (WIP)
+Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffer ☕.
 
 <h3 align="center">
     🧑‍🍳 Cook it
