@@ -87,6 +87,24 @@ NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to ad
 
 Refer to [wiki](https://github.com/CharlesChiuGit/nvimdots/wiki). (WIP)
 
+#### Startup time Demo
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/startuptime.png"
+  width = "70%"
+  />
+</p>
+
+Tested with [dstein64/vim-startuptime](https://github.com/dstein64/vim-startuptime) plugin.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/vim-startup.png"
+  width = "60%"
+  />
+</p>
+
+Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a cli tool in `Go`.
+
 # 🪨 Materials
 
 ### Docs
