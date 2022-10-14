@@ -15,6 +15,7 @@ require("nvim-treesitter.configs").setup({
 		"latex",
 		"lua",
 		"make",
+		"markdown",
 		"python",
 		"rust",
 		"toml",
@@ -25,7 +26,7 @@ require("nvim-treesitter.configs").setup({
 		"yaml",
 	},
 	sync_install = true,
-	ignore_install = { "markdown" },
+	ignore_install = {},
 	incremental_selection = {
 		enable = true,
 		keymaps = {
@@ -43,7 +44,7 @@ require("nvim-treesitter.configs").setup({
 	},
 	highlight = {
 		enable = true,
-		disable = { "help", "markdown" },
+		disable = {},
 		additional_vim_regex_highlighting = true,
 	},
 	textobjects = {
