@@ -58,9 +58,9 @@ keymap("n", "<leader>l", ":HopLine<cr>", opts)
 
 --- BufferLine keymap
 -- Next BufferLine tab
-keymap("n", "<leader><tab>", ":BufferLineCycleNext<cr>", opts)
+keymap("n", "<tab>", ":BufferLineCycleNext<cr>", opts)
 -- Previous BufferLine tab
-keymap("n", "<leader><S-tab>", ":BufferLineCyclePrev<cr>", opts)
+keymap("n", "<S-tab>", ":BufferLineCyclePrev<cr>", opts)
 
 --- bufdelete.nvim
 keymap("n", "<F4>", "<cmd>Bdelete<cr>", opts)
