@@ -90,7 +90,7 @@ NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to ad
     🎩 Suit up
 </h3>
 
-Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffer ☕.
+Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffee ☕.
 
 <h3 align="center">
     🧑‍🍳 Cook it
@@ -134,7 +134,7 @@ Tested with [dstein64/vim-startuptime](https://github.com/dstein64/vim-startupti
   />
 </p>
 
-Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a cli tool in `Go`.
+Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a cli tool written in `Go`.
 
 # 🪨 Materials
 
