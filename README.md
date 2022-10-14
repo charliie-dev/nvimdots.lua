@@ -42,7 +42,7 @@
 - Easy to customize.
 - Automized [installation scripts](https://github.com/CharlesChiuGit/dotfiles/blob/main/install_scripts/nvim_setup_linux.sh)(in my other dotfile repo), written in `bash`.
 - 100% lazy-loading. Ok, I lied. You can't really lazy-load the theme, UI will look weird.
-- Use [delaytrain.nvim](https://github.com/ja-ford/delaytrain.nvim) to train yourself into a better vimmer, diable it if you want.
+- Use [delaytrain.nvim](https://github.com/ja-ford/delaytrain.nvim) to train yourself into a better vimmer, disable it if you want.
 
 # 🧱 Structure
 
