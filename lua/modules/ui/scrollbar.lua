@@ -3,7 +3,7 @@ require("scrollbar").setup({
 	show_in_active_only = false,
 	set_highlights = true,
 	folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
-	max_lines = false, -- disables if no. of lines in buffer exceeds this
+	max_lines = 500, -- disables if no. of lines in buffer exceeds this
 	handle = {
 		text = " ",
 		color = nil,
@@ -13,7 +13,7 @@ require("scrollbar").setup({
 	},
 	marks = {
 		Search = {
-			text = { "-", "=" },
+			text = { "*", "=" },
 			priority = 0,
 			color = nil,
 			cterm = nil,
@@ -82,6 +82,6 @@ require("scrollbar").setup({
 	},
 	handlers = {
 		diagnostic = true,
-		search = false, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
+		search = true, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
 	},
 })
