@@ -4,6 +4,10 @@ completion["neovim/nvim-lspconfig"] = {
 	opt = true,
 	event = "BufReadPre",
 	after = "mason.nvim",
+	module = {
+		"lspconfig",
+		"lspconfig.util",
+	},
 	config = function()
 		require("modules.completion.lsp")
 	end,
