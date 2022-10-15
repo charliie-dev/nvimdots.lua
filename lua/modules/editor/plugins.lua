@@ -164,6 +164,18 @@ editor["simrat39/symbols-outline.nvim"] = {
 		require("modules.editor.symbols-outline")
 	end,
 }
+editor["Pocco81/true-zen.nvim"] = {
+	opt = true,
+	cmd = {
+		"TZAtaraxis",
+		"TZMinimalist",
+		"TZNarrow",
+		"TZFocus",
+	},
+	config = function()
+		require("modules.editor.true-zen")
+	end,
+}
 editor["olambo/vi-viz"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -179,13 +191,6 @@ editor["hoschi/yode-nvim"] = {
 	},
 	confug = function()
 		require("modules.editor.yode")
-	end,
-}
-editor["folke/zen-mode.nvim"] = {
-	opt = true,
-	cmd = "ZenMode",
-	config = function()
-		require("modules.editor.zen-mode")
 	end,
 }
 editor["gaoDean/autolist.nvim"] = {
