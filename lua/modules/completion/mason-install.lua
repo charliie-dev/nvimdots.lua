@@ -16,6 +16,7 @@ require("mason-tool-installer").setup({
 		"yaml-language-server",
 		"json-lsp",
 		"emmet-ls", -- HTML lsp
+		"marksman", -- https://github.com/artempyanykh/marksman
 
 		-- Formatter
 		"stylua", -- An opinionated Lua code formatter.

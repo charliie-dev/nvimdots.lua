@@ -16,6 +16,7 @@ mason_lspconfig.setup({
 		"emmet_ls",
 		"gopls",
 		"jsonls",
+		"marksman",
 		"pyright",
 		"sumneko_lua",
 		"taplo",
@@ -110,6 +111,12 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 		local jsonls_opts = require("modules.completion.server-settings.jsonls")
 		local extra_opts = vim.tbl_deep_extend("force", jsonls_opts, opts)
 		lspconfig.jsonls.setup(extra_opts)
+	end
+
+	if server == "marksman" then
+		local marksman_opts = require("modules.completion.server-settings.marksman")
+		local extra_opts = vim.tbl_deep_extend("force", marksman_opts, opts)
+		lspconfig.marksman.setup(extra_opts)
 	end
 
 	if server == "pyright" then
