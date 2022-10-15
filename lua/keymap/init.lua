@@ -5,11 +5,11 @@ local opts = { noremap = true, silent = true, nowait = true }
 -- Plugin keymaps
 
 --- DAP keymaps
-keymap("n", "<F9>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
-keymap("n", "<F10>", "<cmd>lua require('dap').step_into()<cr>", opts)
-keymap("n", "<F11>", "<cmd>lua require('dap').step_out()<cr>", opts)
-keymap("n", "<F12>", "<cmd>lua require('dap').step_over()<<r>", opts)
-keymap("n", "<F8>", "<cmd>lua require('dap').terminate()<cr>", opts)
+keymap("n", "<F5>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
+keymap("n", "<F6>", "<cmd>lua require('dap').step_into()<cr>", opts)
+keymap("n", "<F7>", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<F8>", "<cmd>lua require('dap').step_over()<<r>", opts)
+keymap("n", "<F9>", "<cmd>lua require('dap').terminate()<cr>", opts)
 keymap("n", "<leader>b", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
 keymap("n", "<leader>B", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>", opts)
 keymap(
@@ -45,7 +45,7 @@ keymap("n", "<leader>cp", "<cmd>Telescope command_palette<cr>", opts)
 keymap("n", "nt", "<cmd>NeoTreeFloatToggle<cr>", opts)
 
 --- SymbolsOutline keymap
-keymap("n", "<F7>", "<cmd>SymbolsOutline<cr>", opts)
+keymap("n", "<F3>", "<cmd>SymbolsOutline<cr>", opts)
 
 --- fzf-lua
 keymap("n", "fz", "<cmd>lua require('fzf-lua').files()<cr>", opts)
