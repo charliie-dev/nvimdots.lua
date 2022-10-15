@@ -81,7 +81,7 @@
 └── stylua.toml                    stylua settings
 ```
 
-NOTE: You can rename each folder inside `modules`, but **ALWAYS** remember to add a `plugins.lua` in it to register your plugins.
+NOTE: You can rename/create folders inside `modules`, but **ALWAYS** remember to add a `plugins.lua` in it to register your plugins.
 
 # 🕵️ Details
 
