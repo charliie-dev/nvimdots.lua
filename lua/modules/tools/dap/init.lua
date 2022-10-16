@@ -1,7 +1,9 @@
 vim.api.nvim_command([[packadd nvim-dap-ui]])
 local dap = require("dap")
 local dapui = require("dapui")
-local dap_icon = require("modules.ui.icons").dap
+local icons = {
+	dap = require("modules.ui.icons").get("dap"),
+}
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
 	dapui.open()
@@ -18,18 +20,18 @@ vim.api.nvim_set_hl(0, "DapStopped", { fg = "#ABE9B3" })
 
 vim.fn.sign_define(
 	"DapBreakpoint",
-	{ text = dap_icon.Breakpoint, texthl = "DiagnosticSignError", linehl = "", numhl = "" }
+	{ text = icons.dap.Breakpoint, texthl = "DiagnosticSignError", linehl = "", numhl = "" }
 )
 vim.fn.sign_define(
 	"DapBreakpointCondition",
-	{ text = dap_icon.BreakpointCondition, texthl = "DapBreakpoint", linehl = "", numhl = "" }
+	{ text = icons.dap.BreakpointCondition, texthl = "DapBreakpoint", linehl = "", numhl = "" }
 )
-vim.fn.sign_define("DapStopped", { text = dap_icon.Stopped, texthl = "DapStopped", linehl = "", numhl = "" })
+vim.fn.sign_define("DapStopped", { text = icons.dap.Stopped, texthl = "DapStopped", linehl = "", numhl = "" })
 vim.fn.sign_define(
 	"DapBreakpointRejected",
-	{ text = dap_icon.BreakpointRejected, texthl = "DapBreakpoint", linehl = "", numhl = "" }
+	{ text = icons.dap.BreakpointRejected, texthl = "DapBreakpoint", linehl = "", numhl = "" }
 )
-vim.fn.sign_define("DapLogPoint", { text = dap_icon.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
+vim.fn.sign_define("DapLogPoint", { text = icons.dap.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
 
 -- config lang adaptors
 require("modules.tools.dap.dap-cpp-c-rust")

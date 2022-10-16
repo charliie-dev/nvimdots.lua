@@ -1,8 +1,12 @@
-local icon = require("modules.ui.icons")
+local icons = {
+	diagnostics = require("modules.ui.icons").get("diagnostics", true),
+	misc = require("modules.ui.icons").get("misc", true),
+	git = require("modules.ui.icons").get("git"),
+}
 
 local function escape_status()
 	local ok, m = pcall(require, "better_escape")
-	return ok and m.waiting and icon.misc.EscapeST or ""
+	return ok and m.waiting and icons.misc.EscapeST or ""
 end
 
 local function diff_source()
@@ -80,11 +84,11 @@ local function python_venv()
 	if vim.bo.filetype == "python" then
 		local venv = os.getenv("CONDA_DEFAULT_ENV")
 		if venv then
-			return string.format(icon.misc.PyEnv .. " :(%s)", env_cleanup(venv))
+			return string.format(icons.misc.PyEnv .. ":(%s)", env_cleanup(venv))
 		end
 		venv = os.getenv("VIRTUAL_ENV")
 		if venv then
-			return string.format(icon.misc.PyEnv .. " :(%s)", env_cleanup(venv))
+			return string.format(icons.misc.PyEnv .. ":(%s)", env_cleanup(venv))
 		end
 	end
 	return ""
@@ -110,7 +114,7 @@ require("lualine").setup({
 				"branch",
 				icons_enabled = true,
 				-- icon = "",
-				icon = "%#SLGitIcon#" .. icon.git.Branch .. "%*" .. "%#SLBranchName#",
+				icon = "%#SLGitIcon#" .. icons.git.Branch .. "%*" .. "%#SLBranchName#",
 			},
 			{ "diff", source = diff_source },
 		},
@@ -123,9 +127,9 @@ require("lualine").setup({
 				"diagnostics",
 				sources = { "nvim_diagnostic" },
 				symbols = {
-					error = icon.diagnostics.Error .. " ",
-					warn = icon.diagnostics.Warning .. " ",
-					info = icon.diagnostics.Information .. " ",
+					error = icons.diagnostics.Error .. " ",
+					warn = icons.diagnostics.Warning .. " ",
+					info = icons.diagnostics.Information .. " ",
 				},
 			},
 		},

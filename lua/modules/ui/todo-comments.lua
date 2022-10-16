@@ -1,4 +1,7 @@
-local icon = require("modules.ui.icons")
+local icons = {
+	ui = require("modules.ui.icons").get("ui"),
+	diagnostics = require("modules.ui.icons").get("diagnostics"),
+}
 
 local error_red = "#F44747"
 local warning_orange = "#ff8800"
@@ -13,17 +16,17 @@ require("todo-comments").setup({
 	-- keywords recognized as todo comments
 	keywords = {
 		FIX = {
-			icon = icon.ui.Bug, -- icon used for the sign, and in search results
+			icon = icons.ui.Bug, -- icon used for the sign, and in search results
 			color = error_red, -- can be a hex color, or a named color (see below)
 			alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
 			-- signs = false, -- configure signs for some keywords individually
 		},
-		TODO = { icon = icon.ui.Check, color = hint_blue, alt = { "TIP" } },
-		HACK = { icon = icon.ui.Fire, color = warning_orange },
-		WARN = { icon = icon.diagnostics.Warning, color = warning_orange, alt = { "WARNING", "XXX" } },
-		PERF = { icon = icon.ui.Perf, color = perf_purple, alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-		NOTE = { icon = icon.ui.Note, color = note_green, alt = { "INFO" } },
-		TEST = { icon = icon.ui.Lock, color = info_yellow, alt = { "TESTING", "PASSED", "FAILED" } },
+		TODO = { icon = icons.ui.Check, color = hint_blue, alt = { "TIP" } },
+		HACK = { icon = icons.ui.Fire, color = warning_orange },
+		WARN = { icon = icons.diagnostics.Warning, color = warning_orange, alt = { "WARNING", "XXX" } },
+		PERF = { icon = icons.ui.Perf, color = perf_purple, alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+		NOTE = { icon = icons.ui.Note, color = note_green, alt = { "INFO" } },
+		TEST = { icon = icons.ui.Lock, color = info_yellow, alt = { "TESTING", "PASSED", "FAILED" } },
 	},
 	-- merge_keywords = true, -- when true, custom keywords will be merged with the defaults
 	-- highlighting of the line containing the todo comment

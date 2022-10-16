@@ -1,5 +1,5 @@
 vim.api.nvim_set_hl(0, "BLIndicatorIcon", { fg = "#E8AB53", bg = "NONE" })
-local icon = require("modules.ui.icons")
+local icons = { ui = require("modules.ui.icons").get("ui") }
 
 require("bufferline").setup({
 	options = {
@@ -12,14 +12,14 @@ require("bufferline").setup({
 
 		indicator = {
 			-- icon = "▎",
-			icon = "%#BLIndicatorIcon#" .. " " .. icon.ui.Indicator .. " ",
+			icon = "%#BLIndicatorIcon#" .. " " .. icons.ui.Indicator .. " ",
 			style = "icon",
 		},
-		buffer_close_icon = icon.ui.Close,
-		modified_icon = icon.ui.Modified,
-		close_icon = icon.ui.Close_alt,
-		left_trunc_marker = icon.ui.Left,
-		right_trunc_marker = icon.ui.Right,
+		buffer_close_icon = icons.ui.Close,
+		modified_icon = icons.ui.Modified,
+		close_icon = icons.ui.Close_alt,
+		left_trunc_marker = icons.ui.Left,
+		right_trunc_marker = icons.ui.Right,
 
 		max_name_length = 14,
 		max_prefix_length = 13, -- prefix used when a buffer is de-duplicated

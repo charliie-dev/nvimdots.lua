@@ -1,4 +1,7 @@
-local icon = require("modules.ui.icons")
+local icons = {
+	ui = require("modules.ui.icons").get("ui"),
+	misc = require("modules.ui.icons").get("misc"),
+}
 
 require("which-key").setup({
 	plugins = {
@@ -14,9 +17,9 @@ require("which-key").setup({
 	},
 
 	icons = {
-		breadcrumb = icon.ui.Separator,
-		separator = icon.misc.Vbar,
-		group = "+",
+		breadcrumb = icons.ui.DoubleSeparator,
+		separator = icons.misc.Vbar,
+		group = icons.misc.Add,
 	},
 
 	window = {

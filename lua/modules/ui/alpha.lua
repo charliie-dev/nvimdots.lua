@@ -1,5 +1,9 @@
-local icon = require("modules.ui.icons")
 local dashboard = require("alpha.themes.dashboard")
+local icons = {
+	documents = require("modules.ui.icons").get("documents"),
+	git = require("modules.ui.icons").get("git"),
+	ui = require("modules.ui.icons").get("ui"),
+}
 
 -- Header
 dashboard.section.header.val = {
@@ -38,15 +42,15 @@ dashboard.section.header.opts.hl = "Include"
 
 -- Buttons
 dashboard.section.buttons.val = {
-	dashboard.button("f", icon.documents.Files .. " Find file", "<cmd>Telescope find_files<cr>"),
-	dashboard.button("e", icon.ui.NewFile .. " New file", "<cmd>enew<cr>"),
-	dashboard.button("p", icon.git.Repo .. " Find project", "<cmd>Telescope project<cr>"),
-	dashboard.button("y", icon.ui.Sort .. " File frecency", "<cmd>Telescope frecency<cr>"),
-	dashboard.button("r", icon.ui.History .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
-	dashboard.button("t", icon.ui.List .. " Find text", "<cmd>Telescope live_grep<cr>"),
-	dashboard.button("c", icon.ui.Gear .. " Config", "<cmd>e ~/.config/nvim/init.lua <cr>"),
-	dashboard.button("u", icon.ui.CloudDownload .. " Update", "<cmd>PackerSync<cr>"),
-	dashboard.button("q", icon.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
+	dashboard.button("f", icons.documents.Files .. " Find file", "<cmd>Telescope find_files<cr>"),
+	dashboard.button("e", icons.ui.NewFile .. " New file", "<cmd>enew<cr>"),
+	dashboard.button("p", icons.git.Repo .. " Find project", "<cmd>Telescope project<cr>"),
+	dashboard.button("y", icons.ui.Sort .. " File frecency", "<cmd>Telescope frecency<cr>"),
+	dashboard.button("r", icons.ui.History .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
+	dashboard.button("t", icons.ui.List .. " Find text", "<cmd>Telescope live_grep<cr>"),
+	dashboard.button("c", icons.ui.Gear .. " Config", "<cmd>e ~/.config/nvim/init.lua <cr>"),
+	dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>PackerSync<cr>"),
+	dashboard.button("q", icons.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
 }
 dashboard.section.buttons.opts.hl = "Keyword"
 

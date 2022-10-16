@@ -1,4 +1,4 @@
-local icon = require("modules.ui.icons")
+local icons = { ui = require("modules.ui.icons").get("ui") }
 
 local wilder = require("wilder")
 wilder.setup({ modes = { ":", "/", "?" } })
@@ -20,7 +20,7 @@ wilder.set_option("pipeline", {
 			wilder.result({
 				draw = {
 					function(_, x)
-						return icon.ui.Calendar .. x
+						return icons.ui.Calendar .. x
 					end,
 				},
 			}),
@@ -48,7 +48,7 @@ local popupmenu_renderer = wilder.popupmenu_renderer(wilder.popupmenu_border_the
 		wilder.popupmenu_devicons(),
 		wilder.popupmenu_buffer_flags({
 			flags = " a + ",
-			icons = { ["+"] = icon.ui.Pencil, a = icon.ui.Indicator, h = icon.ui.File },
+			icons = { ["+"] = icons.ui.Pencil, a = icons.ui.Indicator, h = icons.ui.File },
 		}),
 	},
 	right = {

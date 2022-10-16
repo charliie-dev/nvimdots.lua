@@ -6,7 +6,7 @@ cmd([[packadd telescope-frecency.nvim]])
 cmd([[packadd telescope-zoxide]])
 cmd([[packadd telescope-env.nvim]])
 
-local icon = require("modules.ui.icons")
+local icons = { ui = require("modules.ui.icons").get("ui", true) }
 
 local actions = require("telescope.actions.set")
 local fixfolds = {
@@ -24,8 +24,8 @@ local fixfolds = {
 require("telescope").setup({
 	defaults = {
 		initial_mode = "insert",
-		prompt_prefix = icon.ui.Telescope .. " ",
-		selection_caret = icon.ui.ChevronRight .. " ",
+		prompt_prefix = icons.ui.Telescope .. " ",
+		selection_caret = icons.ui.ChevronRight .. " ",
 		entry_prefix = " ",
 		scroll_strategy = "limit",
 		results_title = false,

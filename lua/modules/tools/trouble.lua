@@ -1,4 +1,7 @@
-local icon = require("modules.ui.icons")
+local icons = {
+	ui = require("modules.ui.icons").get("ui"),
+	diagnostics = require("modules.ui.icons").get("diagnostics"),
+}
 
 require("trouble").setup({
 	position = "bottom", -- position of the list can be: bottom, top, left, right
@@ -6,8 +9,8 @@ require("trouble").setup({
 	width = 50, -- width of the list when position is left or right
 	icons = true, -- use devicons for filenames
 	mode = "document_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
-	fold_open = icon.ui.ArrowOpen, -- icon used for open folds
-	fold_closed = icon.ui.ArrowClosed, -- icon used for closed folds
+	fold_open = icons.ui.ArrowOpen, -- icon used for open folds
+	fold_closed = icons.ui.ArrowClosed, -- icon used for closed folds
 	action_keys = {
 		-- key mappings for actions in the trouble list
 		-- map to {} to remove a mapping, for example:
@@ -37,11 +40,11 @@ require("trouble").setup({
 	auto_fold = false, -- automatically fold a file trouble list at creation
 	signs = {
 		-- icons / text used for a diagnostic
-		error = icon.diagnostics.Error_alt,
-		warning = icon.diagnostics.Warning_alt,
-		hint = icon.diagnostics.Hint_alt,
-		information = icon.diagnostics.Information_alt,
-		other = icon.diagnostics.Question_alt,
+		error = icons.diagnostics.Error_alt,
+		warning = icons.diagnostics.Warning_alt,
+		hint = icons.diagnostics.Hint_alt,
+		information = icons.diagnostics.Information_alt,
+		other = icons.diagnostics.Question_alt,
 	},
 	use_lsp_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
 })

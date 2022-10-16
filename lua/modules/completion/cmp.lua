@@ -37,7 +37,11 @@ vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#57fa85" })
 local compare = require("cmp.config.compare")
 local lspkind = require("lspkind")
 local cmp = require("cmp")
-local icon = require("modules.ui.icons")
+local icons = {
+	kind = require("modules.ui.icons").get("kind", true),
+	type = require("modules.ui.icons").get("type", true),
+	cmp = require("modules.ui.icons").get("cmp", true),
+}
 
 cmp.setup({
 	window = {
@@ -70,7 +74,7 @@ cmp.setup({
 			maxwidth = 50,
 			ellipsis_char = "...",
 			-- symbol_map = { Copilot = icon.misc.Copilot },
-			symbol_map = vim.tbl_deep_extend("force", icon.kind, icon.cmp, icon.type),
+			symbol_map = vim.tbl_deep_extend("force", icons.kind, icons.cmp, icons.type),
 		}),
 	},
 	-- You can set mappings if you want

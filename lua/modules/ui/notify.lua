@@ -1,5 +1,8 @@
 local notify = require("notify")
-local icon = require("modules.ui.icons")
+local icons = {
+	diagnostics = require("modules.ui.icons").get("diagnostics"),
+	ui = require("modules.ui.icons").get("ui"),
+}
 
 require("notify").setup({
 	-- Animation style (see below for details)
@@ -29,11 +32,11 @@ require("notify").setup({
 
 	-- Icons for the different levels
 	icons = {
-		ERROR = icon.diagnostics.Error,
-		WARN = icon.diagnostics.Warning,
-		INFO = icon.diagnostics.Information,
-		DEBUG = icon.ui.Bug,
-		TRACE = icon.ui.Pencil,
+		ERROR = icons.diagnostics.Error,
+		WARN = icons.diagnostics.Warning,
+		INFO = icons.diagnostics.Information,
+		DEBUG = icons.ui.Bug,
+		TRACE = icons.ui.Pencil,
 	},
 })
 

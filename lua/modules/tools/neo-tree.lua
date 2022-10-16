@@ -4,7 +4,10 @@ cmd([[packadd nvim-web-devicons]])
 cmd([[packadd plenary.nvim]])
 
 vim.g.neo_tree_remove_legacy_commands = true
-local icon = require("modules.ui.icons")
+local icons = {
+	ui = require("modules.ui.icons").get("ui"),
+	git = require("modules.ui.icons").get("git"),
+}
 
 require("neo-tree").setup({
 	close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
@@ -34,14 +37,14 @@ require("neo-tree").setup({
 			highlight = "NeoTreeIndentMarker",
 			-- expander config, needed for nesting files
 			with_expanders = nil, -- if nil and file nesting is enabled, will enable expanders
-			expander_collapsed = icon.ui.ArrowClosed,
-			expander_expanded = icon.ui.ArrowOpen,
+			expander_collapsed = icons.ui.ArrowClosed,
+			expander_expanded = icons.ui.ArrowOpen,
 			expander_highlight = "NeoTreeExpander",
 		},
 		icon = {
-			folder_closed = icon.ui.Folder,
-			folder_open = icon.ui.FolderOpen,
-			folder_empty = icon.ui.EmptyFolder,
+			folder_closed = icons.ui.Folder,
+			folder_open = icons.ui.FolderOpen,
+			folder_empty = icons.ui.EmptyFolder,
 		},
 		modified = {
 			symbol = "[+]",
@@ -55,16 +58,16 @@ require("neo-tree").setup({
 		git_status = {
 			symbols = {
 				-- Change type
-				added = icon.git.Add,
-				modified = icon.git.Mod,
-				deleted = "✖", -- this can only be used in the git_status source
-				renamed = icon.git.Rename, -- this can only be used in the git_status source
+				added = icons.git.Add,
+				modified = icons.git.Mod,
+				deleted = icons.git.Remove, -- this can only be used in the git_status source
+				renamed = icons.git.Rename, -- this can only be used in the git_status source
 				-- Status type
-				untracked = icon.git.Untracked,
-				ignored = icon.git.Ignore,
-				unstaged = icon.git.Unstaged,
-				staged = icon.git.Staged,
-				conflict = icon.git.Conflict,
+				untracked = icons.git.Untracked,
+				ignored = icons.git.Ignore,
+				unstaged = icons.git.Unstaged,
+				staged = icons.git.Staged,
+				conflict = icons.git.Conflict,
 			},
 		},
 	},
