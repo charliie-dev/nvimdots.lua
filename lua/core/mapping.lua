@@ -1,15 +1,14 @@
 -- Shorten function names
 local keymap = vim.keymap.set
-
 local opts = { noremap = true, silent = true, nowait = true }
 
 -- Normal mode
 -- Source current file
-keymap("n", "<C-o>", ":so %<cr>", { noremap = true })
+keymap("n", "<C-o>", "<cmd>so %<cr>", { noremap = true })
 -- Save in normal mode
-keymap("n", "<C-s>", ":w<cr>", { noremap = true })
+keymap("n", "<C-s>", "<cmd>w<cr>", { noremap = true })
 -- Quick Exit from normal mode
-keymap("n", "jk", "<esc>:q<cr>", { silent = true })
+keymap("n", "jk", "<esc><cmd>q<cr>", { silent = true })
 -- Format
 keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.format({ async = true })<cr>", { noremap = true })
 -- Increment/decrement
@@ -19,10 +18,6 @@ keymap("n", "-", "<C-x>", opts)
 keymap("n", "<C-a>", "gg<S-v>G", opts)
 
 --- Buffer keymap (A buffer is in-memory text of a file.)
--- Split buffer(window) vertically
-keymap("n", "vs", ":vs<cr>", opts)
--- Split buffer(window) horizontally
-keymap("n", "sp", ":sp<cr>", opts)
 -- Move one buffer(window) right
 keymap("n", "<C-L>", "<C-W><C-L>", opts)
 -- Move one buffer(window) left
@@ -40,13 +35,13 @@ keymap("n", "<C-l>", "<C-w>l", opts) -- to right window
 
 --- Tab keymap (A tab page is a collection of windows.)
 -- Create a new tab
-keymap("n", "tn", ":tabnew<cr>", opts)
+keymap("n", "tn", "<cmd>tabnew<cr>", opts)
 -- Move to next tab
-keymap("n", "tk", ":tabnext<cr>", opts)
+keymap("n", "tk", "<cmd>tabnext<cr>", opts)
 -- Move to previous tab
-keymap("n", "tj", ":tabprevious<cr>", opts)
+keymap("n", "tj", "<cmd>tabprevious<cr>", opts)
 -- Only keep current tab
-keymap("n", "to", ":tabonly<cr>", opts)
+keymap("n", "to", "<cmd>tabonly<cr>", opts)
 
 -- NOTE: Keep things in paste register after paste it when visual selecting things to replace.
 -- useful keymaps to replace text after copying thing
@@ -55,15 +50,6 @@ keymap("x", "<leader>p", '"_dP', opts)
 -- Insert mode
 -- Save in insert mode
 keymap("i", "<C-s>", "<esc>:w<cr>", {})
--- Jump to normal mode
-keymap("i", "<leader>q", "<esc>", { silent = true })
--- Escape with jk
--- keymap("i", "jk", "<esc>`^", opts) -- replaced by better-escape.nvim
-
--- Visual mode
--- Stay in visual mode after indentation
-keymap("v", "<", "<gv", opts)
-keymap("v", ">", ">gv", opts)
 
 -- Command mode
 -- Escape with jk
@@ -72,3 +58,23 @@ keymap("c", "jk", "<C-C><esc>", opts)
 -- Terminal mode
 -- Escape with jk
 keymap("t", "jk", "<esc>:q<cr>", opts)
+
+local timer = vim.loop.new_timer()
+local blink = function()
+	local cnt, blink_times = 0, 8
+
+	timer:start(
+		0,
+		100,
+		vim.schedule_wrap(function()
+			vim.cmd("set cursorcolumn! cursorline!")
+
+			cnt = cnt + 1
+			if cnt == blink_times then
+				timer:stop()
+			end
+		end)
+	)
+end
+
+keymap("n", "<leader>cb", blink)
