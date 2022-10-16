@@ -90,8 +90,6 @@ tools["sidebar-nvim/sidebar.nvim"] = {
 	event = "BufReadPost",
 	cmd = {
 		"SidebarNvimToggle",
-		"SidebarNvimUpdate",
-		"SidebarNvimFocus",
 	},
 	config = function()
 		require("modules.tools.sidebar")

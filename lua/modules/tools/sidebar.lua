@@ -7,7 +7,7 @@ require("sidebar-nvim").setup({
 	},
 	open = false,
 	side = "right",
-	initial_width = 35,
+	initial_width = 30,
 	hide_statusline = true,
 	update_interval = 1000,
 	sections = { "datetime", "diagnostics", "git" },
