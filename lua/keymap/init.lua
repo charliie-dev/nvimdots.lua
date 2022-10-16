@@ -22,8 +22,8 @@ keymap("n", "<leader>dr", "<cmd>lua require('dap').repl.open()<cr>", opts)
 keymap("n", "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", opts)
 
 --- Telescope keymap
-keymap("n", "ff", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "lg", "<cmd>Telescope live_grep<cr>", opts)
+keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
+keymap("n", "<leader>lg", "<cmd>Telescope live_grep<cr>", opts)
 keymap("n", "<leader>\\", "<cmd>Telescope buffers<cr>", opts)
 keymap("n", "<leader>;", "<cmd>Telescope help_tags<cr>", opts)
 -- Telescope zoxide
@@ -32,14 +32,7 @@ keymap("n", "<leader>z", "<cmd>lua require('telescope').extensions.zoxide.list{}
 keymap("n", "<leader>rp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
 -- Telescope harpoon
 keymap("n", "<leader>hp", "<cmd>Telescope harpoon marks<cr>", opts)
--- Telescope command palette
-keymap("n", "<leader>cp", "<cmd>Telescope command_palette<cr>", opts)
 ---
-
---- NvimTree
--- keymap("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", opts)
--- keymap("n", "<F5>", "<cmd>NvimTreeRefresh<cr>", opts)
--- keymap("n", "<leader>n", "<cmd>NvimTreeFindFile<cr>", opts)
 
 --- NeoTree
 keymap("n", "nt", "<cmd>NeoTreeFloatToggle<cr>", opts)
@@ -50,17 +43,11 @@ keymap("n", "<F3>", "<cmd>SymbolsOutline<cr>", opts)
 --- fzf-lua
 keymap("n", "fz", "<cmd>lua require('fzf-lua').files()<cr>", opts)
 
---- Hop keymap
--- Hopword
-keymap("n", "<leader>h", ":HopWord<cr>", opts)
--- Hopline
-keymap("n", "<leader>l", ":HopLine<cr>", opts)
-
 --- BufferLine keymap
 -- Next BufferLine tab
-keymap("n", "<tab>", ":BufferLineCycleNext<cr>", opts)
+keymap("n", "<tab>", "<cmd>BufferLineCycleNext<cr>", opts)
 -- Previous BufferLine tab
-keymap("n", "<S-tab>", ":BufferLineCyclePrev<cr>", opts)
+keymap("n", "<S-tab>", "<cmd>BufferLineCyclePrev<cr>", opts)
 
 --- bufdelete.nvim
 keymap("n", "<F4>", "<cmd>Bdelete<cr>", opts)
@@ -121,7 +108,7 @@ keymap("n", "<leader>hj", '<cmd>lua require("harpoon.ui").nav_next()<>cr', opts)
 -- harpoon to the previous file
 keymap("n", "<leader>hk", '<cmd>lua require("harpoon.ui").nav_prev()<cr>', opts)
 -- harpoon go to tmux windows, broken now. https://github.com/ThePrimeagen/harpoon/issues/180
-keymap("n", "<leader>htm", '<cmd>lua require("harpoon.tmux").gotoTerminal(1)<cr>', opts)
+-- keymap("n", "<leader>htm", '<cmd>lua require("harpoon.tmux").gotoTerminal(1)<cr>', opts)
 
 --- Spectre keymap
 -- Global find & replace
