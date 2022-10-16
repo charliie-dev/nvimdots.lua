@@ -132,13 +132,13 @@ ui["petertriho/nvim-scrollbar"] = {
 		require("modules.ui.scrollbar")
 	end,
 }
-ui["levouh/tint.nvim"] = {
-	opt = true,
-	event = { "CmdwinEnter", "CmdlineEnter" },
-	config = function()
-		require("modules.ui.tint")
-	end,
-}
+-- ui["levouh/tint.nvim"] = {
+-- 	opt = true,
+-- 	event = { "CmdwinEnter", "CmdlineEnter" },
+-- 	config = function()
+-- 		require("modules.ui.tint")
+-- 	end,
+-- }
 ui["folke/todo-comments.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
