@@ -112,9 +112,9 @@ keymap("n", "<leader>hk", '<cmd>lua require("harpoon.ui").nav_prev()<cr>', opts)
 
 --- Spectre keymap
 -- Global find & replace
-keymap("n", "<leader>Sr", '<cmd>lua require("spectre").open()<cr>', opts)
+-- keymap("n", "<leader>Sr", '<cmd>lua require("spectre").open()<cr>', opts)
 -- search in current file
-keymap("n", "<leader>sr", '<cmd>lua require("spectre").open_file_search()<cr>', opts)
+-- keymap("n", "<leader>sr", '<cmd>lua require("spectre").open_file_search()<cr>', opts)
 
 --- hlslens keymap
 keymap("n", "n", [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], opts)
