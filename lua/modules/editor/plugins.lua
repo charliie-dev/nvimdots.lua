@@ -54,23 +54,18 @@ editor["booperlv/nvim-gomove"] = {
 		require("modules.editor.gomove")
 	end,
 }
-editor["phaazon/hop.nvim"] = {
-	opt = true,
-	branch = "v2",
-	event = "BufReadPost",
-	config = function()
-		require("modules.editor.hop")
-	end,
-}
-editor["indianboy42/hop-extensions"] = {
-	after = "hop.nvim",
-	opt = true,
-}
 editor["RRethy/vim-illuminate"] = {
 	opt = true,
 	event = "BufReadPost",
 	config = function()
 		require("modules.editor.illuminate")
+	end,
+}
+editor["ggandor/leap.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.editor.leap")
 	end,
 }
 editor["danymat/neogen"] = {
@@ -167,10 +162,10 @@ editor["simrat39/symbols-outline.nvim"] = {
 editor["Pocco81/true-zen.nvim"] = {
 	opt = true,
 	cmd = {
-		"TZAtaraxis",
-		"TZMinimalist",
-		"TZNarrow",
-		"TZFocus",
+		"TZAtaraxis", -- Strong remove all visual hints and center current buffer
+		"TZMinimalist", -- Soft remove all visual hints
+		"TZNarrow", -- Narrow to region
+		"TZFocus", -- Focus on current window
 	},
 	config = function()
 		require("modules.editor.true-zen")
@@ -181,16 +176,6 @@ editor["olambo/vi-viz"] = {
 	event = "BufReadPost",
 	config = function()
 		require("modules.editor.viz")
-	end,
-}
-editor["hoschi/yode-nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	requires = {
-		{ "nvim-lua/plenary.nvim" },
-	},
-	confug = function()
-		require("modules.editor.yode")
 	end,
 }
 editor["gaoDean/autolist.nvim"] = {
