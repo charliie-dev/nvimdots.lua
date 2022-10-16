@@ -190,6 +190,7 @@ tools["nvim-telescope/telescope.nvim"] = {
 	wants = {
 		"harpoon",
 		"nvim-notify",
+		"nvim-neoclip.lua",
 	},
 	requires = {
 		{ "nvim-lua/plenary.nvim" },
