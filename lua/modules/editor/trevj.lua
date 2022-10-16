@@ -8,4 +8,4 @@ require("trevj").setup({
 	},
 })
 
-vim.keymap.set("n", "gs", "<cmd>lua require('trevj').format_at_cursor()<cr>", { noremap = true, nowait = true })
+vim.keymap.set("n", "gj", "<cmd>lua require('trevj').format_at_cursor()<cr>", { noremap = true, nowait = true })
