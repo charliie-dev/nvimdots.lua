@@ -4,7 +4,7 @@ require("true-zen").setup({
 			shade = "dark", -- if `dark` then dim the padding windows, otherwise if it's `light` it'll brighten said windows
 			backdrop = 0, -- percentage by which padding windows should be dimmed/brightened. Must be a number between 0 and 1. Set to 0 to keep the same background color
 			minimum_writing_area = { -- minimum size of main window
-				width = 70,
+				width = 100,
 				height = 44,
 			},
 			quit_untoggles = true, -- type :q or :qa to quit Ataraxis mode
@@ -30,7 +30,7 @@ require("true-zen").setup({
 				signcolumn = "no",
 				statusline = "",
 				cmdheight = 1,
-				laststatus = 0,
+				laststatus = 1,
 				showcmd = false,
 				showmode = false,
 				ruler = false,
@@ -67,12 +67,12 @@ require("true-zen").setup({
 		},
 	},
 	integrations = {
-		tmux = false, -- hide tmux status bar in (minimalist, ataraxis)
+		tmux = true, -- hide tmux status bar in (minimalist, ataraxis)
 		kitty = { -- increment font size in Kitty. Note: you must set `allow_remote_control socket-only` and `listen_on unix:/tmp/kitty` in your personal config (ataraxis)
 			enabled = false,
 			font = "+3",
 		},
 		twilight = false, -- enable twilight (ataraxis)
-		lualine = false, -- hide nvim-lualine (ataraxis)
+		lualine = true, -- hide nvim-lualine (ataraxis)
 	},
 })
