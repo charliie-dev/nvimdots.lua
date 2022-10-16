@@ -190,26 +190,18 @@ local data = {
 }
 
 ---Get a specific icon set.
----Returns the corrosponding icon set if the user enables icons.
+---Returns the corrosponding icon set.
 ---@param category string|"kind"|"type"|"documents"|"git"|"ui"|"diagnostics"|"misc"|"cmp"|"dap"
 ---@param add_space? boolean @Add trailing space after the icon.
 function icons.get(category, add_space)
-	if require("core.settings").use_icons then
-		if add_space then
-			return setmetatable({}, {
-				__index = function(_, key)
-					return data[category][key] .. " "
-				end,
-			})
-		else
-			return data[category]
-		end
-	else
+	if add_space then
 		return setmetatable({}, {
-			__index = function(_, _)
-				return ""
+			__index = function(_, key)
+				return data[category][key] .. " "
 			end,
-		}) -- Return nothing if icons are disabled
+		})
+	else
+		return data[category]
 	end
 end
 
