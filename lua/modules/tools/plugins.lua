@@ -186,7 +186,9 @@ tools["ja-ford/delaytrain.nvim"] = {
 tools["nvim-telescope/telescope.nvim"] = {
 	opt = true,
 	module = "telescope",
-	cmd = "Telescope",
+	-- cmd = "Telescope",
+	-- keys = "<leader>",
+	event = "BufReadPost",
 	wants = {
 		"harpoon",
 		"nvim-notify",
