@@ -68,6 +68,14 @@ editor["ggandor/leap.nvim"] = {
 		require("modules.editor.leap")
 	end,
 }
+editor["ggandor/flit.nvim"] = {
+	opt = true,
+	after = "leap.nvim",
+	requires = "ggandor/leap.nvim",
+	config = function()
+		require("modules.editor.flit")
+	end,
+}
 editor["danymat/neogen"] = {
 	opt = true,
 	requires = "nvim-treesitter/nvim-treesitter",
