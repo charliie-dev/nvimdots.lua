@@ -149,6 +149,9 @@ ui["folke/todo-comments.nvim"] = {
 ui["itchyny/vim-highlighturl"] = {
 	opt = true,
 	event = "BufReadPost",
+	config = function()
+		vim.g.highlighturl_guifg = "#8AB4F8"
+	end,
 }
 
 return ui
