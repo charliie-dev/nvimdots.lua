@@ -12,6 +12,7 @@
     <img
         alt="GitHub issues"
         src="https://img.shields.io/github/issues-raw/CharlesChiuGit/nvimdots?color=DCA561&logo=gitbook&logoColor=d9e0ee&style=for-the-badge">
+    </a>
     <a href="https://github.com/CharlesChiuGit/nvimdots/contributors">
     <img
         alt="GitHub contributors"
@@ -23,14 +24,31 @@
 </p>
 
 <p align="center">
+    <a href="https://www.lua.org/">
+    <img
+        alt="Lua"
+        src="https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white">
+    </a>
+    <a href="https://github.com/neovim/neovim">
+    <img
+        alt="Neovim"
+        src="https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white">
+    </a>
+</a>
+
+<p align="center">
   <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/alpha-full.png"
   width = "90%"
   />
 </p>
 
-<blockquote align="center">
-    R.I.P. Kentaro Miura sensei 🥀
-</blockquote>
+<!-- <blockquote align="center"> -->
+<!--     R.I.P. Kentaro Miura sensei 🥀 -->
+<!-- </blockquote> -->
+
+<div align="center">
+    <h6> R.I.P. Kentaro Miura sensei 🥀 </h6>
+</div>
 
 ---
 
@@ -63,7 +81,7 @@
 │   │   └── pack.lua               custom packer wrapper
 │   ├── keymap/                    plugin-related keymaps
 │   └── modules/                   plugin-configs
-│       ├── completion/
+│       ├── completion/            nvim-cmp + LSP
 │       │   ├── plugins.lua
 │       │   └── server-settings/   settings for each LSP
 │       ├── editor/
@@ -76,7 +94,7 @@
 │       └── ui/
 │           └── plugins.lua
 ├── snippets/
-│   └── package.json               define how `LuaSnip` read snippets, vscode-style
+│   └── package.json               how `LuaSnip` reads snippets, vscode-style
 ├── spell/                         custom spelling correction
 └── stylua.toml                    stylua settings
 ```
@@ -153,8 +171,9 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
 
 ### Youtube channels
 
-- [ThePrimeagen/Vim As Your Editor](https://www.youtube.com/playlist?list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R)
-- [TJ DeVries](https://www.youtube.com/c/TJDeVries/playlists)
+- [ThePrimeagen/Vim As Your Editor](https://www.youtube.com/playlist?list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R), **BLAZINGLY FAST**
+  alpha vimfluencer
+- [TJ DeVries](https://www.youtube.com/c/TJDeVries/playlists), neovim core team
 
 ### Awesomes
 

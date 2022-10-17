@@ -122,9 +122,9 @@ completion["zbirenbaum/copilot-cmp"] = {
 
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get
 -- hover docs and function signatures, but it takes too much time to load all dirs, use it if needed.
--- completion["folke/lua-dev.nvim"] = {
+-- completion["folke/neodev.nvim"] = {
 -- 	opt = true,
--- 	module = "lua-dev",
+-- 	module = "neodev",
 -- }
 
 return completion

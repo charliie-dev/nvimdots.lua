@@ -88,6 +88,7 @@ tools["bennypowers/nvim-regexplainer"] = {
 tools["sidebar-nvim/sidebar.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
+	module = "sidebar-nvim",
 	cmd = {
 		"SidebarNvimToggle",
 	},

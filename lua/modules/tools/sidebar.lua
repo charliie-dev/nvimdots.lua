@@ -10,7 +10,12 @@ require("sidebar-nvim").setup({
 	initial_width = 30,
 	hide_statusline = true,
 	update_interval = 1000,
-	sections = { "datetime", "diagnostics", "git" },
+	sections = {
+		"git",
+		"diagnostics",
+		"todos",
+		"symbols",
+	},
 	section_separator = { "", "-----", "" },
 	section_title_separator = { "" },
 	containers = {
@@ -18,6 +23,7 @@ require("sidebar-nvim").setup({
 		show_all = true,
 		interval = 5000,
 	},
-	datetime = { format = "%a %b %d, %H:%M", clocks = { { name = "local" } } },
 	todos = { ignored_paths = { "~" } },
 })
+
+vim.keymap.set("n", "sb", "<cmd>lua require('sidebar-nvim').toggle()<cr>", { noremap = true })
