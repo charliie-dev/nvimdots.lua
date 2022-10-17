@@ -11,12 +11,14 @@ require("mason-tool-installer").setup({
 
 		-- LSP
 		"bash-language-server",
+		"emmet-ls", -- HTML lsp
+		"json-lsp",
+		"ltex-ls",
 		"lua-language-server", -- equals sumneko_lua
+		"marksman", -- https://github.com/artempyanykh/marksman
+		"texlab",
 		"vim-language-server",
 		"yaml-language-server",
-		"json-lsp",
-		"emmet-ls", -- HTML lsp
-		"marksman", -- https://github.com/artempyanykh/marksman
 
 		-- Formatter
 		"stylua", -- An opinionated Lua code formatter.

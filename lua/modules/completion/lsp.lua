@@ -16,10 +16,12 @@ mason_lspconfig.setup({
 		"emmet_ls",
 		"gopls",
 		"jsonls",
+		"ltex-ls",
 		"marksman",
 		"pyright",
 		"sumneko_lua",
 		"taplo",
+		"texlab",
 		"vimls",
 		"yamlls",
 	},
@@ -113,6 +115,12 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 		lspconfig.jsonls.setup(extra_opts)
 	end
 
+	if server == "ltex" then
+		local ltex_opts = require("modules.completion.server-settings.ltex")
+		local extra_opts = vim.tbl_deep_extend("force", ltex_opts, opts)
+		lspconfig.ltex.setup(extra_opts)
+	end
+
 	if server == "marksman" then
 		local marksman_opts = require("modules.completion.server-settings.marksman")
 		local extra_opts = vim.tbl_deep_extend("force", marksman_opts, opts)
@@ -137,6 +145,12 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 		local taplo_opts = require("modules.completion.server-settings.taplo")
 		local extra_opts = vim.tbl_deep_extend("force", taplo_opts, opts)
 		lspconfig.taplo.setup(extra_opts)
+	end
+
+	if server == "texlab" then
+		local texlab_opts = require("modules.completion.server-settings.texlab")
+		local extra_opts = vim.tbl_deep_extend("force", texlab_opts, opts)
+		lspconfig.texlab.setup(extra_opts)
 	end
 
 	if server == "vimls" then

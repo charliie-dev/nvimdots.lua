@@ -1,5 +1,4 @@
--- https://github.com/artempyanykh/marksman
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#marksman
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/marksman.lua
 return {
 	cmd = { "marksman", "server" },
 	filetypes = { "markdown" },

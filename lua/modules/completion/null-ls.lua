@@ -17,12 +17,17 @@ null_ls.setup({
 		formatting.shfmt,
 		formatting.eslint_d,
 		formatting.isort,
-		formatting.codespell,
+		formatting.codespell.with({
+			extra_args = { "--ignore-words=~/.config/nvim/spell/en.utf-8.add" },
+		}),
 		formatting.markdownlint,
 		formatting.cbfmt,
 		diagnostics.flake8,
 		diagnostics.pylint,
 		diagnostics.shellcheck,
+		diagnostics.markdownlint.with({
+			extra_args = { "--disable MD033" },
+		}),
 		-- null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim, comment out to avoid code_actions lightball
 	},
 })
