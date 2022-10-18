@@ -64,6 +64,8 @@
 
 # 🧱 Structure
 
+`${HOME}/.config/nvim`
+
 ```txt
 ├── after/
 │   ├── ftplugin/                  filetype-based rules
