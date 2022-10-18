@@ -1,6 +1,3 @@
--- NOTE: Re-run the installation command for mkdp plugin, if you change any option.
--- NOTE: Otherwise it will not take effect.
-
 -- If true, open markdown preview after entering a markdown buffer.
 vim.g.mkdp_auto_start = true
 
@@ -62,11 +59,11 @@ vim.g.mkdp_preview_options = {
 
 -- Custom markdown style file, must be absolute path.
 -- e.g. `/home/USER/markdown.css` or `vim.fn.expand('~/markdown.css')`
+-- Using https://github.com/sindresorhus/github-markdown-css => no need, the default one is good enough.
 vim.g.mkdp_markdown_css = ""
 
 -- Custom highlight style file, must be absolute path.
--- Using https://github.com/sindresorhus/github-markdown-css
-vim.g.mkdp_highlight_css = os.getenv("HOME") .. "/.config/nvim/github-markdown-css/github-markdown.css"
+vim.g.mkdp_highlight_css = ""
 
 -- Custom port to start server. Leave it empty for random port.
 vim.g.mkdp_port = "6464"
