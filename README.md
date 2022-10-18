@@ -127,7 +127,7 @@ Lists of [Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plu
     🗝️🗺️
 </h3>
 
-Brief intro of [Core Keymaps](https://github.com/CharlesChiuGit/nvimdots/wiki/Keymaps). (WIP)
+Brief intro of [Core Keymaps](https://github.com/CharlesChiuGit/nvimdots/wiki/Keymaps).
 
 <h3 align="center">
     🤔 FAQ
