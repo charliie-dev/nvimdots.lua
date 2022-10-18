@@ -162,7 +162,8 @@ editor["sindrets/diffview.nvim"] = {
 }
 editor["simrat39/symbols-outline.nvim"] = {
 	opt = true,
-	cmd = { "SymbolsOutline" },
+	-- cmd = { "SymbolsOutline" },
+	event = "BufReadPost",
 	config = function()
 		require("modules.editor.symbols-outline")
 	end,
