@@ -25,14 +25,14 @@ tools["sudormrfbin/cheatsheet.nvim"] = {
 		require("modules.tools.cheatsheet")
 	end,
 }
-tools["ThePrimeagen/harpoon"] = {
-	opt = true,
-	event = "BufReadPost",
-	module = "harpoon",
-	config = function()
-		require("modules.tools.harpoon")
-	end,
-}
+-- tools["ThePrimeagen/harpoon"] = {
+-- 	opt = true,
+-- 	event = "BufReadPost",
+-- 	module = "harpoon",
+-- 	config = function()
+-- 		require("modules.tools.harpoon")
+-- 	end,
+-- }
 tools["AckslD/nvim-neoclip.lua"] = {
 	opt = true,
 	event = { "CmdlineEnter", "TextYankPost" },
@@ -189,7 +189,7 @@ tools["nvim-telescope/telescope.nvim"] = {
 	-- keys = "<leader>",
 	event = "BufReadPost",
 	wants = {
-		"harpoon",
+		-- "harpoon",
 		"nvim-notify",
 		"nvim-neoclip.lua",
 	},
