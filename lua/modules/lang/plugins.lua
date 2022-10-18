@@ -1,5 +1,12 @@
 local lang = {}
 
+-- lang["ekickx/clipboard-image.nvim"] = {
+-- 	opt = true,
+-- 	ft = "markdown",
+-- 	config = function()
+-- 		require("modules.lang.clipboard-image")
+-- 	end,
+-- }
 lang["preservim/vim-markdown"] = {
 	opt = true,
 	ft = "markdown",
