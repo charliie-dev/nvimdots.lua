@@ -35,13 +35,7 @@ keymap("n", "<leader>hp", "<cmd>Telescope harpoon marks<cr>", opts)
 ---
 
 --- NeoTree
-keymap("n", "nt", "<cmd>NeoTreeFloatToggle<cr>", opts)
-
---- SymbolsOutline keymap
-keymap("n", "<F3>", "<cmd>SymbolsOutline<cr>", opts)
-
---- fzf-lua
-keymap("n", "fz", "<cmd>lua require('fzf-lua').files()<cr>", opts)
+keymap("n", "<C-n>", "<cmd>NeoTreeFloatToggle<cr>", opts)
 
 --- BufferLine keymap
 -- Next BufferLine tab
@@ -80,12 +74,6 @@ keymap("n", "<F4>", "<cmd>Bdelete<cr>", opts)
 -- `:InsertToc 3` specify how many levels of headers to display.
 -- `:InsertNToc` add numbered list to `h2` headers.
 
---- Glow keymap
--- Usage:
--- :Glow [path-to-md-file] to view the md file.
--- `Ctrl-w + |` set window's width max.
--- `Ctrl-w + _` set window's height max
-
 --- Tmux keymap
 -- Move from Nvim windows to tmux panes
 keymap("n", "<C-j>", '<cmd>lua require("tmux").move_bottom()<cr>', opts)
@@ -97,18 +85,6 @@ keymap("n", "<M-j>", '<cmd>lua require("tmux").resize_bottom()<cr>', opts)
 keymap("n", "<M-k>", '<cmd>lua require("tmux").resize_top()<cr>', opts)
 keymap("n", "<M-h>", '<cmd>lua require("tmux").resize_left()<cr>', opts)
 keymap("n", "<M-l>", '<cmd>lua require("tmux").resize_right()<cr>', opts)
-
---- Harpoon keymap
--- Mark a file
-keymap("n", "<leader>hm", '<cmd>lua require("harpoon.mark").add_file()<cr>', opts)
--- view all marked files
-keymap("n", "<leader>ha", '<cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>', opts)
--- harpoon to the next file
-keymap("n", "<leader>hj", '<cmd>lua require("harpoon.ui").nav_next()<>cr', opts)
--- harpoon to the previous file
-keymap("n", "<leader>hk", '<cmd>lua require("harpoon.ui").nav_prev()<cr>', opts)
--- harpoon go to tmux windows, broken now. https://github.com/ThePrimeagen/harpoon/issues/180
--- keymap("n", "<leader>htm", '<cmd>lua require("harpoon.tmux").gotoTerminal(1)<cr>', opts)
 
 --- Spectre keymap
 -- Global find & replace
