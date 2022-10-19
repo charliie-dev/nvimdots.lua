@@ -48,6 +48,7 @@ local function load_options()
 		infercase = true,
 		jumpoptions = "stack",
 		laststatus = 3, -- global status line
+		lazyredraw = true,
 		linebreak = true,
 		list = true,
 		listchars = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←",
