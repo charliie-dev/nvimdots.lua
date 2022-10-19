@@ -25,9 +25,10 @@ require("illuminate").configure({
 		"toggleterm",
 	},
 	under_cursor = false,
+	large_file_cutoff = 2000,
 })
 
 -- illuminate setting
--- vim.api.nvim_command([[ hi def link LspReferenceText CursorLine ]])
--- vim.api.nvim_command([[ hi def link LspReferenceWrite CursorLine ]])
--- vim.api.nvim_command([[ hi def link LspReferenceRead CursorLine ]])
+vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
+vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
+vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
