@@ -32,13 +32,6 @@ require("bufferline").setup({
 
 		offsets = {
 			{
-				filetype = "NvimTree",
-				text = "File Explorer",
-				text_align = "center",
-				highlight = "Directory",
-				separator = true,
-			},
-			{
 				filetype = "undotree",
 				text = "Undo Tree",
 				text_align = "center",
@@ -48,6 +41,27 @@ require("bufferline").setup({
 			{
 				filetype = "neo-tree",
 				text = "Neo Tree",
+				text_align = "center",
+				highlight = "Directory",
+				separator = true,
+			},
+			{
+				filetypea = "Outline",
+				text = "Symbol Outline",
+				text_align = "center",
+				highlight = "Directory",
+				separator = true,
+			},
+			{
+				filetype = "lspsagaoutline",
+				text = "Lspsaga Outline",
+				text_align = "center",
+				highlight = "Directory",
+				separator = true,
+			},
+			{
+				filetype = "SidebarNvim",
+				text = "Sidebar",
 				text_align = "center",
 				highlight = "Directory",
 				separator = true,
