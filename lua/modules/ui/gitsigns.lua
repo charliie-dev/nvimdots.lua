@@ -2,25 +2,25 @@ require("gitsigns").setup({
 	signs = {
 		add = {
 			hl = "GitSignsAdd",
-			text = "│",
+			text = "┃",
 			numhl = "GitSignsAddNr",
 			linehl = "GitSignsAddLn",
 		},
 		change = {
 			hl = "GitSignsChange",
-			text = "│",
+			text = "┃",
 			numhl = "GitSignsChangeNr",
 			linehl = "GitSignsChangeLn",
 		},
 		delete = {
 			hl = "GitSignsDelete",
-			text = "_",
+			text = "▁",
 			numhl = "GitSignsDeleteNr",
 			linehl = "GitSignsDeleteLn",
 		},
 		topdelete = {
 			hl = "GitSignsDelete",
-			text = "‾",
+			text = "▔",
 			numhl = "GitSignsDeleteNr",
 			linehl = "GitSignsDeleteLn",
 		},
@@ -61,6 +61,7 @@ require("gitsigns").setup({
 	sign_priority = 6,
 	update_debounce = 100,
 	status_formatter = nil, -- Use default
+	max_file_length = 2000, -- Disable if file is longer than this (in lines)
 	word_diff = false,
 	diff_opts = { internal = true },
 })
