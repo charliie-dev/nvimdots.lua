@@ -15,7 +15,8 @@ require("mason-tool-installer").setup({
 		"json-lsp",
 		"ltex-ls",
 		"lua-language-server", -- equals sumneko_lua
-		"marksman", -- https://github.com/artempyanykh/marksman
+		"marksman",
+		"pyright", -- Static type checker for Python
 		"texlab",
 		"vim-language-server",
 		"yaml-language-server",
@@ -34,8 +35,6 @@ require("mason-tool-installer").setup({
 
 		-- Linter
 		"shellcheck", -- ShellCheck, a static analysis tool for shell scripts.
-		"pylint", -- focus more on checking PEP8 violations
-		"pyright", -- Static type checker for Python
 		"eslint_d", -- Javascript Linter, but faster
 	},
 

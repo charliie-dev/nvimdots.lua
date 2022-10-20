@@ -23,7 +23,6 @@ null_ls.setup({
 		formatting.markdownlint,
 		formatting.cbfmt,
 		diagnostics.flake8,
-		diagnostics.pylint,
 		diagnostics.shellcheck,
 		diagnostics.markdownlint.with({
 			extra_args = { "--disable MD033" },
@@ -31,36 +30,6 @@ null_ls.setup({
 		-- null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim, comment out to avoid code_actions lightball
 	},
 })
-
--- local unwrap = {
---   method = null_ls.methods.DIAGNOSTICS,
---   filetypes = { "rust" },
---   generator = {
---     fn = function(params)
---       local diagnostics = {}
---       -- sources have access to a params object
---       -- containing info about the current file and editor state
---       for i, line in ipairs(params.content) do
---         local col, end_col = line:find "unwrap()"
---         if col and end_col then
---           -- null-ls fills in undefined positions
---           -- and converts source diagnostics into the required format
---           table.insert(diagnostics, {
---             row = i,
---             col = col,
---             end_col = end_col,
---             source = "unwrap",
---             message = "hey " .. os.getenv("USER") .. ", don't forget to handle this" ,
---             severity = 2,
---           })
---         end
---       end
---       return diagnostics
---     end,
---   },
--- }
-
--- null_ls.register(unwrap)
 
 -- NOTE: if you want to use local executables.
 -- local sources = {
