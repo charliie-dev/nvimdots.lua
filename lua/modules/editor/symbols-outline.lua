@@ -69,5 +69,3 @@ require("symbols-outline").setup({
 		String = { icon = icons.type.String, hl = prefix .. "String" },
 	},
 })
-
-vim.keymap.set("n", "<leader>so", "<cmd>SymbolsOutline<cr>", { desc = "Symbols Outline" })

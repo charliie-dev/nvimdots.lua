@@ -73,18 +73,13 @@ tools["nvim-neo-tree/neo-tree.nvim"] = {
 -- 		require("modules.tools.osc52")
 -- 	end,
 -- }
-tools["almo7aya/openingh.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	cmd = { "OpenInGHRepo", "OpenInGHFile" },
-}
-tools["bennypowers/nvim-regexplainer"] = {
-	opt = true,
-	cmd = { "RegexplainerToggle", "RegexplainerShow" },
-	config = function()
-		require("modules.tools.regexplainer")
-	end,
-}
+-- tools["bennypowers/nvim-regexplainer"] = {
+-- 	opt = true,
+-- 	cmd = { "RegexplainerToggle", "RegexplainerShow" },
+-- 	config = function()
+-- 		require("modules.tools.regexplainer")
+-- 	end,
+-- }
 tools["sidebar-nvim/sidebar.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -104,21 +99,21 @@ tools["krivahtoo/silicon.nvim"] = {
 		require("modules.tools.silicon")
 	end,
 }
-tools["ibhagwan/smartyank.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.tools.smartyank")
-	end,
-}
-tools["michaelb/sniprun"] = {
-	opt = true,
-	run = "bash ./install.sh",
-	cmd = { "SnipRun", "'<,'>SnipRun" },
-	config = function()
-		require("modules.tools.sniprun")
-	end,
-}
+-- tools["ibhagwan/smartyank.nvim"] = {
+-- 	opt = true,
+-- 	event = "BufReadPost",
+-- 	config = function()
+-- 		require("modules.tools.smartyank")
+-- 	end,
+-- }
+-- tools["michaelb/sniprun"] = {
+-- 	opt = true,
+-- 	run = "bash ./install.sh",
+-- 	cmd = { "SnipRun", "'<,'>SnipRun" },
+-- 	config = function()
+-- 		require("modules.tools.sniprun")
+-- 	end,
+-- }
 tools["aserowy/tmux.nvim"] = {
 	opt = true,
 	event = "BufReadPost",

@@ -90,16 +90,16 @@ editor["nacro90/numb.nvim"] = {
 		require("modules.editor.numb")
 	end,
 }
-editor["ThePrimeagen/refactoring.nvim"] = {
-	opt = true,
-	requires = {
-		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-treesitter/nvim-treesitter" },
-	},
-	config = function()
-		require("modules.editor.refactoring")
-	end,
-}
+-- editor["ThePrimeagen/refactoring.nvim"] = {
+-- 	opt = true,
+-- 	requires = {
+-- 		{ "nvim-lua/plenary.nvim" },
+-- 		{ "nvim-treesitter/nvim-treesitter" },
+-- 	},
+-- 	config = function()
+-- 		require("modules.editor.refactoring")
+-- 	end,
+-- }
 -- editor["edluffy/specs.nvim"] = {
 -- 	opt = true,
 -- 	event = "CursorMoved",
@@ -107,36 +107,36 @@ editor["ThePrimeagen/refactoring.nvim"] = {
 -- 		require("modules.editor.specs")
 -- 	end,
 -- }
-editor["nvim-pack/nvim-spectre"] = {
-	opt = true,
-	event = "BufReadPost",
-	requires = {
-		{ "nvim-lua/plenary.nvim", opt = false },
-	},
-	config = function()
-		require("modules.editor.spectre")
-	end,
-}
-editor["kylechui/nvim-surround"] = {
-	opt = true,
-	event = "BufReadPre",
-	after = {
-		"nvim-treesitter",
-		"nvim-treesitter-textobjects",
-	},
-	config = function()
-		require("modules.editor.surround")
-	end,
-}
-editor["abecodes/tabout.nvim"] = {
-	opt = true,
-	event = "InsertEnter",
-	wants = "nvim-treesitter",
-	after = "nvim-cmp",
-	config = function()
-		require("modules.editor.tabout")
-	end,
-}
+-- editor["nvim-pack/nvim-spectre"] = {
+-- 	opt = true,
+-- 	event = "BufReadPost",
+-- 	requires = {
+-- 		{ "nvim-lua/plenary.nvim", opt = false },
+-- 	},
+-- 	config = function()
+-- 		require("modules.editor.spectre")
+-- 	end,
+-- }
+-- editor["kylechui/nvim-surround"] = {
+-- 	opt = true,
+-- 	event = "BufReadPre",
+-- 	after = {
+-- 		"nvim-treesitter",
+-- 		"nvim-treesitter-textobjects",
+-- 	},
+-- 	config = function()
+-- 		require("modules.editor.surround")
+-- 	end,
+-- }
+-- editor["abecodes/tabout.nvim"] = {
+-- 	opt = true,
+-- 	event = "InsertEnter",
+-- 	wants = "nvim-treesitter",
+-- 	after = "nvim-cmp",
+-- 	config = function()
+-- 		require("modules.editor.tabout")
+-- 	end,
+-- }
 editor["andymass/vim-matchup"] = {
 	opt = true,
 	cmd = { "MatchupWhereAmI" },
@@ -162,8 +162,7 @@ editor["sindrets/diffview.nvim"] = {
 }
 editor["simrat39/symbols-outline.nvim"] = {
 	opt = true,
-	-- cmd = { "SymbolsOutline" },
-	event = "BufReadPost",
+	cmd = { "SymbolsOutline" },
 	config = function()
 		require("modules.editor.symbols-outline")
 	end,
@@ -187,20 +186,6 @@ editor["olambo/vi-viz"] = {
 		require("modules.editor.viz")
 	end,
 }
-editor["gaoDean/autolist.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.editor.autolist")
-	end,
-}
-editor["gbprod/stay-in-place.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.editor.stay-in-place")
-	end,
-}
 
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
@@ -222,10 +207,6 @@ editor["nvim-treesitter/playground"] = {
 	cmd = "TSPlaygroundToggle",
 }
 editor["nvim-treesitter/nvim-treesitter-textobjects"] = {
-	opt = true,
-	after = "nvim-treesitter",
-}
-editor["nvim-treesitter/nvim-treesitter-refactor"] = {
 	opt = true,
 	after = "nvim-treesitter",
 }

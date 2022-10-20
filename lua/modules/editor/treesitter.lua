@@ -89,20 +89,6 @@ require("nvim-treesitter.configs").setup({
 	},
 	matchup = { enable = true },
 	-- markid = { enable = true },
-	refactor = {
-		highlight_definitions = {
-			enable = true,
-			-- Set to false if you have an `updatetime` of ~100.
-			clear_on_cursor_move = true,
-		},
-		highlight_current_scope = { enable = false },
-		smart_rename = {
-			enable = true,
-			keymaps = {
-				smart_rename = "grr",
-			},
-		},
-	},
 })
 
 require("nvim-treesitter.install").prefer_git = true
