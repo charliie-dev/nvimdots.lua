@@ -186,6 +186,7 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
 - [neovimcraft](https://neovimcraft.com)
 - [LibHunt/neovim](https://www.libhunt.com/search?query=neovim)
 - [rockerBOO/awesome-neovim](https://github.com/rockerBOO/awesome-neovim)
+- [How I Vim](http://howivim.com/)
 
 ### Trendy neovim news
 
