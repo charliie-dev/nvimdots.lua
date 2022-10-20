@@ -37,12 +37,12 @@ local disable_distribution_plugins = function()
 	cmd([[let g:loaded_spellfile_plugin = 1]])
 
 	-- Whether to load netrw by default
-	-- cmd([[let g:loaded_netrw = 1]])
-	-- cmd([[let g:loaded_netrwFileHandlers = 1]])
-	-- cmd([[let g:loaded_netrwPlugin = 1]])
-	-- cmd([[let g:loaded_netrwSettings = 1]])
+	cmd([[let g:loaded_netrw = 1]])
+	cmd([[let g:loaded_netrwFileHandlers = 1]])
+	cmd([[let g:loaded_netrwPlugin = 1]])
+	cmd([[let g:loaded_netrwSettings = 1]])
 	-- newtrw liststyle: https://medium.com/usevim/the-netrw-style-options-3ebe91d42456
-	cmd([[let g:netrw_liststyle = 3]])
+	-- cmd([[let g:netrw_liststyle = 3]])
 
 	-- Do not load tohtml.vim
 	cmd([[let g:loaded_2html_plugin = 1]])
