@@ -1,12 +1,12 @@
 local lang = {}
 
--- lang["ekickx/clipboard-image.nvim"] = {
--- 	opt = true,
--- 	ft = "markdown",
--- 	config = function()
--- 		require("modules.lang.clipboard-image")
--- 	end,
--- }
+lang["gaoDean/autolist.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.lang.autolist")
+	end,
+}
 lang["preservim/vim-markdown"] = {
 	opt = true,
 	ft = "markdown",

@@ -1,10 +1,10 @@
 -- Disable header folding
 vim.g.vim_markdown_folding_disabled = true
 
--- Enable markdown conceal
-vim.opt_local.conceallevel = 2
-vim.g.vim_markdown_conceal = true
-vim.g.vim_markdown_conceal_code_blocks = false
+-- Markdown conceal
+vim.opt_local.conceallevel = 2 -- Links and text formatting
+vim.opt_local.concealcursor = "n" -- Reveal the conceal item in current line
+vim.g.vim_markdown_math = true
 
 -- Fenced languages syntax highlight
 vim.g.vim_markdown_fenced_languages = {
@@ -17,8 +17,6 @@ vim.g.vim_markdown_fenced_languages = {
 
 -- Highlight YAML/TOML/JSON front matter.
 vim.g.vim_markdown_frontmatter = true
-vim.g.vim_markdown_toml_frontmatter = true
-vim.g.vim_markdown_json_frontmatter = true
 
 -- Strikethrough uses two tildes.
 vim.g.vim_markdown_strikethrough = true
