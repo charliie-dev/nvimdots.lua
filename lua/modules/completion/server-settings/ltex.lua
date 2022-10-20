@@ -3,6 +3,6 @@
 
 return {
 	settings = {
-		ltex = {language = "en-US"},
+		ltex = { language = "en-US" },
 	},
 }
