@@ -169,7 +169,11 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
   - [Vim Cheat Sheet](https://vim.rtorr.com/)
   - [Learn Vimscript the Hard Way](https://learnvimscriptthehardway.stevelosh.com/)
   - [Learn Vim the Simple Way](https://www.vimified.com/), a web game to learn vim motions
+  - [vim-adventures](https://vim-adventures.com/), another web game to learn vim.
   - [BooleanCube/NeovimKeys](https://github.com/BooleanCube/NeovimKeys), offline vim motion game
+  - [ThePrimeagen/vim-be-good](https://github.com/ThePrimeagen/vim-be-good), a plugin by ThePrimeagen
+  - [ThePrimeagen/2-simple-steps](https://github.com/ThePrimeagen/2-simple-steps/blob/master/you_think_you_know_vim.ts), another vimtutor by ThePrimeagen
+  - [vimcdoc](https://github.com/yianwillis/vimcdoc), a vim doc in Chinese, could be a plugin, a program or a webpage
 
 ### Youtube channels
 
