@@ -120,6 +120,12 @@ completion["zbirenbaum/copilot-cmp"] = {
 	end,
 }
 
+completion["barreiroleo/ltex_extra.nvim"] = {
+	opt = true,
+	ft = "tex",
+	module = "ltex_extra",
+}
+
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get
 -- hover docs and function signatures, but it takes too much time to load all dirs, use it if needed.
 -- completion["folke/neodev.nvim"] = {

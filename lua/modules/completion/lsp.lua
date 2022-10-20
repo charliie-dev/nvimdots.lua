@@ -116,8 +116,27 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 	end
 
 	if server == "ltex" then
+		local ltex_attach = function(client, bufnr)
+			lsp_keymaps(bufnr)
+			require("lsp_signature").on_attach({
+				bind = true,
+				use_lspsaga = true,
+				floating_window = true,
+				fix_pos = true,
+				hint_enable = true,
+				hi_parameter = "Search",
+				handler_opts = { "double" },
+			})
+			require("ltex_extra").setup({
+				load_langs = { "en-US" },
+				init_check = true,
+				path = "./spell",
+				log_level = "info",
+			})
+		end
 		local ltex_opts = require("modules.completion.server-settings.ltex")
-		local extra_opts = vim.tbl_deep_extend("force", ltex_opts, opts)
+		local extra_opts =
+			vim.tbl_deep_extend("force", ltex_opts, { on_attach = ltex_attach, capabilities = opts.capabilities })
 		lspconfig.ltex.setup(extra_opts)
 	end
 
