@@ -153,7 +153,7 @@ Tested with [dstein64/vim-startuptime](https://github.com/dstein64/vim-startupti
   />
 </p>
 
-Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a cli tool written in `Go`.
+Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a CLI tool written in `Go`.
 
 # 🪨 Materials
 
@@ -175,7 +175,7 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
   - [ThePrimeagen/2-simple-steps](https://github.com/ThePrimeagen/2-simple-steps/blob/master/you_think_you_know_vim.ts), another vimtutor by ThePrimeagen
   - [vimcdoc](https://github.com/yianwillis/vimcdoc), a vim doc in Chinese, could be a plugin, a program or a webpage
 
-### Youtube channels
+### YouTube channels
 
 - [ThePrimeagen/Vim As Your Editor](https://www.youtube.com/playlist?list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R), **BLAZINGLY FAST**
   alpha vimfluencer
@@ -193,7 +193,7 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
 - [This Week In Neovim, aka TWiN](https://this-week-in-neovim.org/), highly recommended
 - [Reddit/neovim](https://www.reddit.com/r/neovim/)
 - [Twitter/neovim](https://twitter.com/Neovim)
-- [Neovim Offical News](https://neovim.io/news/), not so up-to-date
+- [Neovim Official News](https://neovim.io/news/), not so up-to-date
 
 # 🎉 Acknowledgment
 
