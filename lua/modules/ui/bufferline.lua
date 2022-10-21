@@ -46,13 +46,6 @@ require("bufferline").setup({
 				separator = true,
 			},
 			{
-				filetypea = "Outline",
-				text = "Symbol Outline",
-				text_align = "center",
-				highlight = "Directory",
-				separator = true,
-			},
-			{
 				filetype = "lspsagaoutline",
 				text = "Lspsaga Outline",
 				text_align = "center",
