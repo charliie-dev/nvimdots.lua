@@ -46,7 +46,6 @@ ui["f-person/git-blame.nvim"] = {
 ui["lewis6991/gitsigns.nvim"] = {
 	opt = true,
 	event = { "BufReadPost", "BufNewFile" },
-	requires = { "nvim-lua/plenary.nvim" },
 	config = function()
 		require("modules.ui.gitsigns")
 	end,
