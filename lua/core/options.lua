@@ -105,6 +105,13 @@ local function load_options()
 		writebackup = false,
 	}
 
+	for name, value in pairs(global_local) do
+		vim.o[name] = value
+	end
+
+	-- Add this line will make "-" part of the word
+	vim.opt.iskeyword:append("-")
+
 	local function isempty(s)
 		return s == nil or s == ""
 	end
@@ -130,10 +137,6 @@ local function load_options()
 
 	-- custom ruby provider
 	vim.g.ruby_host_prog = vim.env.HOME .. "/tools/ruby/bin/neovim-ruby-host"
-
-	for name, value in pairs(global_local) do
-		vim.o[name] = value
-	end
 end
 
 load_options()
