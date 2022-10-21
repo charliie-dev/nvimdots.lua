@@ -11,6 +11,7 @@ require("mason-tool-installer").setup({
 
 		-- LSP
 		"bash-language-server",
+		"clangd",
 		"emmet-ls", -- HTML lsp
 		"json-lsp",
 		"ltex-ls",
@@ -29,7 +30,6 @@ require("mason-tool-installer").setup({
 		"flake8", -- for catching errors & check some PEP8 violations
 		"isort", -- Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.
 		"misspell", -- Correct commonly misspelled English words in source files.
-		"codespell", -- check code for common misspellings.
 		"markdownlint", -- A Node.js style checker and lint tool for Markdown/CommonMark files.
 		"cbfmt", -- A rust cli tool to format codeblocks in markdown/org. Remember to use `.cbfmt.toml` to set foramtters for each lang.
 

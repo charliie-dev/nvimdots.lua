@@ -16,9 +16,6 @@ null_ls.setup({
 		formatting.stylua,
 		formatting.shfmt,
 		formatting.isort,
-		formatting.codespell.with({
-			extra_args = { "--ignore-words=~/.config/nvim/spell/en.utf-8.add" },
-		}),
 		formatting.markdownlint,
 		formatting.cbfmt,
 		diagnostics.eslint_d,
