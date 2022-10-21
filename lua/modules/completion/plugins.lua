@@ -50,13 +50,13 @@ completion["ray-x/lsp_signature.nvim"] = {
 	opt = true,
 	after = "nvim-lspconfig",
 }
-completion["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
-	opt = true,
-	after = "nvim-lspconfig",
-	config = function()
-		require("modules.completion.lines")
-	end,
-}
+-- completion["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = { -- not annoying disable for now
+-- 	opt = true,
+-- 	after = "nvim-lspconfig",
+-- 	config = function()
+-- 		require("modules.completion.lines")
+-- 	end,
+-- }
 completion["hrsh7th/nvim-cmp"] = {
 	event = "BufReadPost",
 	after = { "LuaSnip" },

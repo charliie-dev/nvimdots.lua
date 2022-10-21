@@ -37,7 +37,19 @@ set_sidebar_icons()
 local colors = get_palette()
 
 require("lspsaga").init_lsp_saga({
-	border_style = "plus",
+	-- keybinds for navigation in lspsaga window
+	move_in_saga = { prev = "<C-k>", next = "<C-j>" },
+	-- use enter to open file with finder
+	-- NOTE: <C-o> go to older position in jump list
+	-- NOTE: <C-i> go to newer position in jump list
+	finder_action_keys = {
+		open = "<CR>",
+	},
+	-- use enter to open file with definition preview
+	definition_action_keys = {
+		edit = "<CR>",
+	},
+	border_style = "bold",
 	code_action_icon = icons.ui.Lightbulb,
 	diagnostic_header = {
 		icons.diagnostics.Error_alt,
@@ -167,14 +179,3 @@ vim.api.nvim_create_autocmd("User", {
 		config_winbar_or_statusline()
 	end,
 })
-
-local opts = { noremap = true, silent = true }
--- vim.keymap.set("n", "gl", "<cmd>Lspsaga show_line_diagnostics<cr>", opts)
--- vim.keymap.set("n", "gcl", "<cmd>Lspsaga show_cursor_diagnostics<cr>", opts)
-vim.keymap.set("n", "<C-n>", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
-vim.keymap.set("n", "<C-p>", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
-vim.keymap.set("n", "gp", "<cmd>Lspsaga peek_definition<cr>", opts)
-vim.keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<cr>", opts)
-vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-vim.keymap.set("n", "<F2>", "<cmd>Lspsaga rename<cr>", { silent = true })
--- NOTE: lsp rename can only be used if the it's recongnized by lsp; otherwise use Spectre.nvim

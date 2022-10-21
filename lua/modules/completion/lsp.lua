@@ -4,6 +4,16 @@ vim.api.nvim_command([[packadd lsp_signature.nvim]])
 vim.api.nvim_command([[packadd lspsaga.nvim]])
 vim.api.nvim_command([[packadd cmp-nvim-lsp]])
 
+-- Custom vertual text highlight groups to make error hint looks cool
+local util = require("utils")
+local c = require("kanagawa.colors").setup().diag
+local bg = require("kanagawa.colors").setup().bg
+local alpha = 0.4
+vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = c.error, bg = util.blend(c.error, bg, alpha) })
+vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = c.warning, bg = util.blend(c.warning, bg, alpha) })
+vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = c.info, bg = util.blend(c.info, bg, alpha) })
+vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = c.hint, bg = util.blend(c.hint, bg, alpha) })
+
 local lspconfig = require("lspconfig")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
@@ -29,32 +39,27 @@ mason_lspconfig.setup({
 })
 
 local function lsp_keymaps(bufnr)
-	local opts = { noremap = true, silent = true }
-	local buf_keymap = vim.api.nvim_buf_set_keymap
-	buf_keymap(bufnr, "n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
-	buf_keymap(bufnr, "n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
-	-- NOTE: many servers do not support the Declaration
-	buf_keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-	-- replace by Lspsaga's hover_doc
-	-- buf_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-	buf_keymap(bufnr, "n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
-	-- NOTE: like Lspsaga's lsp_finder
-	buf_keymap(bufnr, "n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
-	-- replace by Lspsaga's diagnostics
-	-- buf_keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-	-- buf_keymap(bufnr, "n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-	-- NOTE: nvim 0.8 use vim.lsp.buf.format
-	vim.api.nvim_command([[ command! Format execute 'lua vim.lsp.buf.format({ async = true })' ]])
-	buf_keymap(bufnr, "n", "<leader>f", "<cmd>Format<cr>", opts)
-	buf_keymap(bufnr, "n", "ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+	local opts = { noremap = true, silent = true, buffer = bufnr }
+	local keymap = vim.keymap.set
+	keymap("n", "gf", "<cmd>Lspsaga lsp_finder<cr>", opts)
+	keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+	keymap("n", "gd", "<cmd>Lspsaga peek_definition<cr>", opts)
+	keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+	keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+	keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+	keymap("n", "<leader>d", "<cmd>Lspsaga show_line_diagnostics<cr>", opts)
+	keymap("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<cr>", opts)
+	keymap("n", "<leader>o", "<cmd>LSoutlineToggle<cr>", opts)
+	keymap("n", "<C-n>", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
+	keymap("n", "<C-p>", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
+	keymap("n", "ca", "<cmd>Lspsaga code_action<cr>", opts)
+	keymap("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
+	keymap("n", "<F2>", "<cmd>Lspsaga rename<cr>", opts)
 	-- NOTE: lsp rename can only be used if the it's recongnized by lsp; otherwise use Spectre.nvim
-	buf_keymap(bufnr, "n", "rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-	-- buf_keymap(bufnr, "n", "[d", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
-	-- buf_keymap(bufnr, "n", "]d", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
-	-- buf_keymap(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-	-- buf_keymap(bufnr, 'n', '<leader>lwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-	-- buf_keymap(bufnr, 'n', '<leader>lwr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-	-- buf_keymap(bufnr, 'n', '<leader>lwl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+	-- keymap("n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts)
+	-- keymap("n", "<leader>lwa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>", opts)
+	-- keymap("n", "<leader>lwr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>", opts)
+	-- keymap("n", "<leader>lwl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", opts)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()

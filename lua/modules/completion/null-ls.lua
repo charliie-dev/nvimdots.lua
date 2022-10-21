@@ -15,13 +15,13 @@ null_ls.setup({
 		formatting.black.with({ extra_args = { "--fast" } }),
 		formatting.stylua,
 		formatting.shfmt,
-		formatting.eslint_d,
 		formatting.isort,
 		formatting.codespell.with({
 			extra_args = { "--ignore-words=~/.config/nvim/spell/en.utf-8.add" },
 		}),
 		formatting.markdownlint,
 		formatting.cbfmt,
+		diagnostics.eslint_d,
 		diagnostics.flake8,
 		diagnostics.shellcheck,
 		diagnostics.markdownlint.with({
