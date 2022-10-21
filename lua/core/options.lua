@@ -82,7 +82,7 @@ local function load_options()
 		startofline = false,
 		swapfile = false,
 		switchbuf = "useopen",
-		synmaxcol = 2500,
+		synmaxcol = 500,
 		tabstop = 4,
 		termguicolors = true,
 		timeout = true,
