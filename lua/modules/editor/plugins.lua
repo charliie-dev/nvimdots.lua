@@ -143,10 +143,6 @@ editor["andymass/vim-matchup"] = {
 	cmd = { "MatchupWhereAmI" },
 	after = "nvim-treesitter",
 }
-editor["romainl/vim-cool"] = {
-	opt = true,
-	event = { "CursorMoved", "InsertEnter" },
-}
 editor["famiu/bufdelete.nvim"] = {
 	opt = true,
 	cmd = { "Bdelete", "Bwipeout", "Bdelete!", "Bwipeout!" },
