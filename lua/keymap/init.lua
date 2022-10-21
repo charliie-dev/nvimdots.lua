@@ -23,15 +23,13 @@ keymap("n", "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", opts)
 
 --- Telescope keymap
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>lg", "<cmd>Telescope live_grep<cr>", opts)
-keymap("n", "<leader>\\", "<cmd>Telescope buffers<cr>", opts)
-keymap("n", "<leader>;", "<cmd>Telescope help_tags<cr>", opts)
+keymap("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", opts)
+keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
+keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", opts)
 -- Telescope zoxide
 keymap("n", "<leader>z", "<cmd>lua require('telescope').extensions.zoxide.list{}<cr>", opts)
 -- Terminal project(git repo)
 keymap("n", "<leader>rp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
--- Telescope harpoon
-keymap("n", "<leader>hp", "<cmd>Telescope harpoon marks<cr>", opts)
 ---
 
 --- NeoTree
