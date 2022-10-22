@@ -9,8 +9,6 @@ keymap("n", "<C-o>", "<cmd>so %<cr>", { noremap = true })
 keymap("n", "<C-s>", "<cmd>w<cr>", { noremap = true })
 -- Quick Exit from normal mode
 keymap("n", "jk", "<esc><cmd>q<cr>", { silent = true })
--- Format
-keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.format({ async = false })<cr>", { noremap = true })
 -- Increment/decrement
 keymap("n", "+", "<C-a>", opts)
 keymap("n", "-", "<C-x>", opts)
