@@ -68,8 +68,7 @@
 
 ```txt
 ├── after/
-│   ├── ftplugin/                  filetype-based rules
-│   └── queries/                   treesitter injection
+│   └── ftplugin/                  filetype-based rules
 ├── fonts/                         nerdfonts
 ├── ftdetect/                      filetype detection
 ├── init.lua
@@ -82,19 +81,21 @@
 │   │   ├── options.lua            neovim options
 │   │   └── pack.lua               custom packer wrapper
 │   ├── keymap/                    plugin-related keymaps
-│   └── modules/                   plugin-configs
-│       ├── completion/            nvim-cmp + LSP
-│       │   ├── plugins.lua
-│       │   └── server-settings/   settings for each LSP
-│       ├── editor/
-│       │   └── plugins.lua
-│       ├── lang
-│       │   └── plugins.lua
-│       ├── tools/
-│       │   ├── dap/               DAP settings for each language
-│       │   └── plugins.lua
-│       └── ui/
-│           └── plugins.lua
+│   ├── modules/                   plugin-configs
+│   │   ├── completion/            nvim-cmp + LSP
+│   │   │   ├── plugins.lua
+│   │   │   └── server-settings/   settings for each LSP
+│   │   ├── editor/
+│   │   │   └── plugins.lua
+│   │   ├── lang
+│   │   │   └── plugins.lua
+│   │   ├── tools/
+│   │   │   ├── dap/               DAP settings for each language
+│   │   │   └── plugins.lua
+│   │   └── ui/
+│   │       └── plugins.lua
+│   └── utils                      utility functions
+│       └── init.lua
 ├── snippets/
 │   └── package.json               how `LuaSnip` reads snippets, vscode-style
 ├── spell/                         custom spelling correction
