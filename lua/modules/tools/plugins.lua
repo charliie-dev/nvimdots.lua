@@ -25,6 +25,25 @@ tools["sudormrfbin/cheatsheet.nvim"] = {
 		require("modules.tools.cheatsheet")
 	end,
 }
+tools["ja-ford/delaytrain.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.tools.delaytrain")
+	end,
+}
+tools["monaqa/dial.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	module = {
+		"dial.augend",
+		"dial.config",
+	},
+	requires = { "nvim-lua/plenary.nvim" },
+	config = function()
+		require("modules.tools.dial")
+	end,
+}
 -- tools["ThePrimeagen/harpoon"] = {
 -- 	opt = true,
 -- 	event = "BufReadPost",
@@ -33,6 +52,30 @@ tools["sudormrfbin/cheatsheet.nvim"] = {
 -- 		require("modules.tools.harpoon")
 -- 	end,
 -- }
+tools["samodostal/image.nvim"] = {
+	opt = true,
+
+	event = "BufReadPost",
+	requires = "nvim-lua/plenary.nvim",
+
+	config = function()
+		require("modules.tools.image")
+	end,
+}
+tools["nvim-neo-tree/neo-tree.nvim"] = {
+	opt = true,
+	branch = "v2.x",
+	module = "neo-tree",
+	cmd = { "Neotree", "NeoTreeFloatToggle" },
+	requires = {
+		"kyazdani42/nvim-web-devicons",
+		"nvim-lua/plenary.nvim",
+		"MunifTanjim/nui.nvim",
+	},
+	config = function()
+		require("modules.tools.neo-tree")
+	end,
+}
 tools["AckslD/nvim-neoclip.lua"] = {
 	opt = true,
 	event = { "CmdlineEnter", "TextYankPost" },
@@ -52,20 +95,6 @@ tools["AckslD/nvim-neoclip.lua"] = {
 -- 		require("modules.tools.nvim-tree")
 -- 	end,
 -- }
-tools["nvim-neo-tree/neo-tree.nvim"] = {
-	opt = true,
-	branch = "v2.x",
-	module = "neo-tree",
-	cmd = { "Neotree", "NeoTreeFloatToggle" },
-	requires = {
-		"kyazdani42/nvim-web-devicons",
-		"nvim-lua/plenary.nvim",
-		"MunifTanjim/nui.nvim",
-	},
-	config = function()
-		require("modules.tools.neo-tree")
-	end,
-}
 -- tools["ojroques/nvim-osc52"] = {
 -- 	opt = true,
 -- 	event = "BufReadPost",
@@ -157,21 +186,6 @@ tools["gelguy/wilder.nvim"] = {
 tools["mbbill/undotree"] = {
 	opt = true,
 	cmd = "UndotreeToggle",
-}
-tools["samodostal/image.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	requires = "nvim-lua/plenary.nvim",
-	config = function()
-		require("modules.tools.image")
-	end,
-}
-tools["ja-ford/delaytrain.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.tools.delaytrain")
-	end,
 }
 
 ----------------------------------------------------------------------
