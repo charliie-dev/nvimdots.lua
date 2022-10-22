@@ -118,17 +118,17 @@ editor["nacro90/numb.nvim"] = {
 -- 		require("modules.editor.spectre")
 -- 	end,
 -- }
--- editor["kylechui/nvim-surround"] = {
--- 	opt = true,
--- 	event = "BufReadPre",
--- 	after = {
--- 		"nvim-treesitter",
--- 		"nvim-treesitter-textobjects",
--- 	},
--- 	config = function()
--- 		require("modules.editor.surround")
--- 	end,
--- }
+editor["kylechui/nvim-surround"] = {
+	opt = true,
+	event = "BufReadPre",
+	after = {
+		"nvim-treesitter",
+		"nvim-treesitter-textobjects",
+	},
+	config = function()
+		require("modules.editor.surround")
+	end,
+}
 -- editor["abecodes/tabout.nvim"] = {
 -- 	opt = true,
 -- 	event = "InsertEnter",
