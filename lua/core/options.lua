@@ -89,6 +89,7 @@ local function load_options()
 		timeoutlen = 500,
 		ttimeout = true,
 		ttimeoutlen = 0,
+		ttyfast = true,
 		undodir = global.cache_dir .. "undo/",
 		undofile = true,
 		updatetime = 100,
