@@ -125,20 +125,20 @@ function plugins.load_compile()
 	if fn.filereadable(packer_compiled) == 1 then
 		require("_compiled")
 	else
-		require("core.pack").back_compile()
+		plugins.back_compile()
 	end
 
 	local cmds = { "Compile", "Install", "Update", "Sync", "Clean", "Status" }
 	for _, cmd in ipairs(cmds) do
 		api.nvim_create_user_command("Packer" .. cmd, function()
-			require("core.pack")[cmd == "Compile" and "back_compile" or string.lower(cmd)]()
+			plugins[cmd == "Compile" and "back_compile" or string.lower(cmd)]()
 		end, { force = true })
 	end
 
 	api.nvim_create_autocmd("User", {
 		pattern = "PackerComplete",
 		callback = function()
-			require("core.pack").back_compile()
+			plugins.back_compile()
 		end,
 	})
 end
