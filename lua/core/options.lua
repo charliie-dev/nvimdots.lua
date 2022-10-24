@@ -48,7 +48,7 @@ local function load_options()
 		infercase = true,
 		jumpoptions = "stack",
 		laststatus = 3, -- global status line
-		lazyredraw = true,
+		-- lazyredraw = true,
 		linebreak = true,
 		list = true,
 		listchars = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←",
@@ -89,7 +89,7 @@ local function load_options()
 		timeoutlen = 500,
 		ttimeout = true,
 		ttimeoutlen = 0,
-		ttyfast = true,
+		-- ttyfast = true,
 		undodir = global.cache_dir .. "undo/",
 		undofile = true,
 		updatetime = 100,
