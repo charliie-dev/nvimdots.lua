@@ -5,6 +5,7 @@ cmd([[packadd telescope-project.nvim]])
 cmd([[packadd telescope-frecency.nvim]])
 cmd([[packadd telescope-zoxide]])
 cmd([[packadd telescope-env.nvim]])
+cmd([[packadd dir-telescope.nvim]])
 
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
 
@@ -140,14 +141,23 @@ require("telescope._extensions.zoxide.config").setup({
 	},
 })
 
+-- dir-telescope config
+-- this plugins are useful for big project, your can select a dir first and search within the dir,
+--   instead of searching the whole project.
+require("dir-telescope").setup({
+	hidden = true,
+	respect_gitignore = true,
+})
+-- INFO: <C-q> will save your queries in a quickfix list. this is the default binding for telescope.nvim
+
 -- plugins should load after setup function
--- require("telescope").load_extension("command_palette")
 -- require("telescope").load_extension("dap")
 require("telescope").load_extension("env")
 require("telescope").load_extension("frecency")
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("project")
 require("telescope").load_extension("zoxide")
+require("telescope").load_extension("dir")
 require("telescope").load_extension("notify")
 -- require("telescope").load_extension("harpoon")
 require("telescope").load_extension("neoclip")

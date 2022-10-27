@@ -233,6 +233,16 @@ tools["LinArcX/telescope-env.nvim"] = {
 	cmd = "Telescope env",
 	after = "telescope.nvim",
 }
+tools["princejoogie/dir-telescope.nvim"] = {
+	opt = true,
+	cmd = {
+		"Telescope dir live_grep",
+		"Telescope dir find_files",
+		"GrepInDirectory",
+		"FileInDirectory",
+	},
+	after = "telescope.nvim",
+}
 
 ----------------------------------------------------------------------
 --                           DAP Plugins                            --
