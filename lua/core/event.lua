@@ -105,7 +105,8 @@ function autocmd.load_autocmds()
 			},
 			{
 				-- "CmdwinEnter,CmdlineEnter",
-				"CmdlineChanged",
+				-- "CmdlineChanged",
+				"CmdlineLeave",
 				"*",
 				-- "set hlsearch",
 				"set hlsearch | HlSearchLensEnable",
