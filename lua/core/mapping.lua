@@ -44,6 +44,8 @@ keymap("n", "to", "<cmd>tabonly<cr>", opts)
 -- NOTE: Keep things in paste register after paste it when visual selecting things to replace.
 -- useful keymaps to replace text after copying thing
 keymap("x", "<leader>p", '"_dP', opts)
+keymap("n", "x", '"_x', opts)
+keymap("n", "X", '"_X', opts)
 
 -- Insert mode
 -- Save in insert mode
