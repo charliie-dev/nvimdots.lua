@@ -65,7 +65,7 @@ local disable_distribution_plugins = function()
 	-- Disable remote plugins
 	-- NOTE: Disabling rplugin.vim will show error for `wilder.nvim` in :checkhealth,
 	-- NOTE:  but since it's config doesn't require python rtp, it's fine to ignore.
-	-- cmd([[let g:loaded_remote_plugins = 1]])
+	cmd([[let g:loaded_remote_plugins = 1]])
 end
 
 local leader_map = function()
