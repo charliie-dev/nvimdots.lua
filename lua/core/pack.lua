@@ -13,12 +13,19 @@ local use_ssh = settings.use_ssh
 
 local Packer = {}
 Packer.__index = Packer
+
 function Packer:load_plugins()
 	self.repos = {}
 
 	local get_plugins_list = function()
 		local list = {}
 		local tmp = vim.split(fn.globpath(modules_dir, "*/plugins.lua"), "\n")
+		local subtmp = vim.split(fn.globpath(modules_dir, "*/user/plugins.lua"), "\n")
+		for _, v in ipairs(subtmp) do
+			if v ~= "" then
+				table.insert(tmp, v)
+			end
+		end
 		for _, f in ipairs(tmp) do
 			list[#list + 1] = f:sub(#modules_dir - 6, -1)
 		end
@@ -80,7 +87,7 @@ function Packer:init_ensure_plugins()
 		local cmd = (
 			(
 				use_ssh and "!git clone git@github.com:wbthomason/packer.nvim.git "
-				or "!git clone https://github.com/wbthomason/packer.nvim"
+				or "!git clone https://github.com/wbthomason/packer.nvim "
 			) .. packer_dir
 		)
 		api.nvim_command(cmd)
