@@ -14,6 +14,8 @@ keymap("n", "+", "<C-a>", opts)
 keymap("n", "-", "<C-x>", opts)
 -- Select all
 keymap("n", "<C-a>", "gg<S-v>G", opts)
+-- Do nothing (useful in mappings)
+keymap("n", "Q", "<nop>", opts)
 
 --- Buffer keymap (A buffer is in-memory text of a file.)
 -- Move one buffer(window) right
@@ -78,3 +80,12 @@ local blink = function()
 end
 
 keymap("n", "<leader>cb", blink)
+
+-- Make Ascii art font
+keymap("n", "<leader>aA", "<cmd>.!toilet -w 200 -f standard<cr>", opts)
+keymap("n", "<leader>aa", "<cmd>.!toilet -w 200 -f small<cr>", opts)
+-- Make Ascii border
+keymap("n", "<leader>ab", "<cmd>.!toilet -f term -F border<cr>", opts)
+-- ┌────┐
+-- │test│
+-- └────┘
