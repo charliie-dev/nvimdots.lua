@@ -16,6 +16,8 @@ local lspconfig = require("lspconfig")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
 
+require("lspconfig.ui.windows").default_options.border = "double"
+
 mason.setup()
 mason_lspconfig.setup({
 	ensure_installed = {

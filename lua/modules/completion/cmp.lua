@@ -12,13 +12,13 @@ end
 
 local border = function(hl)
 	return {
-		{ "╭", hl },
+		{ "┌", hl },
 		{ "─", hl },
-		{ "╮", hl },
+		{ "┐", hl },
 		{ "│", hl },
-		{ "╯", hl },
+		{ "┘", hl },
 		{ "─", hl },
-		{ "╰", hl },
+		{ "└", hl },
 		{ "│", hl },
 	}
 end
