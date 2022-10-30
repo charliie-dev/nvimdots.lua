@@ -79,6 +79,10 @@ ui["kevinhwang91/nvim-hlslens"] = {
 		require("modules.ui.hlslens")
 	end,
 }
+ui["romainl/vim-cool"] = {
+	opt = true,
+	after = { "nvim-hlslens" },
+}
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	opt = true,
 	event = "BufReadPost",

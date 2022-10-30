@@ -104,20 +104,6 @@ function autocmd.load_autocmds()
 				"*",
 				"set relativenumber",
 			},
-			{
-				-- "CmdwinEnter,CmdlineEnter",
-				-- "CmdlineChanged",
-				"CmdlineLeave",
-				"*",
-				-- "set hlsearch",
-				"set hlsearch | HlSearchLensEnable",
-			},
-			{
-				"CursorMovedI",
-				"*",
-				-- "set nohlsearch",
-				"set nohlsearch | HlSearchLensDisable",
-			},
 		},
 	}
 
