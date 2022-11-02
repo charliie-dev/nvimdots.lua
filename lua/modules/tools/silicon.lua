@@ -1,27 +1,28 @@
 require("silicon").setup({
-
-	-- The following key is required if you want to save image to file instead of clipboard
-	output = "./silicon.png",
-	-- The following keys are all optional
-	-- with default values
-	font = "Hack=20",
-	theme = "Monokai Extended",
-	background = "#ABB8C3",
-	shadow = {
-		blur_radius = 0.0,
-		offset_x = 0,
-		offset_y = 0,
-		color = "#555",
-	},
-	pad_horiz = 100,
-	pad_vert = 80,
-	line_number = false,
-	line_pad = 1,
-	line_offset = 1,
-	tab_width = 4,
-	round_corner = true,
-	window_controls = true,
+	theme = "Dracula",
+	output = string.format(
+		"./SILICON_%s-%s-%s_%s-%s.png",
+		os.date("%Y"),
+		os.date("%m"),
+		os.date("%d"),
+		os.date("%H"),
+		os.date("%M")
+	), -- auto generate file name based on time (absolute or relative to cwd)
+	bgColor = vim.g.terminal_color_5,
+	bgImage = "", -- path to image, must be png
+	roundCorner = true,
+	windowControls = true,
+	lineNumber = false,
+	font = "monospace",
+	lineOffset = 1, -- from where to start line number
+	linePad = 2, -- padding between lines
+	padHoriz = 80, -- Horizontal padding
+	padVert = 100, -- vertical padding
+	shadowBlurRadius = 10,
+	shadowColor = "#555555",
+	shadowOffsetX = 0,
+	shadowOffsetY = 0,
 })
 
--- NOTE: If you have issue copying images to the clipboard, for example you're in a wsl.
--- NOTE: Please assign /path/to/file.png after :Silicon.
+-- NOTE: u have to install silicon first.
+-- NOTE: https://github.com/aloxaf/silicon

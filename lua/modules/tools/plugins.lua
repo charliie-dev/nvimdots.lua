@@ -95,13 +95,6 @@ tools["AckslD/nvim-neoclip.lua"] = {
 -- 		require("modules.tools.nvim-tree")
 -- 	end,
 -- }
--- tools["ojroques/nvim-osc52"] = {
--- 	opt = true,
--- 	event = "BufReadPost",
--- 	config = function()
--- 		require("modules.tools.osc52")
--- 	end,
--- }
 -- tools["bennypowers/nvim-regexplainer"] = {
 -- 	opt = true,
 -- 	cmd = { "RegexplainerToggle", "RegexplainerShow" },
@@ -120,10 +113,10 @@ tools["sidebar-nvim/sidebar.nvim"] = {
 		require("modules.tools.sidebar")
 	end,
 }
-tools["krivahtoo/silicon.nvim"] = {
-	run = "./install.sh build",
+tools["narutoxy/silicon.lua"] = {
 	opt = true,
-	cmd = "Silicon",
+	-- cmd = "Silicon",
+	event = "BufReadPost",
 	config = function()
 		require("modules.tools.silicon")
 	end,
