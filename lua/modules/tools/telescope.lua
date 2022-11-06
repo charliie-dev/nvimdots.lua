@@ -6,6 +6,9 @@ cmd([[packadd telescope-frecency.nvim]])
 cmd([[packadd telescope-zoxide]])
 cmd([[packadd telescope-env.nvim]])
 cmd([[packadd dir-telescope.nvim]])
+cmd([[packadd git-worktree.nvim]])
+cmd([[packadd nvim-notify]])
+cmd([[packadd nvim-neoclip.lua]])
 
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
 
@@ -162,3 +165,4 @@ require("telescope").load_extension("dir")
 require("telescope").load_extension("notify")
 -- require("telescope").load_extension("harpoon")
 require("telescope").load_extension("neoclip")
+require("telescope").load_extension("git_worktree")

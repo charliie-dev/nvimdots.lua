@@ -44,6 +44,18 @@ tools["monaqa/dial.nvim"] = {
 		require("modules.tools.dial")
 	end,
 }
+tools["ThePrimeagen/git-worktree.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	module = "git-worktree",
+	requires = {
+		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-telescope/telescope.nvim" },
+	},
+	config = function()
+		require("modules.tools.git-worktree")
+	end,
+}
 -- tools["ThePrimeagen/harpoon"] = {
 -- 	opt = true,
 -- 	event = "BufReadPost",
@@ -194,6 +206,7 @@ tools["nvim-telescope/telescope.nvim"] = {
 		-- "harpoon",
 		"nvim-notify",
 		"nvim-neoclip.lua",
+		"git-worktree.nvim",
 	},
 	requires = {
 		{ "nvim-lua/plenary.nvim" },
