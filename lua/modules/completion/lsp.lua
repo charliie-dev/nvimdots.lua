@@ -136,7 +136,7 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 				load_langs = { "en-US" },
 				init_check = true,
 				path = "./spell",
-				log_level = "info",
+				log_level = "error",
 			})
 		end
 		local ltex_opts = require("modules.completion.server-settings.ltex")
