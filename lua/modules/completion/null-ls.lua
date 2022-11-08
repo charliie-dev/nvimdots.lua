@@ -27,6 +27,9 @@ null_ls.setup({
 		diagnostics.markdownlint.with({
 			extra_args = { "--disable MD033" },
 		}),
+		diagnostics.write_good.with({
+			filetypes = { "markdown", "text" },
+		}),
 		-- null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim, comment out to avoid code_actions lightball
 	},
 	on_attach = function(client, bufnr)

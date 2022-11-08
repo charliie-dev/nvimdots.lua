@@ -36,6 +36,7 @@ require("mason-tool-installer").setup({
 		-- Linter
 		"shellcheck", -- ShellCheck, a static analysis tool for shell scripts.
 		"eslint_d", -- Javascript Linter, but faster
+		"write-good", -- Linter for English prose
 	},
 
 	-- if set to true this will check each tool for updates. If updates
