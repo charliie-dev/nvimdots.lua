@@ -133,13 +133,13 @@ tools["narutoxy/silicon.lua"] = {
 		require("modules.tools.silicon")
 	end,
 }
--- tools["ibhagwan/smartyank.nvim"] = {
--- 	opt = true,
--- 	event = "BufReadPost",
--- 	config = function()
--- 		require("modules.tools.smartyank")
--- 	end,
--- }
+tools["ibhagwan/smartyank.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.tools.smartyank")
+	end,
+}
 -- tools["michaelb/sniprun"] = {
 -- 	opt = true,
 -- 	run = "bash ./install.sh",
