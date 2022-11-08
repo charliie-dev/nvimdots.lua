@@ -1,3 +1,5 @@
+local use_ssh = require("core.settings").use_ssh
+
 vim.api.nvim_set_option_value("foldmethod", "expr", {})
 vim.api.nvim_set_option_value("foldexpr", "nvim_treesitter#foldexpr()", {})
 
@@ -98,9 +100,11 @@ require("nvim-treesitter.configs").setup({
 })
 
 require("nvim-treesitter.install").prefer_git = true
-local parsers = require("nvim-treesitter.parsers").get_parser_configs()
-for _, p in pairs(parsers) do
-	p.install_info.url = p.install_info.url:gsub("https://github.com/", "git@github.com:")
+if use_ssh then
+	local parsers = require("nvim-treesitter.parsers").get_parser_configs()
+	for _, p in pairs(parsers) do
+		p.install_info.url = p.install_info.url:gsub("https://github.com/", "git@github.com:")
+	end
 end
 
 -- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
