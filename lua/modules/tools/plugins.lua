@@ -129,6 +129,7 @@ tools["narutoxy/silicon.lua"] = {
 	opt = true,
 	-- cmd = "Silicon",
 	event = "BufReadPost",
+	requires = { "nvim-lua/plenary.nvim" },
 	config = function()
 		require("modules.tools.silicon")
 	end,
@@ -167,6 +168,13 @@ tools["folke/trouble.nvim"] = {
 	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
 	config = function()
 		require("modules.tools.trouble")
+	end,
+}
+tools["samjwill/nvim-unception"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.tools.unception")
 	end,
 }
 tools["folke/which-key.nvim"] = {
