@@ -120,7 +120,17 @@ ui["MunifTanjim/nui.nvim"] = {
 ui["kyazdani42/nvim-web-devicons"] = {
 	opt = true,
 	module = "nvim-web-devicons",
+	-- config = function()
+	-- 	require("nvim-web-devicons").setup({
+	-- 		override = require("nvim-material-icon").get_icons(),
+	-- 	})
+	-- end,
 }
+-- The icons of this plugin still needs some work.
+-- ui["DaikyXendo/nvim-material-icon"] = {
+-- 	opt = true,
+-- 	module = "nvim-material-icon",
+-- }
 ui["anuvyklack/pretty-fold.nvim"] = {
 	opt = true,
 	after = { "nvim-treesitter" },
