@@ -1,37 +1,53 @@
 local null_ls = require("null-ls")
 local disabled_worksapces = require("core.settings").format_disabled_dirs
 
--- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-local formatting = null_ls.builtins.formatting
--- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-local diagnostics = null_ls.builtins.diagnostics
+-- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
+local b = null_ls.builtins
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
+local with_diagnostics_code = function(builtin)
+	return builtin.with({
+		diagnostics_format = "#{m} [#{c}]",
+	})
+end
+
+local sources = {
+	-- formatting
+	b.formatting.prettierd.with({
+		extra_filetypes = { "toml" },
+		extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" },
+	}),
+	b.formatting.black.with({ extra_args = { "--fast" } }),
+	b.formatting.stylua,
+	b.formatting.shfmt,
+	b.formatting.isort,
+	b.formatting.markdownlint,
+	b.formatting.cbfmt,
+	b.formatting.beautysh,
+
+	-- diagnostics
+	b.diagnostics.eslint_d,
+	b.diagnostics.flake8,
+	with_diagnostics_code(b.diagnostics.shellcheck),
+	b.diagnostics.markdownlint.with({
+		extra_args = { "--disable MD033" },
+	}),
+	b.diagnostics.write_good.with({
+		filetypes = { "markdown", "text" },
+	}),
+	b.diagnostics.zsh,
+	b.diagnostics.cspell.with({
+		filetypes = { "python", "rust", "typescript" },
+	}),
+
+	-- code actions
+	-- null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim, comment out to avoid code_actions lightball
+}
+
 null_ls.setup({
 	debug = false,
-	sources = {
-		formatting.prettierd.with({
-			extra_filetypes = { "toml" },
-			extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" },
-		}),
-		formatting.black.with({ extra_args = { "--fast" } }),
-		formatting.stylua,
-		formatting.shfmt,
-		formatting.isort,
-		formatting.markdownlint,
-		formatting.cbfmt,
-		diagnostics.eslint_d,
-		diagnostics.flake8,
-		diagnostics.shellcheck,
-		diagnostics.markdownlint.with({
-			extra_args = { "--disable MD033" },
-		}),
-		diagnostics.write_good.with({
-			filetypes = { "markdown", "text" },
-		}),
-		-- null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim, comment out to avoid code_actions lightball
-	},
+	sources = sources,
 	on_attach = function(client, bufnr)
 		local cwd = vim.fn.getcwd()
 		for i = 1, #disabled_worksapces do

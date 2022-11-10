@@ -1,3 +1,5 @@
+-- https://github.com/williamboman/mason.nvim/blob/main/lua/mason-registry/index.lua
+
 require("mason-tool-installer").setup({
 	-- a list of all tools you want to ensure are installed upon
 	-- start; they should be the names Mason uses for each tool
@@ -32,11 +34,13 @@ require("mason-tool-installer").setup({
 		"misspell", -- Correct commonly misspelled English words in source files.
 		"markdownlint", -- A Node.js style checker and lint tool for Markdown/CommonMark files.
 		"cbfmt", -- A rust cli tool to format codeblocks in markdown/org. Remember to use `.cbfmt.toml` to set foramtters for each lang.
+		"beautysh", -- A Bash beautifier for the masses. In addition to Bash, Beautysh can format csh, ksh, sh and zsh.
 
 		-- Linter
 		"shellcheck", -- ShellCheck, a static analysis tool for shell scripts.
 		"eslint_d", -- Javascript Linter, but faster
 		"write-good", -- Linter for English prose
+		"cspell", -- A spell checker for code
 	},
 
 	-- if set to true this will check each tool for updates. If updates
