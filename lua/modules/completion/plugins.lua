@@ -35,6 +35,7 @@ completion["WhoIsSethDaniel/mason-tool-installer.nvim"] = {
 completion["jose-elias-alvarez/null-ls.nvim"] = {
 	opt = true,
 	event = "BufReadPre",
+	requires = { "nvim-lua/plenary.nvim" },
 	config = function()
 		require("modules.completion.null-ls")
 	end,

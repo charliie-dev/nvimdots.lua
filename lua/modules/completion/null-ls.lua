@@ -47,6 +47,8 @@ local sources = {
 
 null_ls.setup({
 	debug = false,
+	update_in_insert = false,
+	diagnostics_format = "[#{c}] #{m} (#{s})",
 	sources = sources,
 	on_attach = function(client, bufnr)
 		local cwd = vim.fn.getcwd()
@@ -62,10 +64,13 @@ null_ls.setup({
 				buffer = bufnr,
 				callback = function()
 					vim.lsp.buf.format({
-						name = "null-ls",
+						bufnr = bufnr,
+						filter = function()
+							return client.name == "null-ls"
+						end,
 					})
 					vim.notify(
-						string.format("Format successfully with %s!", client.name),
+						string.format("Format successfully with [%s]!", client.name),
 						vim.log.levels.INFO,
 						{ title = "LspFormat" }
 					)
