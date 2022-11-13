@@ -12,11 +12,14 @@ return {
 				path = runtime_path,
 			},
 			completion = {
-				callSnippet = "Replace",
+				enable = true,
+				callSnippet = "Both",
+				keywordSnippet = "Both",
 			},
 			diagnostics = {
 				enable = true,
 				globals = { "vim", "packer_plugins" },
+				-- neededFileStatus = { ["codestyle-check"] = "Any" },
 			},
 			workspace = {
 				library = {
@@ -24,8 +27,8 @@ return {
 					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
 					[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
 				},
-				maxPreload = 100000,
-				preloadFileSize = 10000,
+				maxPreload = 1000,
+				preloadFileSize = 1000,
 			},
 			telemetry = {
 				enable = false,
