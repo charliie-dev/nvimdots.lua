@@ -61,7 +61,8 @@ vim.api.nvim_set_hl(0, "SLBranchName", { fg = "#D4D4D4", bg = "#252535" })
 require("lualine").setup({
 	options = {
 		icons_enabled = true,
-		theme = "kanagawa",
+		-- theme = "kanagawa",
+		theme = vim.g.colors_name,
 		disabled_filetypes = { "alpha", "dashboard", "NvimTree", "undotree", "neo-tree" },
 		component_separators = "|",
 		section_separators = { left = "", right = "" },
