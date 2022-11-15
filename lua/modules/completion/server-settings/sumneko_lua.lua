@@ -27,7 +27,7 @@ return {
 					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
 					[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
 				},
-				maxPreload = 1000,
+				maxPreload = 2000,
 				preloadFileSize = 1000,
 			},
 			telemetry = {
