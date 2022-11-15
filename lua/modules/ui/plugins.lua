@@ -22,6 +22,13 @@ ui["declancm/cinnamon.nvim"] = {
 		require("modules.ui.cinnamon")
 	end,
 }
+-- ui["nvim-zh/colorful-winsep.nvim"] = {
+--     opt = true,
+--     event = "BufReadPost",
+--     config = function()
+--         require("modules.ui.colorful-winsep")
+--     end,
+-- }
 ui["NvChad/nvim-colorizer.lua"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -141,6 +148,7 @@ ui["anuvyklack/pretty-fold.nvim"] = {
 ui["petertriho/nvim-scrollbar"] = {
 	opt = true,
 	event = "BufReadPost",
+	module = "scrollbar.handlers.search",
 	config = function()
 		require("modules.ui.scrollbar")
 	end,

@@ -54,6 +54,27 @@ require("scrollbar").setup({
 			cterm = nil,
 			highlight = "Normal",
 		},
+		GitAdd = {
+			text = "┆",
+			priority = 7,
+			color = nil,
+			cterm = nil,
+			highlight = "GitSignsAdd",
+		},
+		GitChange = {
+			text = "┆",
+			priority = 7,
+			color = nil,
+			cterm = nil,
+			highlight = "GitSignsChange",
+		},
+		GitDelete = {
+			text = "▁",
+			priority = 7,
+			color = nil,
+			cterm = nil,
+			highlight = "GitSignsDelete",
+		},
 	},
 	excluded_buftypes = {
 		"terminal",
@@ -61,6 +82,7 @@ require("scrollbar").setup({
 	excluded_filetypes = {
 		"prompt",
 		"TelescopePrompt",
+		"noice",
 	},
 	autocmd = {
 		render = {
@@ -81,7 +103,9 @@ require("scrollbar").setup({
 		},
 	},
 	handlers = {
+		cursor = true,
 		diagnostic = true,
+		gitsigns = false, -- Requires gitsigns
 		search = true, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
 	},
 })
