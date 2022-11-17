@@ -7,11 +7,28 @@ lang["gaoDean/autolist.nvim"] = {
 		require("modules.lang.autolist")
 	end,
 }
-lang["preservim/vim-markdown"] = {
+lang["lukas-reineke/headlines.nvim"] = {
+	opt = true,
+	ft = { "markdown", "org" },
+	config = function()
+		require("modules.lang.headlines")
+	end,
+}
+-- lang["preservim/vim-markdown"] = {
+-- 	opt = true,
+-- 	ft = "markdown",
+-- 	config = function()
+-- 		require("modules.lang.markdown")
+-- 	end,
+-- }
+lang["jakewvincent/mkdnflow.nvim"] = {
 	opt = true,
 	ft = "markdown",
+	rocks = "luautf8",
 	config = function()
-		require("modules.lang.markdown")
+		vim.opt_local.conceallevel = 2 -- Links and text formatting
+		vim.opt_local.concealcursor = "n" -- Reveal the conceal item in current line
+		require("modules.lang.mkdnflow")
 	end,
 }
 lang["iamcco/markdown-preview.nvim"] = {
