@@ -3,6 +3,11 @@
 set -e
 set -o pipefail
 
+abort() {
+	printf "%s\n" "$@" >&2
+	exit 1
+}
+
 # string formatters
 if [[ -t 1 ]]; then
     tty_escape() { printf "\033[%sm" "$1"; }
@@ -148,6 +153,16 @@ fi
 ######################################################################
 #                           Neovim Config                            #
 ######################################################################
+
+if ! command -v nvim >/dev/null; then
+	abort "$(
+		cat <<EOABORT
+You must install NeoVim before installing this Nvim config. See:
+  ${tty_underline}https://github.com/neovim/neovim/wiki/Installing-Neovim${tty_reset}
+EOABORT
+	)"
+fi
+
 NVIM_DIR=$HOME/tools/nvim
 NVIM_CONFIG_DIR=$HOME/.config/nvim
 printf "${tty_bold}Setting up config and installing plugins${tty_reset}.\n"
@@ -175,6 +190,8 @@ cat <<EOS
 
 - Project Homepage:
     ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua${tty_reset}
+- Further documentation (including executables you ${tty_bold}must${tty_reset} install for full functionality):
+    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/wiki/Prerequisite${tty_reset}
 - File an issue if you encounter any problems.
     ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/issues${tty_reset}
 
