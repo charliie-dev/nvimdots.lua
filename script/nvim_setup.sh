@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2059,SC2154
+set -e
+set -o pipefail
+
+# string formatters
+if [[ -t 1 ]]; then
+    tty_escape() { printf "\033[%sm" "$1"; }
+else
+    tty_escape() { :; }
+fi
+
+tty_mkbold() { tty_escape "1;$1"; }
+tty_underline="$(tty_escape "4;39")"
+tty_yellow="$(tty_escape "0;33")"
+tty_red="$(tty_mkbold 31)"
+tty_green="$(tty_mkbold 32)"
+tty_blue="$(tty_mkbold 34)"
+tty_magenta="$(tty_mkbold 35)"
+tty_cyan="$(tty_mkbold 36)"
+tty_bold="$(tty_mkbold 39)"
+tty_reset="$(tty_escape 0)"
+
+######################################################################
+#                      Install Python packages                       #
+######################################################################
+printf "Installing ${tty_magenta}Python${tty_reset} packages via ${tty_yellow}pip${tty_reset}.\n"
+# INFO: klepto is needed by Sniprun
+declare -a py_packages=("pynvim" "klepto" "rich")
+
+printf "Using ${tty_blue}system${tty_reset} Python to install ${tty_green}${py_packages[*]}${tty_reset}\n"
+
+# If we use system Python, we need to install these Python packages under
+# user HOME, since we do not have permissions to install them under system
+# directories.
+for p in "${py_packages[@]}"; do
+    pip3 install --user "$p" -q
+done
+
+printf "Using ${tty_cyan}conda${tty_reset} Python to install ${tty_green}${py_packages[*]}${tty_reset}\n"
+for p in "${py_packages[@]}"; do
+    "$CONDA_DIR/bin/pip3" install "$p" -q
+done
+
+printf "\tDone.\n"
+
+######################################################################
+#                       Install Node packages                        #
+######################################################################
+printf "Installing ${tty_magenta}Node${tty_reset} packages.\n"
+NODE_DIR=$HOME/tools/nodejs
+
+"$NODE_DIR/bin/npm" install npm@latest --location=global --silent
+# Install neovim support for node plugins
+"$NODE_DIR/bin/npm" install neovim --location=global --silent
+
+# Add for markdown-preview.nvim
+"$NODE_DIR/bin/npm" install tslib --location=global --silent
+
+printf "\tDone.\n"
+
+######################################################################
+#                    Install Perl/cpanm packages                     #
+######################################################################
+printf "Installing ${tty_magenta}Perl${tty_reset} packages via ${tty_yellow}cpanm${tty_reset}.\n"
+PERL_DIR=$HOME/tools/perl
+CPANM_DIR=$PERL_DIR/bin/cpanm
+
+"$CPANM_DIR" -n Neovim::Ext --quiet
+"$CPANM_DIR" -n App::cpanminus --quiet
+
+printf "\tDone.\n"
+
+######################################################################
+#                     Install Ruby/gem packages                      #
+######################################################################
+printf "Installing ${tty_magenta}Ruby${tty_reset} packages via ${tty_yellow}gem${tty_reset}.\n"
+RUBY_DIR=$HOME/tools/ruby
+
+"$RUBY_DIR/bin/gem" install neovim --silent
+
+printf "\tDone.\n"
+
+######################################################################
+#                        Install Go packages                         #
+######################################################################
+# GVM_DIR=$HOME/.gvm
+
+# "$GVM_DIR/gos/go1.19.1/bin/go" install
+
+######################################################################
+#                    Install Rust/cargo packages                     #
+######################################################################
+
+######################################################################
+#                       Install Java packages                        #
+######################################################################
+# JDK_DIR=$HOME/tools/java
+
+# "$JDK_DIR/bin/java" install
+
+######################################################################
+#                       Install Julia packages                       #
+######################################################################
+# JULIA_DIR=$HOME/tools/julia
+
+# "$JULIA_DIR/bin/julia" install
+
+######################################################################
+#                Install Lua/LuaJIT/Luarocks packages                #
+######################################################################
+printf "Installing ${tty_magenta}Lua${tty_reset} packages via ${tty_yellow}luarocks${tty_reset}.\n"
+# LUA_DIR=$HOME/tools/lua
+# LUAJIT_DIR=$HOME/tools/luajit
+LUAROCKS_DIR=$HOME/tools/luarocks/luarocks
+
+"$LUAROCKS_DIR" install luv --quiet
+"$LUAROCKS_DIR" install sqlite --quiet
+
+printf "\tDone.\n"
+
+######################################################################
+#                   Install PHP/composer packages                    #
+######################################################################
+# PHP_DIR=$HOME/tools/php
+# COMPOSER_DIR=$PHP_DIR/bin/composer
+
+# "$COMPOSER_DIR" install
+
+######################################################################
+#                    win32yank for Neovim in WSL                     #
+######################################################################
+USE_WSL=true
+if [[ "$USE_WSL" = true ]]; then
+    printf "Installing ${tty_magenta}win32yank${tty_reset} for ${tty_red}WSL${tty_reset} ${tty_underline}clipboard${tty_reset}.\n"
+
+    # curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
+    # unzip -p /tmp/win32yank.zip win32yank.exe >/tmp/win32yank.exe
+    # chmod +x /tmp/win32yank.exe
+    # sudo mv /tmp/win32yank.exe /usr/local/bin/
+
+    printf "\tDone.\n"
+fi
+# NOTE: don't forget to `set clipboard=unnamedplus`
+
+######################################################################
+#                           Neovim Config                            #
+######################################################################
+printf "${tty_bold}Setting up config and installing plugins${tty_reset}"
+if [[ -d "$NVIM_CONFIG_DIR" ]]; then
+    mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
+fi
+
+git clone git@github.com:CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
+
+printf "Installing ${tty_bold}packer.nvim${tty_reset}"
+if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
+    git clone --depth=1 https://github.com/wbthomason/packer.nvim \
+        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
+fi
+
+printf "Installing nvim plugins, please wait"
+"$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
+
+printf "Finished installing Nvim and its dependencies!"
