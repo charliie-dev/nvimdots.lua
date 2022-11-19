@@ -28,7 +28,6 @@ local sources = {
 
 	-- diagnostics
 	b.diagnostics.eslint_d,
-	b.diagnostics.flake8,
 	with_diagnostics_code(b.diagnostics.shellcheck),
 	b.diagnostics.markdownlint.with({
 		extra_args = { "--disable MD033" },
