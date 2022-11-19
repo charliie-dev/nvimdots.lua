@@ -37,9 +37,9 @@ local sources = {
 		filetypes = { "markdown", "text" },
 	}),
 	b.diagnostics.zsh,
-	b.diagnostics.cspell.with({
-		filetypes = { "python", "rust", "typescript" },
-	}),
+	-- b.diagnostics.cspell.with({
+	-- 	filetypes = { "python", "rust", "typescript" },
+	-- }),
 
 	-- code actions
 	-- null_ls.builtins.code_actions.gitsigns, -- retrieve code actions from lewis6991/gitsigns.nvim, comment out to avoid code_actions lightball
@@ -65,9 +65,10 @@ null_ls.setup({
 				callback = function()
 					vim.lsp.buf.format({
 						bufnr = bufnr,
-						filter = function()
-							return client.name == "null-ls"
-						end,
+						name = "null-ls",
+						-- filter = function()
+						--     return client.name == "null-ls"
+						-- end,
 					})
 					vim.notify(
 						string.format("Format successfully with [%s]!", client.name),
