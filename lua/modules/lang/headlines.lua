@@ -13,7 +13,7 @@ require("headlines").setup({
 		quote_string = "┃",
 		fat_headlines = true,
 		fat_headline_upper_string = "▃",
-		fat_headline_lower_string = "🬂",
+		fat_headline_lower_string = "▀",
 	},
 	rmd = {
 		treesitter_language = "markdown",
@@ -25,7 +25,7 @@ require("headlines").setup({
 		quote_string = "┃",
 		fat_headlines = true,
 		fat_headline_upper_string = "▃",
-		fat_headline_lower_string = "🬂",
+		fat_headline_lower_string = "▀",
 	},
 	norg = {
 		headline_highlights = { "Headline1", "Headline2" },
@@ -38,7 +38,7 @@ require("headlines").setup({
 		quote_string = "┃",
 		fat_headlines = true,
 		fat_headline_upper_string = "▃",
-		fat_headline_lower_string = "🬂",
+		fat_headline_lower_string = "▀",
 	},
 	org = {
 		headline_highlights = { "Headline1", "Headline2" },
@@ -49,6 +49,6 @@ require("headlines").setup({
 		quote_string = "┃",
 		fat_headlines = true,
 		fat_headline_upper_string = "▃",
-		fat_headline_lower_string = "🬂",
+		fat_headline_lower_string = "▀",
 	},
 })
