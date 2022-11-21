@@ -4,8 +4,8 @@ set -e
 set -o pipefail
 
 abort() {
-	printf "%s\n" "$@" >&2
-	exit 1
+    printf "%s\n" "$@" >&2
+    exit 1
 }
 
 # string formatters
@@ -121,8 +121,8 @@ printf "Installing ${tty_magenta}Lua${tty_reset} packages via ${tty_yellow}luaro
 # LUAJIT_DIR=$HOME/tools/luajit
 LUAROCKS_DIR=$HOME/tools/luarocks/luarocks
 
-# "$LUAROCKS_DIR" install luv
-# "$LUAROCKS_DIR" install sqlite
+"$LUAROCKS_DIR" install luv
+"$LUAROCKS_DIR" install sqlite
 
 printf "Done.\n\n"
 
@@ -155,12 +155,12 @@ fi
 ######################################################################
 
 if ! command -v nvim >/dev/null; then
-	abort "$(
+    abort "$(
 		cat <<EOABORT
 You must install NeoVim before installing this Nvim config. See:
   ${tty_underline}https://github.com/neovim/neovim/wiki/Installing-Neovim${tty_reset}
 EOABORT
-	)"
+    )"
 fi
 
 NVIM_DIR=$HOME/tools/nvim
@@ -190,7 +190,7 @@ cat <<EOS
 
 - Project Homepage:
     ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua${tty_reset}
-- Further documentation (including executables you ${tty_bold}must${tty_reset} install for full functionality):
+- Further documentation (including executables you ${tty_red}must${tty_reset} install for full functionality):
     ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/wiki/Prerequisite${tty_reset}
 - File an issue if you encounter any problems.
     ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/issues${tty_reset}
