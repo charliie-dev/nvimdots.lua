@@ -12,8 +12,22 @@
 -- <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
 -- delete(functi*on calls)     dsf             function calls
 
+-- HACK: play nice with leap.nvim
+-- HACK: https://github.com/ggandor/leap.nvim/discussions/59#discussioncomment-3943323
 require("nvim-surround").setup({
 	move_cursor = "begin", -- set to fasle to disable this
+	keymaps = {
+		insert = "<C-g>z",
+		insert_line = "<C-g>Z",
+		normal = "gz",
+		normal_cur = "gZ",
+		normal_line = "gzz",
+		normal_cur_line = "gZZ",
+		visual = "gz",
+		visual_line = "gZ",
+		delete = "gzd",
+		change = "gzc",
+	},
 })
 
 -- aliases = {
