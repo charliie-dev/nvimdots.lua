@@ -123,6 +123,7 @@ LUAROCKS_DIR=$HOME/tools/luarocks/luarocks
 
 "$LUAROCKS_DIR" install luv
 "$LUAROCKS_DIR" install sqlite
+"$LUAROCKS_DIR" install luautf8
 
 printf "Done.\n\n"
 
