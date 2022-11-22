@@ -201,7 +201,10 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 }
 editor["nvim-treesitter/playground"] = {
 	opt = true,
-	cmd = "TSPlaygroundToggle",
+	cmd = {
+		"TSHighlightCapturesUnderCursor",
+		"TSPlaygroundToggle",
+	},
 }
 editor["nvim-treesitter/nvim-treesitter-textobjects"] = {
 	opt = true,
@@ -244,6 +247,13 @@ editor["AckslD/nvim-trevJ.lua"] = {
 	module = "trevj",
 	config = function()
 		require("modules.editor.trevj")
+	end,
+}
+editor["folke/paint.nvim"] = { -- replacement for tree-sitter-comment parser
+	opt = true,
+	after = "nvim-treesitter",
+	config = function()
+		require("modules.editor.paint")
 	end,
 }
 
