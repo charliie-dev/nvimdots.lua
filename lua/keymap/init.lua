@@ -32,9 +32,6 @@ keymap("n", "<leader>z", "<cmd>lua require('telescope').extensions.zoxide.list{}
 keymap("n", "<leader>rp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
 ---
 
---- NeoTree
-keymap("n", "<C-n>", "<cmd>NeoTreeFloatToggle<cr>", opts)
-
 --- BufferLine keymap
 -- Next BufferLine tab
 keymap("n", "<tab>", "<cmd>BufferLineCycleNext<cr>", opts)
@@ -50,27 +47,6 @@ keymap("n", "<F4>", "<cmd>Bdelete<cr>", opts)
 ---Add comment on the line above, above = "gcO",
 ---Add comment on the line below, below = "gco",
 ---Add comment at the end of line,	eol = "gcA",
-
---- Surround keymap
--- surr*ound_words             ysiw)           (surround_words)
--- *make strings               ys$"            "make strings"
--- [delete ar*ound me!]        ds]             delete around me!
--- remove <b>HTML t*ags</b>    dst             remove HTML tags
--- 'change quot*es'            cs'"            "change quotes"
--- <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
--- delete(functi*on calls)     dsf             function calls
-
---- Markdown keymap
--- `ge` open the md url link under the cursor in Vim for editing.
--- `gf` with force editing.
--- `]]` go to next header.
--- `[[` go to prev header.
--- `]h` go to current header.
--- `]u` go to parent header.
--- `:Toc` create a toc with headers.~~
--- `:InsertToc` insert toc table in current line.
--- `:InsertToc 3` specify how many levels of headers to display.
--- `:InsertNToc` add numbered list to `h2` headers.
 
 --- Tmux keymap
 -- Move from Nvim windows to tmux panes
