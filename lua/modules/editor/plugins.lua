@@ -79,6 +79,7 @@ editor["ggandor/flit.nvim"] = {
 editor["danymat/neogen"] = {
 	opt = true,
 	cmd = { "Neogen" },
+	module = "neogen",
 	requires = "nvim-treesitter/nvim-treesitter",
 	config = function()
 		require("modules.editor.neogen")
