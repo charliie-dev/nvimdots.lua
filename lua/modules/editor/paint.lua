@@ -9,5 +9,10 @@ require("paint").setup({
 			pattern = "%s*%-%-%-%s*(@%w+)",
 			hl = "Constant",
 		},
+		{
+			filter = { filetype = "python" },
+			pattern = "%s*%#%#%s*(@%w+)",
+			hl = "Constant",
+		},
 	},
 })
