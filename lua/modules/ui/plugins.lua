@@ -153,6 +153,14 @@ ui["petertriho/nvim-scrollbar"] = {
 		require("modules.ui.scrollbar")
 	end,
 }
+-- ui["folke/styler.nvim"] = {
+-- 	opt = true,
+-- 	event = "BufReadPost",
+-- 	cmd = "Styler",
+-- 	config = function()
+-- 		require("modules.ui.styler")
+-- 	end,
+-- }
 ui["levouh/tint.nvim"] = {
 	opt = true,
 	event = { "CmdwinEnter", "CmdlineEnter" },
