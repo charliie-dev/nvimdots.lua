@@ -11,7 +11,7 @@ require("paint").setup({
 		},
 		{
 			filter = { filetype = "python" },
-			pattern = "%s*%#%#%s*(@%w+)",
+			pattern = "%s*(%w+:)",
 			hl = "Constant",
 		},
 	},
