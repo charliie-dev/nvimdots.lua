@@ -257,5 +257,12 @@ editor["folke/paint.nvim"] = { -- replacement for tree-sitter-comment parser
 		require("modules.editor.paint")
 	end,
 }
+-- editor["Dkendal/nvim-treeclimber"] = {
+-- 	opt = true,
+-- 	after = "nvim-treesitter",
+-- 	config = function()
+-- 		require("modules.editor.treeclimber")
+-- 	end,
+-- }
 
 return editor
