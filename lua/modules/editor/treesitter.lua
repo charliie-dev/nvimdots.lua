@@ -7,8 +7,10 @@ require("nvim-treesitter.configs").setup({
 	ensure_installed = {
 		"bash",
 		"c",
+		-- "comment", -- comments are slowing down TS bigtime, so disable for now
 		"cpp",
 		"css",
+		"gitignore",
 		"go",
 		"gomod",
 		"html",
@@ -19,6 +21,8 @@ require("nvim-treesitter.configs").setup({
 		"make",
 		"markdown",
 		"markdown_inline",
+		"norg",
+		"org",
 		"python",
 		"rust",
 		"toml",
@@ -31,7 +35,7 @@ require("nvim-treesitter.configs").setup({
 	sync_install = true,
 	ignore_install = {},
 	incremental_selection = {
-		enable = true,
+		enable = false,
 		keymaps = {
 			init_selection = ",s",
 			node_incremental = ",s",
@@ -51,14 +55,15 @@ require("nvim-treesitter.configs").setup({
 		additional_vim_regex_highlighting = true,
 	},
 	indent = {
-		enable = true,
+		enable = false,
 	},
 	autotag = {
 		enable = true,
 	},
 	textobjects = {
 		select = {
-			enable = true,
+			enable = false,
+			lookahead = true,
 			keymaps = {
 				["af"] = "@function.outer",
 				["if"] = "@function.inner",
@@ -67,7 +72,7 @@ require("nvim-treesitter.configs").setup({
 			},
 		},
 		move = {
-			enable = true,
+			enable = false,
 			set_jumps = true, -- whether to set jumps in the jumplist
 			goto_next_start = {
 				["]["] = "@function.outer",
@@ -84,6 +89,12 @@ require("nvim-treesitter.configs").setup({
 			goto_previous_end = {
 				["[]"] = "@function.outer",
 				["[M"] = "@class.outer",
+			},
+		},
+		lsp_interop = {
+			enable = false,
+			peek_definition_code = {
+				["gD"] = "@function.outer",
 			},
 		},
 	},
