@@ -14,8 +14,6 @@ keymap("n", "+", "<C-a>", opts)
 keymap("n", "-", "<C-x>", opts)
 -- Select all
 keymap("n", "<C-a>", "gg<S-v>G", opts)
--- Do nothing (useful in mappings)
-keymap("n", "Q", "<nop>", opts)
 
 --- Buffer keymap (A buffer is in-memory text of a file.)
 -- Move one buffer(window) right
