@@ -31,6 +31,7 @@ require("nvim-treesitter.configs").setup({
 		"typescript",
 		"vim",
 		"yaml",
+		"help",
 	},
 	sync_install = true,
 	ignore_install = {},
