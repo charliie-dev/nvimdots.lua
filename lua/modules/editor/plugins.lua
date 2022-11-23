@@ -238,16 +238,17 @@ editor["m-demare/hlargs.nvim"] = {
 		require("modules.editor.ts-hlargs")
 	end,
 }
--- editor["David-Kunz/markid"] = {
--- 	opt = true,
--- 	after = "nvim-treesitter",
--- }
-editor["AckslD/nvim-trevJ.lua"] = {
+editor["Wansmer/treesj"] = {
 	opt = true,
 	after = "nvim-treesitter",
-	module = "trevj",
+	module = "treesj",
+	cmd = {
+		"TSJToggle",
+		"TSJSplit",
+		"TSJJoin",
+	},
 	config = function()
-		require("modules.editor.trevj")
+		require("modules.editor.treesj")
 	end,
 }
 editor["folke/paint.nvim"] = { -- replacement for tree-sitter-comment parser
