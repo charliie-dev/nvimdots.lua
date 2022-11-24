@@ -68,36 +68,40 @@
 
 ```txt
 ├── after/
-│   └── ftplugin/                  filetype-based rules
+│   └── ftplugin/                  filetype-based rules
 ├── fonts/                         nerdfonts
 ├── ftdetect/                      filetype detection
+├── scripts
+│   ├── nvim_up.sh                 script for upgrade to neovim nightly
+│   ├── setup_config.sh            script for installing dependencies for plugins
+│   └── update_config.sh           script for fetch new commits of this repo
 ├── init.lua
 ├── lua/
-│   ├── core/
-│   │   ├── event.lua              event-based autocommands
-│   │   ├── global.lua             global variables
-│   │   ├── init.lua
-│   │   ├── mapping.lua            basic keymaps
-│   │   ├── options.lua            neovim options
-│   │   └── pack.lua               custom packer wrapper
-│   ├── keymap/                    plugin-related keymaps
-│   ├── modules/                   plugin-configs
-│   │   ├── completion/            nvim-cmp + LSP
-│   │   │   ├── plugins.lua
-│   │   │   └── server-settings/   settings for each LSP
-│   │   ├── editor/
-│   │   │   └── plugins.lua
-│   │   ├── lang
-│   │   │   └── plugins.lua
-│   │   ├── tools/
-│   │   │   ├── dap/               DAP settings for each language
-│   │   │   └── plugins.lua
-│   │   └── ui/
-│   │       └── plugins.lua
-│   └── utils                      utility functions
-│       └── init.lua
+│   ├── core/
+│   │   ├── event.lua              event-based autocommands
+│   │   ├── global.lua             global variables
+│   │   ├── init.lua
+│   │   ├── mapping.lua            basic keymaps
+│   │   ├── options.lua            neovim options
+│   │   └── pack.lua               custom packer wrapper
+│   ├── keymap/                    plugin-related keymaps
+│   ├── modules/                   plugin-configs
+│   │   ├── completion/            nvim-cmp + LSP
+│   │   │   ├── plugins.lua
+│   │   │   └── server-settings/   settings for each LSP
+│   │   ├── editor/
+│   │   │   └── plugins.lua
+│   │   ├── lang
+│   │   │   └── plugins.lua
+│   │   ├── tools/
+│   │   │   ├── dap/               DAP settings for each language
+│   │   │   └── plugins.lua
+│   │   └── ui/
+│   │       └── plugins.lua
+│   └── utils                      utility functions
+│       └── init.lua
 ├── snippets/
-│   └── package.json               how `LuaSnip` reads snippets, vscode-style
+│   └── package.json               how `LuaSnip` reads snippets, vscode-style
 ├── spell/                         custom spelling correction
 └── stylua.toml                    stylua settings
 ```
@@ -155,6 +159,16 @@ Tested with [dstein64/vim-startuptime](https://github.com/dstein64/vim-startupti
 </p>
 
 Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a CLI tool written in `Go`.
+
+<h3 align="center">
+    📸 Script Screenshot
+</h3>
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32497323/203708095-30ac0243-dcdb-432a-8aff-4d10091422d2.png"
+  width = "85%"
+  />
+</p>
 
 # 🪨 Materials
 
