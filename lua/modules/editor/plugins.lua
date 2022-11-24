@@ -119,6 +119,14 @@ editor["nacro90/numb.nvim"] = {
 -- 		require("modules.editor.spectre")
 -- 	end,
 -- }
+editor["cshuaimin/ssr.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	module = "ssr",
+	config = function()
+		require("modules.editor.ssr")
+	end,
+}
 editor["kylechui/nvim-surround"] = {
 	opt = true,
 	event = "BufReadPre",
