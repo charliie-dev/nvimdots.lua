@@ -161,11 +161,17 @@ Tested with [dstein64/vim-startuptime](https://github.com/dstein64/vim-startupti
 Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a CLI tool written in `Go`.
 
 <h3 align="center">
-    📸 Script Screenshot
+    📸 Script Screenshots
 </h3>
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/32497323/203708095-30ac0243-dcdb-432a-8aff-4d10091422d2.png"
+  width = "85%"
+  />
+</p>
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32497323/203711193-e6bf484c-ba25-4ed7-8e31-afe55442a6ac.png"
   width = "85%"
   />
 </p>
