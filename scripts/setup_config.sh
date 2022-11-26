@@ -121,8 +121,10 @@ printf "Installing ${tty_magenta}Lua${tty_reset} packages via ${tty_yellow}luaro
 # LUAJIT_DIR=$HOME/tools/luajit
 LUAROCKS_DIR=$HOME/tools/luarocks/luarocks
 
+# for kkharji/sqlite.lua
 "$LUAROCKS_DIR" install luv
 "$LUAROCKS_DIR" install sqlite
+# for jakewvincent/mkdnflow.nvim
 "$LUAROCKS_DIR" install luautf8
 
 printf "Done.\n\n"
