@@ -33,7 +33,7 @@ printf "\n${tty_yellow}====================Script starts====================${tt
 ######################################################################
 printf "Installing ${tty_magenta}Python${tty_reset} packages via ${tty_yellow}pip${tty_reset}.\n"
 # INFO: klepto is needed by Sniprun
-declare -a py_packages=("pynvim" "klepto" "rich")
+declare -a py_packages=("wheel" "pynvim" "klepto" "rich")
 
 printf "Using ${tty_blue}system${tty_reset} Python to install ${tty_green}${py_packages[*]}${tty_reset}\n"
 
