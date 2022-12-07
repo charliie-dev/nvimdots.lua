@@ -76,7 +76,7 @@ completion["hrsh7th/nvim-cmp"] = {
 		-- { "f3fora/cmp-spell", after = "cmp-path" },
 	},
 	config = function()
-		require("modules.completion.cmp")
+		require("modules.completion._cmp")
 	end,
 }
 completion["L3MON4D3/LuaSnip"] = {
@@ -89,7 +89,7 @@ completion["L3MON4D3/LuaSnip"] = {
 	},
 	requires = { "rafamadriz/friendly-snippets", event = "InsertEnter" },
 	config = function()
-		require("modules.completion.luasnip")
+		require("modules.completion._luasnip")
 	end,
 }
 completion["windwp/nvim-autopairs"] = {
