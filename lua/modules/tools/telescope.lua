@@ -51,7 +51,7 @@ require("telescope").setup({
 			".settings/",
 		},
 		layout_config = {
-			prompt_position = "bottom",
+			-- prompt_position = "bottom",
 			horizontal = {
 				preview_width = 0.5,
 			},
