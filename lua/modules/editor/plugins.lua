@@ -138,15 +138,6 @@ editor["kylechui/nvim-surround"] = {
 		require("modules.editor.surround")
 	end,
 }
--- editor["abecodes/tabout.nvim"] = {
--- 	opt = true,
--- 	event = "InsertEnter",
--- 	wants = "nvim-treesitter",
--- 	after = "nvim-cmp",
--- 	config = function()
--- 		require("modules.editor.tabout")
--- 	end,
--- }
 editor["andymass/vim-matchup"] = {
 	opt = true,
 	cmd = { "MatchupWhereAmI" },
