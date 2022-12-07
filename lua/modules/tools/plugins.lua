@@ -159,13 +159,14 @@ tools["akinsho/toggleterm.nvim"] = {
 		require("modules.tools.toggleterm")
 	end,
 }
-tools["folke/trouble.nvim"] = {
-	opt = true,
-	cmd = { "TroubleToggle", "TroubleRefresh" },
-	config = function()
-		require("modules.tools.trouble")
-	end,
-}
+-- tools["folke/trouble.nvim"] = {
+-- 	opt = true,
+-- 	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
+-- 	requires = "kyazdani42/nvim-web-devicons",
+-- 	config = function()
+-- 		require("modules.tools.trouble")
+-- 	end,
+-- }
 tools["samjwill/nvim-unception"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -177,7 +178,7 @@ tools["folke/which-key.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
 	config = function()
-		require("modules.tools.which-key")
+		require("modules.tools.whichkey")
 	end,
 }
 tools["gelguy/wilder.nvim"] = {
@@ -279,7 +280,7 @@ tools["rcarriga/nvim-dap-ui"] = {
 	opt = true,
 	after = "nvim-dap",
 	config = function()
-		require("modules.tools.dap.dapui")
+		require("modules.tools.dap._dapui")
 	end,
 }
 

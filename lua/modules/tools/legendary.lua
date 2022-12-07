@@ -56,15 +56,15 @@ require("which-key").register({
 			c = "packer: PackerCompile",
 			t = "packer: PackerStatus",
 		},
-		t = {
-			name = "Trouble commands",
-			t = "trouble: Toggle",
-			r = "trouble: LSP References",
-			d = "trouble: Show document diagnostics",
-			w = "trouble: Show workspace diagnostics",
-			q = "trouble: Show quickfix list",
-			l = "trouble: Show loclist",
-		},
+		-- t = {
+		-- 	name = "Trouble commands",
+		-- 	t = "trouble: Toggle",
+		-- 	r = "trouble: LSP References",
+		-- 	d = "trouble: Show document diagnostics",
+		-- 	w = "trouble: Show workspace diagnostics",
+		-- 	q = "trouble: Show quickfix list",
+		-- 	l = "trouble: Show loclist",
+		-- },
 	},
 	["g"] = {
 		["["] = "lsp: Goto prev diagnostic",
@@ -78,6 +78,8 @@ require("which-key").register({
 		["DC"] = "lsp: Declaration",
 		I = "lsp: Implementation",
 		T = "lsp: Type definition",
+		["DL"] = "lsp: Show loclist",
+		["QL"] = "lsp: Show quickfix list",
 		--- nvim-surround
 		z = "surround: Add surround",
 		Z = "surround: Add surround around line",
