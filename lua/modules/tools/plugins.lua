@@ -137,14 +137,14 @@ tools["ibhagwan/smartyank.nvim"] = {
 		require("modules.tools.smartyank")
 	end,
 }
--- tools["michaelb/sniprun"] = {
--- 	opt = true,
--- 	run = "bash ./install.sh",
--- 	cmd = { "SnipRun", "'<,'>SnipRun" },
--- 	config = function()
--- 		require("modules.tools.sniprun")
--- 	end,
--- }
+tools["michaelb/sniprun"] = {
+	opt = true,
+	run = "bash ./install.sh",
+	cmd = { "SnipRun", "'<,'>SnipRun" },
+	config = function()
+		require("modules.tools.sniprun")
+	end,
+}
 tools["aserowy/tmux.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -161,7 +161,7 @@ tools["akinsho/toggleterm.nvim"] = {
 }
 tools["folke/trouble.nvim"] = {
 	opt = true,
-	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
+	cmd = { "TroubleToggle", "TroubleRefresh" },
 	config = function()
 		require("modules.tools.trouble")
 	end,
