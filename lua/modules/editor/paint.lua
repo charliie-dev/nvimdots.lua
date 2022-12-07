@@ -1,5 +1,5 @@
 require("paint").setup({
-	---@type PaintHighlight[]
+	---type PaintHighlight[]
 	highlights = {
 		{
 			-- filter can be a table of buffer options that should match,

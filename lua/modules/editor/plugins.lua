@@ -124,7 +124,7 @@ editor["cshuaimin/ssr.nvim"] = {
 	event = "BufReadPost",
 	module = "ssr",
 	config = function()
-		require("modules.editor.ssr")
+		require("modules.editor._ssr")
 	end,
 }
 editor["kylechui/nvim-surround"] = {
