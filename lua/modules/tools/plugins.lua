@@ -174,6 +174,7 @@ tools["samjwill/nvim-unception"] = {
 		require("modules.tools.unception")
 	end,
 }
+-- Please don't remove which-key.nvim otherwise you need to set timeoutlen=300 at `lua/core/options.lua`
 tools["folke/which-key.nvim"] = {
 	opt = true,
 	event = "BufReadPost",

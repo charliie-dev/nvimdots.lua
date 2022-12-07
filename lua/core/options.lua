@@ -86,7 +86,8 @@ local function load_options()
 		tabstop = 4,
 		termguicolors = true,
 		timeout = true,
-		timeoutlen = 500,
+		-- You will feel delay when you input <Space> at lazygit interface if you set it a positive value like 300(ms).
+		timeoutlen = 0,
 		ttimeout = true,
 		ttimeoutlen = 0,
 		-- ttyfast = true,

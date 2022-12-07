@@ -7,8 +7,6 @@ local opts = { noremap = true, silent = true, nowait = true }
 keymap("n", "<C-o>", "<cmd>so %<cr>", { noremap = true })
 -- Save in normal mode
 keymap("n", "<C-s>", "<cmd>w<cr>", { noremap = true })
--- Quick Exit from normal mode
-keymap("n", "jk", "<esc><cmd>q<cr>", { silent = true })
 -- Increment/decrement
 keymap("n", "+", "<C-a>", opts)
 keymap("n", "-", "<C-x>", opts)
@@ -50,14 +48,6 @@ keymap("n", "X", '"_X', opts)
 -- Insert mode
 -- Save in insert mode
 keymap("i", "<C-s>", "<esc>:w<cr>", {})
-
--- Command mode
--- Escape with jk
-keymap("c", "jk", "<C-C><esc>", opts)
-
--- Terminal mode
--- Escape with jk
-keymap("t", "jk", "<esc>:q<cr>", opts)
 
 local timer = vim.loop.new_timer()
 local blink = function()
