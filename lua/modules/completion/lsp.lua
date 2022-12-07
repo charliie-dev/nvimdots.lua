@@ -44,30 +44,6 @@ mason_lspconfig.setup({
 	automatic_installation = true,
 })
 
-local function lsp_keymaps(bufnr)
-	local opts = { noremap = true, silent = true, buffer = bufnr }
-	local keymap = vim.keymap.set
-	keymap("n", "gf", "<cmd>Lspsaga lsp_finder<cr>", opts)
-	keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-	keymap("n", "gd", "<cmd>Lspsaga peek_definition<cr>", opts)
-	keymap("n", "gh", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-	keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-	keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-	keymap("n", "<leader>d", "<cmd>Lspsaga show_line_diagnostics<cr>", opts)
-	keymap("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<cr>", opts)
-	keymap("n", "<leader>o", "<cmd>LSoutlineToggle<cr>", opts)
-	keymap("n", "<C-n>", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
-	keymap("n", "<C-p>", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
-	keymap("n", "ca", "<cmd>Lspsaga code_action<cr>", opts)
-	keymap("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-	keymap("n", "<F2>", "<cmd>Lspsaga rename<cr>", opts)
-	-- NOTE: lsp rename can only be used if the it's recongnized by lsp; otherwise use Spectre.nvim
-	-- keymap("n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts)
-	-- keymap("n", "<leader>lwa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>", opts)
-	-- keymap("n", "<leader>lwr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>", opts)
-	-- keymap("n", "<leader>lwl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", opts)
-end
-
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
@@ -82,7 +58,6 @@ local opts = {
 			hi_parameter = "Search",
 			handler_opts = { "double" },
 		})
-		lsp_keymaps(bufnr)
 	end,
 	capabilities = capabilities,
 }
@@ -128,7 +103,6 @@ for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
 
 	if server == "ltex" then
 		local ltex_attach = function(client, bufnr)
-			lsp_keymaps(bufnr)
 			require("lsp_signature").on_attach({
 				bind = true,
 				use_lspsaga = true,

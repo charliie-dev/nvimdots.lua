@@ -1,54 +1,67 @@
-require("keymap.config")
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true, nowait = true }
 
 -- Plugin keymaps
 
---- DAP keymaps
-keymap("n", "<F5>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
-keymap("n", "<F6>", "<cmd>lua require('dap').step_into()<cr>", opts)
-keymap("n", "<F7>", "<cmd>lua require('dap').step_out()<cr>", opts)
-keymap("n", "<F8>", "<cmd>lua require('dap').step_over()<<r>", opts)
-keymap("n", "<F9>", "<cmd>lua require('dap').terminate()<cr>", opts)
-keymap("n", "<leader>b", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
-keymap("n", "<leader>B", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>", opts)
-keymap(
-	"n",
-	"<leader>lp",
-	"<cmd>lua require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<cr>",
-	opts
-)
-keymap("n", "<leader>dr", "<cmd>lua require('dap').repl.open()<cr>", opts)
-keymap("n", "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", opts)
+--- DAP
+keymap("n", "<F6>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
+keymap("n", "<leader>dr", "<cmd>lua require('dap').continue()<cr>", opts)
+keymap("n", "<leader>dd", "<cmd>lua require('dap').terminate()<cr>", opts)
+keymap("n", "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
+keymap("n", "<leader>dB", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>", opts)
+keymap("n", "<leader>dbl", "<cmd>lua require('dap').list_breakpoints()<cr>", opts)
+keymap("n", "<leader>drc", "<cmd>lua require('dap').run_to_cursor()<cr>", opts)
+keymap("n", "<leader>drl", "<cmd>lua require('dap').run_last()<cr>", opts)
+keymap("n", "<F9>", "<cmd>lua require('dap').step_over()<cr>", opts)
+keymap("n", "<leader>dv", "<cmd>lua require('dap').step_over()<cr>", opts)
+keymap("n", "<F10>", "<cmd>lua require('dap').step_into()<cr>", opts)
+keymap("n", "<leader>di", "<cmd>lua require('dap').step_into()<cr>", opts)
+keymap("n", "<F11>", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<leader>do", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<leader>dl", "<cmd>lua require('dap').repl.open()<cr>", opts)
 
---- Telescope keymap
+--- Telescope
+keymap("n", "<leader>fp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
+keymap("n", "<leader>fr", "<cmd>lua require('telescope').extensions.frecency.frecency{}<cr>", opts)
+keymap("n", "<leader>fe", "<cmd>Telescope oldfiles<cr>", opts)
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", opts)
-keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
-keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", opts)
--- Telescope zoxide
-keymap("n", "<leader>z", "<cmd>lua require('telescope').extensions.zoxide.list{}<cr>", opts)
--- Terminal project(git repo)
-keymap("n", "<leader>rp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
----
-
---- BufferLine keymap
--- Next BufferLine tab
-keymap("n", "<tab>", "<cmd>BufferLineCycleNext<cr>", opts)
--- Previous BufferLine tab
-keymap("n", "<S-tab>", "<cmd>BufferLineCyclePrev<cr>", opts)
+keymap("n", "<leader>fc", "<cmd>Telescope colorscheme<cr>", opts)
+keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
+keymap("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", opts)
+keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", opts)
+keymap("n", "<leader>fz", "<cmd>Telescope zoxide list<cr>", opts)
 
 --- bufdelete.nvim
-keymap("n", "<F4>", "<cmd>Bdelete<cr>", opts)
+keymap("n", "<F4>", "<cmd>Bwipeout<cr>", opts)
 
---- Commnet keymap
----Line-comment toggle keymap, line = "gcc",
----Block-comment toggle keymap, block = "gbc",
----Add comment on the line above, above = "gcO",
----Add comment on the line below, below = "gco",
----Add comment at the end of line,	eol = "gcA",
+--- BufferLine
+keymap("n", "<tab>", "<cmd>BufferLineCycleNext<cr>", opts)
+keymap("n", "<S-tab>", "<cmd>BufferLineCyclePrev<cr>", opts)
 
---- Tmux keymap
+--- Lsp mapping work when event:InsertEnter & event:LspStart
+keymap("n", "<leader>li", "<cmd>LspInfo<cr>", opts)
+keymap("n", "<leader>lr", "<cmd>LspRestart<cr>", opts)
+keymap("n", "<leader>lt", "<cmd>LSoutlineToggle<cr>", opts) -- from Lspsaga.nvim
+keymap("n", "g[", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
+keymap("n", "g]", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
+keymap("n", "gr", "<cmd>Lspsaga rename<cr>", opts)
+keymap("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
+keymap({ "n", "v" }, "ga", "<cmd>Lspsaga code_action<cr>", opts)
+keymap("n", "gd", "<cmd>Lspsaga peek_definition<cr>", opts)
+keymap("n", "gh", "<cmd>Lspsaga lsp_finder<cr>", opts)
+keymap("n", "gS", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+keymap("n", "gD", "<cmd>lua vim.lsp.buf.definition()<cr>", opts) -- go to definition
+keymap("n", "gDC", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+-- keymap("n", "gDL", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts) -- use trouble.nvim instead
+-- keymap("n", "gQL", "<cmd>lua vim.diagnostic.setqflist()<cr>", opts) -- use trouble.nvim instead
+
+--- Toggleterm
+-- "Ctrl+ \" to open toggleterm
+keymap("n", "lg", "<cmd>lua _LAZYGIT_TOGGLE()<cr>", opts)
+
+--- Tmux.nvim
 -- Move from Nvim windows to tmux panes
 keymap("n", "<C-j>", '<cmd>lua require("tmux").move_bottom()<cr>', opts)
 keymap("n", "<C-k>", '<cmd>lua require("tmux").move_top()<cr>', opts)
@@ -60,25 +73,102 @@ keymap("n", "<M-k>", '<cmd>lua require("tmux").resize_top()<cr>', opts)
 keymap("n", "<M-h>", '<cmd>lua require("tmux").resize_left()<cr>', opts)
 keymap("n", "<M-l>", '<cmd>lua require("tmux").resize_right()<cr>', opts)
 
---- Spectre keymap
--- Global find & replace
--- keymap("n", "<leader>Sr", '<cmd>lua require("spectre").open()<cr>', opts)
--- search in current file
--- keymap("n", "<leader>sr", '<cmd>lua require("spectre").open_file_search()<cr>', opts)
+--- Trouble.nvim
+keymap("n", "tt", "<cmd>TroubleToggle<cr>", opts)
+keymap("n", "tr", "<cmd>TroubleToggle lsp_references<cr>", opts)
+keymap("n", "td", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
+keymap("n", "tw", "<cmd>TroubleToggle workspace_diagnostics<cr>", opts)
+keymap("n", "tq", "<cmd>TroubleToggle quickfix<cr>", opts)
+keymap("n", "tl", "<cmd>TroubleToggle loclist<cr>", opts)
 
---- hlslens keymap
+--- NeoTree
+keymap("n", "<C-n>", "<cmd>NeoTreeFloatToggle<cr>", opts)
+
+--- Undotree
+keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
+
+--- accelerate-jk
+keymap("n", "j", "<Plug>(accelerated_jk_gj)", {})
+keymap("n", "k", "<Plug>(accelerated_jk_gk)", {})
+
+--- MarkdownPreview
+keymap("n", "<F12>", "<cmd>MarkdownPreviewToggle<cr>", opts)
+
+--- SnipRun
+keymap("n", "<leader>r", "<cmd>SnipRun<cr>", opts)
+
+--- Diffview
+keymap("n", "<leader>dv", "<cmd>DiffviewOpen<cr>", opts)
+keymap("n", "<leader><leader>dv", "<cmd>DiffviewClose<cr>", opts)
+
+--- Legendary
+keymap("n", "<C-p>", "<cmd>Legendary<cr>", opts)
+
+--- hlslens
 keymap("n", "n", [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap("n", "N", [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap("n", "*", [[*<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], opts)
--- keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
--- keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap("n", "nl", ":noh<CR>", opts)
 
---- Toggleterm keymap
-keymap("n", "lg", "<cmd>lua _LAZYGIT_TOGGLE()<cr>", opts)
-
--- Packer keymap
+--- Packer
 keymap("n", "pc", "<cmd>PackerCompile<cr>", opts)
 keymap("n", "ps", "<cmd>PackerSync<cr>", opts)
 keymap("n", "pt", "<cmd>PackerStatus<cr>", opts)
+
+--- comment-frame
+-- "<leader>cf" to use comment-frame
+
+--- gomove
+keymap({ "n", "x" }, "<leader><S-h>", "<Plug>GoNSMLeft", {})
+keymap({ "n", "x" }, "<leader><S-j>", "<Plug>GoNSMDown", {})
+keymap({ "n", "x" }, "<leader><S-k>", "<Plug>GoNSMUp", {})
+keymap({ "n", "x" }, "<leader><S-l>", "<Plug>GoNSMRight", {})
+
+--- ssr.nvim, structural search and replace
+keymap({ "n", "x" }, "<leader>sr", function()
+	require("ssr").open()
+end)
+
+--- nvim-surround
+-- keymaps = {
+--     insert = "<C-g>z",
+--     insert_line = "<C-g>Z",
+--     normal = "gz",
+--     normal_cur = "gZ",
+--     normal_line = "gzz",
+--     normal_cur_line = "gZZ",
+--     visual = "gz",
+--     visual_line = "gZ",
+--     delete = "gzd",
+--     change = "gzc",
+-- },
+
+--- treesj
+-- "<Space>m" to toggle split/join
+
+--- autolist.nvim
+-- <C-t> to indent.
+-- <C-d> to dedent.
+-- <C-r> to change from `ol`->`ul`/`ul`->`ol`
+-- <CR> on an empty list marker to end the list.
+
+--- dial
+keymap("n", "<leader>=", "<cmd>lua require('dial.map').inc_normal('default')<cr>", { noremap = true })
+keymap("n", "<leader>-", "<cmd>lua require('dial.map').dec_normal('default')<cr>", { noremap = true })
+keymap("v", "<leader>=", "<cmd>lua require('dial.map').inc_normal('visual')<cr>", { noremap = true })
+keymap("v", "<leader>-", "<cmd>lua require('dial.map').dec_normal('visual')<cr>", { noremap = true })
+
+--- regexplainer
+-- "<leader>gR" to toggle regexplainer
+
+--- cinnamon, smooth scrolling
+-- Half-window movements:
+vim.keymap.set({ "n", "x" }, "<C-u>", "<Cmd>lua Scroll('<C-u>', 1, 1)<CR>")
+vim.keymap.set({ "n", "x" }, "<C-d>", "<Cmd>lua Scroll('<C-d>', 1, 1)<CR>")
+
+-- Page movements:
+vim.keymap.set({ "n", "x" }, "<C-b>", "<Cmd>lua Scroll('<C-b>', 1, 1)<CR>")
+vim.keymap.set({ "n", "x" }, "<C-f>", "<Cmd>lua Scroll('<C-f>', 1, 1)<CR>")
+vim.keymap.set({ "n", "x" }, "<PageUp>", "<Cmd>lua Scroll('<C-b>', 1, 1)<CR>")
+vim.keymap.set({ "n", "x" }, "<PageDown>", "<Cmd>lua Scroll('<C-f>', 1, 1)<CR>")

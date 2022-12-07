@@ -9,7 +9,3 @@ require("ssr").setup({
 		replace_all = "<leader><cr>",
 	},
 })
-
-vim.keymap.set({ "n", "x" }, "<leader>sr", function()
-	require("ssr").open()
-end)

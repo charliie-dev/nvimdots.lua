@@ -39,10 +39,3 @@ require("dial.config").augends:register_group({
 		}),
 	},
 })
-
-local keymap = vim.keymap.set
-
-keymap("n", "<leader>=", require("dial.map").inc_normal("default"), { noremap = true })
-keymap("n", "<leader>-", require("dial.map").dec_normal("default"), { noremap = true })
-keymap("v", "<leader>=", require("dial.map").inc_normal("visual"), { noremap = true })
-keymap("v", "<leader>-", require("dial.map").dec_normal("visual"), { noremap = true })
