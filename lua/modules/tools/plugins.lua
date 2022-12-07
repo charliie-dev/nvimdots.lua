@@ -66,12 +66,18 @@ tools["ThePrimeagen/git-worktree.nvim"] = {
 -- }
 tools["samodostal/image.nvim"] = {
 	opt = true,
-
 	event = "BufReadPost",
 	requires = "nvim-lua/plenary.nvim",
-
 	config = function()
 		require("modules.tools.image")
+	end,
+}
+tools["mrjones2014/legendary.nvim"] = {
+	opt = true,
+	after = "which-key.nvim",
+	cmd = "Legendary",
+	config = function()
+		require("modules.tools.legendary")
 	end,
 }
 tools["nvim-neo-tree/neo-tree.nvim"] = {

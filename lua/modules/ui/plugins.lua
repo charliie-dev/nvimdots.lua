@@ -29,6 +29,13 @@ ui["declancm/cinnamon.nvim"] = {
 --         require("modules.ui.colorful-winsep")
 --     end,
 -- }
+ui["stevearc/dressing.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.ui.dressing")
+	end,
+}
 ui["NvChad/nvim-colorizer.lua"] = {
 	opt = true,
 	event = "BufReadPost",
