@@ -20,6 +20,23 @@ local function diff_source()
 	end
 end
 
+local mini_sections = {
+	lualine_a = { "filetype" },
+	lualine_b = {},
+	lualine_c = {},
+	lualine_x = {},
+	lualine_y = {},
+	lualine_z = {},
+}
+local outline = {
+	sections = mini_sections,
+	filetypes = { "lspsagaoutline" },
+}
+local diffview = {
+	sections = mini_sections,
+	filetypes = { "DiffviewFiles" },
+}
+
 local hide_in_width = function()
 	return vim.fn.winwidth(0) > 80
 end
@@ -124,5 +141,7 @@ require("lualine").setup({
 		"neo-tree",
 		"nvim-dap-ui",
 		"toggleterm",
+		outline,
+		diffview,
 	},
 })
