@@ -76,6 +76,7 @@ tools["mrjones2014/legendary.nvim"] = {
 	opt = true,
 	after = "which-key.nvim",
 	cmd = "Legendary",
+	requires = { "stevearc/dressing.nvim" },
 	config = function()
 		require("modules.tools.legendary")
 	end,
@@ -113,22 +114,11 @@ tools["AckslD/nvim-neoclip.lua"] = {
 -- 		require("modules.tools.nvim-tree")
 -- 	end,
 -- }
--- tools["bennypowers/nvim-regexplainer"] = {
--- 	opt = true,
--- 	cmd = { "RegexplainerToggle", "RegexplainerShow" },
--- 	config = function()
--- 		require("modules.tools.regexplainer")
--- 	end,
--- }
-tools["sidebar-nvim/sidebar.nvim"] = {
+tools["bennypowers/nvim-regexplainer"] = {
 	opt = true,
-	event = "BufReadPost",
-	module = "sidebar-nvim",
-	cmd = {
-		"SidebarNvimToggle",
-	},
+	cmd = { "RegexplainerToggle", "RegexplainerShow" },
 	config = function()
-		require("modules.tools.sidebar")
+		require("modules.tools.regexplainer")
 	end,
 }
 tools["narutoxy/silicon.lua"] = {
@@ -185,7 +175,7 @@ tools["samjwill/nvim-unception"] = {
 }
 tools["folke/which-key.nvim"] = {
 	opt = true,
-	keys = "<leader>",
+	event = "BufReadPost",
 	config = function()
 		require("modules.tools.which-key")
 	end,
