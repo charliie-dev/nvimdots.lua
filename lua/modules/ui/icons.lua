@@ -76,6 +76,7 @@ local data = {
 		Untracked = "U",
 		Unstaged = "",
 		Staged = "",
+		Staged_alt = "",
 		Conflict = "",
 	},
 	ui = {
