@@ -23,11 +23,11 @@ keymap("n", "<leader>dl", "<cmd>lua require('dap').repl.open()<cr>", opts)
 --- Telescope
 keymap("n", "<leader>fp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
 keymap("n", "<leader>fr", "<cmd>lua require('telescope').extensions.frecency.frecency{}<cr>", opts)
+keymap("n", "<leader>fw", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args{}<cr>", opts)
 keymap("n", "<leader>fe", "<cmd>Telescope oldfiles<cr>", opts)
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
 keymap("n", "<leader>fc", "<cmd>Telescope colorscheme<cr>", opts)
 keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
-keymap("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", opts)
 keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", opts)
 keymap("n", "<leader>fz", "<cmd>Telescope zoxide list<cr>", opts)
 
