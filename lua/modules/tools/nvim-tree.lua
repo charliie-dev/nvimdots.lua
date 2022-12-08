@@ -1,3 +1,10 @@
+local icons = {
+	diagnostics = require("modules.ui.icons").get("diagnostics"),
+	documents = require("modules.ui.icons").get("documents"),
+	git = require("modules.ui.icons").get("git"),
+	ui = require("modules.ui.icons").get("ui"),
+}
+
 require("nvim-tree").setup({
 	auto_reload_on_write = true,
 	create_in_closed_folder = false,
@@ -64,27 +71,27 @@ require("nvim-tree").setup({
 			padding = " ",
 			symlink_arrow = "  ",
 			glyphs = {
-				default = "", --
-				symlink = "",
-				bookmark = "",
+				default = icons.documents.Default,
+				symlink = icons.documents.Symlink,
+				bookmark = icons.ui.Bookmark,
 				git = {
-					unstaged = "M",
-					staged = "", --
-					unmerged = "",
-					renamed = "", --
-					untracked = "U",
-					deleted = "",
-					ignored = "", --◌
+					unstaged = icons.git.Mod,
+					staged = icons.git.Staged_alt,
+					unmerged = icons.git.Unmerged,
+					renamed = icons.git.Rename,
+					untracked = icons.git.Untracked,
+					deleted = icons.git.Remove,
+					ignored = icons.git.Ignore,
 				},
 				folder = {
-					arrow_open = "",
-					arrow_closed = "",
-					default = "",
-					open = "",
-					empty = "",
-					empty_open = "",
-					symlink = "",
-					symlink_open = "",
+					arrow_open = icons.ui.ArrowOpen,
+					arrow_closed = icons.ui.ArrowClosed,
+					default = icons.ui.Folder,
+					open = icons.ui.FolderOpen,
+					empty = icons.ui.EmptyFolder,
+					empty_open = icons.ui.EmptyFolderOpen,
+					symlink = icons.ui.SymlinkFolder,
+					symlink_open = icons.ui.EmptyFolderOpen,
 				},
 			},
 		},
@@ -95,14 +102,10 @@ require("nvim-tree").setup({
 	},
 	update_focused_file = {
 		enable = true,
-		update_cwd = true,
+		update_root = false,
 		ignore_list = { "help" },
 	},
-	ignore_ft_on_setup = {
-		"startify",
-		"dashboard",
-		"alpha",
-	},
+	ignore_ft_on_setup = {},
 	filters = {
 		dotfiles = false,
 		custom = { ".DS_Store" },
@@ -135,10 +138,10 @@ require("nvim-tree").setup({
 		show_on_dirs = false,
 		debounce_delay = 50,
 		icons = {
-			hint = "",
-			info = "",
-			warning = "",
-			error = "",
+			hint = icons.diagnostics.Hint_alt,
+			info = icons.diagnostics.Information_alt,
+			warning = icons.diagnostics.Warning_alt,
+			error = icons.diagnostics.Error_alt,
 		},
 	},
 	filesystem_watchers = {

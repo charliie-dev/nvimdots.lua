@@ -82,7 +82,9 @@ keymap("n", "<M-l>", '<cmd>lua require("tmux").resize_right()<cr>', opts)
 -- keymap("n", "tl", "<cmd>TroubleToggle loclist<cr>", opts)
 
 --- NeoTree
-keymap("n", "<C-n>", "<cmd>NeoTreeFloatToggle<cr>", opts)
+keymap("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", opts)
+keymap("n", "<leader>nf", "<cmd>NvimTreeFindFile<cr>", opts)
+keymap("n", "<leader>nr", "<cmd>NvimTreeRefresh<cr>", opts)
 
 --- Undotree
 keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)

@@ -56,18 +56,10 @@ tools["ThePrimeagen/git-worktree.nvim"] = {
 		require("modules.tools.git-worktree")
 	end,
 }
--- tools["ThePrimeagen/harpoon"] = {
--- 	opt = true,
--- 	event = "BufReadPost",
--- 	module = "harpoon",
--- 	config = function()
--- 		require("modules.tools.harpoon")
--- 	end,
--- }
 tools["samodostal/image.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
-	requires = "nvim-lua/plenary.nvim",
+	requires = { "nvim-lua/plenary.nvim", "m00qek/baleia.nvim" },
 	config = function()
 		require("modules.tools.image")
 	end,
@@ -79,20 +71,6 @@ tools["mrjones2014/legendary.nvim"] = {
 	requires = { "stevearc/dressing.nvim" },
 	config = function()
 		require("modules.tools.legendary")
-	end,
-}
-tools["nvim-neo-tree/neo-tree.nvim"] = {
-	opt = true,
-	branch = "v2.x",
-	module = "neo-tree",
-	cmd = { "Neotree", "NeoTreeFloatToggle" },
-	requires = {
-		"kyazdani42/nvim-web-devicons",
-		"nvim-lua/plenary.nvim",
-		"MunifTanjim/nui.nvim",
-	},
-	config = function()
-		require("modules.tools.neo-tree")
 	end,
 }
 tools["AckslD/nvim-neoclip.lua"] = {
@@ -107,13 +85,19 @@ tools["AckslD/nvim-neoclip.lua"] = {
 		require("modules.tools.neoclip")
 	end,
 }
--- tools["kyazdani42/nvim-tree.lua"] = {
--- 	opt = true,
--- 	cmd = { "NvimTreeToggle" },
--- 	config = function()
--- 		require("modules.tools.nvim-tree")
--- 	end,
--- }
+tools["kyazdani42/nvim-tree.lua"] = {
+	opt = true,
+	cmd = {
+		"NvimTreeToggle",
+		"NvimTreeOpen",
+		"NvimTreeFindFile",
+		"NvimTreeFindFileToggle",
+		"NvimTreeRefresh",
+	},
+	config = function()
+		require("modules.tools.nvim-tree")
+	end,
+}
 tools["bennypowers/nvim-regexplainer"] = {
 	opt = true,
 	cmd = { "RegexplainerToggle", "RegexplainerShow" },
