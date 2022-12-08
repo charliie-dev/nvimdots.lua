@@ -22,13 +22,6 @@ ui["declancm/cinnamon.nvim"] = {
 		require("modules.ui.cinnamon")
 	end,
 }
--- ui["nvim-zh/colorful-winsep.nvim"] = {
---     opt = true,
---     event = "BufReadPost",
---     config = function()
---         require("modules.ui.colorful-winsep")
---     end,
--- }
 ui["stevearc/dressing.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -112,13 +105,6 @@ ui["hoob3rt/lualine.nvim"] = {
 		require("modules.ui.lualine")
 	end,
 }
--- ui["AckslD/messages.nvim"] = {
--- 	opt = true,
--- 	cmd = "Messages",
--- 	config = function()
--- 		require("modules.ui.messages")
--- 	end,
--- }
 ui["rcarriga/nvim-notify"] = {
 	opt = true,
 	event = "BufReadPre",
@@ -127,24 +113,10 @@ ui["rcarriga/nvim-notify"] = {
 		require("modules.ui.notify")
 	end,
 }
-ui["MunifTanjim/nui.nvim"] = {
-	opt = true,
-	module = "nui",
-}
 ui["kyazdani42/nvim-web-devicons"] = {
 	opt = true,
 	module = "nvim-web-devicons",
-	-- config = function()
-	-- 	require("nvim-web-devicons").setup({
-	-- 		override = require("nvim-material-icon").get_icons(),
-	-- 	})
-	-- end,
 }
--- The icons of this plugin still needs some work.
--- ui["DaikyXendo/nvim-material-icon"] = {
--- 	opt = true,
--- 	module = "nvim-material-icon",
--- }
 ui["anuvyklack/pretty-fold.nvim"] = {
 	opt = true,
 	after = { "nvim-treesitter" },
