@@ -50,6 +50,11 @@ require("which-key").register({
 			r = "lsp: LSP Restart",
 			t = "lsp: OutlineToggle",
 		},
+		n = {
+			name = "NvimTree commands",
+			f = "filetree: NvimTree find file",
+			r = "filetree: NvimTree refresh",
+		},
 		p = {
 			name = "Packer commands",
 			s = "packer: PackerSync",
@@ -90,4 +95,5 @@ require("which-key").register({
 	["<leader>dv"] = "git: Show diff",
 	["<leader><leader>dv"] = "git: Close diff",
 	["K"] = "lsp: Hover doc",
+	["<C-n>"] = "filetree: NvimTree toggle sidebar",
 })
