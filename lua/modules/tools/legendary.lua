@@ -55,6 +55,12 @@ require("which-key").register({
 			f = "filetree: NvimTree find file",
 			r = "filetree: NvimTree refresh",
 		},
+		p = {
+			name = "Packer commands",
+			s = "packer: PackerSync",
+			c = "packer: PackerCompile",
+			t = "packer: PackerStatus",
+		},
 		t = {
 			name = "Trouble commands",
 			t = "trouble: Toggle",

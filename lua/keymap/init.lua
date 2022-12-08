@@ -114,9 +114,9 @@ keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap("n", "nl", ":noh<CR>", opts)
 
 --- Packer
-keymap("n", "pc", "<cmd>PackerCompile<cr>", opts)
-keymap("n", "ps", "<cmd>PackerSync<cr>", opts)
-keymap("n", "pt", "<cmd>PackerStatus<cr>", opts)
+keymap("n", "<leader>pc", "<cmd>PackerCompile<cr>", opts)
+keymap("n", "<leader>ps", "<cmd>PackerSync<cr>", opts)
+keymap("n", "<leader>pt", "<cmd>PackerStatus<cr>", opts)
 
 --- comment-frame
 -- "<leader>cf" to use comment-frame
