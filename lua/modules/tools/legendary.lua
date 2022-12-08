@@ -91,12 +91,6 @@ require("which-key").register({
 		["zd"] = "surround: Delete surround",
 		["zc"] = "surround: Change surround",
 	},
-	["p"] = {
-		name = "Packer commands",
-		s = "packer: PackerSync",
-		c = "packer: PackerCompile",
-		t = "packer: PackerStatus",
-	},
 	["lg"] = "git: Show lazygit",
 	["<leader>dv"] = "git: Show diff",
 	["<leader><leader>dv"] = "git: Close diff",
