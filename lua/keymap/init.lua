@@ -54,8 +54,8 @@ keymap("n", "gD", "<cmd>lua vim.lsp.buf.definition()<cr>", opts) -- go to defini
 keymap("n", "gDC", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
 keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
 keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-keymap("n", "gDL", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts) -- use trouble.nvim instead
-keymap("n", "gQL", "<cmd>lua vim.diagnostic.setqflist()<cr>", opts) -- use trouble.nvim instead
+-- keymap("n", "gDL", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts) -- use trouble.nvim instead
+-- keymap("n", "gQL", "<cmd>lua vim.diagnostic.setqflist()<cr>", opts) -- use trouble.nvim instead
 
 --- Toggleterm
 -- "Ctrl+ \" to open toggleterm
@@ -74,12 +74,12 @@ keymap("n", "<M-h>", '<cmd>lua require("tmux").resize_left()<cr>', opts)
 keymap("n", "<M-l>", '<cmd>lua require("tmux").resize_right()<cr>', opts)
 
 --- Trouble.nvim
--- keymap("n", "tt", "<cmd>TroubleToggle<cr>", opts)
--- keymap("n", "tr", "<cmd>TroubleToggle lsp_references<cr>", opts)
--- keymap("n", "td", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
--- keymap("n", "tw", "<cmd>TroubleToggle workspace_diagnostics<cr>", opts)
--- keymap("n", "tq", "<cmd>TroubleToggle quickfix<cr>", opts)
--- keymap("n", "tl", "<cmd>TroubleToggle loclist<cr>", opts)
+keymap("n", "<leader>tt", "<cmd>TroubleToggle<cr>", opts)
+keymap("n", "<leader>tr", "<cmd>TroubleToggle lsp_references<cr>", opts)
+keymap("n", "<leader>td", "<cmd>TroubleToggle document_diagnostics<cr>", opts)
+keymap("n", "<leader>tw", "<cmd>TroubleToggle workspace_diagnostics<cr>", opts)
+keymap("n", "<leader>tq", "<cmd>TroubleToggle quickfix<cr>", opts)
+keymap("n", "<leader>tl", "<cmd>TroubleToggle loclist<cr>", opts)
 
 --- NeoTree
 keymap("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", opts)
@@ -166,11 +166,13 @@ keymap("v", "<leader>-", "<cmd>lua require('dial.map').dec_normal('visual')<cr>"
 
 --- cinnamon, smooth scrolling
 -- Half-window movements:
-vim.keymap.set({ "n", "x" }, "<C-u>", "<Cmd>lua Scroll('<C-u>', 1, 1)<CR>")
-vim.keymap.set({ "n", "x" }, "<C-d>", "<Cmd>lua Scroll('<C-d>', 1, 1)<CR>")
-
+keymap({ "n", "x" }, "<C-u>", "<Cmd>lua Scroll('<C-u>', 1, 1)<CR>")
+keymap({ "n", "x" }, "<C-d>", "<Cmd>lua Scroll('<C-d>', 1, 1)<CR>")
 -- Page movements:
-vim.keymap.set({ "n", "x" }, "<C-b>", "<Cmd>lua Scroll('<C-b>', 1, 1)<CR>")
-vim.keymap.set({ "n", "x" }, "<C-f>", "<Cmd>lua Scroll('<C-f>', 1, 1)<CR>")
-vim.keymap.set({ "n", "x" }, "<PageUp>", "<Cmd>lua Scroll('<C-b>', 1, 1)<CR>")
-vim.keymap.set({ "n", "x" }, "<PageDown>", "<Cmd>lua Scroll('<C-f>', 1, 1)<CR>")
+keymap({ "n", "x" }, "<C-b>", "<Cmd>lua Scroll('<C-b>', 1, 1)<CR>")
+keymap({ "n", "x" }, "<C-f>", "<Cmd>lua Scroll('<C-f>', 1, 1)<CR>")
+keymap({ "n", "x" }, "<PageUp>", "<Cmd>lua Scroll('<C-b>', 1, 1)<CR>")
+keymap({ "n", "x" }, "<PageDown>", "<Cmd>lua Scroll('<C-f>', 1, 1)<CR>")
+
+--- leap.nvim
+-- "s/S", "f/F", "t/T" to use leap

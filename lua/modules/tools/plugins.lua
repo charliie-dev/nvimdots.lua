@@ -143,14 +143,15 @@ tools["akinsho/toggleterm.nvim"] = {
 		require("modules.tools.toggleterm")
 	end,
 }
--- tools["folke/trouble.nvim"] = {
--- 	opt = true,
--- 	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
--- 	requires = "kyazdani42/nvim-web-devicons",
--- 	config = function()
--- 		require("modules.tools.trouble")
--- 	end,
--- }
+tools["folke/trouble.nvim"] = {
+	opt = true,
+	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
+	requires = "kyazdani42/nvim-web-devicons",
+	after = "null-ls.nvim",
+	config = function()
+		require("modules.tools.trouble")
+	end,
+}
 tools["samjwill/nvim-unception"] = {
 	opt = true,
 	event = "BufReadPost",
