@@ -240,6 +240,10 @@ tools["princejoogie/dir-telescope.nvim"] = {
 	},
 	after = "telescope.nvim",
 }
+tools["nvim-telescope/telescope-live-grep-args.nvim"] = {
+	opt = true,
+	after = "telescope.nvim",
+}
 
 ----------------------------------------------------------------------
 --                           DAP Plugins                            --

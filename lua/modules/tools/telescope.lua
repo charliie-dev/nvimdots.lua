@@ -9,6 +9,7 @@ cmd([[packadd dir-telescope.nvim]])
 cmd([[packadd git-worktree.nvim]])
 cmd([[packadd nvim-notify]])
 cmd([[packadd nvim-neoclip.lua]])
+cmd([[packadd telescope-live-grep-args.nvim]])
 
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
 
@@ -24,6 +25,7 @@ local fixfolds = {
 		return true
 	end,
 }
+local lga_actions = require("telescope-live-grep-args.actions")
 
 require("telescope").setup({
 	defaults = {
@@ -84,11 +86,16 @@ require("telescope").setup({
 				-- ["wiki"] = "/home/my_username/wiki"
 			},
 		},
-		-- file_browser = {
-		-- 	theme = "ivy",
-		-- 	-- disables netrw and use telescope-file-browser in its place
-		-- 	hijack_netrw = false,
-		-- },
+		live_grep_args = {
+			auto_quoting = true, -- enable/disable auto-quoting
+			-- define mappings, e.g.
+			mappings = { -- extend mappings
+				i = {
+					["<C-k>"] = lga_actions.quote_prompt(),
+					["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+				},
+			},
+		},
 		project = {
 			base_dirs = {
 				{ "~", max_depth = 1 },
@@ -163,6 +170,6 @@ require("telescope").load_extension("project")
 require("telescope").load_extension("zoxide")
 require("telescope").load_extension("dir")
 require("telescope").load_extension("notify")
--- require("telescope").load_extension("harpoon")
 require("telescope").load_extension("neoclip")
 require("telescope").load_extension("git_worktree")
+require("telescope").load_extension("live_grep_args")
