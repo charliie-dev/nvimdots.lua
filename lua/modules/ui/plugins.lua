@@ -117,7 +117,7 @@ ui["kyazdani42/nvim-web-devicons"] = {
 	opt = true,
 	module = "nvim-web-devicons",
 }
--- ui["anuvyklack/pretty-fold.nvim"] = {
+-- ui["anuvyklack/pretty-fold.nvim"] = { -- not using fold ATM
 -- 	opt = true,
 -- 	after = { "nvim-treesitter" },
 -- 	config = function()
