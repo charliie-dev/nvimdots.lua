@@ -70,6 +70,8 @@ require("which-key").register({
 			q = "trouble: Show quickfix list",
 			l = "trouble: Show loclist",
 		},
+		["="] = "dial: Increment(Cycle)",
+		["-"] = "dial: Decrement(Cycle)",
 	},
 	["g"] = {
 		["["] = "lsp: Goto prev diagnostic",

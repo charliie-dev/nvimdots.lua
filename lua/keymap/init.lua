@@ -156,10 +156,8 @@ end)
 -- <CR> on an empty list marker to end the list.
 
 --- dial
-keymap("n", "<leader>=", "<cmd>lua require('dial.map').inc_normal('default')<cr>", { noremap = true })
-keymap("n", "<leader>-", "<cmd>lua require('dial.map').dec_normal('default')<cr>", { noremap = true })
-keymap("v", "<leader>=", "<cmd>lua require('dial.map').inc_normal('visual')<cr>", { noremap = true })
-keymap("v", "<leader>-", "<cmd>lua require('dial.map').dec_normal('visual')<cr>", { noremap = true })
+keymap({ "n", "v" }, "<leader>=", "<Plug>(dial-increment)", { noremap = true })
+keymap({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 
 --- regexplainer
 -- "<leader>gR" to toggle regexplainer
