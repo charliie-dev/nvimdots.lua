@@ -72,6 +72,7 @@ require("which-key").register({
 		},
 		["="] = "dial: Increment(Cycle)",
 		["-"] = "dial: Decrement(Cycle)",
+		["lg"] = "git: Show lazygit",
 	},
 	["g"] = {
 		["["] = "lsp: Goto prev diagnostic",
@@ -93,7 +94,6 @@ require("which-key").register({
 		["zd"] = "surround: Delete surround",
 		["zc"] = "surround: Change surround",
 	},
-	["lg"] = "git: Show lazygit",
 	["<leader>dv"] = "git: Show diff",
 	["<leader><leader>dv"] = "git: Close diff",
 	["K"] = "lsp: Hover doc",

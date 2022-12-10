@@ -59,7 +59,7 @@ keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
 
 --- Toggleterm
 -- "Ctrl+ \" to open toggleterm
-keymap("n", "lg", "<cmd>lua _LAZYGIT_TOGGLE()<cr>", opts)
+keymap("n", "<leader>lg", "<cmd>lua _LAZYGIT_TOGGLE()<cr>", opts)
 
 --- Tmux.nvim
 -- Move from Nvim windows to tmux panes
