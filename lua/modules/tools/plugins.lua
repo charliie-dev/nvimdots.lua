@@ -101,6 +101,10 @@ tools["kyazdani42/nvim-tree.lua"] = {
 tools["bennypowers/nvim-regexplainer"] = {
 	opt = true,
 	cmd = { "RegexplainerToggle", "RegexplainerShow" },
+	requires = {
+		"nvim-treesitter/nvim-treesitter",
+		"MunifTanjim/nui.nvim",
+	},
 	config = function()
 		require("modules.tools.regexplainer")
 	end,

@@ -31,6 +31,14 @@ require("regexplainer").setup({
 	},
 
 	narrative = {
-		separator = "\n",
+		separator = function(component)
+			local sep = "\n"
+			if component.depth > 0 then
+				for _ = 1, component.depth do
+					sep = sep .. "> "
+				end
+			end
+			return sep
+		end,
 	},
 })
