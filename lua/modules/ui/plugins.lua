@@ -15,13 +15,6 @@ ui["akinsho/bufferline.nvim"] = {
 		require("modules.ui.bufferline")
 	end,
 }
-ui["declancm/cinnamon.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.ui.cinnamon")
-	end,
-}
 ui["stevearc/dressing.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -72,12 +65,6 @@ ui["lewis6991/gitsigns.nvim"] = {
 -- ui["sainnhe/everforest"] = {
 -- 	opt = true,
 -- }
-ui["rebelot/kanagawa.nvim"] = {
-	opt = false,
-	config = function()
-		require("modules.ui.kanagawa")
-	end,
-}
 ui["kevinhwang91/nvim-hlslens"] = {
 	opt = true,
 	module = "hlslens",
@@ -85,10 +72,6 @@ ui["kevinhwang91/nvim-hlslens"] = {
 	config = function()
 		require("modules.ui.hlslens")
 	end,
-}
-ui["romainl/vim-cool"] = {
-	opt = true,
-	after = { "nvim-hlslens" },
 }
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	opt = true,
@@ -98,12 +81,29 @@ ui["lukas-reineke/indent-blankline.nvim"] = {
 		require("modules.ui.indent-blankline")
 	end,
 }
+ui["rebelot/kanagawa.nvim"] = {
+	opt = false,
+	config = function()
+		require("modules.ui.kanagawa")
+	end,
+}
 ui["hoob3rt/lualine.nvim"] = {
 	opt = true,
 	after = { "git-blame.nvim" },
 	config = function()
 		require("modules.ui.lualine")
 	end,
+}
+ui["karb94/neoscroll.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.ui.neoscroll")
+	end,
+}
+ui["romainl/vim-cool"] = {
+	opt = true,
+	after = { "nvim-hlslens" },
 }
 ui["rcarriga/nvim-notify"] = {
 	opt = true,
@@ -117,13 +117,13 @@ ui["kyazdani42/nvim-web-devicons"] = {
 	opt = true,
 	module = "nvim-web-devicons",
 }
-ui["anuvyklack/pretty-fold.nvim"] = {
-	opt = true,
-	after = { "nvim-treesitter" },
-	config = function()
-		require("modules.ui.pretty-fold")
-	end,
-}
+-- ui["anuvyklack/pretty-fold.nvim"] = {
+-- 	opt = true,
+-- 	after = { "nvim-treesitter" },
+-- 	config = function()
+-- 		require("modules.ui.pretty-fold")
+-- 	end,
+-- }
 ui["petertriho/nvim-scrollbar"] = {
 	opt = true,
 	event = "BufReadPost",
