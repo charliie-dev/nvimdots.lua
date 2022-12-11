@@ -208,6 +208,8 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
 - [LibHunt/neovim](https://www.libhunt.com/search?query=neovim)
 - [rockerBOO/awesome-neovim](https://github.com/rockerBOO/awesome-neovim)
 - [How I Vim](http://howivim.com/)
+- [nvim.sh](https://nvim.sh/), neovim plugin search from the terminal
+- [Neoland](https://neoland.dev/), a collection of plugins, themes and other resources for Neovim.
 
 ### Trendy neovim news
 
