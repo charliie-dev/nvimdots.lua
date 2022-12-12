@@ -66,9 +66,12 @@ tools["samodostal/image.nvim"] = {
 }
 tools["mrjones2014/legendary.nvim"] = {
 	opt = true,
-	after = { "which-key.nvim", "sqlite.lua" },
 	cmd = "Legendary",
-	requires = { "stevearc/dressing.nvim" },
+	requires = {
+		"stevearc/dressing.nvim",
+		"kkharji/sqlite.lua",
+		"folke/which-key.nvim",
+	},
 	config = function()
 		require("modules.tools.legendary")
 	end,
