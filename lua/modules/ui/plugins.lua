@@ -94,6 +94,13 @@ ui["hoob3rt/lualine.nvim"] = {
 		require("modules.ui.lualine")
 	end,
 }
+ui["zbirenbaum/neodim"] = {
+	opt = true,
+	event = "LspAttach",
+	config = function()
+		require("modules.ui.neodim")
+	end,
+}
 ui["karb94/neoscroll.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
