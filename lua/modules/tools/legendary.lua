@@ -65,7 +65,6 @@ require("which-key").register({
 			name = "LSP commands",
 			i = "lsp: LSP Info",
 			r = "lsp: LSP Restart",
-			t = "lsp: OutlineToggle",
 		},
 		n = {
 			name = "NvimTree commands",
@@ -99,6 +98,7 @@ require("which-key").register({
 		D = "lsp: Goto definition",
 		h = "lsp: Show definition and references",
 		r = "lsp: Rename",
+		o = "lsp: Outline",
 		S = "lsp: Signature help",
 		["DC"] = "lsp: Declaration",
 		I = "lsp: Implementation",

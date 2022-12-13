@@ -41,7 +41,7 @@ keymap("n", "<S-tab>", "<cmd>BufferLineCyclePrev<cr>", opts)
 --- Lsp mapping work when event:InsertEnter & event:LspStart
 keymap("n", "<leader>li", "<cmd>LspInfo<cr>", opts)
 keymap("n", "<leader>lr", "<cmd>LspRestart<cr>", opts)
-keymap("n", "<leader>lt", "<cmd>LSoutlineToggle<cr>", opts) -- from Lspsaga.nvim
+keymap("n", "go", "<cmd>Lspsaga outline<cr>", opts)
 keymap("n", "g[", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
 keymap("n", "g]", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
 keymap("n", "gr", "<cmd>Lspsaga rename<cr>", opts)
