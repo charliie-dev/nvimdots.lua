@@ -23,10 +23,14 @@ require("copilot").setup({
 			next = "<M-]>",
 			prev = "<M-[>",
 			dismiss = "<C-]>",
+			accept_word = "<M-Right>",
+			accept_line = "<M-Down>",
 		},
 	},
 	filetypes = {
 		yaml = false,
+		toml = false,
+		json = false,
 		markdown = false,
 		help = false,
 		terraform = false,
@@ -38,7 +42,6 @@ require("copilot").setup({
 		["."] = false,
 	},
 	plugin_manager_path = vim.fn.stdpath("data") .. "/site/pack/packer",
-	-- plugin_manager_path = vim.env.HOME .. "/.config/nvim/plugged"
 	-- Use this field to provide the path to a specific node version such as one installed by nvm. Node version must be < 18.
 	-- copilot_node_command = vim.fn.expand("$HOME") .. "/tools/nodejs/bin/node", -- Node version must be < 18
 	server_opts_overrides = {},
