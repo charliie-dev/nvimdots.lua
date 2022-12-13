@@ -99,9 +99,7 @@ completion["windwp/nvim-autopairs"] = {
 	end,
 }
 completion["zbirenbaum/copilot.lua"] = {
-	-- The options in cmp panel is still slow with VimEnter, so use BufReadPre for faster startup time.
-	-- event = "VimEnter",
-	event = "BufReadPre",
+	event = "VimEnter",
 	module = {
 		"copilot",
 		"copilot.util",

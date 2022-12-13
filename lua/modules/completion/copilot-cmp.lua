@@ -1,3 +1,4 @@
+vim.api.nvim_command([[packadd nvim-cmp]])
 require("copilot_cmp").setup({
 	method = "getCompletionsCycling",
 	-- formatters = {
