@@ -1,3 +1,9 @@
+local icons = {
+	kind = require("modules.ui.icons").get("kind", false),
+	type = require("modules.ui.icons").get("type", false),
+	cmp = require("modules.ui.icons").get("cmp", false),
+}
+
 local t = function(str)
 	return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
@@ -37,11 +43,6 @@ vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#57fa85" })
 local compare = require("cmp.config.compare")
 local lspkind = require("lspkind")
 local cmp = require("cmp")
-local icons = {
-	kind = require("modules.ui.icons").get("kind", true),
-	type = require("modules.ui.icons").get("type", true),
-	cmp = require("modules.ui.icons").get("cmp", true),
-}
 
 cmp.setup({
 	window = {
@@ -71,13 +72,18 @@ cmp.setup({
 		},
 	},
 	formatting = {
-		format = lspkind.cmp_format({
-			mode = "symbol_text",
-			maxwidth = 50,
-			ellipsis_char = "...",
-			-- symbol_map = { Copilot = icon.misc.Copilot },
-			symbol_map = vim.tbl_deep_extend("force", icons.kind, icons.cmp, icons.type),
-		}),
+		fields = { "kind", "abbr", "menu" },
+		format = function(entry, vim_item)
+			local kind = lspkind.cmp_format({
+				mode = "symbol_text",
+				maxwidth = 50,
+				symbol_map = vim.tbl_deep_extend("force", icons.kind, icons.type, icons.cmp),
+			})(entry, vim_item)
+			local strings = vim.split(kind.kind, "%s", { trimempty = true })
+			kind.kind = " " .. strings[1] .. " "
+			kind.menu = "    (" .. strings[2] .. ")"
+			return kind
+		end,
 	},
 	-- You can set mappings if you want
 	mapping = cmp.mapping.preset.insert({
