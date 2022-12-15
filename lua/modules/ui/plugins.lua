@@ -24,7 +24,7 @@ ui["stevearc/dressing.nvim"] = {
 }
 ui["NvChad/nvim-colorizer.lua"] = {
 	opt = true,
-	event = "BufReadPost",
+	after = { "nvim-treesitter" },
 	config = function()
 		require("modules.ui.colorizer")
 	end,
