@@ -105,9 +105,7 @@ completion["zbirenbaum/copilot.lua"] = {
 		"copilot.util",
 	},
 	config = function()
-		vim.schedule(function()
-			require("modules.completion.copilot")
-		end)
+		require("modules.completion.copilot")
 	end,
 }
 completion["zbirenbaum/copilot-cmp"] = {
