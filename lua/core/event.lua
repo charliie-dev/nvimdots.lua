@@ -93,18 +93,18 @@ function autocmd.load_autocmds()
 				[[silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=1500})]],
 			},
 		},
-		type = {
-			{
-				"InsertEnter",
-				"*",
-				"set norelativenumber",
-			},
-			{
-				"InsertLeave",
-				"*",
-				"set relativenumber",
-			},
-		},
+		-- type = {
+		-- 	{
+		-- 		"InsertEnter",
+		-- 		"*",
+		-- 		"set norelativenumber",
+		-- 	},
+		-- 	{
+		-- 		"InsertLeave",
+		-- 		"*",
+		-- 		"set relativenumber",
+		-- 	},
+		-- },
 	}
 
 	autocmd.nvim_create_augroups(definitions)
