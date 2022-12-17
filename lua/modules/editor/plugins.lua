@@ -47,13 +47,6 @@ editor["dinhhuy258/git.nvim"] = {
 		require("modules.editor.git-nvim")
 	end,
 }
-editor["booperlv/nvim-gomove"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.editor.gomove")
-	end,
-}
 editor["RRethy/vim-illuminate"] = {
 	opt = true,
 	event = "BufReadPost",
