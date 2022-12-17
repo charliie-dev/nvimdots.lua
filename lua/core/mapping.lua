@@ -40,15 +40,31 @@ keymap("n", "tj", "<cmd>tabprevious<cr>", opts)
 keymap("n", "to", "<cmd>tabonly<cr>", opts)
 
 -- NOTE: Keep things in paste register after paste it when visual selecting things to replace.
--- useful keymaps to replace text after copying thing
-keymap("x", "<leader>p", '"_dP', opts)
+-- useful keymaps to replace text after copying thing, @ThePrimeagen
+keymap("x", "<leader><leader>p", '"_dP', opts)
 keymap("n", "x", '"_x', opts)
 keymap("n", "X", '"_X', opts)
 
--- Insert mode
+-- Move selected lines Up/Down with auto-indent, @ThePrimeagen
+keymap("v", "J", ":m '>+1<cr>gv=gv")
+keymap("v", "K", ":m '<-2<cr>gv=gv")
+
+-- Keep cursor inplace if below line being append to current line when moving, @ThePrimeagen
+keymap("n", "J", "mzJ`z")
+
+-- Do nothing when press "Q", @ThePrimeagen
+keymap("n", "Q", "<nop>")
+
+-- start replacment mode of current word, @ThePrimeagen
+keymap("n", "<leader><leader>s", "<cmd>%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+
+-- chmod +x current file, @ThePrimeagen
+keymap("n", "<leader><leader>x", "<cmd>!chmod +x %<cr>")
+
 -- Save in insert mode
 keymap("i", "<C-s>", "<esc>:w<cr>", {})
 
+-- Blink cursor
 local timer = vim.loop.new_timer()
 local blink = function()
 	local cnt, blink_times = 0, 8
@@ -66,7 +82,6 @@ local blink = function()
 		end)
 	)
 end
-
 keymap("n", "<leader>cb", blink)
 
 -- Make Ascii art font

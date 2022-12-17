@@ -107,10 +107,10 @@ keymap("n", "<leader><leader>dv", "<cmd>DiffviewClose<cr>", opts)
 keymap("n", "<C-p>", "<cmd>Legendary<cr>", opts)
 
 --- hlslens
-keymap("n", "n", [[<cmd>execute('normal! ' . v:count1 . 'n')<cr><cmd>lua require('hlslens').start()<cr>]], opts)
-keymap("n", "N", [[<cmd>execute('normal! ' . v:count1 . 'N')<cr><cmd>lua require('hlslens').start()<cr>]], opts)
-keymap("n", "*", [[*<cmd>lua require('hlslens').start()<cr>]], opts)
-keymap("n", "#", [[#<cmd>lua require('hlslens').start()<cr>]], opts)
+keymap("n", "n", [[<cmd>execute('normal! ' . v:count1 . 'n')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
+keymap("n", "N", [[<cmd>execute('normal! ' . v:count1 . 'N')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
+keymap("n", "*", [[*<cmd>lua require('hlslens').start()<cr>zz]], opts)
+keymap("n", "#", [[#<cmd>lua require('hlslens').start()<cr>zz]], opts)
 keymap("n", "<esc>", "<cmd>noh<cr>", opts)
 
 --- Packer
@@ -121,16 +121,10 @@ keymap("n", "<leader>pt", "<cmd>PackerStatus<cr>", opts)
 --- comment-frame
 -- "<leader>cf" to use comment-frame
 
---- gomove
-keymap({ "n", "x" }, "<leader><S-h>", "<Plug>GoNSMLeft", {})
-keymap({ "n", "x" }, "<leader><S-j>", "<Plug>GoNSMDown", {})
-keymap({ "n", "x" }, "<leader><S-k>", "<Plug>GoNSMUp", {})
-keymap({ "n", "x" }, "<leader><S-l>", "<Plug>GoNSMRight", {})
-
 --- ssr.nvim, structural search and replace
 keymap({ "n", "x" }, "<leader>sr", function()
 	require("ssr").open()
-end)
+end, { desc = "structural search and replace." })
 
 --- nvim-surround
 -- keymaps = {
