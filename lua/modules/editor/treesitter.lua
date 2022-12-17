@@ -64,7 +64,7 @@ require("nvim-treesitter.configs").setup({
 	},
 	textobjects = {
 		select = {
-			enable = false,
+			enable = true,
 			lookahead = true,
 			keymaps = {
 				["af"] = "@function.outer",
@@ -74,7 +74,7 @@ require("nvim-treesitter.configs").setup({
 			},
 		},
 		move = {
-			enable = false,
+			enable = true,
 			set_jumps = true, -- whether to set jumps in the jumplist
 			goto_next_start = {
 				["]["] = "@function.outer",
@@ -91,12 +91,6 @@ require("nvim-treesitter.configs").setup({
 			goto_previous_end = {
 				["[]"] = "@function.outer",
 				["[M"] = "@class.outer",
-			},
-		},
-		lsp_interop = {
-			enable = false,
-			peek_definition_code = {
-				["gD"] = "@function.outer",
 			},
 		},
 	},
