@@ -149,7 +149,7 @@ ui["petertriho/nvim-scrollbar"] = {
 -- }
 ui["levouh/tint.nvim"] = {
 	opt = true,
-	event = { "CmdwinEnter", "CmdlineEnter" },
+	event = { "BufReadPost" },
 	config = function()
 		require("modules.ui.tint")
 	end,
