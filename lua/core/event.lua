@@ -15,19 +15,15 @@ end
 
 function autocmd.load_autocmds()
 	local definitions = {
-		packer = {},
-		bufs = {
-			-- Reload vim config automatically
-			{
-				"BufWritePost",
-				[[$VIM_PATH/{*.vim,*.yaml,vimrc} nested source $MYVIMRC | redraw]],
-			},
-			-- Reload Vim script automatically if setlocal autoread
+		packer = {
+			-- Hot reload nvim core config
 			{
 				"BufWritePost,FileWritePost",
-				"*.vim",
-				[[nested if &l:autoread > 0 | source <afile> | echo 'source ' . bufname('%') | endif]],
+				"$XDG_CONFIG_HOME/nvim/*.lua",
+				[[source % | source $MYVIMRC | redraw! | PackerCompile]],
 			},
+		},
+		bufs = {
 			{ "BufWritePre", "/tmp/*", "setlocal noundofile" },
 			{ "BufWritePre", "COMMIT_EDITMSG", "setlocal noundofile" },
 			{ "BufWritePre", "MERGE_MSG", "setlocal noundofile" },
@@ -93,18 +89,6 @@ function autocmd.load_autocmds()
 				[[silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=1500})]],
 			},
 		},
-		-- type = {
-		-- 	{
-		-- 		"InsertEnter",
-		-- 		"*",
-		-- 		"set norelativenumber",
-		-- 	},
-		-- 	{
-		-- 		"InsertLeave",
-		-- 		"*",
-		-- 		"set relativenumber",
-		-- 	},
-		-- },
 	}
 
 	autocmd.nvim_create_augroups(definitions)
