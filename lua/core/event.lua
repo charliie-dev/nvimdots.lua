@@ -19,7 +19,7 @@ function autocmd.load_autocmds()
 			-- Hot reload nvim core config
 			{
 				"BufWritePost,FileWritePost",
-				"$XDG_CONFIG_HOME/nvim/*.lua",
+				"~/.config/nvim/*.lua",
 				[[source % | source $MYVIMRC | redraw! | PackerCompile]],
 			},
 		},
