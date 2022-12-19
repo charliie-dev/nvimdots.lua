@@ -30,9 +30,9 @@ return {
 				maxPreload = 2000,
 				preloadFileSize = 1000,
 			},
-			telemetry = {
-				enable = false,
-			},
+			telemetry = { enable = false },
+			-- Do not override treesitter lua highlighting with sumneko lua highlighting
+			semantic = { enable = false },
 		},
 	},
 }
