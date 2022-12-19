@@ -21,7 +21,7 @@ keymap("n", "<leader>do", "<cmd>lua require('dap').step_out()<cr>", opts)
 keymap("n", "<leader>dl", "<cmd>lua require('dap').repl.open()<cr>", opts)
 
 --- Telescope
-keymap("n", "<leader>fp", "<cmd>lua require('telescope').extensions.project.project{ display_type = 'full' }<cr>", opts)
+keymap("n", "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects{}<cr>", opts)
 keymap("n", "<leader>fr", "<cmd>lua require('telescope').extensions.frecency.frecency{}<cr>", opts)
 keymap("n", "<leader>fw", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args{}<cr>", opts)
 keymap("n", "<leader>fe", "<cmd>Telescope oldfiles<cr>", opts)

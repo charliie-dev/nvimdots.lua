@@ -219,18 +219,12 @@ tools["nvim-telescope/telescope-fzf-native.nvim"] = {
 	run = "make",
 	after = "telescope.nvim",
 }
-tools["nvim-telescope/telescope-project.nvim"] = {
+tools["ahmedkhalf/project.nvim"] = {
 	opt = true,
 	after = "telescope.nvim",
-	requires = {
-		{
-			"ahmedkhalf/project.nvim",
-			opt = true,
-			config = function()
-				require("modules.tools.project")
-			end,
-		},
-	},
+	config = function()
+		require("modules.tools.project")
+	end,
 }
 tools["nvim-telescope/telescope-frecency.nvim"] = {
 	opt = true,

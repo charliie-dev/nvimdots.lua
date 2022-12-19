@@ -1,7 +1,7 @@
 local cmd = vim.api.nvim_command
 cmd([[packadd sqlite.lua]])
+cmd([[packadd project.nvim]])
 cmd([[packadd telescope-fzf-native.nvim]])
-cmd([[packadd telescope-project.nvim]])
 cmd([[packadd telescope-frecency.nvim]])
 cmd([[packadd telescope-zoxide]])
 cmd([[packadd telescope-env.nvim]])
@@ -96,15 +96,6 @@ require("telescope").setup({
 				},
 			},
 		},
-		project = {
-			base_dirs = {
-				{ "~", max_depth = 1 },
-				{ "~/Workspace", max_depth = 1 },
-			},
-			hidden_files = true, -- default: false
-			theme = "dropdown",
-			order_by = "asc",
-		},
 	},
 	pickers = {
 		buffers = fixfolds,
@@ -166,7 +157,7 @@ require("dir-telescope").setup({
 require("telescope").load_extension("env")
 require("telescope").load_extension("frecency")
 require("telescope").load_extension("fzf")
-require("telescope").load_extension("project")
+require("telescope").load_extension("projects")
 require("telescope").load_extension("zoxide")
 require("telescope").load_extension("dir")
 require("telescope").load_extension("notify")
