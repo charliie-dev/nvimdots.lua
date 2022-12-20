@@ -10,6 +10,7 @@ cmd([[packadd git-worktree.nvim]])
 cmd([[packadd nvim-notify]])
 cmd([[packadd nvim-neoclip.lua]])
 cmd([[packadd telescope-live-grep-args.nvim]])
+cmd([[packadd telescope-undo.nvim]])
 
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
 
@@ -96,6 +97,14 @@ require("telescope").setup({
 				},
 			},
 		},
+		undo = {
+			use_delta = true,
+			side_by_side = true,
+			layout_strategy = "vertical",
+			layout_config = {
+				preview_height = 0.7,
+			},
+		},
 	},
 	pickers = {
 		buffers = fixfolds,
@@ -164,3 +173,4 @@ require("telescope").load_extension("notify")
 require("telescope").load_extension("neoclip")
 require("telescope").load_extension("git_worktree")
 require("telescope").load_extension("live_grep_args")
+require("telescope").load_extension("undo")

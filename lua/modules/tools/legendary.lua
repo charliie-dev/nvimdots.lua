@@ -51,6 +51,7 @@ require("which-key").register({
 			f = "find: File under current work directory",
 			g = "find: File under current git directory",
 			n = "edit: New file",
+			u = "find: Undo history",
 		},
 		h = {
 			name = "Gitsigns commands",

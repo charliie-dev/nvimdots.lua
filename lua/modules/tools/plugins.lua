@@ -186,10 +186,6 @@ tools["gelguy/wilder.nvim"] = {
 		require("modules.tools.wilder")
 	end,
 }
-tools["mbbill/undotree"] = {
-	opt = true,
-	cmd = "UndotreeToggle",
-}
 
 ----------------------------------------------------------------------
 --                        Telescope Plugins                         --
@@ -251,6 +247,10 @@ tools["princejoogie/dir-telescope.nvim"] = {
 	after = "telescope.nvim",
 }
 tools["nvim-telescope/telescope-live-grep-args.nvim"] = {
+	opt = true,
+	after = "telescope.nvim",
+}
+tools["debugloop/telescope-undo.nvim"] = {
 	opt = true,
 	after = "telescope.nvim",
 }
