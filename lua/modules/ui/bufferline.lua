@@ -32,13 +32,6 @@ require("bufferline").setup({
 
 		offsets = {
 			{
-				filetype = "undotree",
-				text = "Undo Tree",
-				text_align = "center",
-				highlight = "Directory",
-				separator = true,
-			},
-			{
 				filetype = "NvimTree",
 				text = "File Explorer",
 				text_align = "center",

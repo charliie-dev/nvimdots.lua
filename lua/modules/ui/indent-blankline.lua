@@ -21,7 +21,6 @@ require("indent_blankline").setup({
 		"todoist",
 		"txt",
 		"text",
-		"undotree",
 		"vimwiki",
 		"vista",
 	},
