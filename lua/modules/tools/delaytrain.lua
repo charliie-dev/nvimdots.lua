@@ -5,5 +5,5 @@ require("delaytrain").setup({
 		["nv"] = { "h", "j", "k", "l", "<Left>", "<Down>", "<Up>", "<Right>" },
 		-- ["nvi"] = { "<Left>", "<Down>", "<Up>", "<Right>" },
 	},
-	ignore_filetypes = { "help", "diff", "NvimTr*", "lspsagaoutline", "undotree" },
+	ignore_filetypes = { "help", "diff", "NvimTr*", "lspsagaoutline", "notify" },
 })
