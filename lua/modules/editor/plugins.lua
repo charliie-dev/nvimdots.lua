@@ -169,13 +169,6 @@ editor["Pocco81/true-zen.nvim"] = {
 		require("modules.editor.true-zen")
 	end,
 }
-editor["olambo/vi-viz"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.editor.viz")
-	end,
-}
 
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
