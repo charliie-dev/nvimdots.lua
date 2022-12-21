@@ -94,6 +94,15 @@ require("nvim-treesitter.configs").setup({
 			},
 		},
 	},
+	textsubjects = { -- add extra textobjects, like if statements, return, comments
+		enable = true,
+		prev_selection = ",", -- (Optional) keymap to select the previous selection
+		keymaps = {
+			["."] = "textsubjects-smart",
+			[";"] = "textsubjects-container-outer",
+			["i;"] = "textsubjects-container-inner",
+		},
+	},
 	rainbow = {
 		enable = true,
 		extended_mode = true, -- Highlight also non-parentheses delimiters, boolean or table: lang -> boolean
