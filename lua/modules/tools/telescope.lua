@@ -26,7 +26,6 @@ local fixfolds = {
 		return true
 	end,
 }
-local lga_actions = require("telescope-live-grep-args.actions")
 
 require("telescope").setup({
 	defaults = {
@@ -92,8 +91,8 @@ require("telescope").setup({
 			-- define mappings, e.g.
 			mappings = { -- extend mappings
 				i = {
-					["<C-k>"] = lga_actions.quote_prompt(),
-					["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+					["<C-k>"] = require("telescope-live-grep-args.actions").quote_prompt(),
+					["<C-i>"] = require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " }),
 				},
 			},
 		},
@@ -103,6 +102,13 @@ require("telescope").setup({
 			layout_strategy = "vertical",
 			layout_config = {
 				preview_height = 0.7,
+			},
+			mappings = {
+				i = {
+					["<cr>"] = require("telescope-undo.actions").yank_additions,
+					["<S-cr>"] = require("telescope-undo.actions").yank_deletions,
+					["<C-cr>"] = require("telescope-undo.actions").restore,
+				},
 			},
 		},
 	},
