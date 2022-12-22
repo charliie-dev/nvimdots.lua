@@ -92,8 +92,6 @@ require("which-key").register({
 		["lg"] = "git: Show lazygit",
 	},
 	["g"] = {
-		["["] = "lsp: Goto prev diagnostic",
-		["]"] = "lsp: Goto next diagnostic",
 		a = "lsp: Code action",
 		d = "lsp: Preview definition",
 		D = "lsp: Goto definition",
@@ -106,14 +104,19 @@ require("which-key").register({
 		T = "lsp: Type definition",
 		["DL"] = "lsp: Show loclist",
 		["QL"] = "lsp: Show quickfix list",
-		--- nvim-surround
-		z = "surround: Add surround",
-		Z = "surround: Add surround around line",
-		["zd"] = "surround: Delete surround",
-		["zc"] = "surround: Change surround",
 	},
+	["]g"] = "git: Goto next hunk",
+	["[g"] = "git: Goto prev hunk",
+	["g["] = "lsp: Goto prev diagnostic",
+	["g]"] = "lsp: Goto next diagnostic",
+	--- nvim-surround
+	["gz"] = "surround: Add surround",
+	["gZ"] = "surround: Add surround around line",
+	["gzd"] = "surround: Delete surround",
+	["gzc"] = "surround: Change surround",
 	["<leader>dv"] = "git: Show diff",
 	["<leader><leader>dv"] = "git: Close diff",
 	["K"] = "lsp: Hover doc",
 	["<C-n>"] = "filetree: NvimTree toggle sidebar",
+	["<F12>"] = "tool: Markdown preview",
 })
