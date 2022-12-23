@@ -158,35 +158,25 @@ keymap({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 -- "s/S", "f/F", "t/T" to use leap
 
 --- treeclimber
-vim.keymap.set(
-	{ "v", "x", "o" },
+keymap(
+	{ "x", "o" },
 	"i.",
-	"<cmd>lua require('nvim-treeclimber').select_current_node()<cr>",
+	"<cmd>lua require('ntreeclimber').select_current_node()<cr>",
 	{ desc = "select current node" }
 )
 
-vim.keymap.set(
-	{ "x", "o" },
-	"=",
-	"<cmd>lua require('nvim-treeclimber').select_expand()<cr>",
-	{ desc = "select parent node" }
-)
-vim.keymap.set(
-	{ "x", "o" },
-	"-",
-	"<cmd>lua require('nvim-treeclimber').select_shrink()<cr>",
-	{ desc = "select clild node" }
-)
+keymap({ "x", "o" }, "=", "<cmd>lua require('ntreeclimber').select_expand()<cr>", { desc = "select parent node" })
+keymap({ "x", "o" }, "-", "<cmd>lua require('ntreeclimber').select_shrink()<cr>", { desc = "select clild node" })
 
-vim.keymap.set(
+keymap(
 	{ "x", "o" },
 	"<leader>k",
-	"<cmd>lua require('nvim-treeclimber').select_backward()<cr>",
+	"<cmd>lua require('ntreeclimber').select_backward()<cr>",
 	{ desc = "select previous node" }
 )
-vim.keymap.set(
+keymap(
 	{ "x", "o" },
 	"<leader>j",
-	"<cmd>lua require('nvim-treeclimber').select_forward()<cr>",
+	"<cmd>lua require('ntreeclimber').select_forward()<cr>",
 	{ desc = "select next node" }
 )
