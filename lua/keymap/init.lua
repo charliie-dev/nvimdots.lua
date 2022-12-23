@@ -163,8 +163,8 @@ keymap("n", "vx", "<cmd>STSSelectMasterNode<cr>", opts)
 keymap("n", "vn", "<cmd>STSSelectCurrentNode<cr>", opts)
 
 -- Select Nodes in Visual Mode
-keymap("x", "k", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
-keymap("x", "j", "<cmd>STSSelectNextSiblingNode<cr>", opts)
+keymap("x", "[", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
+keymap("x", "]", "<cmd>STSSelectNextSiblingNode<cr>", opts)
 keymap("x", "=", "<cmd>STSSelectParentNode<cr>", opts)
 keymap("x", "-", "<cmd>STSSelectChildNode<cr>", opts)
 
