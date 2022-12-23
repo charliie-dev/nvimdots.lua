@@ -158,3 +158,19 @@ keymap({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 -- "s/S", "f/F", "t/T" to use leap
 
 --- syntax-tree-surfer
+-- Visual Selection from Normal Mode
+keymap("n", "vx", "<cmd>STSSelectMasterNode<cr>", opts)
+keymap("n", "vn", "<cmd>STSSelectCurrentNode<cr>", opts)
+
+-- Select Nodes in Visual Mode
+keymap("x", "k", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
+keymap("x", "j", "<cmd>STSSelectNextSiblingNode<cr>", opts)
+keymap("x", "=", "<cmd>STSSelectParentNode<cr>", opts)
+keymap("x", "-", "<cmd>STSSelectChildNode<cr>", opts)
+
+-- Targeted Jump with virtual_text, placed in tree-surfer.lua
+-- "gv", jump to variable_declarations(only within visible window)
+-- "gfu", jump to functions
+-- "gif", jump to if-statements
+-- "gfo", jump to for-statements
+-- "gj", jump to certain nodes

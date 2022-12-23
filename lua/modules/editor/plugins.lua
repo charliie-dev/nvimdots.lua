@@ -243,5 +243,12 @@ editor["folke/paint.nvim"] = { -- replacement for tree-sitter-comment parser
 		require("modules.editor.paint")
 	end,
 }
+editor["ziontee113/syntax-tree-surfer"] = {
+	opt = true,
+	after = "nvim-treesitter",
+	config = function()
+		require("modules.editor.tree-surfer")
+	end,
+}
 
 return editor

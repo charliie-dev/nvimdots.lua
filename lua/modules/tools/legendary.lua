@@ -119,4 +119,12 @@ require("which-key").register({
 	["K"] = "lsp: Hover doc",
 	["<C-n>"] = "filetree: NvimTree toggle sidebar",
 	["<F12>"] = "tool: Markdown preview",
+	--- syntax-tree-surfer
+	["vx"] = "tree-surfer: Select master node",
+	["vn"] = "tree-surfer: Select current node",
+	["gv"] = "tree-surfer: Jump to variable_declarations",
+	["gfu"] = "tree-surfer: Jump to functions",
+	["gif"] = "tree-surfer: Jump to if-statements",
+	["gfo"] = "tree-surfer: Jump to for-statements",
+	["gj"] = "tree-surfer: Jump to certain nodes",
 })

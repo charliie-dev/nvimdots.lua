@@ -188,6 +188,15 @@ local data = {
 		Stopped = "ඞ",
 		Terminate = "ﱢ",
 	},
+	ts = { -- Treesitter
+		IF = "",
+		ELSE = "",
+		FOR = "",
+		WHILE = "",
+		SWITCH = "",
+		FUNC = "",
+		VAR = "",
+	},
 }
 
 ---Get a specific icon set.
