@@ -188,5 +188,5 @@ vim.keymap.set(
 	{ "x", "o" },
 	"<leader>j",
 	"<cmd>lua require('nvim-treeclimber').select_forward()<cr>",
-	{ desc = "select the next node" }
+	{ desc = "select next node" }
 )
