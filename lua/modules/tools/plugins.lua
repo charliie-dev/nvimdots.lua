@@ -88,7 +88,7 @@ tools["AckslD/nvim-neoclip.lua"] = {
 		require("modules.tools.neoclip")
 	end,
 }
-tools["kyazdani42/nvim-tree.lua"] = {
+tools["nvim-tree/nvim-tree.lua"] = {
 	opt = true,
 	cmd = {
 		"NvimTreeToggle",
