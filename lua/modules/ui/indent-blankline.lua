@@ -48,7 +48,7 @@ require("indent_blankline").setup({
 
 local util = require("utils")
 
--- Custom vertual text highlight groups for lsp_lines
+-- Custom vertual text highlight groups for indent_blankline
 local c = require("kanagawa.colors").setup()
 local bg = require("kanagawa.colors").setup().bg
 local alpha = 0.3
