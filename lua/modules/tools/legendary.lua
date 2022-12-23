@@ -119,10 +119,4 @@ require("which-key").register({
 	["K"] = "lsp: Hover doc",
 	["<C-n>"] = "filetree: NvimTree toggle sidebar",
 	["<F12>"] = "tool: Markdown preview",
-	--- nvim-treeclimber
-	["i."] = "treeclimber(visual): select current node",
-	["="] = "treeclimber(visual): select parent node",
-	["-"] = "treeclimber(visual): select clild node",
-	["<leader>k"] = "treeclimber(visual): select previous node",
-	["<leader>j"] = "treeclimber(visual): select next node",
 })
