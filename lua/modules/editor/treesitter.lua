@@ -38,12 +38,6 @@ require("nvim-treesitter.configs").setup({
 	ignore_install = {},
 	incremental_selection = {
 		enable = false,
-		keymaps = {
-			init_selection = ",s",
-			node_incremental = ",s",
-			scope_incremental = ",n",
-			node_decremental = ",n",
-		},
 	},
 	playground = {
 		enable = true,
@@ -92,15 +86,6 @@ require("nvim-treesitter.configs").setup({
 				["[]"] = "@function.outer",
 				["[M"] = "@class.outer",
 			},
-		},
-	},
-	textsubjects = { -- add extra textobjects, like if statements, return, comments
-		enable = true,
-		prev_selection = ",", -- (Optional) keymap to select the previous selection
-		keymaps = {
-			["."] = "textsubjects-smart",
-			[";"] = "textsubjects-container-outer",
-			["i;"] = "textsubjects-container-inner",
 		},
 	},
 	rainbow = {

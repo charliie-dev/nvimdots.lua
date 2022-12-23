@@ -156,3 +156,37 @@ keymap({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 
 --- leap.nvim
 -- "s/S", "f/F", "t/T" to use leap
+
+--- treeclimber
+vim.keymap.set(
+	{ "v", "x", "o" },
+	"i.",
+	"<cmd>lua require('nvim-treeclimber').select_current_node()<cr>",
+	{ desc = "select current node" }
+)
+
+vim.keymap.set(
+	{ "x", "o" },
+	"=",
+	"<cmd>lua require('nvim-treeclimber').select_expand()<cr>",
+	{ desc = "select parent node" }
+)
+vim.keymap.set(
+	{ "x", "o" },
+	"-",
+	"<cmd>lua require('nvim-treeclimber').select_shrink()<cr>",
+	{ desc = "select clild node" }
+)
+
+vim.keymap.set(
+	{ "x", "o" },
+	"<leader>k",
+	"<cmd>lua require('nvim-treeclimber').select_backward()<cr>",
+	{ desc = "select previous node" }
+)
+vim.keymap.set(
+	{ "x", "o" },
+	"<leader>j",
+	"<cmd>lua require('nvim-treeclimber').select_forward()<cr>",
+	{ desc = "select the next node" }
+)

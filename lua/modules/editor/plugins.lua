@@ -196,10 +196,6 @@ editor["nvim-treesitter/nvim-treesitter-textobjects"] = {
 	opt = true,
 	after = "nvim-treesitter",
 }
-editor["RRethy/nvim-treesitter-textsubjects"] = {
-	opt = true,
-	after = "nvim-treesitter",
-}
 editor["p00f/nvim-ts-rainbow"] = {
 	opt = true,
 	after = "nvim-treesitter",
@@ -247,12 +243,13 @@ editor["folke/paint.nvim"] = { -- replacement for tree-sitter-comment parser
 		require("modules.editor.paint")
 	end,
 }
--- editor["Dkendal/nvim-treeclimber"] = {
--- 	opt = true,
--- 	after = "nvim-treesitter",
--- 	config = function()
--- 		require("modules.editor.treeclimber")
--- 	end,
--- }
+editor["Dkendal/nvim-treeclimber"] = {
+	opt = true,
+	after = "nvim-treesitter",
+	requires = "rktjmp/lush.nvim",
+	config = function()
+		require("modules.editor.treeclimber")
+	end,
+}
 
 return editor
