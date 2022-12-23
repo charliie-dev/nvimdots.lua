@@ -113,7 +113,6 @@ require("nvim-treesitter.configs").setup({
 		enable_autocmd = false,
 	},
 	matchup = { enable = true },
-	-- markid = { enable = true },
 })
 
 require("nvim-treesitter.install").prefer_git = true
@@ -123,18 +122,3 @@ if use_ssh then
 		p.install_info.url = p.install_info.url:gsub("https://github.com/", "git@github.com:")
 	end
 end
-
--- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
--- parser_config.bash.filetype_to_parsername = { "bash", "sh", "zsh" }
--- print(vim.inspect(parser_config.bash))
-
--- local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
--- require("nvim-treesitter.parsers").ft_to_lang = function(ft)
--- 	if ft == "sh" then
--- 		return "bash"
--- 	end
--- 	return ft_to_lang(ft)
--- end
-
--- local ft_to_parsername = require("nvim-treesitter.parsers").filetype_to_parsername
--- print(vim.inspect(ft_to_parsername))
