@@ -49,8 +49,10 @@ require("indent_blankline").setup({
 local util = require("utils")
 
 -- Custom vertual text highlight groups for indent_blankline
-local c = require("kanagawa.colors").setup()
-local bg = require("kanagawa.colors").setup().bg
-local alpha = 0.3
-vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = c.pp, bg = util.blend(c.pp, bg, alpha) })
--- vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = "#ec5241" })
+if vim.g.colors_name == "kanagawa" then
+	local c = require("kanagawa.colors").setup()
+	local bg = require("kanagawa.colors").setup().bg
+	local alpha = 0.3
+	vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = c.pp, bg = util.blend(c.pp, bg, alpha) })
+	-- vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = "#ec5241" })
+end
