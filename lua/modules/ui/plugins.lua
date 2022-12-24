@@ -88,12 +88,12 @@ ui["lukas-reineke/indent-blankline.nvim"] = {
 		require("modules.ui.indent-blankline")
 	end,
 }
-ui["rebelot/kanagawa.nvim"] = {
-	opt = false,
-	config = function()
-		require("modules.ui.kanagawa")
-	end,
-}
+-- ui["rebelot/kanagawa.nvim"] = {
+-- 	opt = false,
+-- 	config = function()
+-- 		require("modules.ui.kanagawa")
+-- 	end,
+-- }
 ui["hoob3rt/lualine.nvim"] = {
 	opt = true,
 	after = { "git-blame.nvim" },
