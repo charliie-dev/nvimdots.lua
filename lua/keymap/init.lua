@@ -1,4 +1,4 @@
-local keymap = vim.keymap.set
+local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true, nowait = true }
 
 -- Plugin keymaps
@@ -47,7 +47,8 @@ keymap("n", "g[", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
 keymap("n", "g]", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
 keymap("n", "gr", "<cmd>Lspsaga rename<cr>", opts)
 keymap("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-keymap({ "n", "v" }, "ga", "<cmd>Lspsaga code_action<cr>", opts)
+keymap("n", "ga", "<cmd>Lspsaga code_action<cr>", opts)
+keymap("v", "ga", "<cmd>Lspsaga code_action<cr>", opts)
 keymap("n", "gd", "<cmd>Lspsaga peek_definition<cr>", opts)
 keymap("n", "gh", "<cmd>Lspsaga lsp_finder<cr>", opts)
 keymap("n", "gS", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
@@ -120,7 +121,7 @@ keymap("n", "<leader>pt", "<cmd>PackerStatus<cr>", opts)
 -- "<leader>cf" to use comment-frame
 
 --- ssr.nvim, structural search and replace
-keymap({ "n", "x" }, "<leader>sr", function()
+vim.keymap.set({ "n", "x" }, "<leader>sr", function()
 	require("ssr").open()
 end, { desc = "structural search and replace." })
 
@@ -148,8 +149,10 @@ end, { desc = "structural search and replace." })
 -- <CR> on an empty list marker to end the list.
 
 --- dial
-keymap({ "n", "v" }, "<leader>=", "<Plug>(dial-increment)", { noremap = true })
-keymap({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
+keymap("n", "<leader>=", "<Plug>(dial-increment)", { noremap = true })
+keymap("v", "<leader>=", "<Plug>(dial-increment)", { noremap = true })
+keymap("n", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
+keymap("v", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 
 --- regexplainer
 -- "<leader>gR" to toggle regexplainer
