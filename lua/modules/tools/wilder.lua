@@ -27,13 +27,7 @@ wilder.set_option("pipeline", {
 	),
 })
 
-local highlighters = {
-	wilder.lua_fzy_highlighter(),
-	wilder.basic_highlighter(),
-}
-
-local util = require("utils")
-local match_hl = util.hlToRgb("String", false)
+local match_hl = require("utils").hlToRgb("String", false)
 
 local popupmenu_renderer = wilder.popupmenu_renderer(wilder.popupmenu_border_theme({
 	max_height = "25%",
@@ -43,7 +37,7 @@ local popupmenu_renderer = wilder.popupmenu_renderer(wilder.popupmenu_border_the
 		accent = wilder.make_hl("WilderAccent", "Pmenu", { { a = 0 }, { a = 0 }, { foreground = match_hl } }),
 	},
 	empty_message = wilder.popupmenu_empty_message_with_spinner(),
-	highlighter = highlighters,
+	highlighter = wilder.lua_fzy_highlighter(),
 	left = {
 		" ",
 		wilder.popupmenu_devicons(),
@@ -59,7 +53,7 @@ local popupmenu_renderer = wilder.popupmenu_renderer(wilder.popupmenu_border_the
 }))
 
 local wildmenu_renderer = wilder.wildmenu_renderer({
-	highlighter = highlighters,
+	highlighter = wilder.lua_fzy_highlighter(),
 	apply_incsearch_fix = true,
 	separator = " · ",
 	left = { " ", wilder.wildmenu_spinner(), " " },
