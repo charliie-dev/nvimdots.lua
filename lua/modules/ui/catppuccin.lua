@@ -1,3 +1,12 @@
+-- Custom vertual text highlight groups to make error hint looks cool
+local util = require("utils")
+local bg = util.hlToRgb("Normal", true)
+local error_fg = util.hlToRgb("DiagnosticVirtualTextError", false)
+local warn_fg = util.hlToRgb("DiagnosticVirtualTextWarn", false)
+local info_fg = util.hlToRgb("DiagnosticVirtualTextInfo", false)
+local hint_fg = util.hlToRgb("DiagnosticVirtualTextHint", false)
+local alpha = 0.4
+
 require("catppuccin").setup({
 	flavour = "mocha", -- Can be one of: latte, frappe, macchiato, mocha
 	background = { light = "latte", dark = "mocha" },
@@ -127,10 +136,10 @@ require("catppuccin").setup({
 				StorageClass = { fg = cp.red, style = { "italic" } },
 
 				-- For native lsp configs.
-				DiagnosticVirtualTextError = { bg = cp.none },
-				DiagnosticVirtualTextWarn = { bg = cp.none },
-				DiagnosticVirtualTextInfo = { bg = cp.none },
-				DiagnosticVirtualTextHint = { fg = cp.rosewater, bg = cp.none },
+				DiagnosticVirtualTextError = { bg = util.blend(error_fg, bg, alpha) },
+				DiagnosticVirtualTextWarn = { bg = util.blend(warn_fg, bg, alpha) },
+				DiagnosticVirtualTextInfo = { bg = util.blend(info_fg, bg, alpha) },
+				DiagnosticVirtualTextHint = { fg = cp.rosewater, bg = util.blend(hint_fg, bg, alpha) },
 
 				DiagnosticHint = { fg = cp.rosewater },
 				LspDiagnosticsDefaultHint = { fg = cp.rosewater },
