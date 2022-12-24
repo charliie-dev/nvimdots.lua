@@ -24,7 +24,7 @@ t["zz"] = { "zz", { "250" } }
 t["zb"] = { "zb", { "250" } }
 t["<PageUp>"] = { "scroll", { "-vim.api.nvim_win_get_height(0)", "true", "450" } }
 t["<PageDown>"] = { "scroll", { "vim.api.nvim_win_get_height(0)", "true", "450" } }
-t["<ScrollWheelUp>"] = { "scroll", { "-4", "false", "50" } }
-t["<ScrollWheelDown>"] = { "scroll", { "4", "false", "50" } }
+-- t["<ScrollWheelUp>"] = { "scroll", { "-4", "false", "10" } }
+-- t["<ScrollWheelDown>"] = { "scroll", { "4", "false", "10" } }
 
 require("neoscroll.config").set_mappings(t)
