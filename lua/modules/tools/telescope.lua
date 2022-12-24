@@ -35,7 +35,6 @@ require("telescope").setup({
 		entry_prefix = " ",
 		scroll_strategy = "limit",
 		results_title = false,
-		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 		layout_strategy = "horizontal",
 		path_display = { "smart" }, -- absolute
 		dynamic_preview_title = true,

@@ -1,7 +1,7 @@
 vim.api.nvim_set_hl(0, "BLIndicatorIcon", { fg = "#E8AB53", bg = "NONE" })
 local icons = { ui = require("modules.ui.icons").get("ui") }
 
-require("bufferline").setup({
+local opts = {
 	options = {
 		mode = "buffers",
 		numbers = "none",
@@ -61,5 +61,34 @@ require("bufferline").setup({
 		--   -- add custom logic
 		--   return buffer_a.modified > buffer_b.modified
 		-- end
+		-- Change bufferline's highlights here! See `:h bufferline-highlights` for detailed explanation.
+		-- Note: If you use catppuccin then modify the colors below!
+		highlights = {},
 	},
-})
+}
+
+if vim.g.colors_name == "catppuccin" then
+	local cp = require("catppuccin.palettes").get_palette() -- Get the palette.
+	cp.none = "NONE" -- Special setting for complete transparent fg/bg.
+
+	local catppuccin_hl_overwrite = {
+		highlights = require("catppuccin.groups.integrations.bufferline").get({
+			styles = { "italic", "bold" },
+			custom = {
+				mocha = {
+					-- Hint
+					hint = { fg = cp.rosewater },
+					hint_visible = { fg = cp.rosewater },
+					hint_selected = { fg = cp.rosewater },
+					hint_diagnostic = { fg = cp.rosewater },
+					hint_diagnostic_visible = { fg = cp.rosewater },
+					hint_diagnostic_selected = { fg = cp.rosewater },
+				},
+			},
+		}),
+	}
+
+	opts = vim.tbl_deep_extend("force", opts, catppuccin_hl_overwrite)
+end
+
+require("bufferline").setup(opts)

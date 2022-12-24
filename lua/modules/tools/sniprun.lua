@@ -21,17 +21,17 @@ require("sniprun").setup({
 	}, -- " intepreter-specific options, consult docs / :SnipInfo <name>
 	-- " you can combo different display modes as desired
 	display = {
-		-- "Classic", -- "display results in the command-line  area
-		-- "VirtualTextOk", -- "display ok results as virtual text (multiline is shortened)
+		"Classic", -- "display results in the command-line  area
+		"VirtualTextOk", -- "display ok results as virtual text (multiline is shortened)
 		"VirtualTextErr", -- "display error results as virtual text
 		-- "TempFloatingWindow",      -- "display results in a floating window
-		-- "LongTempFloatingWindow", -- "same as above, but only long results. To use with VirtualText__
-		"Terminal", -- "display results in a vertical split
+		"LongTempFloatingWindow", -- "same as above, but only long results. To use with VirtualText__
+		-- "Terminal", -- "display results in a vertical split
 	},
 	-- " miscellaneous compatibility/adjustement settings
 	inline_messages = 0, -- " inline_message (0/1) is a one-line way to display messages
 	-- " to workaround sniprun not being able to display anything
 
-	borders = "single", -- " display borders around floating windows
+	borders = "shadow", -- " display borders around floating windows
 	-- " possible values are 'none', 'single', 'double', or 'shadow'
 })

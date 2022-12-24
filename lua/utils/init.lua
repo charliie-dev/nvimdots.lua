@@ -22,4 +22,20 @@ function M.blend(foreground, background, alpha)
 	return string.format("#%02x%02x%02x", blendChannel(1), blendChannel(2), blendChannel(3))
 end
 
+--- Get hex by highlight group
+---@param hl_group string highlight group name
+---@param use_bg boolean
+---@return string
+function M.hlToRgb(hl_group, use_bg)
+	if use_bg == true then
+		local color = vim.api.nvim_get_hl_by_name(hl_group, true).background
+		local hex = color ~= nil and string.format("#%06x", color) or "#000000"
+		return hex
+	else
+		local color = vim.api.nvim_get_hl_by_name(hl_group, true).foreground
+		local hex = color ~= nil and string.format("#%06x", color) or "#111111"
+		return hex
+	end
+end
+
 return M

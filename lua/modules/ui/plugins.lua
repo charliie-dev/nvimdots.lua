@@ -15,6 +15,13 @@ ui["akinsho/bufferline.nvim"] = {
 		require("modules.ui.bufferline")
 	end,
 }
+ui["catppuccin/nvim"] = {
+	opt = false,
+	as = "catppuccin",
+	config = function()
+		require("modules.ui.catppuccin")
+	end,
+}
 ui["stevearc/dressing.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -147,13 +154,13 @@ ui["petertriho/nvim-scrollbar"] = {
 -- 		require("modules.ui.styler")
 -- 	end,
 -- }
-ui["levouh/tint.nvim"] = {
-	opt = true,
-	event = { "BufReadPost" },
-	config = function()
-		require("modules.ui.tint")
-	end,
-}
+-- ui["levouh/tint.nvim"] = {
+-- 	opt = true,
+-- 	event = { "BufReadPost" },
+-- 	config = function()
+-- 		require("modules.ui.tint")
+-- 	end,
+-- }
 ui["folke/todo-comments.nvim"] = {
 	opt = true,
 	event = "BufReadPost",

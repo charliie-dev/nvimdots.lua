@@ -46,12 +46,9 @@ require("indent_blankline").setup({
 	space_char_blankline = " ",
 })
 
-local util = require("utils")
-
 -- Custom vertual text highlight groups for indent_blankline
-if vim.g.colors_name == "kanagawa" then
-	local c = require("kanagawa.colors").setup()
-	local bg = require("kanagawa.colors").setup().bg
-	local alpha = 0.3
-	vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = c.pp, bg = util.blend(c.pp, bg, alpha) })
-end
+local util = require("utils")
+local bg = util.hlToRgb("Normal", true)
+local indent_hl = "#FFA066" -- only for current scoop
+local alpha = 0.3
+vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = indent_hl, bg = util.blend(indent_hl, bg, alpha) })

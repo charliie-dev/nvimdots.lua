@@ -16,4 +16,4 @@ require("kanagawa").setup({
 	overrides = {},
 	theme = "default", -- Load "default" theme or the experimental "light" theme
 })
-vim.api.nvim_command([[colorscheme kanagawa]])
+-- vim.api.nvim_command([[colorscheme kanagawa]])

@@ -127,6 +127,8 @@ local load_core = function()
 	require("keymap")
 	require("core.event")
 	pack.load_compile()
+
+	vim.api.nvim_command([[colorscheme catppuccin]])
 end
 
 load_core()

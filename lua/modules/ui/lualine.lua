@@ -72,15 +72,16 @@ local function python_venv()
 end
 
 -- check your colorscheme in REPO/lua/lualine/themes/THEME.lua -> normal.b.bg
-vim.api.nvim_set_hl(0, "SLGitIcon", { fg = "#E8AB53", bg = "#252535" })
-vim.api.nvim_set_hl(0, "SLBranchName", { fg = "#D4D4D4", bg = "#252535" })
+if vim.g.colors_name == "catppuccin" then
+	vim.api.nvim_set_hl(0, "SLGitIcon", { fg = "#E8AB53", bg = "#575268" })
+	vim.api.nvim_set_hl(0, "SLBranchName", { fg = "#D4D4D4", bg = "#575268" })
+end
 
 require("lualine").setup({
 	options = {
 		icons_enabled = true,
-		-- theme = "kanagawa",
 		theme = vim.g.colors_name,
-		disabled_filetypes = { "alpha", "dashboard", "NvimTree", "undotree", "neo-tree" },
+		disabled_filetypes = { "alpha", "dashboard", "NvimTree" },
 		component_separators = "|",
 		section_separators = { left = "", right = "" },
 		globalstatus = true,

@@ -19,9 +19,7 @@ require("fidget").setup({
 		task_decay = 1000, -- how long to keep around completed task, in ms
 	},
 	window = {
-		relative = "win", -- where to anchor, either "win" or "editor"
-		blend = 100, -- &winblend for the window
-		zindex = nil, -- the zindex value for the window
+		blend = 0, -- catppuccin integration
 	},
 	fmt = {
 		leftpad = true, -- right-justify text in fidget box

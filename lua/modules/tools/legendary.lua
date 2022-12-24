@@ -6,7 +6,6 @@ require("legendary").setup({
 	scratchpad = {
 		view = "float",
 		results_view = "float",
-		float_border = "double",
 		keep_contents = true,
 	},
 	sort = {
