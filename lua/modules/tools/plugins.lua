@@ -112,15 +112,15 @@ tools["bennypowers/nvim-regexplainer"] = {
 		require("modules.tools.regexplainer")
 	end,
 }
-tools["narutoxy/silicon.lua"] = {
-	opt = true,
-	-- cmd = "Silicon",
-	event = "BufReadPost",
-	requires = { "nvim-lua/plenary.nvim" },
-	config = function()
-		require("modules.tools.silicon")
-	end,
-}
+-- tools["narutoxy/silicon.lua"] = {
+-- 	opt = true,
+-- 	-- cmd = "Silicon",
+-- 	event = "BufReadPost",
+-- 	requires = { "nvim-lua/plenary.nvim" },
+-- 	config = function()
+-- 		require("modules.tools.silicon")
+-- 	end,
+-- }
 tools["ibhagwan/smartyank.nvim"] = {
 	opt = true,
 	event = "BufReadPost",

@@ -1,7 +1,7 @@
 local cmd = vim.api.nvim_command
 
 require("silicon").setup({
-	theme = "auto",
+	theme = vim.g.colors_name,
 	output = string.format(
 		"./SILICON_%s-%s-%s_%s-%s.png",
 		os.date("%Y"),
