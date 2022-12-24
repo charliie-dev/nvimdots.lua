@@ -157,6 +157,9 @@ keymap("v", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 --- regexplainer
 -- "<leader>gR" to toggle regexplainer
 
+--- nabla
+keymap("n", "<leader>mp", "<cmd>lua require('nabla').popup('rounded')<cr>", opts)
+
 --- leap.nvim
 -- "s/S", "f/F", "t/T" to use leap
 
