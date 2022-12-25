@@ -58,7 +58,8 @@ editor["ggandor/leap.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
 	config = function()
-		require("modules.editor.leap")
+		require("leap").opts.highlight_unlabeled_phase_one_targets = true
+		require("leap").add_default_mappings()
 	end,
 }
 editor["ggandor/flit.nvim"] = {
