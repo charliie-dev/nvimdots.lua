@@ -56,6 +56,15 @@ require("lspsaga").init_lsp_saga({
 	},
 	border_style = "bold",
 	code_action_icon = icons.ui.Lightbulb,
+	code_action_lightbulb = {
+		enable = false,
+		enable_in_insert = true,
+		cache_code_action = true,
+		sign = true,
+		update_time = 150,
+		sign_priority = 20,
+		virtual_text = true,
+	},
 	diagnostic_header = {
 		icons.diagnostics.Error_alt,
 		icons.diagnostics.Warning_alt,

@@ -45,10 +45,3 @@ require("indent_blankline").setup({
 	},
 	space_char_blankline = " ",
 })
-
--- Custom vertual text highlight groups for indent_blankline
-local util = require("utils")
-local bg = util.hlToRgb("Normal", true)
-local indent_hl = "#FFA066" -- only for current scoop
-local alpha = 0.3
-vim.api.nvim_set_hl(0, "IndentBlanklineContextChar", { fg = indent_hl, bg = util.blend(indent_hl, bg, alpha) })

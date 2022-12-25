@@ -5,6 +5,7 @@ local error_fg = util.hlToRgb("DiagnosticVirtualTextError", false)
 local warn_fg = util.hlToRgb("DiagnosticVirtualTextWarn", false)
 local info_fg = util.hlToRgb("DiagnosticVirtualTextInfo", false)
 local hint_fg = util.hlToRgb("DiagnosticVirtualTextHint", false)
+local indent_hl = "#FFA066" -- only for current scoop
 local alpha = 0.4
 
 require("catppuccin").setup({
@@ -150,6 +151,9 @@ require("catppuccin").setup({
 				-- For fidget.
 				FidgetTask = { bg = cp.none, fg = cp.surface2 },
 				FidgetTitle = { fg = cp.blue, style = { "bold" } },
+
+				-- For Indent Blankline
+				IndentBlanklineContextChar = { fg = indent_hl, bg = util.blend(indent_hl, bg, alpha) },
 
 				-- For treesitter.
 				["@field"] = { fg = cp.rosewater },
