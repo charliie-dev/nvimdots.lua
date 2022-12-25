@@ -106,6 +106,7 @@ require("scrollbar").setup({
 		cursor = true,
 		diagnostic = true,
 		gitsigns = false, -- Requires gitsigns
+		handle = true,
 		search = true, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
 	},
 })
