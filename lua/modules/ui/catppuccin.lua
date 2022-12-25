@@ -1,12 +1,25 @@
--- Custom vertual text highlight groups to make error hint looks cool
-local util = require("utils")
-local bg = util.hlToRgb("Normal", true)
-local error_fg = util.hlToRgb("DiagnosticVirtualTextError", false)
-local warn_fg = util.hlToRgb("DiagnosticVirtualTextWarn", false)
-local info_fg = util.hlToRgb("DiagnosticVirtualTextInfo", false)
-local hint_fg = util.hlToRgb("DiagnosticVirtualTextHint", false)
+--- Get hex by highlight group
+---@param hl_group string highlight group name
+---@param use_bg boolean
+---@return string
+-- local function hlToRgb(hl_group, use_bg)
+-- 	if use_bg == true then
+-- 		local color = vim.api.nvim_get_hl_by_name(hl_group, true).background
+-- 		local hex = color ~= nil and string.format("#%06x", color) or "#000000"
+-- 		return hex
+-- 	else
+-- 		local color = vim.api.nvim_get_hl_by_name(hl_group, true).foreground
+-- 		local hex = color ~= nil and string.format("#%06x", color) or "#111111"
+-- 		return hex
+-- 	end
+-- end
+
+local util = require("catppuccin.utils.colors")
+
+-- local bg = hlToRgb("Normal", true)
 local indent_hl = "#FFA066" -- only for current scoop
-local alpha = 0.4
+-- local alpha = 0.4
+-- print(vim.inspect(util.blend(indent_hl, bg, alpha)))
 
 require("catppuccin").setup({
 	flavour = "mocha", -- Can be one of: latte, frappe, macchiato, mocha
@@ -137,10 +150,10 @@ require("catppuccin").setup({
 				StorageClass = { fg = cp.red, style = { "italic" } },
 
 				-- For native lsp configs.
-				DiagnosticVirtualTextError = { bg = util.blend(error_fg, bg, alpha) },
-				DiagnosticVirtualTextWarn = { bg = util.blend(warn_fg, bg, alpha) },
-				DiagnosticVirtualTextInfo = { bg = util.blend(info_fg, bg, alpha) },
-				DiagnosticVirtualTextHint = { fg = cp.rosewater, bg = util.blend(hint_fg, bg, alpha) },
+				DiagnosticVirtualTextError = { bg = "#734B61" },
+				DiagnosticVirtualTextWarn = { bg = "#766D62" },
+				DiagnosticVirtualTextInfo = { bg = "#496A7A" },
+				DiagnosticVirtualTextHint = { fg = cp.rosewater, bg = "#746C74" },
 
 				DiagnosticHint = { fg = cp.rosewater },
 				LspDiagnosticsDefaultHint = { fg = cp.rosewater },
@@ -153,7 +166,25 @@ require("catppuccin").setup({
 				FidgetTitle = { fg = cp.blue, style = { "bold" } },
 
 				-- For Indent Blankline
-				IndentBlanklineContextChar = { fg = indent_hl, bg = util.blend(indent_hl, bg, alpha) },
+				IndentBlanklineContextChar = { fg = indent_hl, bg = "#785244" },
+
+				-- Foe Leap
+				LeapMatch = {
+					fg = cp.pink or util.vary_color({ latte = "#222222" }, util.brighten(cp.green, 0.3)),
+					style = { "underline", "nocombine", "bold" or nil },
+				},
+				LeapLabelPrimary = {
+					fg = cp.green or util.vary_color({ latte = "#222222" }, cp.base),
+					bg = cp.none
+						or util.vary_color({ latte = util.brighten(cp.red, 0.4) }, util.brighten(cp.green, 0.3)),
+					style = { "nocombine", "bold" or nil },
+				},
+				LeapLabelSecondary = {
+					fg = cp.blue or util.vary_color({ latte = "#222222" }, cp.base),
+					bg = cp.none or util.vary_color({ latte = util.brighten(cp.sky, 0.3) }, cp.sky),
+					style = { "nocombine", "bold" or nil },
+				},
+				LeapBackdrop = { fg = cp.overlay0 or cp.none },
 
 				-- For treesitter.
 				["@field"] = { fg = cp.rosewater },
