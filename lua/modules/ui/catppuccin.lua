@@ -186,6 +186,17 @@ require("catppuccin").setup({
 				},
 				LeapBackdrop = { fg = cp.overlay0 or cp.none },
 
+				-- For Illuminate
+				IlluminatedWordText = { style = { "underline" } },
+				IlluminatedWordRead = { style = { "underline" } },
+				IlluminatedWordWrite = { style = { "underline" } },
+
+				-- For HeadLine
+				HeadLine1 = { fg = "#8bc56f", bg = "#1b2816" },
+				HeadLine2 = { fg = "#1db8c4", bg = "#20262e" },
+				CodeBloack = { bg = "#1c1c1c" },
+				Dash = { bg = "#D19A66", style = { "bold" } },
+
 				-- For treesitter.
 				["@field"] = { fg = cp.rosewater },
 				["@property"] = { fg = cp.yellow },
