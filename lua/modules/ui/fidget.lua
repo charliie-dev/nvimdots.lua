@@ -49,6 +49,3 @@ require("fidget").setup({
 		strict = false, -- whether to interpret LSP strictly
 	},
 })
-
--- HACK: prevent error when exiting Neovim
-vim.api.nvim_create_autocmd("VimLeavePre", { command = [[silent! FidgetClose]] })
