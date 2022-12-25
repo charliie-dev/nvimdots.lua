@@ -106,10 +106,14 @@ keymap("n", "<leader><leader>dv", "<cmd>DiffviewClose<cr>", opts)
 keymap("n", "<C-p>", "<cmd>Legendary<cr>", opts)
 
 --- hlslens
-keymap("n", "n", [[<cmd>execute('normal! ' . v:count1 . 'n')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
-keymap("n", "N", [[<cmd>execute('normal! ' . v:count1 . 'N')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
-keymap("n", "*", [[*<cmd>lua require('hlslens').start()<cr>zz]], opts)
-keymap("n", "#", [[#<cmd>lua require('hlslens').start()<cr>zz]], opts)
+-- keymap("n", "n", [[<cmd>execute('normal! ' . v:count1 . 'n')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
+-- keymap("n", "N", [[<cmd>execute('normal! ' . v:count1 . 'N')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
+-- keymap("n", "*", [[*<cmd>lua require('hlslens').start()<cr>zz]], opts)
+-- keymap("n", "#", [[#<cmd>lua require('hlslens').start()<cr>zz]], opts)
+keymap("n", "n", "nzz", opts)
+keymap("n", "N", "Nzz", opts)
+keymap("n", "*", "*zz", opts)
+keymap("n", "#", "#zz", opts)
 keymap("n", "<esc>", "<cmd>noh<cr>", opts)
 
 --- Packer
