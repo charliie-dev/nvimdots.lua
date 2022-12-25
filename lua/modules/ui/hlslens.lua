@@ -41,16 +41,3 @@ vim.api.nvim_create_autocmd("User", {
 		end)
 	end,
 })
-
-vim.keymap.set("n", "*", "", {
-	callback = function()
-		vim.fn.execute("normal! *N")
-		require("hlslens").start()
-	end,
-})
-vim.keymap.set("n", "#", "", {
-	callback = function()
-		vim.fn.execute("normal! #N")
-		require("hlslens").start()
-	end,
-})
