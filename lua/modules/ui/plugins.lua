@@ -72,14 +72,14 @@ ui["lewis6991/gitsigns.nvim"] = {
 -- ui["sainnhe/everforest"] = {
 -- 	opt = true,
 -- }
-ui["kevinhwang91/nvim-hlslens"] = {
-	opt = true,
-	module = "hlslens",
-	keys = { "/", "?", "*", "#" }, --'n', 'N', '*', '#', 'g'
-	config = function()
-		require("modules.ui.hlslens")
-	end,
-}
+-- ui["kevinhwang91/nvim-hlslens"] = {
+-- 	opt = true,
+-- 	module = "hlslens",
+-- 	keys = { "/", "?", "*", "#" }, --'n', 'N', '*', '#'
+-- 	config = function()
+-- 		require("modules.ui.hlslens")
+-- 	end,
+-- }
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -117,7 +117,8 @@ ui["karb94/neoscroll.nvim"] = {
 }
 ui["romainl/vim-cool"] = {
 	opt = true,
-	after = { "nvim-hlslens" },
+	-- after = { "nvim-hlslens" },
+	event = { "CursorMoved", "InsertEnter" },
 }
 ui["rcarriga/nvim-notify"] = {
 	opt = true,
