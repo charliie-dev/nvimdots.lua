@@ -17,7 +17,7 @@
 local util = require("catppuccin.utils.colors")
 
 -- local bg = hlToRgb("Normal", true)
-local indent_hl = "#FFA066" -- only for current scoop
+-- local indent_hl = "#FFA066" -- only for current scoop
 -- local alpha = 0.4
 -- print(vim.inspect(util.blend(indent_hl, bg, alpha)))
 
@@ -166,7 +166,7 @@ require("catppuccin").setup({
 				FidgetTitle = { fg = cp.blue, style = { "bold" } },
 
 				-- For Indent Blankline
-				IndentBlanklineContextChar = { fg = indent_hl, bg = "#785244" },
+				-- IndentBlanklineContextChar = { fg = indent_hl, bg = "#785244" },
 
 				-- Foe Leap
 				LeapMatch = {
