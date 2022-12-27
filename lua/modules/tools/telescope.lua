@@ -48,7 +48,6 @@ require("telescope").setup({
 			"node_modules/",
 			"target/",
 			"docs/",
-			".settings/",
 		},
 		layout_config = {
 			-- prompt_position = "bottom",
