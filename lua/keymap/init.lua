@@ -184,3 +184,66 @@ keymap("x", "-", "<cmd>STSSelectChildNode<cr>", opts)
 -- "gif", jump to if-statements
 -- "gfo", jump to for-statements
 -- "gj", jump to certain nodes
+
+--- various-textobjs
+-- select around same indent level
+keymap("o", "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<cr>", opts)
+keymap("x", "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<cr>", opts)
+-- select inside same indent level
+keymap("o", "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<cr>", opts)
+keymap("x", "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<cr>", opts)
+
+-- select around value of key-value pair, including trailing commas or semicolons
+keymap("o", "av", "<cmd>lua require('various-textobjs').value(false)<cr>", opts)
+keymap("x", "av", "<cmd>lua require('various-textobjs').value(false)<cr>", opts)
+-- select inside value of key-value pair, excluding trailing commas or semicolons
+keymap("o", "iv", "<cmd>lua require('various-textobjs').value(true)<cr>", opts)
+keymap("x", "iv", "<cmd>lua require('various-textobjs').value(true)<cr>", opts)
+
+-- select around number, including signs & decimal point
+keymap("o", "an", "<cmd>lua require('various-textobjs').number(false)<cr>", opts)
+keymap("x", "an", "<cmd>lua require('various-textobjs').number(false)<cr>", opts)
+-- select pure number, excluding signs & decimal point
+keymap("o", "in", "<cmd>lua require('various-textobjs').number(true)<cr>", opts)
+keymap("x", "in", "<cmd>lua require('various-textobjs').number(true)<cr>", opts)
+
+-- select LSP diagnostic(require built-in LSP)
+keymap("o", "!", "<cmd>lua require('various-textobjs').diagnostic()<cr>", opts)
+keymap("x", "!", "<cmd>lua require('various-textobjs').diagnostic()<cr>", opts)
+
+-- select entire mdlink, [title](url), md only
+keymap("o", "al", "<cmd>lua require('various-textobjs').mdlink(false)<cr>", opts)
+keymap("x", "al", "<cmd>lua require('various-textobjs').mdlink(false)<cr>", opts)
+-- select mdlink title, md only
+keymap("o", "il", "<cmd>lua require('various-textobjs').mdlink(true)<cr>", opts)
+keymap("x", "il", "<cmd>lua require('various-textobjs').mdlink(true)<cr>", opts)
+
+-- select arround mdFencedCodeBlock, including the enclosing backticks, md only
+keymap("o", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+keymap("x", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+-- select inside mdFencedCodeBlock, excluding the enclosing backticks, md only
+keymap("o", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+keymap("x", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+
+-- select arround doubleSquareBrackets([[]]), including the four square brackets(lua, shell, neorg, md)
+keymap("o", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+keymap("x", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+-- select inside doubleSquareBrackets([[]]), excluding the four square brackets(lua, shell, neorg, md)
+keymap("o", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+keymap("x", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+
+-- select column down until indent or shorter line. Accepts `{count}` for multi-columns
+keymap("o", "|", "<cmd>lua require('various-textobjs').column()<cr>", opts)
+keymap("x", "|", "<cmd>lua require('various-textobjs').column()<cr>", opts)
+keymap("x", "|", "<cmd>lua require('various_textobjs').column()<cr>", opts)
+
+-- select the rest of the Paragraph, like `}`, but linewise
+keymap("o", "r", "<cmd>lua require('various-textobjs').restOfParagraph()<cr>", opts)
+keymap("x", "r", "<cmd>lua require('various-textobjs').restOfParagraph()<cr>", opts)
+
+-- select subword, but never treating `-`, `_` or `.` as word delimiters
+keymap("o", "aS", "<cmd>lua require('various-textobjs').subword(false)<cr>", opts)
+keymap("x", "aS", "<cmd>lua require('various-textobjs').subword(false)<cr>", opts)
+-- --
+keymap("o", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts)
+keymap("x", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts)

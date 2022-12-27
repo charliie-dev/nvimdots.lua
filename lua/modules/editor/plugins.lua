@@ -197,6 +197,16 @@ editor["nvim-treesitter/nvim-treesitter-textobjects"] = {
 	opt = true,
 	after = "nvim-treesitter",
 }
+editor["chrisgrieser/nvim-various-textobjs"] = {
+	opt = true,
+	after = "nvim-treesitter",
+	config = function()
+		require("various-textobjs").setup({
+			lookForwardLines = 15, -- default: 5. Set to 0 to only look in the current line
+			useDefaultKeymaps = false,
+		})
+	end,
+}
 editor["p00f/nvim-ts-rainbow"] = {
 	opt = true,
 	after = "nvim-treesitter",
