@@ -21,16 +21,17 @@ keymap("n", "<leader>do", "<cmd>lua require('dap').step_out()<cr>", opts)
 keymap("n", "<leader>dl", "<cmd>lua require('dap').repl.open()<cr>", opts)
 
 --- Telescope
+keymap("n", "<leader>fu", "<cmd>lua require('telescope').extensions.undo.undo()<cr>", opts)
 keymap("n", "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects{}<cr>", opts)
 keymap("n", "<leader>fr", "<cmd>lua require('telescope').extensions.frecency.frecency{}<cr>", opts)
 keymap("n", "<leader>fw", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args{}<cr>", opts)
+keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
+keymap("n", "<leader>fc", "<cmd>Telescope colorscheme<cr>", opts)
 keymap("n", "<leader>fe", "<cmd>Telescope oldfiles<cr>", opts)
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>fc", "<cmd>Telescope colorscheme<cr>", opts)
-keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
 keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", opts)
+keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
 keymap("n", "<leader>fz", "<cmd>Telescope zoxide list<cr>", opts)
-keymap("n", "<leader>fu", "<cmd>Telescope undo<cr>", opts)
 
 --- bufdelete.nvim
 keymap("n", "<F4>", "<cmd>Bwipeout<cr>", opts)
@@ -97,6 +98,9 @@ keymap("n", "<F12>", "<cmd>MarkdownPreviewToggle<cr>", opts)
 
 --- SnipRun
 keymap("n", "<leader>r", "<cmd>SnipRun<cr>", opts)
+keymap("v", "<leader>r", "<cmd>%SnipRun<cr>", opts)
+
+print("Keymap loaded")
 
 --- Diffview
 keymap("n", "<leader>dv", "<cmd>DiffviewOpen<cr>", opts)
