@@ -100,8 +100,6 @@ keymap("n", "<F12>", "<cmd>MarkdownPreviewToggle<cr>", opts)
 keymap("n", "<leader>r", "<cmd>SnipRun<cr>", opts)
 keymap("v", "<leader>r", "<cmd>%SnipRun<cr>", opts)
 
-print("Keymap loaded")
-
 --- Diffview
 keymap("n", "<leader>dv", "<cmd>DiffviewOpen<cr>", opts)
 keymap("n", "<leader><leader>dv", "<cmd>DiffviewClose<cr>", opts)
