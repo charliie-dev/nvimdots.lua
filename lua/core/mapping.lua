@@ -6,7 +6,9 @@ local opts = { noremap = true, silent = true, nowait = true }
 -- Source current file
 keymap("n", "<C-o>", "<cmd>so %<cr>", { noremap = true })
 -- Save in normal mode
-keymap("n", "<C-s>", "<cmd>w<cr>", { noremap = true })
+keymap("n", "<C-s>", "<cmd>write<cr>", { noremap = true })
+-- Force save for files need sudo
+keymap("n", "<C-S-s>", "<cmd>execute 'silent! write !sudo tee % >/dev/null' <bar> edit!<cr>", { noremap = true })
 -- Increment/decrement
 keymap("n", "+", "<C-a>", opts)
 keymap("n", "-", "<C-x>", opts)
