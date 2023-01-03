@@ -52,8 +52,7 @@ completion["ray-x/lsp_signature.nvim"] = {
 	after = "nvim-lspconfig",
 }
 completion["hrsh7th/nvim-cmp"] = {
-	event = "BufReadPost",
-	after = { "LuaSnip" },
+	event = "InsertEnter",
 	-- module = "cmp",
 	requires = {
 		{ "onsails/lspkind.nvim", opt = true, module = "lspkind" },
@@ -74,7 +73,7 @@ completion["hrsh7th/nvim-cmp"] = {
 }
 completion["L3MON4D3/LuaSnip"] = {
 	opt = true,
-	event = "BufReadPost",
+	after = "nvim-cmp",
 	module = {
 		"luasnip.loaders.from_vscode",
 		"luasnip.loaders.from_lua",
@@ -104,7 +103,6 @@ completion["zbirenbaum/copilot.lua"] = {
 completion["zbirenbaum/copilot-cmp"] = {
 	after = "copilot.lua",
 	module = "copilot_cmp",
-	requires = "hrsh7th/nvim-cmp",
 	config = function()
 		require("modules.completion.copilot-cmp")
 	end,
