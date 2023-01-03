@@ -29,6 +29,17 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 
+-- auto jump to last place
+vim.api.nvim_create_autocmd("BufReadPost", {
+	callback = function()
+		local mark = vim.api.nvim_buf_get_mark(0, '"')
+		local lcount = vim.api.nvim_buf_line_count(0)
+		if mark[1] > 0 and mark[1] <= lcount then
+			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+		end
+	end,
+})
+
 function autocmd.load_autocmds()
 	local definitions = {
 		bufs = {
@@ -45,11 +56,11 @@ function autocmd.load_autocmds()
 			-- auto change directory
 			-- { "BufEnter", "*", "silent! lcd %:p:h" },
 			-- auto place to last edit
-			{
-				"BufReadPost",
-				"*",
-				[[if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif]],
-			},
+			-- {
+			-- 	"BufReadPost",
+			-- 	"*",
+			-- 	[[if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif]],
+			-- },
 		},
 		wins = {
 			-- Highlight current line only on focused window
