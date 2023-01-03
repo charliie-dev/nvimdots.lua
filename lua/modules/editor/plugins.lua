@@ -181,6 +181,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	module = {
 		"nvim-treesitter",
 		"nvim-treesitter.parsers",
+		"nvim-treesitter.ts_utils",
 	},
 	config = function()
 		require("modules.editor.treesitter")
