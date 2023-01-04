@@ -178,11 +178,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	opt = true,
 	run = ":TSUpdate",
 	event = "BufReadPost",
-	module = {
-		"nvim-treesitter",
-		"nvim-treesitter.parsers",
-		"nvim-treesitter.ts_utils",
-	},
 	config = function()
 		require("modules.editor.treesitter")
 	end,
