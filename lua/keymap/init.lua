@@ -33,8 +33,8 @@ keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", opts)
 keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
 keymap("n", "<leader>fz", "<cmd>Telescope zoxide list<cr>", opts)
 
---- bufdelete.nvim
-keymap("n", "<F4>", "<cmd>Bwipeout<cr>", opts)
+--- nvim-bufdel
+keymap("n", "<F4>", "<cmd>BufDel<cr>", opts)
 
 --- BufferLine
 keymap("n", "<tab>", "<cmd>BufferLineCycleNext<cr>", opts)

@@ -138,9 +138,9 @@ editor["andymass/vim-matchup"] = {
 	cmd = { "MatchupWhereAmI" },
 	after = "nvim-treesitter",
 }
-editor["famiu/bufdelete.nvim"] = {
+editor["ojroques/nvim-bufdel"] = {
 	opt = true,
-	cmd = { "Bdelete", "Bwipeout", "Bdelete!", "Bwipeout!" },
+	event = "BufReadPost",
 }
 editor["sindrets/diffview.nvim"] = {
 	opt = true,
