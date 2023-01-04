@@ -124,7 +124,8 @@ keymap("n", "<leader>ps", "<cmd>PackerSync<cr>", opts)
 keymap("n", "<leader>pt", "<cmd>PackerStatus<cr>", opts)
 
 --- comment-frame
--- "<leader>cf" to use comment-frame
+keymap("n", "<leader>cf", "<cmd>lua require('nvim-comment-frame').add_comment()<cr>", {})
+keymap("n", "<leader>cF", "<cmd>lua require('nvim-comment-frame').add_multiline_comment()<cr>", {})
 
 --- ssr.nvim, structural search and replace
 vim.keymap.set({ "n", "x" }, "<leader>sr", function()

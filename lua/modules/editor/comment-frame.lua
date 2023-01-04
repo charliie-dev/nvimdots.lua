@@ -1,3 +1,5 @@
+vim.api.nvim_command([[packadd nvim-treesitter]])
+
 require("nvim-comment-frame").setup({
 	-- width of the comment frame
 	frame_width = 70,
