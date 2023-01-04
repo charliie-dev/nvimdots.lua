@@ -16,7 +16,8 @@ editor["max397574/better-escape.nvim"] = {
 }
 editor["s1n7ax/nvim-comment-frame"] = {
 	opt = true,
-	after = "nvim-treesitter",
+	event = "BufReadPost",
+	requires = "nvim-treesitter/nvim-treesitter",
 	branch = "bug/10",
 	config = function()
 		require("modules.editor.comment-frame")
@@ -25,6 +26,7 @@ editor["s1n7ax/nvim-comment-frame"] = {
 editor["numToStr/Comment.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
+	requires = "nvim-treesitter/nvim-treesitter",
 	config = function()
 		require("modules.editor.comment")
 	end,
