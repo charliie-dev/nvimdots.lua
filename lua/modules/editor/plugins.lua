@@ -117,6 +117,7 @@ editor["cshuaimin/ssr.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
 	module = "ssr",
+	requires = "nvim-treesitter/nvim-treesitter",
 	config = function()
 		require("modules.editor._ssr")
 	end,

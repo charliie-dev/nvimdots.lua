@@ -104,6 +104,7 @@ ui["hoob3rt/lualine.nvim"] = {
 ui["zbirenbaum/neodim"] = {
 	opt = true,
 	event = "LspAttach",
+	requires = "nvim-treesitter/nvim-treesitter",
 	config = function()
 		require("modules.ui.neodim")
 	end,
