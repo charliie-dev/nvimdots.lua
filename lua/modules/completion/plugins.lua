@@ -57,7 +57,7 @@ completion["hrsh7th/nvim-cmp"] = {
 	requires = {
 		{ "onsails/lspkind.nvim", opt = true, module = "lspkind" },
 		{ "lukas-reineke/cmp-under-comparator", opt = true, module = "cmp-under-comparator" },
-		{ "saadparwaiz1/cmp_luasnip", after = { "nvim-cmp", "LuaSnip" } },
+		{ "saadparwaiz1/cmp_luasnip", after = "LuaSnip" },
 		{ "hrsh7th/cmp-nvim-lsp", after = "nvim-cmp", opt = true },
 		{ "hrsh7th/cmp-nvim-lua", after = "nvim-cmp", opt = true },
 		{ "andersevenrud/cmp-tmux", after = "nvim-cmp", opt = true },
