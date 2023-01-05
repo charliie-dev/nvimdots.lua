@@ -42,7 +42,7 @@ completion["jose-elias-alvarez/null-ls.nvim"] = {
 }
 completion["glepnir/lspsaga.nvim"] = {
 	opt = true,
-	event = "LspAttach",
+	after = "nvim-lspconfig",
 	config = function()
 		require("modules.completion.saga")
 	end,

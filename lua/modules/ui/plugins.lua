@@ -96,7 +96,8 @@ ui["lukas-reineke/indent-blankline.nvim"] = {
 -- }
 ui["hoob3rt/lualine.nvim"] = {
 	opt = true,
-	after = { "git-blame.nvim" },
+	-- after = { "git-blame.nvim" },
+	after = { "nvim-lspconfig", "lspsaga.nvim" },
 	config = function()
 		require("modules.ui.lualine")
 	end,
