@@ -5,6 +5,8 @@ local icons = {
 	ui = require("modules.ui.icons").get("ui"),
 }
 
+vim.api.nvim_command([[packadd nvim-window-picker]])
+
 require("nvim-tree").setup({
 	auto_reload_on_write = true,
 	create_in_closed_folder = false,
@@ -123,6 +125,7 @@ require("nvim-tree").setup({
 			window_picker = {
 				enable = true,
 				chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+				picker = require("window-picker").pick_window,
 				exclude = {
 					filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
 					buftype = { "nofile", "terminal", "help" },

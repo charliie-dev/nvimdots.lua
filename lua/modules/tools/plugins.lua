@@ -97,6 +97,14 @@ tools["nvim-tree/nvim-tree.lua"] = {
 		"NvimTreeFindFileToggle",
 		"NvimTreeRefresh",
 	},
+	requires = {
+		"s1n7ax/nvim-window-picker",
+		opt = true,
+		tag = "v1.*",
+		config = function()
+			require("window-picker").setup()
+		end,
+	},
 	config = function()
 		require("modules.tools.nvim-tree")
 	end,
@@ -196,12 +204,6 @@ tools["nvim-telescope/telescope.nvim"] = {
 	-- cmd = "Telescope",
 	-- keys = "<leader>",
 	event = "BufReadPost",
-	wants = {
-		-- "harpoon",
-		"nvim-notify",
-		"nvim-neoclip.lua",
-		"git-worktree.nvim",
-	},
 	requires = {
 		{ "nvim-lua/plenary.nvim" },
 		{ "nvim-lua/popup.nvim" },
