@@ -105,16 +105,6 @@ editor["nacro90/numb.nvim"] = {
 -- 		require("modules.editor.specs")
 -- 	end,
 -- }
--- editor["nvim-pack/nvim-spectre"] = {
--- 	opt = true,
--- 	event = "BufReadPost",
--- 	requires = {
--- 		{ "nvim-lua/plenary.nvim", opt = false },
--- 	},
--- 	config = function()
--- 		require("modules.editor.spectre")
--- 	end,
--- }
 editor["cshuaimin/ssr.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
