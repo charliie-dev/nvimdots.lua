@@ -42,14 +42,14 @@ local function diff_source()
 	end
 end
 
-local function get_cwd()
-	local cwd = vim.fn.getcwd()
-	local home = os.getenv("HOME")
-	if cwd:find(home, 1, true) == 1 then
-		cwd = "~" .. cwd:sub(#home + 1)
-	end
-	return icons.ui.RootFolderOpened .. cwd
-end
+-- local function get_cwd()
+-- 	local cwd = vim.fn.getcwd()
+-- 	local home = os.getenv("HOME")
+-- 	if cwd:find(home, 1, true) == 1 then
+-- 		cwd = "~" .. cwd:sub(#home + 1)
+-- 	end
+-- 	return icons.ui.RootFolderOpened .. cwd
+-- end
 
 local conditions = {
 	check_code_context = function()
@@ -74,14 +74,14 @@ local diffview = {
 	filetypes = { "DiffviewFiles" },
 }
 
--- local hide_in_width = function()
--- 	return vim.fn.winwidth(0) > 80
--- end
+local hide_in_width = function()
+	return vim.fn.winwidth(0) > 30
+end
 
--- local git_blame = require("gitblame")
--- local gitblame_cond = function()
--- 	return (git_blame.is_blame_text_available() and hide_in_width())
--- end
+local git_blame = require("gitblame")
+local gitblame_cond = function()
+	return (git_blame.is_blame_text_available() and hide_in_width())
+end
 
 local function python_venv()
 	local function env_cleanup(venv)
@@ -135,11 +135,11 @@ require("lualine").setup({
 			{ "diff", source = diff_source },
 		},
 		lualine_c = {
-			-- { git_blame.get_current_blame_text, cond = gitblame_cond },
 			{ lspsaga_symbols, cond = conditions.check_code_context },
 		},
 		lualine_x = {
 			{ escape_status },
+			{ git_blame.get_current_blame_text, cond = gitblame_cond },
 			{
 				"diagnostics",
 				sources = { "nvim_diagnostic" },
@@ -149,7 +149,7 @@ require("lualine").setup({
 					info = icons.diagnostics.Information .. " ",
 				},
 			},
-			{ get_cwd },
+			-- { get_cwd },
 		},
 		lualine_y = {
 			{ "filetype", colored = true, icon_only = true },
