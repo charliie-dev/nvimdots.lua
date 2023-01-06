@@ -105,13 +105,20 @@ editor["nacro90/numb.nvim"] = {
 -- 		require("modules.editor.specs")
 -- 	end,
 -- }
-editor["cshuaimin/ssr.nvim"] = {
+-- editor["cshuaimin/ssr.nvim"] = {
+-- 	opt = true,
+-- 	event = "BufReadPost",
+-- 	module = "ssr",
+-- 	requires = "nvim-treesitter/nvim-treesitter",
+-- 	config = function()
+-- 		require("modules.editor._ssr")
+-- 	end,
+-- }
+editor["roobert/search-replace.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
-	module = "ssr",
-	requires = "nvim-treesitter/nvim-treesitter",
 	config = function()
-		require("modules.editor._ssr")
+		require("modules.editor._search-replace")
 	end,
 }
 editor["kylechui/nvim-surround"] = {

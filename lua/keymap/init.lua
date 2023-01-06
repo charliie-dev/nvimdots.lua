@@ -97,8 +97,8 @@ keymap("n", "k", "<Plug>(accelerated_jk_gk)", {})
 keymap("n", "<F12>", "<cmd>MarkdownPreviewToggle<cr>", opts)
 
 --- SnipRun
-keymap("n", "<leader>r", "<cmd>SnipRun<cr>", opts)
-keymap("v", "<leader>r", "<cmd>%SnipRun<cr>", opts)
+keymap("n", "<leader>R", "<cmd>SnipRun<cr>", opts)
+keymap("v", "<leader>R", "<cmd>%SnipRun<cr>", opts)
 
 --- Diffview
 keymap("n", "<leader>dv", "<cmd>DiffviewOpen<cr>", opts)
@@ -128,9 +128,28 @@ keymap("n", "<leader>cf", "<cmd>lua require('nvim-comment-frame').add_comment()<
 keymap("n", "<leader>cF", "<cmd>lua require('nvim-comment-frame').add_multiline_comment()<cr>", {})
 
 --- ssr.nvim, structural search and replace
-vim.keymap.set({ "n", "x" }, "<leader>sr", function()
-	require("ssr").open()
-end, { desc = "structural search and replace." })
+-- vim.keymap.set({ "n", "x" }, "<leader>sr", function()
+-- 	require("ssr").open()
+-- end, { desc = "structural search and replace." })
+
+--- search-replace.nvim
+-- SearchReplaceSingleBuffer
+keymap("n", "<leader>rs", "<cmd>SearchReplaceSingleBufferSelections<cr>", opts)
+keymap("n", "<leader>ro", "<cmd>SearchReplaceSingleBufferOpen<cr>", opts)
+keymap("n", "<leader>rw", "<cmd>SearchReplaceSingleBufferCWord<cr>", opts)
+keymap("n", "<leader>rW", "<cmd>SearchReplaceSingleBufferCWORD<cr>", opts)
+keymap("n", "<leader>re", "<cmd>SearchReplaceSingleBufferCExpr<cr>", opts)
+keymap("n", "<leader>rf", "<cmd>SearchReplaceSingleBufferCFile<cr>", opts)
+-- SearchReplaceMultiBuffer
+keymap("n", "<leader>rbs", "<cmd>SearchReplaceMultiBufferSelections<cr>", opts)
+keymap("n", "<leader>rbo", "<cmd>SearchReplaceMultiBufferCOpen<cr>", opts)
+keymap("n", "<leader>rbw", "<cmd>SearchReplaceMultiBufferCWord<cr>", opts)
+keymap("n", "<leader>rbW", "<cmd>SearchReplaceMultiBufferCWORD<cr>", opts)
+keymap("n", "<leader>rbe", "<cmd>SearchReplaceMultiBufferCExpr<cr>", opts)
+keymap("n", "<leader>rbf", "<cmd>SearchReplaceMultiBufferCFile<cr>", opts)
+-- Visual Mode
+keymap("v", "<C-r>", "<cmd>SearchReplaceSingleBufferVisualSelection<cr>", opts)
+keymap("v", "<C-w>", "<cmd>SearchReplaceWithinVisualSelectionCWord<cr>", opts)
 
 --- nvim-surround
 -- keymaps = {
