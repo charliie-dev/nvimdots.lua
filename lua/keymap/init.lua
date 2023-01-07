@@ -142,7 +142,7 @@ keymap("n", "<leader>re", "<cmd>SearchReplaceSingleBufferCExpr<cr>", opts)
 keymap("n", "<leader>rf", "<cmd>SearchReplaceSingleBufferCFile<cr>", opts)
 -- SearchReplaceMultiBuffer
 keymap("n", "<leader>rbs", "<cmd>SearchReplaceMultiBufferSelections<cr>", opts)
-keymap("n", "<leader>rbo", "<cmd>SearchReplaceMultiBufferCOpen<cr>", opts)
+keymap("n", "<leader>rbo", "<cmd>SearchReplaceMultiBufferOpen<cr>", opts)
 keymap("n", "<leader>rbw", "<cmd>SearchReplaceMultiBufferCWord<cr>", opts)
 keymap("n", "<leader>rbW", "<cmd>SearchReplaceMultiBufferCWORD<cr>", opts)
 keymap("n", "<leader>rbe", "<cmd>SearchReplaceMultiBufferCExpr<cr>", opts)
