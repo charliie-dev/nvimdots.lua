@@ -43,7 +43,7 @@ local function load_options()
 		hidden = true,
 		history = 2000,
 		ignorecase = true,
-		inccommand = "nosplit",
+		inccommand = "split", -- nosplit
 		incsearch = true,
 		infercase = true,
 		jumpoptions = "stack",
