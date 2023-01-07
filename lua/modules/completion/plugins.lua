@@ -91,6 +91,7 @@ completion["windwp/nvim-autopairs"] = {
 	end,
 }
 completion["zbirenbaum/copilot.lua"] = {
+	cmd = "Copilot",
 	event = "VimEnter",
 	module = {
 		"copilot",
