@@ -101,6 +101,13 @@ ui["hoob3rt/lualine.nvim"] = {
 		require("modules.ui.lualine")
 	end,
 }
+ui["mvllow/modes.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.ui.modes")
+	end,
+}
 ui["zbirenbaum/neodim"] = {
 	opt = true,
 	event = "LspAttach",
