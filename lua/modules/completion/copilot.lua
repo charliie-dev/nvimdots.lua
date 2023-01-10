@@ -5,11 +5,11 @@ vim.defer_fn(function()
 			method = "getCompletionsCycling",
 		},
 		panel = {
-			-- if true, it can interfere with completions properly appearing in copilot-cmp
+			-- if true, it can interfere with completions in copilot-cmp
 			enabled = false,
 		},
 		suggestion = {
-			-- if true, it can interfere with completions properly appearing in copilot-cmp
+			-- if true, it can interfere with completions in copilot-cmp
 			enabled = false,
 		},
 		filetypes = {
