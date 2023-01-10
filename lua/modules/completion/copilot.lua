@@ -5,28 +5,12 @@ vim.defer_fn(function()
 			method = "getCompletionsCycling",
 		},
 		panel = {
-			enabled = true,
-			auto_refresh = false,
-			keymap = {
-				jump_prev = "[[",
-				jump_next = "]]",
-				accept = "<CR>",
-				refresh = "gr",
-				open = "<M-CR>",
-			},
+			-- if true, it can interfere with completions properly appearing in copilot-cmp
+			enabled = false,
 		},
 		suggestion = {
-			enabled = true,
-			auto_trigger = false,
-			debounce = 75,
-			keymap = {
-				accept = "<M-l>",
-				accept_word = false,
-				accept_line = false,
-				next = "<M-]>",
-				prev = "<M-[>",
-				dismiss = "<C-]>",
-			},
+			-- if true, it can interfere with completions properly appearing in copilot-cmp
+			enabled = false,
 		},
 		filetypes = {
 			yaml = false,
