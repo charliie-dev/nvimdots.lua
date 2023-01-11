@@ -130,7 +130,7 @@ ui["romainl/vim-cool"] = {
 }
 ui["rcarriga/nvim-notify"] = {
 	opt = true,
-	event = "BufReadPre",
+	event = { "BufReadPre", "UIEnter" },
 	module = "notify",
 	config = function()
 		require("modules.ui.notify")
