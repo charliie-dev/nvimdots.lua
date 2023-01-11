@@ -3,9 +3,8 @@ cmd([[packadd sqlite.lua]])
 cmd([[packadd project.nvim]])
 cmd([[packadd telescope-fzf-native.nvim]])
 cmd([[packadd telescope-frecency.nvim]])
-cmd([[packadd telescope-zoxide]])
 cmd([[packadd telescope-env.nvim]])
-cmd([[packadd git-worktree.nvim]])
+-- cmd([[packadd git-worktree.nvim]])
 cmd([[packadd nvim-notify]])
 cmd([[packadd nvim-neoclip.lua]])
 cmd([[packadd telescope-live-grep-args.nvim]])
@@ -119,51 +118,14 @@ require("telescope").setup({
 	},
 })
 
--- zoxide config
-local z_utils = require("telescope._extensions.zoxide.utils")
-local builtin = require("telescope.builtin")
-
-require("telescope._extensions.zoxide.config").setup({
-	prompt_title = "[ Zoxide List ]",
-
-	-- Zoxide list command with score
-	list_command = "zoxide query -ls",
-	mappings = {
-		default = {
-			action = function(selection)
-				vim.api.nvim_command("cd " .. selection.path)
-			end,
-			after_action = function(selection)
-				print("Directory changed to " .. selection.path)
-			end,
-		},
-		["<C-s>"] = { action = z_utils.create_basic_command("split") },
-		["<C-v>"] = { action = z_utils.create_basic_command("vsplit") },
-		["<C-e>"] = { action = z_utils.create_basic_command("edit") },
-		["<C-b>"] = {
-			keepinsert = true,
-			action = function(selection)
-				builtin.file_browser({ cwd = selection.path })
-			end,
-		},
-		["<C-f>"] = {
-			keepinsert = true,
-			action = function(selection)
-				builtin.find_files({ cwd = selection.path })
-			end,
-		},
-	},
-})
-
 -- plugins should load after setup function
 -- require("telescope").load_extension("dap")
 require("telescope").load_extension("env")
 require("telescope").load_extension("frecency")
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("projects")
-require("telescope").load_extension("zoxide")
 require("telescope").load_extension("notify")
 require("telescope").load_extension("neoclip")
-require("telescope").load_extension("git_worktree")
+-- require("telescope").load_extension("git_worktree")
 require("telescope").load_extension("live_grep_args")
 require("telescope").load_extension("undo")

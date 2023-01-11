@@ -44,18 +44,18 @@ tools["monaqa/dial.nvim"] = {
 		require("modules.tools.dial")
 	end,
 }
-tools["ThePrimeagen/git-worktree.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	module = "git-worktree",
-	requires = {
-		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-telescope/telescope.nvim" },
-	},
-	config = function()
-		require("modules.tools.git-worktree")
-	end,
-}
+-- tools["ThePrimeagen/git-worktree.nvim"] = {
+-- 	opt = true,
+-- 	event = "BufReadPost",
+-- 	module = "git-worktree",
+-- 	requires = {
+-- 		{ "nvim-lua/plenary.nvim" },
+-- 		{ "nvim-telescope/telescope.nvim" },
+-- 	},
+-- 	config = function()
+-- 		require("modules.tools.git-worktree")
+-- 	end,
+-- }
 tools["samodostal/image.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
@@ -201,7 +201,7 @@ tools["gelguy/wilder.nvim"] = {
 tools["nvim-telescope/telescope.nvim"] = {
 	opt = true,
 	module = "telescope",
-	-- cmd = "Telescope",
+	cmd = "Telescope",
 	-- keys = "<leader>",
 	event = "BufReadPost",
 	requires = {
@@ -228,10 +228,6 @@ tools["nvim-telescope/telescope-frecency.nvim"] = {
 	opt = true,
 	after = "telescope.nvim",
 	requires = { "kkharji/sqlite.lua" },
-}
-tools["jvgrootveld/telescope-zoxide"] = {
-	opt = true,
-	after = "telescope.nvim",
 }
 tools["LinArcX/telescope-env.nvim"] = {
 	opt = true,
