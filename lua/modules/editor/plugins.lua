@@ -2,7 +2,7 @@ local editor = {}
 
 editor["rainbowhxch/accelerated-jk.nvim"] = {
 	opt = true,
-	event = "InsertEnter",
+	event = "BufReadPost",
 	config = function()
 		require("modules.editor.accelerated-jk")
 	end,
