@@ -6,18 +6,20 @@ local opts = { noremap = true, silent = true, nowait = true }
 --- DAP
 keymap("n", "<F6>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
 keymap("n", "<leader>dr", "<cmd>lua require('dap').continue()<cr>", opts)
+keymap("n", "<F7>", "<cmd>lua require('dap').terminate() require('dapui').close()<cr>", opts)
 keymap("n", "<leader>dd", "<cmd>lua require('dap').terminate()<cr>", opts)
+keymap("n", "<F8>", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
 keymap("n", "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
 keymap("n", "<leader>dB", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>", opts)
 keymap("n", "<leader>dbl", "<cmd>lua require('dap').list_breakpoints()<cr>", opts)
 keymap("n", "<leader>drc", "<cmd>lua require('dap').run_to_cursor()<cr>", opts)
 keymap("n", "<leader>drl", "<cmd>lua require('dap').run_last()<cr>", opts)
-keymap("n", "<F9>", "<cmd>lua require('dap').step_over()<cr>", opts)
-keymap("n", "<leader>dv", "<cmd>lua require('dap').step_over()<cr>", opts)
-keymap("n", "<F10>", "<cmd>lua require('dap').step_into()<cr>", opts)
+keymap("n", "<F9>", "<cmd>lua require('dap').step_into()<cr>", opts)
 keymap("n", "<leader>di", "<cmd>lua require('dap').step_into()<cr>", opts)
-keymap("n", "<F11>", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<F10>", "<cmd>lua require('dap').step_out()<cr>", opts)
 keymap("n", "<leader>do", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<F11>", "<cmd>lua require('dap').step_over()<cr>", opts)
+keymap("n", "<leader>dv", "<cmd>lua require('dap').step_over()<cr>", opts)
 keymap("n", "<leader>dl", "<cmd>lua require('dap').repl.open()<cr>", opts)
 
 --- Telescope
