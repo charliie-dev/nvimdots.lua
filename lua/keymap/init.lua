@@ -268,3 +268,8 @@ keymap("x", "aS", "<cmd>lua require('various-textobjs').subword(false)<cr>", opt
 -- --
 keymap("o", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts)
 keymap("x", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts)
+
+--- markdowny.nvim(hard-coded)
+-- vim.keymap.set("v", "<C-b>", ":lua require('markdowny').bold()<cr>", { buffer = 0 })
+-- vim.keymap.set("v", "<C-i>", ":lua require('markdowny').italic()<cr>", { buffer = 0 })
+-- vim.keymap.set("v", "<C-k>", ":lua require('markdowny').link()<cr>", { buffer = 0 })

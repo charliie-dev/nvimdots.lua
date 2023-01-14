@@ -21,6 +21,13 @@ lang["lukas-reineke/headlines.nvim"] = {
 -- 		require("modules.lang.markdown")
 -- 	end,
 -- }
+lang["antonk52/markdowny.nvim"] = {
+	opt = true,
+	ft = { "markdown", "txt" },
+	config = function()
+		require("modules.lang.markdowny")
+	end,
+}
 lang["jakewvincent/mkdnflow.nvim"] = {
 	opt = true,
 	ft = "markdown",
