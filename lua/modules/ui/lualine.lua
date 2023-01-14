@@ -23,8 +23,8 @@ local function lspsaga_symbols()
 	else
 		local ok, lspsaga = pcall(require, "lspsaga.symbolwinbar")
 		if ok then
-			if lspsaga.get_symbol_node() ~= nil then
-				return lspsaga.get_symbol_node()
+			if lspsaga:get_winbar() ~= nil then
+				return lspsaga:get_winbar()
 			else
 				return "" -- Cannot get node
 			end
@@ -52,12 +52,6 @@ local function get_cwd()
 	return icons.ui.RootFolderOpened .. cwd
 end
 
-local conditions = {
-	check_code_context = function()
-		return lspsaga_symbols() ~= ""
-	end,
-}
-
 local mini_sections = {
 	lualine_a = { "filetype" },
 	lualine_b = {},
@@ -75,14 +69,14 @@ local diffview = {
 	filetypes = { "DiffviewFiles" },
 }
 
-local hide_in_width = function()
-	return vim.fn.winwidth(0) > 30
-end
+-- local hide_in_width = function()
+-- 	return vim.fn.winwidth(0) > 30
+-- end
 
-local git_blame = require("gitblame")
-local gitblame_cond = function()
-	return (git_blame.is_blame_text_available() and hide_in_width())
-end
+-- local git_blame = require("gitblame")
+-- local gitblame_cond = function()
+-- 	return (git_blame.is_blame_text_available() and hide_in_width())
+-- end
 
 local function python_venv()
 	local function env_cleanup(venv)
@@ -135,9 +129,7 @@ require("lualine").setup({
 			},
 			{ "diff", source = diff_source },
 		},
-		lualine_c = {
-			{ lspsaga_symbols, cond = conditions.check_code_context },
-		},
+		lualine_c = { lspsaga_symbols },
 		lualine_x = {
 			{ escape_status },
 			-- { git_blame.get_current_blame_text, cond = gitblame_cond },
@@ -191,6 +183,6 @@ require("lualine").setup({
 -- Properly set background color for lspsaga
 local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, "#000000")
 require("modules.utils").extend_hl("LspSagaWinbarSep", { bg = winbar_bg })
-for _, hlGroup in pairs(require("lspsaga.lspkind")) do
+for _, hlGroup in pairs(require("lspsaga.highlight").get_kind()) do
 	require("modules.utils").extend_hl("LspSagaWinbar" .. hlGroup[1], { bg = winbar_bg })
 end

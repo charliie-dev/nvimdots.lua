@@ -29,6 +29,10 @@ require("legendary").setup({
 
 require("which-key").register({
 	["<leader>"] = {
+		c = {
+			i = "lsp: Incoming calls",
+			o = "lsp: Outgoing calls",
+		},
 		d = {
 			name = "Dap commands",
 			b = "debug: Set breakpoint with condition",
@@ -74,6 +78,10 @@ require("which-key").register({
 			s = "packer: PackerSync",
 			c = "packer: PackerCompile",
 			t = "packer: PackerStatus",
+		},
+		s = {
+			c = "lsp: Show cursor diagnostics",
+			l = "lsp: Show line diagnostics",
 		},
 		t = {
 			name = "Trouble commands",

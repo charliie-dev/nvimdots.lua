@@ -1,5 +1,6 @@
 local null_ls = require("null-ls")
 local disabled_worksapces = require("core.settings").format_disabled_dirs
+local format_on_save = require("core.settings").format_on_save
 
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
 local b = null_ls.builtins
@@ -56,7 +57,7 @@ null_ls.setup({
 				return
 			end
 		end
-		if client.supports_method("textDocument/formatting") then
+		if client.supports_method("textDocument/formatting") and format_on_save then
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 			vim.api.nvim_create_autocmd("BufWritePre", {
 				group = augroup,

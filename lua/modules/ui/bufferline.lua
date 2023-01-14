@@ -68,8 +68,7 @@ local opts = {
 }
 
 if vim.g.colors_name == "catppuccin" then
-	local cp = require("catppuccin.palettes").get_palette() -- Get the palette.
-	cp.none = "NONE" -- Special setting for complete transparent fg/bg.
+	local cp = require("modules.utils").get_palette() -- Get the palette.
 
 	local catppuccin_hl_overwrite = {
 		highlights = require("catppuccin.groups.integrations.bufferline").get({

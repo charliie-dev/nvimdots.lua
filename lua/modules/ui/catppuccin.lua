@@ -168,6 +168,9 @@ require("catppuccin").setup({
 				FidgetTask = { bg = cp.none, fg = cp.surface2 },
 				FidgetTitle = { fg = cp.blue, style = { "bold" } },
 
+				-- For trouble.nvim
+				TroubleNormal = { bg = cp.base },
+
 				-- For Indent Blankline
 				-- IndentBlanklineContextChar = { fg = indent_hl, bg = "#785244" },
 
