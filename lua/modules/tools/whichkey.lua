@@ -17,8 +17,8 @@ require("which-key").setup({
 	},
 
 	icons = {
-		breadcrumb = icons.ui.DoubleSeparator,
-		separator = " " .. icons.ui.DoubleSeparator .. " ",
+		breadcrumb = icons.ui.SeparatorDouble,
+		separator = " " .. icons.ui.SeparatorDouble .. " ",
 		group = icons.misc.Add,
 	},
 

@@ -95,8 +95,8 @@ local data = {
 		Close_alt = "",
 		CloudDownload = "",
 		Comment = "",
+		CodeAction = "",
 		Dashboard = "",
-		DoubleSeparator = "",
 		Emoji = "",
 		EmptyFolder = "",
 		EmptyFolderOpen = "",
@@ -109,7 +109,6 @@ local data = {
 		Incoming = "",
 		Indicator = "",
 		Left = "",
-		Lightbulb = "",
 		List = "",
 		Lock = "",
 		Modified = "✥",
@@ -117,7 +116,7 @@ local data = {
 		NewFile = "",
 		Newspaper = "",
 		Note = "",
-		Outcoming = "",
+		Outgoing = "",
 		Package = "",
 		Pencil = "",
 		Perf = "",
@@ -126,6 +125,7 @@ local data = {
 		RootFolderOpened = "",
 		Search = "",
 		Separator = "",
+		SeparatorDouble = "",
 		SignIn = "",
 		SignOut = "",
 		Sort = "",
@@ -204,7 +204,6 @@ local data = {
 }
 
 ---Get a specific icon set.
----Returns the corrosponding icon set.
 ---@param category string|"kind"|"type"|"documents"|"git"|"ui"|"diagnostics"|"misc"|"cmp"|"dap"
 ---@param add_space? boolean @Add trailing space after the icon.
 function icons.get(category, add_space)

@@ -94,7 +94,7 @@ require("lspsaga").setup({
 	symbol_in_winbar = {
 		in_custom = true,
 		enable = false,
-		separator = " " .. icons.ui.Separator,
+		separator = " " .. icons.ui.SeparatorDouble,
 		hide_keyword = true,
 		show_file = false,
 	},
@@ -108,7 +108,7 @@ require("lspsaga").setup({
 		code_action = icons.ui.CodeAction,
 		diagnostic = icons.ui.Bug,
 		incoming = icons.ui.Incoming,
-		outgoing = icons.ui.Outcoming,
+		outgoing = icons.ui.Outgoing,
 		colors = {
 			normal_bg = colors.base,
 			title_bg = colors.base,
