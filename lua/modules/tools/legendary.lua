@@ -110,6 +110,7 @@ require("which-key").register({
 		["="] = "dial: Increment(Cycle)",
 		["-"] = "dial: Decrement(Cycle)",
 		["lg"] = "git: Show lazygit",
+		["o"] = "filetree: Toggle oil floating window",
 	},
 	["g"] = {
 		a = "lsp: Code action",

@@ -109,6 +109,13 @@ tools["nvim-tree/nvim-tree.lua"] = {
 		require("modules.tools.nvim-tree")
 	end,
 }
+tools["stevearc/oil.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = function()
+		require("modules.tools.oil")
+	end,
+}
 tools["bennypowers/nvim-regexplainer"] = {
 	opt = true,
 	cmd = { "RegexplainerToggle", "RegexplainerShow" },

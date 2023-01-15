@@ -273,3 +273,6 @@ keymap("x", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts
 -- vim.keymap.set("v", "<C-b>", ":lua require('markdowny').bold()<cr>", { buffer = 0 })
 -- vim.keymap.set("v", "<C-i>", ":lua require('markdowny').italic()<cr>", { buffer = 0 })
 -- vim.keymap.set("v", "<C-k>", ":lua require('markdowny').link()<cr>", { buffer = 0 })
+
+--- oil.nvim
+keymap("n", "<leader>o", "<cmd>lua require('oil').open_float()<cr>", opts)
