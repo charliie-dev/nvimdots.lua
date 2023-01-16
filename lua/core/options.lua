@@ -81,7 +81,7 @@ local function load_options()
 		splitright = true,
 		startofline = false,
 		swapfile = false,
-		switchbuf = "useopen",
+		switchbuf = "usetab,uselast",
 		synmaxcol = 500,
 		tabstop = 4,
 		termguicolors = true,
