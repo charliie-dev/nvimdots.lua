@@ -75,6 +75,9 @@ require("lspsaga").setup({
 	rename = {
 		quit = "<C-c>",
 		exec = "<CR>",
+		mark = "x",
+		confirm = "<CR>",
+		whole_project = true,
 		in_select = true,
 	},
 	outline = {
@@ -97,6 +100,7 @@ require("lspsaga").setup({
 		separator = " " .. icons.ui.SeparatorDouble,
 		hide_keyword = true,
 		show_file = false,
+		color_mode = true,
 	},
 	ui = {
 		theme = "round",
