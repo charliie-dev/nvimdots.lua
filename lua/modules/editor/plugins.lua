@@ -64,14 +64,6 @@ editor["ggandor/leap.nvim"] = {
 		require("leap").add_default_mappings()
 	end,
 }
-editor["ggandor/flit.nvim"] = {
-	opt = true,
-	after = "leap.nvim",
-	requires = "ggandor/leap.nvim",
-	config = function()
-		require("modules.editor.flit")
-	end,
-}
 editor["danymat/neogen"] = {
 	opt = true,
 	cmd = { "Neogen" },
@@ -150,13 +142,6 @@ editor["sindrets/diffview.nvim"] = {
 		"DiffviewToggleFiles",
 		"DiffviewRefresh",
 	},
-}
-editor["simrat39/symbols-outline.nvim"] = {
-	opt = true,
-	cmd = { "SymbolsOutline" },
-	config = function()
-		require("modules.editor.symbols-outline")
-	end,
 }
 editor["Pocco81/true-zen.nvim"] = {
 	opt = true,
