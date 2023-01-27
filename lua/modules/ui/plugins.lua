@@ -129,7 +129,7 @@ ui["rcarriga/nvim-notify"] = {
 		require("modules.ui.notify")
 	end,
 }
-ui["kyazdani42/nvim-web-devicons"] = {
+ui["nvim-tree/nvim-web-devicons"] = {
 	opt = true,
 	module = "nvim-web-devicons",
 }
