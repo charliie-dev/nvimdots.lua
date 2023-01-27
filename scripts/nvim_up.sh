@@ -23,9 +23,14 @@ NVIM_SRC_NAME=$HOME/packages/nvim-linux64.tar.gz
 NVIM_LINK="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
 
 printf "Update ${tty_blue}Neovim nightly...${tty_reset}\n"
-rm "$NVIM_SRC_NAME"
-rm -r "$NVIM_DIR"
-mkdir -p "$NVIM_DIR"
+if [[ -f $NVIM_SRC_NAME ]]; then
+    rm "$NVIM_SRC_NAME"
+fi
+if [[ -d $NVIM_DIR ]]; then
+    rm -r "$NVIM_DIR"
+    mkdir -p "$NVIM_DIR"
+    mkdir -p "$HOME/packages"
+fi
 wget "$NVIM_LINK" -O "$NVIM_SRC_NAME"
 echo "Extracting Neovim"
 tar zxvf "$NVIM_SRC_NAME" --strip-components 1 -C "$NVIM_DIR"
