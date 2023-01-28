@@ -64,18 +64,18 @@ local function footer()
 
 	-- Number of plugins
 	local stats = require("lazy").stats()
-	local datetime = os.date("%Y-%m-%d %H:%M:%S")
-	local plugins_text = "    "
-		.. stats.count
-		.. " plugins"
-		.. "   v"
+	local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+	local plugins_text = "           v"
 		.. vim.version().major
 		.. "."
 		.. vim.version().minor
 		.. "."
 		.. vim.version().patch
-		.. "   "
-		.. datetime
+		.. "     "
+		.. stats.count
+		.. " plugins in "
+		.. ms
+		.. "ms"
 
 	-- Quote
 	local fortune = require("alpha.fortune")
@@ -105,3 +105,11 @@ dashboard.config.layout = {
 
 dashboard.opts.opts.noautocmd = true
 require("alpha").setup(dashboard.opts)
+
+vim.api.nvim_create_autocmd("User", {
+	pattern = "LazyVimStarted",
+	callback = function()
+		dashboard.section.footer.val = footer()
+		pcall(vim.cmd.AlphaRedraw)
+	end,
+})
