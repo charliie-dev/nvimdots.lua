@@ -26,6 +26,7 @@ vim.defer_fn(function()
 			cvs = false,
 			["."] = false,
 			["dap-repl"] = false,
+			["disabled_big_file"] = false,
 		},
 		plugin_manager_path = vim.fn.stdpath("data") .. "/site/pack/packer",
 		-- Use this field to provide the path to a specific node version such as one installed by nvm. Node version must be < 18.
