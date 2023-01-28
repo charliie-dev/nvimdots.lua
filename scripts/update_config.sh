@@ -69,7 +69,7 @@ if [[ $status = true ]]; then
     printf "Update ${tty_blue}CharlesChiuGit/nvimdots.lua${tty_reset}"
     git pull
     printf "Updateing nvim plugins, please wait\n"
-    "$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
+    "$NVIM_DIR/bin/nvim" -c "+Lazy sync"
     printf "Done.\n"
 elif [[ $status = false ]]; then
     printf "${tty_blue}CharlesChiuGit/nvimdots.lua${tty_reset} is up-to-date!\n"

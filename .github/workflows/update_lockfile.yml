@@ -26,7 +26,7 @@ jobs:
         if: steps.check_lockfile.outputs.files_exists == 'true'
         timeout-minutes: 5
         run: |
-          ./scripts/setup_config.sh
+          ./scripts/update_lockfile.sh
           nvim --headless "+Lazy! update" +qa
           cp -pv "${HOME}/.config/nvim/lazy-lock.json" .
       - if: steps.check_lockfile.outputs.files_exists == 'true'

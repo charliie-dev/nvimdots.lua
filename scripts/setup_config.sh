@@ -175,14 +175,8 @@ fi
 
 git clone git@github.com:CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
 
-printf "Installing ${tty_bold}packer.nvim${tty_reset}\n"
-if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
-    git clone --depth=1 https://github.com/wbthomason/packer.nvim \
-        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
-fi
-
 printf "Installing nvim plugins, please wait\n"
-"$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
+"$NVIM_DIR/bin/nvim" -c "+Lazy sync"
 printf "Done.\n\n"
 
 printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"
