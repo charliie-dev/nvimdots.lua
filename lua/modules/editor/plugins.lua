@@ -86,32 +86,6 @@ editor["nacro90/numb.nvim"] = {
 		require("modules.editor.numb")
 	end,
 }
--- editor["ThePrimeagen/refactoring.nvim"] = {
--- 	lazy = true,
--- 	requires = {
--- 		{ "nvim-lua/plenary.nvim" },
--- 		{ "nvim-treesitter/nvim-treesitter" },
--- 	},
--- 	config = function()
--- 		require("modules.editor.refactoring")
--- 	end,
--- }
--- editor["edluffy/specs.nvim"] = {
--- 	lazy = true,
--- 	event = "CursorMoved",
--- 	config = function()
--- 		require("modules.editor.specs")
--- 	end,
--- }
--- editor["cshuaimin/ssr.nvim"] = {
--- 	lazy = true,
--- 	event = "BufReadPost",
--- 	module = "ssr",
--- 	requires = "nvim-treesitter/nvim-treesitter",
--- 	config = function()
--- 		require("modules.editor.ssr")
--- 	end,
--- }
 editor["roobert/search-replace.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
