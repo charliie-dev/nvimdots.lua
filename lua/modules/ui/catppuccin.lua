@@ -1,7 +1,7 @@
 --- Get hex by highlight group
----@param hl_group string highlight group name
----@param use_bg boolean
----@return string
+--- hl_group string highlight group name
+--- use_bg boolean
+--- string
 -- local function hlToRgb(hl_group, use_bg)
 -- 	if use_bg == true then
 -- 		local color = vim.api.nvim_get_hl_by_name(hl_group, true).background
@@ -100,7 +100,7 @@ require("catppuccin").setup({
 		overseer = false,
 		pounce = false,
 		semantic_tokens = false,
-		symbols_outline = true,
+		symbols_outline = false,
 		telekasten = false,
 		telescope = true,
 		treesitter_context = false,
