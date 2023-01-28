@@ -61,7 +61,7 @@
   "nvim-bufdel": { "branch": "main", "commit": "a60b3531e5bd56f8602acb4ba7f5b2eeb782d54b" },
   "nvim-cmp": { "branch": "main", "commit": "e7e2ef7031db8e0cfad7ad9916ec766ddd9dbb3b" },
   "nvim-colorizer.lua": { "branch": "master", "commit": "760e27df4dd966607e8fb7fd8b6b93e3c7d2e193" },
-  "nvim-comment-frame": { "branch": "bug/10", "commit": "7a7d34ee7a236a89ffe5674bf794358ee12a7df8" },
+  "nvim-comment-frame": { "branch": "main", "commit": "7a7d34ee7a236a89ffe5674bf794358ee12a7df8" },
   "nvim-dap": { "branch": "master", "commit": "d213b7d5bf0d56b1f47c62a2f5d4ebd202fe0d12" },
   "nvim-dap-ui": { "branch": "master", "commit": "e26fba0562cb9c904f7a6510a94961b82701a16f" },
   "nvim-lspconfig": { "branch": "master", "commit": "1e988250a0f52a68ddb72905d623405d634e9c5d" },
