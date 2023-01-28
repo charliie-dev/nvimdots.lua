@@ -14,6 +14,13 @@ editor["max397574/better-escape.nvim"] = {
 		require("modules.editor.better-escape")
 	end,
 }
+editor["LunarVim/bigfile.nvim"] = {
+	lazy = false,
+	cond = require("core.settings").load_big_files_faster,
+	config = function()
+		require("modules.editor.bigfile")
+	end,
+}
 editor["s1n7ax/nvim-comment-frame"] = {
 	lazy = true,
 	event = "BufReadPost",
