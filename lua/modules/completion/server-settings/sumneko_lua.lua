@@ -18,7 +18,7 @@ return {
 			},
 			diagnostics = {
 				enable = true,
-				globals = { "vim", "packer_plugins" },
+				globals = { "vim" },
 				-- neededFileStatus = { ["codestyle-check"] = "Any" },
 			},
 			workspace = {

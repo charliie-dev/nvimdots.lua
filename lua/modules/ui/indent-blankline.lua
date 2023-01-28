@@ -15,7 +15,6 @@ require("indent_blankline").setup({
 		"json",
 		"log",
 		"markdown",
-		"packer",
 		"peekaboo",
 		"startify",
 		"todoist",
