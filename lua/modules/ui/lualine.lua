@@ -10,6 +10,7 @@ local function escape_status()
 	return ok and m.waiting and icons.misc.EscapeST or ""
 end
 
+local _cache = { context = "", bufnr = -1 }
 local function lspsaga_symbols()
 	local exclude = {
 		["terminal"] = true,
@@ -21,14 +22,16 @@ local function lspsaga_symbols()
 	if vim.api.nvim_win_get_config(0).zindex or exclude[vim.bo.filetype] then
 		return "" -- Excluded filetypes
 	else
+		local currbuf = vim.api.nvim_get_current_buf()
 		local ok, lspsaga = pcall(require, "lspsaga.symbolwinbar")
-		if ok then
-			if lspsaga:get_winbar() ~= nil then
-				return lspsaga:get_winbar()
-			else
-				return "" -- Cannot get node
-			end
+		if ok and lspsaga:get_winbar() ~= nil then
+			_cache.context = lspsaga:get_winbar()
+			_cache.bufnr = currbuf
+		elseif _cache.bufnr ~= currbuf then
+			_cache.context = "" -- Reset [invalid] cache (usually from another buffer)
 		end
+
+		return _cache.context
 	end
 end
 
@@ -113,7 +116,7 @@ require("lualine").setup({
 	options = {
 		icons_enabled = true,
 		theme = vim.g.colors_name,
-		disabled_filetypes = { "alpha", "dashboard", "NvimTree" },
+		disabled_filetypes = { "alpha" },
 		component_separators = "|",
 		section_separators = { left = "", right = "" },
 		globalstatus = true,
@@ -175,6 +178,7 @@ require("lualine").setup({
 		"nvim-tree",
 		"nvim-dap-ui",
 		"toggleterm",
+		"fugitive",
 		outline,
 		diffview,
 	},
@@ -182,7 +186,7 @@ require("lualine").setup({
 
 -- Properly set background color for lspsaga
 local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, "#000000")
-require("modules.utils").extend_hl("LspSagaWinbarSep", { bg = winbar_bg })
 for _, hlGroup in pairs(require("lspsaga.highlight").get_kind()) do
 	require("modules.utils").extend_hl("LspSagaWinbar" .. hlGroup[1], { bg = winbar_bg })
 end
+require("modules.utils").extend_hl("LspSagaWinbarSep", { bg = winbar_bg })
