@@ -160,7 +160,6 @@ tools["akinsho/toggleterm.nvim"] = {
 tools["folke/trouble.nvim"] = {
 	lazy = true,
 	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
-	-- after = "null-ls.nvim",
 	config = function()
 		require("modules.tools.trouble")
 	end,
