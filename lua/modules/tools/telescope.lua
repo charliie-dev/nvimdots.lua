@@ -1,4 +1,3 @@
-local cmd = vim.api.nvim_command
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
 local actions = require("telescope.actions.set")
 local fixfolds = {
@@ -12,6 +11,7 @@ local fixfolds = {
 		return true
 	end,
 }
+local lga_actions = require("telescope-live-grep-args.actions")
 
 require("telescope").setup({
 	defaults = {
@@ -49,9 +49,6 @@ require("telescope").setup({
 		generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
 	},
 	extensions = {
-		-- conda = {
-		-- 	home = "$HOME/tools/anaconda",
-		-- },
 		fzf = {
 			fuzzy = false,
 			override_generic_sorter = true,
@@ -75,8 +72,8 @@ require("telescope").setup({
 			-- define mappings, e.g.
 			mappings = { -- extend mappings
 				i = {
-					["<C-k>"] = require("telescope-live-grep-args.actions").quote_prompt(),
-					["<C-i>"] = require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " }),
+					["<C-k>"] = lga_actions.quote_prompt(),
+					["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
 				},
 			},
 		},
