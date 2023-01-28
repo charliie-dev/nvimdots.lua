@@ -52,12 +52,6 @@ function _LF_TOGGLE()
 	lf:toggle()
 end
 
-local xplr = Terminal:new({ cmd = "xplr", hidden = true, direction = "float" })
-
-function _XPLR_TOGGLE()
-	xplr:toggle()
-end
-
 local htop = Terminal:new({ cmd = "htop", hidden = true, direction = "float" })
 
 function _HTOP_TOGGLE()
