@@ -18,7 +18,6 @@ completion["neovim/nvim-lspconfig"] = {
 		},
 		{
 			"glepnir/lspsaga.nvim",
-			commit = "e018bb0",
 			config = function()
 				require("modules.completion.saga")
 			end,
