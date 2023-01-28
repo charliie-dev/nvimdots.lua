@@ -199,6 +199,12 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 				require("modules.editor.colorizer")
 			end,
 		},
+		{
+			"abecodes/tabout.nvim",
+			config = function()
+				require("modules.editor.tabout")
+			end,
+		},
 	},
 }
 editor["nvim-treesitter/playground"] = {
