@@ -1,4 +1,4 @@
-local fn = vim.fn
+local fn, api = vim.fn, vim.api
 local global = require("core.global")
 local is_mac = global.is_mac
 local vim_path = global.vim_path
@@ -59,15 +59,8 @@ end
 
 function Lazy:load_lazy()
 	if not vim.loop.fs_stat(lazy_path) then
-		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git" or "https://github.com/folke/lazy.nvim.git"
-		fn.system({
-			"git",
-			"clone",
-			"--filter=blob:none",
-			lazy_repo,
-			"--branch=stable",
-			lazy_path,
-		})
+		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git " or "https://github.com/folke/lazy.nvim.git "
+		api.nvim_command("!git clone --filter=blob:none --branch=stable " .. lazy_repo .. lazy_path)
 	end
 	self:load_plugins()
 
