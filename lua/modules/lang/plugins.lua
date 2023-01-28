@@ -38,10 +38,6 @@ lang["lervag/vimtex"] = {
 		require("modules.lang.vimtex")
 	end,
 }
-lang["jbyuki/nabla.nvim"] = {
-	lazy = true,
-	ft = "tex",
-}
 lang["ranelpadon/python-copy-reference.vim"] = {
 	lazy = true,
 	ft = "python",
