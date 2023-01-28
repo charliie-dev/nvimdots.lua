@@ -14,28 +14,11 @@ lang["lukas-reineke/headlines.nvim"] = {
 		require("modules.lang.headlines")
 	end,
 }
--- lang["preservim/vim-markdown"] = {
--- 	lazy = true,
--- 	ft = "markdown",
--- 	config = function()
--- 		require("modules.lang.markdown")
--- 	end,
--- }
 lang["antonk52/markdowny.nvim"] = {
 	lazy = true,
 	ft = { "markdown", "txt" },
 	config = function()
 		require("modules.lang.markdowny")
-	end,
-}
-lang["jakewvincent/mkdnflow.nvim"] = {
-	lazy = true,
-	ft = "markdown",
-	-- rocks = "luautf9", --move to scripts/setup_config.sh to shorten PackerSync time
-	config = function()
-		vim.lazy_local.conceallevel = 3 -- Links and text formatting
-		vim.lazy_local.concealcursor = "n" -- Reveal the conceal item in current line
-		require("modules.lang.mkdnflow")
 	end,
 }
 lang["iamcco/markdown-preview.nvim"] = {
