@@ -132,13 +132,6 @@ ui["petertriho/nvim-scrollbar"] = {
 -- 		require("modules.ui.styler")
 -- 	end,
 -- }
--- ui["levouh/tint.nvim"] = {
--- 	lazy = true,
--- 	event = { "BufReadPost" },
--- 	config = function()
--- 		require("modules.ui.tint")
--- 	end,
--- }
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
