@@ -1,5 +1,3 @@
-vim.api.nvim_command([[packadd nvim-treesitter]])
-
 -- Structural search and replace
 require("ssr").setup({
 	min_width = 50,

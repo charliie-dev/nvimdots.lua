@@ -1,118 +1,87 @@
 local completion = {}
 
 completion["neovim/nvim-lspconfig"] = {
-	opt = true,
-	event = "BufReadPre",
-	after = "mason.nvim",
-	module = {
-		"lspconfig",
-		"lspconfig.util",
-	},
+	lazy = true,
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = function()
 		require("modules.completion.lsp")
 	end,
-}
-completion["williamboman/mason.nvim"] = {
-	opt = false,
-	-- event = "BufReadPre",
-	module = { "mason", "mason-registry" },
-	requires = {
+	dependencies = {
+		{ "ray-x/lsp_signature.nvim" },
+		{ "williamboman/mason.nvim" },
+		{ "williamboman/mason-lspconfig.nvim" },
 		{
-			"williamboman/mason-lspconfig.nvim",
-			module = "mason-lspconfig",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
+			config = function()
+				require("modules.completion.mason-install")
+			end,
+		},
+		{
+			"glepnir/lspsaga.nvim",
+			config = function()
+				require("modules.completion.saga")
+			end,
+		},
+		{
+			"jose-elias-alvarez/null-ls.nvim",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			config = function()
+				require("modules.completion.null-ls")
+			end,
 		},
 	},
 }
-completion["WhoIsSethDaniel/mason-tool-installer.nvim"] = {
-	opt = true,
-	after = "mason.nvim",
-	cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
-	module = "mason-tool-installer",
-	config = function()
-		require("modules.completion.mason-install")
-	end,
-}
-completion["jose-elias-alvarez/null-ls.nvim"] = {
-	opt = true,
-	event = "BufReadPre",
-	requires = { "nvim-lua/plenary.nvim" },
-	config = function()
-		require("modules.completion.null-ls")
-	end,
-}
-completion["glepnir/lspsaga.nvim"] = {
-	opt = true,
-	after = "nvim-lspconfig",
-	config = function()
-		require("modules.completion.saga")
-	end,
-}
-completion["ray-x/lsp_signature.nvim"] = {
-	opt = true,
-	after = "nvim-lspconfig",
-}
 completion["hrsh7th/nvim-cmp"] = {
+	lazy = true,
 	event = "InsertEnter",
-	-- module = "cmp",
-	requires = {
-		{ "onsails/lspkind.nvim", opt = true, module = "lspkind" },
-		{ "lukas-reineke/cmp-under-comparator", opt = true, module = "cmp-under-comparator" },
-		{ "saadparwaiz1/cmp_luasnip", after = "LuaSnip" },
-		{ "hrsh7th/cmp-nvim-lsp", after = "nvim-cmp", opt = true },
-		{ "hrsh7th/cmp-nvim-lua", after = "nvim-cmp", opt = true },
-		{ "andersevenrud/cmp-tmux", after = "nvim-cmp", opt = true },
-		{ "hrsh7th/cmp-path", after = "nvim-cmp", opt = true },
-		{ "hrsh7th/cmp-buffer", after = "nvim-cmp", opt = true },
-		{ "kdheepak/cmp-latex-symbols", after = "nvim-cmp", opt = true },
-		{ "ray-x/cmp-treesitter", after = "nvim-cmp", opt = true },
-		-- { "f3fora/cmp-spell", after = "cmp-path" },
+	config = function()
+		require("modules.completion.cmp")
+	end,
+	dependencies = {
+		{ "onsails/lspkind.nvim" },
+		{ "lukas-reineke/cmp-under-comparator" },
+		{ "saadparwaiz1/cmp_luasnip" },
+		{ "hrsh7th/cmp-nvim-lsp" },
+		{ "hrsh7th/cmp-nvim-lua" },
+		{ "andersevenrud/cmp-tmux" },
+		{ "hrsh7th/cmp-path" },
+		{ "hrsh7th/cmp-buffer" },
+		{ "kdheepak/cmp-latex-symbols" },
+		{ "ray-x/cmp-treesitter" },
+		{ "f3fora/cmp-spell" },
+		{
+			"L3MON4D3/LuaSnip",
+			dependencies = { "rafamadriz/friendly-snippets" },
+			config = function()
+				require("modules.completion.luasnip")
+			end,
+		},
+		{
+			"windwp/nvim-autopairs",
+			config = function()
+				require("modules.completion.autopairs")
+			end,
+		},
 	},
-	config = function()
-		require("modules.completion._cmp")
-	end,
-}
-completion["L3MON4D3/LuaSnip"] = {
-	opt = true,
-	after = "nvim-cmp",
-	module = {
-		"luasnip.loaders.from_vscode",
-		"luasnip.loaders.from_lua",
-		"luasnip.loaders.from_snipmate",
-	},
-	requires = { "rafamadriz/friendly-snippets", event = "InsertEnter" },
-	config = function()
-		require("modules.completion._luasnip")
-	end,
-}
-completion["windwp/nvim-autopairs"] = {
-	after = "nvim-cmp",
-	config = function()
-		require("modules.completion.autopairs")
-	end,
 }
 completion["zbirenbaum/copilot.lua"] = {
 	cmd = "Copilot",
-	event = "VimEnter",
-	module = {
-		"copilot",
-		"copilot.util",
-	},
+	event = "InsertEnter",
 	config = function()
 		require("modules.completion.copilot")
 	end,
+	dependencies = {
+		{
+			"zbirenbaum/copilot-cmp",
+			config = function()
+				require("modules.completion.copilot-cmp")
+			end,
+		},
+	},
 }
-completion["zbirenbaum/copilot-cmp"] = {
-	after = "copilot.lua",
-	module = "copilot_cmp",
-	config = function()
-		require("modules.completion.copilot-cmp")
-	end,
-}
-
 completion["barreiroleo/ltex_extra.nvim"] = {
-	opt = true,
+	lazy = true,
 	ft = "tex",
-	module = "ltex_extra",
 }
 
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get

@@ -1,7 +1,3 @@
-vim.api.nvim_command([[packadd lsp_signature.nvim]])
-vim.api.nvim_command([[packadd lspsaga.nvim]])
-vim.api.nvim_command([[packadd cmp-nvim-lsp]])
-
 local lspconfig = require("lspconfig")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")

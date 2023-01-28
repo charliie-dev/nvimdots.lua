@@ -1,17 +1,5 @@
 local cmd = vim.api.nvim_command
-cmd([[packadd sqlite.lua]])
-cmd([[packadd project.nvim]])
-cmd([[packadd telescope-fzf-native.nvim]])
-cmd([[packadd telescope-frecency.nvim]])
-cmd([[packadd telescope-env.nvim]])
--- cmd([[packadd git-worktree.nvim]])
-cmd([[packadd nvim-notify]])
-cmd([[packadd nvim-neoclip.lua]])
-cmd([[packadd telescope-live-grep-args.nvim]])
-cmd([[packadd telescope-undo.nvim]])
-
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
-
 local actions = require("telescope.actions.set")
 local fixfolds = {
 	hidden = true,

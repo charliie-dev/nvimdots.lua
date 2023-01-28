@@ -1,5 +1,3 @@
-vim.api.nvim_command([[packadd nvim-treesitter]])
-
 local blend_color = require("modules.utils").hl_to_rgb("Normal", true)
 
 require("neodim").setup({
