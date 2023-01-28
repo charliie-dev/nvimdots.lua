@@ -77,7 +77,6 @@ require("lspsaga").setup({
 		exec = "<CR>",
 		mark = "x",
 		confirm = "<CR>",
-		whole_project = true,
 		in_select = true,
 	},
 	outline = {
