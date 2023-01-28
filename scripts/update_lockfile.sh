@@ -26,7 +26,6 @@ tty_cyan="$(tty_mkbold 36)"
 tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
-NVIM_DIR=$HOME/tools/nvim
 NVIM_CONFIG_DIR=$HOME/.config/nvim
 printf "${tty_bold}Setting up config and installing plugins${tty_reset}.\n"
 if [[ -d "$NVIM_CONFIG_DIR" ]]; then
@@ -36,7 +35,7 @@ fi
 git clone https://github.com/CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
 
 printf "Installing nvim plugins, please wait\n"
-"$NVIM_DIR/bin/nvim" -c "+Lazy sync"
+nvim -c "+Lazy sync"
 printf "Done.\n\n"
 
 printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"
