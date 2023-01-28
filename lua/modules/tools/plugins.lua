@@ -30,7 +30,7 @@ tools["monaqa/dial.nvim"] = {
 -- tools["ThePrimeagen/git-worktree.nvim"] = {
 -- 	lazy = true,
 -- 	event = "BufReadPost",
--- 	requires = {
+-- 	dependencies = {
 -- 		{ "nvim-lua/plenary.nvim" },
 -- 		{ "nvim-telescope/telescope.nvim" },
 -- 	},
@@ -102,7 +102,6 @@ tools["stevearc/oil.nvim"] = {
 		require("modules.tools.oil")
 	end,
 }
-
 -- tools["narutoxy/silicon.lua"] = {
 -- 	lazy = true,
 -- 	-- cmd = "Silicon",
