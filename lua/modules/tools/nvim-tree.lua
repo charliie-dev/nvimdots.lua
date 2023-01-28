@@ -13,7 +13,7 @@ require("nvim-tree").setup({
 	hijack_netrw = true,
 	hijack_unnamed_buffer_when_opening = true,
 	ignore_buffer_on_setup = false,
-	open_on_setup = false,
+	open_on_setup = true,
 	open_on_setup_file = false,
 	open_on_tab = false,
 	respect_buf_cwd = false,
@@ -126,7 +126,7 @@ require("nvim-tree").setup({
 				chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
 				exclude = {
 					filetype = { "notify", "qf", "diff", "fugitive", "fugitiveblame" },
-					buftype = { "nofile", "terminal", "help" },
+					buftype = { "terminal", "help" },
 				},
 			},
 		},
