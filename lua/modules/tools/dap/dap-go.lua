@@ -1,6 +1,6 @@
 local dap = require("dap")
 
-dap.adapters.go = function(callback, config)
+dap.adapters.go = function(callback)
 	local stdout = vim.loop.new_pipe(false)
 	local handle
 	local pid_or_err

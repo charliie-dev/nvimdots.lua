@@ -1,4 +1,5 @@
 local icons = {
+	ui = require("modules.ui.icons").get("ui"),
 	dap = require("modules.ui.icons").get("dap"),
 }
 
