@@ -95,6 +95,10 @@ keymap("n", "k", "<Plug>(accelerated_jk_gk)", {})
 --- MarkdownPreview
 keymap("n", "<F12>", "<cmd>MarkdownPreviewToggle<cr>", opts)
 
+-- Tabout
+keymap("i", "<A-l>", "<Plug>(TaboutMulti)", opts)
+keymap("i", "<A-h>", "<Plug>(TaboutBackMulti)", opts)
+
 --- SnipRun
 keymap("n", "<leader>R", "<cmd>SnipRun<cr>", opts)
 keymap("v", "<leader>R", "<cmd>%SnipRun<cr>", opts)
@@ -106,21 +110,17 @@ keymap("n", "<leader><leader>dv", "<cmd>DiffviewClose<cr>", opts)
 --- Legendary
 keymap("n", "<C-p>", "<cmd>Legendary<cr>", opts)
 
---- hlslens
--- keymap("n", "n", [[<cmd>execute('normal! ' . v:count1 . 'n')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
--- keymap("n", "N", [[<cmd>execute('normal! ' . v:count1 . 'N')<cr><cmd>lua require('hlslens').start()<cr>zz]], opts)
--- keymap("n", "*", [[*<cmd>lua require('hlslens').start()<cr>zz]], opts)
--- keymap("n", "#", [[#<cmd>lua require('hlslens').start()<cr>zz]], opts)
-keymap("n", "n", "nzz", opts)
-keymap("n", "N", "Nzz", opts)
-keymap("n", "*", "*zz", opts)
-keymap("n", "#", "#zz", opts)
-keymap("n", "<esc>", "<cmd>noh<cr>", opts)
-
---- Packer
-keymap("n", "<leader>pc", "<cmd>PackerCompile<cr>", opts)
-keymap("n", "<leader>ps", "<cmd>PackerSync<cr>", opts)
-keymap("n", "<leader>pt", "<cmd>PackerStatus<cr>", opts)
+--- Lazy.nvim
+keymap("n", "<leader>ph", "<cmd>Lazy<cr>", opts)
+keymap("n", "<leader>ps", "<cmd>Lazy sync<cr>", opts)
+keymap("n", "<leader>pu", "<cmd>Lazy update<cr>", opts)
+keymap("n", "<leader>pi", "<cmd>Lazy install<cr>", opts)
+keymap("n", "<leader>pl", "<cmd>Lazy log<cr>", opts)
+keymap("n", "<leader>pc", "<cmd>Lazy check<cr>", opts)
+keymap("n", "<leader>pd", "<cmd>Lazy debug<cr>", opts)
+keymap("n", "<leader>pp", "<cmd>Lazy profile<cr>", opts)
+keymap("n", "<leader>pr", "<cmd>Lazy restore<cr>", opts)
+keymap("n", "<leader>px", "<cmd>Lazy clean<cr>", opts)
 
 --- comment-frame
 keymap("n", "<leader>cf", "<cmd>lua require('nvim-comment-frame').add_comment()<cr>", {})
@@ -178,6 +178,10 @@ keymap("n", "<leader>=", "<Plug>(dial-increment)", { noremap = true })
 keymap("v", "<leader>=", "<Plug>(dial-increment)", { noremap = true })
 keymap("n", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 keymap("v", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
+
+--- EasyAlign
+keymap("n", "gea", "v:lua.enhance_align('nea')", {})
+keymap("x", "gea", "v:lua.enhance_align('xea')", {})
 
 --- regexplainer
 -- "<leader>gR" to toggle regexplainer

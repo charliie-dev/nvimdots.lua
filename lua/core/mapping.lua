@@ -94,3 +94,10 @@ keymap("n", "<leader>ab", "<cmd>.!toilet -f term -F border<cr>", opts)
 -- ┌────┐
 -- │test│
 -- └────┘
+
+-- search and highlight
+keymap("n", "n", "nzzzv", opts)
+keymap("n", "N", "Nzzzv", opts)
+keymap("n", "*", "*zzzv", opts)
+keymap("n", "#", "#zzzv", opts)
+keymap("n", "<esc>", "<cmd>noh<cr>", opts)
