@@ -16,13 +16,7 @@ else
 fi
 
 tty_mkbold() { tty_escape "1;$1"; }
-tty_underline="$(tty_escape "4;39")"
 tty_yellow="$(tty_escape "0;33")"
-tty_red="$(tty_mkbold 31)"
-tty_green="$(tty_mkbold 32)"
-tty_blue="$(tty_mkbold 34)"
-tty_magenta="$(tty_mkbold 35)"
-tty_cyan="$(tty_mkbold 36)"
 tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
@@ -35,7 +29,7 @@ fi
 git clone https://github.com/CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
 
 printf "Installing nvim plugins, please wait\n"
-nvim -c "+Lazy sync"
+nvim "+Lazy sync"
 printf "Done.\n\n"
 
 printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"
