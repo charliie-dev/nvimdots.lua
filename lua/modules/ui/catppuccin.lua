@@ -248,7 +248,7 @@ require("catppuccin").setup({
 				-- ["@constant.macro"] = { fg = cp.mauve },
 
 				-- ["@label"] = { fg = cp.blue },
-				["@method"] = { style = { "italic" } },
+				["@method"] = { fg = cp.blue, style = { "italic" } },
 				["@namespace"] = { fg = cp.rosewater, style = {} },
 
 				["@punctuation.delimiter"] = { fg = cp.teal },
