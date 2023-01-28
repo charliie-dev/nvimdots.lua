@@ -28,10 +28,6 @@ fi
 
 git clone https://github.com/CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
 
-printf "Installing nvim plugins, please wait\n"
-nvim "q"
-printf "Done.\n\n"
-
 printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"
 
 printf "${tty_yellow}====================Script ends====================${tty_reset}\n\n"
