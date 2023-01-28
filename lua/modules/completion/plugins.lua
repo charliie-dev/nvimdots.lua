@@ -35,7 +35,7 @@ completion["hrsh7th/nvim-cmp"] = {
 	lazy = true,
 	event = "InsertEnter",
 	config = function()
-		require("modules.completion.cmp")
+		require("modules.completion.Cmp")
 	end,
 	dependencies = {
 		{ "onsails/lspkind.nvim" },
@@ -53,7 +53,7 @@ completion["hrsh7th/nvim-cmp"] = {
 			"L3MON4D3/LuaSnip",
 			dependencies = { "rafamadriz/friendly-snippets" },
 			config = function()
-				require("modules.completion.luasnip")
+				require("modules.completion.Luasnip")
 			end,
 		},
 		{
