@@ -232,7 +232,7 @@ tools["mfussenegger/nvim-dap"] = {
 	dependencies = {
 		"rcarriga/nvim-dap-ui",
 		config = function()
-			require("modules.tools.dap._dapui")
+			require("modules.tools.dap.dapui")
 		end,
 	},
 }
