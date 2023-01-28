@@ -25,7 +25,6 @@ editor["s1n7ax/nvim-comment-frame"] = {
 	lazy = true,
 	event = "BufReadPost",
 	dependencies = "nvim-treesitter/nvim-treesitter",
-	branch = "bug/10",
 	config = function()
 		require("modules.editor.comment-frame")
 	end,
