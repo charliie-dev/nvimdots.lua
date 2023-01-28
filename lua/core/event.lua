@@ -56,11 +56,6 @@ function autocmd.load_autocmds()
 			{ "BufWritePre", "*.bak", "setlocal noundofile" },
 			-- auto change directory
 			-- { "BufEnter", "*", "silent! lcd %:p:h" },
-			-- Auto toggle fcitx5
-			-- {"InsertLeave", "* :silent", "!fcitx5-remote -c"},
-			-- {"BufCreate", "*", ":silent !fcitx5-remote -c"},
-			-- {"BufEnter", "*", ":silent !fcitx5-remote -c "},
-			-- {"BufLeave", "*", ":silent !fcitx5-remote -c "}
 		},
 		wins = {
 			-- Highlight current line only on focused window
