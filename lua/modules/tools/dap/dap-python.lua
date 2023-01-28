@@ -19,7 +19,7 @@ dap.configurations.python = {
 
 		program = "${file}", -- This configuration will launch the current file if used.
 		pythonPath = function()
-			if not isempty(vim.env.CONDA_zPREFIX) then
+			if not isempty(vim.env.CONDA_PREFIX) then
 				return vim.env.CONDA_PREFIX .. "/bin/python"
 			-- print(vim.g.python3_host_prog)
 			else
