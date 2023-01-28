@@ -20,6 +20,8 @@ tty_yellow="$(tty_escape "0;33")"
 tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
+printf "\n${tty_yellow}====================Script starts====================${tty_reset}\n\n"
+
 NVIM_CONFIG_DIR=$HOME/.config/nvim
 printf "${tty_bold}Setting up config and installing plugins${tty_reset}.\n"
 if [[ -d "$NVIM_CONFIG_DIR" ]]; then
@@ -28,6 +30,6 @@ fi
 
 git clone https://github.com/CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
 
-printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"
+printf "${tty_bold}Finished installing Nvim config!${tty_reset}\n\n"
 
 printf "${tty_yellow}====================Script ends====================${tty_reset}\n\n"
