@@ -16,7 +16,7 @@ require("nvim-tree").setup({
 	open_on_setup = false,
 	open_on_setup_file = false,
 	open_on_tab = false,
-	respect_buf_cwd = true,
+	respect_buf_cwd = false,
 	sort_by = "name",
 	sync_root_with_cwd = true,
 	update_cwd = true,
@@ -59,7 +59,7 @@ require("nvim-tree").setup({
 				none = "  ",
 			},
 		},
-		root_folder_modifier = ":~",
+		root_folder_modifier = ":.:s?.*?/..?",
 		icons = {
 			webdev_colors = true,
 			git_placement = "before",
