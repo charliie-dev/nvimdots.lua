@@ -33,7 +33,7 @@ if [[ -d "$NVIM_CONFIG_DIR" ]]; then
     mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
 fi
 
-git clone git@github.com:CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
+git clone https://github.com/CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
 
 printf "Installing nvim plugins, please wait\n"
 "$NVIM_DIR/bin/nvim" -c "+Lazy sync"
