@@ -29,7 +29,6 @@ require("nvim-treesitter.configs").setup({
 		"toml",
 		"tsx",
 		"typescript",
-		"typescript",
 		"vim",
 		"yaml",
 		"help",
@@ -47,7 +46,14 @@ require("nvim-treesitter.configs").setup({
 	},
 	highlight = {
 		enable = true,
-		disable = {},
+		disable = function(ft, bufnr)
+			if vim.tbl_contains({ "vim" }, ft) then
+				return true
+			end
+
+			local ok, is_large_file = pcall(vim.api.nvim_buf_get_var, bufnr, "bigfile_disable_treesitter")
+			return ok and is_large_file
+		end,
 		additional_vim_regex_highlighting = true,
 	},
 	indent = {
