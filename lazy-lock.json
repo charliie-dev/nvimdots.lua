@@ -48,7 +48,7 @@
   "markdowny.nvim": { "branch": "main", "commit": "7cd96f05b1d237b91bf0d430269c6a15b2b0bb27" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "422b9745143150e16cd3fe331c74f6737de75e72" },
   "mason-tool-installer.nvim": { "branch": "main", "commit": "6ca38efeb0406dea8da6c97f61d6f6ef30ab0576" },
-  "mason.nvim": { "branch": "main", "commit": "dc48faeeb6fcd5834fd3f7a78d5e760f30ef6b00" },
+  "mason.nvim": { "branch": "main", "commit": "2469bfc2538652cb0cf88c129f67d38e46a9cb59" },
   "mkdnflow.nvim": { "branch": "main", "commit": "941c3a4aee26b28573ac3b67ace2dfd84fc7964c" },
   "nabla.nvim": { "branch": "master", "commit": "c5496bb7b3e11c37630a020ebb02f00e3141f2ca" },
   "neodim": { "branch": "master", "commit": "c346344ade2ce709e6bd282f10e43778672b861e" },
