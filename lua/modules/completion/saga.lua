@@ -26,7 +26,7 @@ local colors = require("modules.utils").get_palette()
 require("lspsaga").setup({
 	preview = {
 		lines_above = 1,
-		lines_below = 12,
+		lines_below = 17,
 	},
 	scroll_preview = {
 		scroll_down = "<C-j>",
@@ -60,12 +60,12 @@ require("lspsaga").setup({
 		sign = true,
 		enable_in_insert = true,
 		sign_priority = 20,
-		virtual_text = true,
+		virtual_text = false,
 	},
 	diagnostic = {
-		twice_into = false,
 		show_code_action = false,
 		show_source = true,
+		jump_num_shortcut = true,
 		keys = {
 			exec_action = "<CR>",
 			quit = "q",
@@ -74,9 +74,9 @@ require("lspsaga").setup({
 	},
 	rename = {
 		quit = "<C-c>",
-		exec = "<CR>",
 		mark = "x",
 		confirm = "<CR>",
+		exec = "<CR>",
 		in_select = true,
 	},
 	outline = {
@@ -101,6 +101,10 @@ require("lspsaga").setup({
 		show_file = false,
 		color_mode = true,
 	},
+	beacon = {
+		enable = true,
+		frequency = 12,
+	},
 	ui = {
 		theme = "round",
 		border = "single", -- Can be single, double, rounded, solid, shadow.
@@ -112,28 +116,13 @@ require("lspsaga").setup({
 		diagnostic = icons.ui.Bug,
 		incoming = icons.ui.Incoming,
 		outgoing = icons.ui.Outgoing,
-		colors = {
-			normal_bg = colors.base,
-			title_bg = colors.base,
-			red = colors.red,
-			megenta = colors.maroon,
-			orange = colors.peach,
-			yellow = colors.yellow,
-			green = colors.green,
-			cyan = colors.sapphire,
-			blue = colors.blue,
-			purple = colors.mauve,
-			white = colors.text,
-			black = colors.mantle,
-			fg = colors.text,
-		},
 		kind = {
 			-- Kind
 			Class = { icons.kind.Class, colors.yellow },
 			Constant = { icons.kind.Constant, colors.peach },
 			Constructor = { icons.kind.Constructor, colors.sapphire },
 			Enum = { icons.kind.Enum, colors.yellow },
-			EnumMember = { icons.kind.EnumMember, colors.rosewater },
+			EnumMember = { icons.kind.EnumMember, colors.teal },
 			Event = { icons.kind.Event, colors.yellow },
 			Field = { icons.kind.Field, colors.teal },
 			File = { icons.kind.File, colors.rosewater },
