@@ -77,7 +77,7 @@ require("lspsaga").setup({
 		mark = "x",
 		confirm = "<CR>",
 		exec = "<CR>",
-		in_select = true,
+		in_select = false,
 	},
 	outline = {
 		win_position = "right",

@@ -92,7 +92,7 @@ require("which-key").register({
 		t = {
 			name = "Trouble commands",
 			t = "trouble: Toggle",
-			r = "trouble: LSP References",
+			r = "trouble: Show LSP References",
 			d = "trouble: Show document diagnostics",
 			w = "trouble: Show workspace diagnostics",
 			q = "trouble: Show quickfix list",
@@ -124,7 +124,8 @@ require("which-key").register({
 		D = "lsp: Goto definition",
 		h = "lsp: Show definition and references",
 		o = "lsp: Toggle outline",
-		r = "lsp: Rename",
+		r = "lsp: Rename in file range",
+		R = "lsp: Rename in project range",
 		S = "lsp: Signature help",
 		["DC"] = "lsp: Declaration",
 		I = "lsp: Implementation",
