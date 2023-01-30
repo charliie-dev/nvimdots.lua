@@ -24,9 +24,7 @@ lang["antonk52/markdowny.nvim"] = {
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
 	ft = "markdown",
-	build = function()
-		vim.fn["mkdp#util#install"]()
-	end,
+	build = ":call mkdp#util#install()",
 	config = function()
 		require("modules.lang.mkdp")
 	end,
