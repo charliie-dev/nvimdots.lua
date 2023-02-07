@@ -166,7 +166,7 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
   />
 </p>
 
-# 🪨 Materials
+## 🪨 Materials
 
 ### Docs
 
