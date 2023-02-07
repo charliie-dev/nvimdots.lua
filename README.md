@@ -1,29 +1,6 @@
 <h1 align="center">
     Neovim Config
-</h1>
-
-<p align="center">
-    <a href="https://github.com/CharlesChiuGit/nvimdots/stargazers">
-    <img
-        alt="GitHub Repo stars"
-        src="https://img.shields.io/github/stars/CharlesChiuGit/nvimdots?color=957FB8&logo=starship&style=for-the-badge">
-    </a>
-    <a href="https://github.com/CharlesChiuGit/nvimdots/issues">
-    <img
-        alt="GitHub issues"
-        src="https://img.shields.io/github/issues-raw/CharlesChiuGit/nvimdots?color=DCA561&logo=gitbook&logoColor=d9e0ee&style=for-the-badge">
-    </a>
-    <a href="https://github.com/CharlesChiuGit/nvimdots/contributors">
-    <img
-        alt="GitHub contributors"
-        src="https://img.shields.io/github/contributors/CharlesChiuGit/nvimdots?color=%2398BB6C&logo=opensourceinitiative&logoColor=d9e0ee&style=for-the-badge">
-    </a>
-    <img
-        alt="GitHub code size in bytes"
-        src="https://img.shields.io/github/languages/code-size/CharlesChiuGit/nvimdots?color=%237E9CD8&logo=gitlfs&logoColor=d9e0ee&style=for-the-badge">
-</p>
-
-<p align="center">
+    <br>
     <a href="https://www.lua.org/">
     <img
         alt="Lua"
@@ -34,17 +11,34 @@
         alt="Neovim"
         src="https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white">
     </a>
-</a>
+</h1>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/alpha-full.png"
+    <a href="https://github.com/CharlesChiuGit/nvimdots/stargazers">
+    <img
+        alt="Stars"
+        src="https://img.shields.io/github/stars/CharlesChiuGit/nvimdots?colorA=363A4F&colorB=B7BDF8&logo=adafruit&logoColor=D9E0EE&style=for-the-badge">
+    </a>
+    <a href="https://github.com/CharlesChiuGit/nvimdots/issues">
+    <img
+        alt="Issues"
+        src="https://img.shields.io/github/issues-raw/CharlesChiuGit/nvimdots?colorA=363A4f&colorB=F5A97F&logo=github&logoColor=D9E0EE&style=for-the-badge">
+    </a>
+    <a href="https://github.com/CharlesChiuGit/nvimdots/contributors">
+    <img
+        alt="Contributors"
+        src="https://img.shields.io/github/contributors/CharlesChiuGit/nvimdots?colorA=363A4F&colorB=B5E8E0&logo=git&logoColor=D9E0EE&style=for-the-badge">
+    </a>
+    <img
+        alt="Code size"
+        src="https://img.shields.io/github/languages/code-size/CharlesChiuGit/nvimdots?colorA=363A4F&colorB=DDB6F2&logo=gitlfs&logoColor=D9E0EE&style=for-the-badge">
+</p>
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32497323/217202324-9fda3025-cee8-4b22-991e-83ffc260e4ad.png"
   width = "90%"
   />
 </p>
-
-<!-- <blockquote align="center"> -->
-<!--     R.I.P. Kentaro Miura sensei 🥀 -->
-<!-- </blockquote> -->
 
 <div align="center">
     <h6> R.I.P. Kentaro Miura sensei 🥀 </h6>
@@ -52,17 +46,17 @@
 
 ---
 
-# 🎐 Intro
+## 🎐 Intro
 
-- **⚡BLAZINGLY FAST** startup time in ~20ms, with over 100 plugins. (Tested on Micron Crucial MX500)
+- **⚡BLAZINGLY FAST** startup time in ~40ms, with over 100 plugins. (Tested on Micron Crucial MX500)
 - Well structured in `Lua`.
 - Easy to customize.
 - Automized [installation scripts](https://github.com/CharlesChiuGit/nvimdots.lua/blob/main/scripts/setup_config.sh), written in `bash`.
-- 100% lazy-loading. Ok, I lied. You can't really lazy-load the theme, UI will look weird.
+- Use [lazy.nvim](https://github.com/folke/lazy.nvim) as plugin manager.
 - Use [delaytrain.nvim](https://github.com/ja-ford/delaytrain.nvim) to train yourself into a better vimer, disable it if you want.
 - Aligned icons across every plugin!
 
-# 🧱 Structure
+## 🧱 Structure
 
 `${HOME}/.config/nvim`
 
@@ -108,37 +102,33 @@
 
 NOTE: You can rename/create folders inside `modules`, but **ALWAYS** remember to add a `plugins.lua` in it to register your plugins.
 
-# 🕵️ Details
+## ⚙️ Configuration & Usage
 
 <h3 align="center">
     🎩 Suit up
 </h3>
 
-Follow [Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) to install required packages and get yourself a cup of coffee ☕.
+<p align="center">
+<p align="center">Follow <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite" rel="nofollow">Wiki: Prerequisite</a> and get yourself a cup of coffee ☕</p>
+<br>
 
 <h3 align="center">
     🧑‍🍳 Cook it
 </h3>
-
-Follow [Usage](https://github.com/CharlesChiuGit/nvimdots/wiki/Usage) to spice it into your own flavor. (WIP)
+<p align="center">Follow <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/Usage" rel="nofollow">Wiki: Usage</a> to spice it into your own flavor (WIP)</p>
+<br>
 
 <h3 align="center">
     🛠️ Toolbox
 </h3>
-
-Lists of [Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins). (WIP)
-
-<h3 align="center">
-    🗝️🗺️
-</h3>
-
-Brief intro of [Core Keymaps](https://github.com/CharlesChiuGit/nvimdots/wiki/Keymaps).
+<p align="center">Lists of <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins" rel="nofollow">Wiki: Installed Plugins (WIP)</a></p>
+<br>
 
 <h3 align="center">
     🤔 FAQ
 </h3>
-
-Check [FAQ](https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ) for more FAQ. (WIP)
+<p align="center">Refer to <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ" rel="nofollow">Wiki: FAQ (WIP)</a></p>
+<br>
 
 <h3 align="center">
     ⏱️ Startup Time
