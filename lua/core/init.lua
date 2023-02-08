@@ -20,7 +20,6 @@ local createdir = function()
 	end
 end
 
--- Disable few unused builtin plugins
 local disable_distribution_plugins = function()
 	-- disable menu loading
 	vim.g.did_install_default_menus = 1
