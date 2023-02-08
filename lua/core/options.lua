@@ -111,9 +111,6 @@ local function load_options()
 		vim.o[name] = value
 	end
 
-	-- Add this line will make "-" part of the word
-	vim.opt.iskeyword:append("-")
-
 	local function isempty(s)
 		return s == nil or s == ""
 	end
@@ -139,6 +136,12 @@ local function load_options()
 
 	-- custom ruby provider
 	vim.g.ruby_host_prog = global.home .. "/tools/ruby/bin/neovim-ruby-host"
+
+	-- Fix sqlite3 missing-lib issue on Windows
+	if global.is_windows then
+		-- Download the DLLs form https://www.sqlite.org/download.html
+		vim.g.sqlite_clib_path = global.home .. "/Documents/sqlite-dll-win64-x64-3400100/sqlite3.dll"
+	end
 end
 
 load_options()
