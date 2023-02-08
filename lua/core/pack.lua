@@ -10,48 +10,46 @@ local settings = require("core.settings")
 local use_ssh = settings.use_ssh
 
 local icons = {
-	kind = require("modules.ui.icons").get("kind"),
-	documents = require("modules.ui.icons").get("documents"),
-	ui = require("modules.ui.icons").get("ui"),
-	ui_sep = require("modules.ui.icons").get("ui", true),
-	misc = require("modules.ui.icons").get("misc"),
+	kind = require("modules.utils.icons").get("kind"),
+	documents = require("modules.utils.icons").get("documents"),
+	ui = require("modules.utils.icons").get("ui"),
+	ui_sep = require("modules.utils.icons").get("ui", true),
+	misc = require("modules.utils.icons").get("misc"),
 }
 
 local Lazy = {}
-Lazy.__index = Lazy
 
 function Lazy:load_plugins()
-	self.repos = {}
+	self.modules = {}
+
+	local append_nativertp = function()
+		package.path = package.path
+			.. string.format(";%s;%s", modules_dir .. "/configs/?.lua", modules_dir .. "/configs/?/init.lua")
+	end
 
 	local get_plugins_list = function()
 		local list = {}
-		local tmp = vim.split(fn.globpath(modules_dir, "*/plugins.lua"), "\n")
-		local subtmp = vim.split(fn.globpath(modules_dir, "*/user/plugins.lua"), "\n")
-		if type(subtmp) == "table" then
-			for _, v in ipairs(subtmp) do
-				if v ~= "" then
-					table.insert(tmp, v)
-				end
-			end
-		end
-		if type(tmp) == "table" then
-			for _, f in ipairs(tmp) do
-				-- fill list with `plugins.lua`'s path used for later `require` like this:
-				-- list[#list + 1] = "modules/completion/plugins.lua"
+		local plugins_list = vim.split(fn.glob(modules_dir .. "/plugins/*.lua"), "\n")
+		if type(plugins_list) == "table" then
+			for _, f in ipairs(plugins_list) do
+				-- fill list with `plugins/*.lua`'s path used for later `require` like this:
+				-- list[#list + 1] = "plugins/completion.lua"
 				list[#list + 1] = f:sub(#modules_dir - 6, -1)
 			end
 		end
 		return list
 	end
 
+	append_nativertp()
+
 	local plugins_file = get_plugins_list()
 	for _, m in ipairs(plugins_file) do
-		-- require repos which returned in `plugins.lua` like this:
-		-- local repos = require("modules/completion/plugins")
-		local repos = require(m:sub(0, #m - 4))
-		if type(repos) == "table" then
-			for repo, conf in pairs(repos) do
-				self.repos[#self.repos + 1] = vim.tbl_extend("force", { repo }, conf)
+		-- require modules which returned in previous operation like this:
+		-- local modules = require("modules/plugins/completion.lua")
+		local modules = require(m:sub(0, #m - 4))
+		if type(modules) == "table" then
+			for name, conf in pairs(modules) do
+				self.modules[#self.modules + 1] = vim.tbl_extend("force", { name }, conf)
 			end
 		end
 	end
@@ -101,7 +99,7 @@ function Lazy:load_lazy()
 					icons.ui_sep.BigCircle,
 					icons.ui_sep.BigUnfilledCircle,
 					icons.ui_sep.Square,
-					icons.ui_sep.ArrowClosed,
+					icons.ui_sep.ChevronRight,
 				},
 			},
 		},
@@ -118,7 +116,7 @@ function Lazy:load_lazy()
 			rtp = {
 				reset = true, -- reset the runtime path to $VIMRUNTIME and the config directory
 				---@type string[]
-				paths = {}, -- add any custom paths here that you want to indluce in the rtp
+				paths = {}, -- add any custom paths here that you want to include in the rtp
 			},
 		},
 	}
@@ -127,7 +125,7 @@ function Lazy:load_lazy()
 	end
 
 	vim.opt.rtp:prepend(lazy_path)
-	require("lazy").setup(self.repos, lazy_settings)
+	require("lazy").setup(self.modules, lazy_settings)
 end
 
 Lazy:load_lazy()
