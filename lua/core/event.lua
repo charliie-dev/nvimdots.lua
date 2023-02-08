@@ -79,8 +79,6 @@ function autocmd.load_autocmds()
 			{ "FocusGained", "* checktime" },
 			-- Equalize window dimensions when resizing vim window
 			{ "VimResized", "*", [[tabdo wincmd =]] },
-			-- Silent quit, also quicker, might cause issues
-			-- { "VimLeavePre", "*", "silent wall" },
 		},
 		ft = {
 			{ "FileType", "alpha", "set showtabline=0" },
@@ -102,7 +100,7 @@ function autocmd.load_autocmds()
 			{
 				"TextYankPost",
 				"*",
-				[[silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=1500})]],
+				[[silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=300})]],
 			},
 		},
 	}
