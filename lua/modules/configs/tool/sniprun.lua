@@ -29,11 +29,15 @@ return function()
 			"LongTempFloatingWindow", -- "same as above, but only long results. To use with VirtualText__
 			-- "Terminal", -- "display results in a vertical split
 		},
+		display_options = {
+			terminal_width = 45,
+			notification_timeout = 5000,
+		},
 		-- " miscellaneous compatibility/adjustement settings
 		inline_messages = 0, -- " inline_message (0/1) is a one-line way to display messages
 		-- " to workaround sniprun not being able to display anything
 
-		borders = "shadow", -- " display borders around floating windows
+		borders = "single", -- " display borders around floating windows
 		-- " possible values are 'none', 'single', 'double', or 'shadow'
 	})
 end
