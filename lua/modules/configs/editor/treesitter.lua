@@ -35,7 +35,7 @@ return function()
 			"help",
 		},
 		sync_install = true,
-		ignore_install = {},
+		ignore_install = { "comment" },
 		incremental_selection = {
 			enable = false,
 		},
@@ -55,7 +55,7 @@ return function()
 				local ok, is_large_file = pcall(vim.api.nvim_buf_get_var, bufnr, "bigfile_disable_treesitter")
 				return ok and is_large_file
 			end,
-			additional_vim_regex_highlighting = true,
+			additional_vim_regex_highlighting = { "c", "cpp" },
 		},
 		indent = {
 			enable = false,

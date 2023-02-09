@@ -1,6 +1,8 @@
 return function()
+	local colors = require("modules.utils").get_palette()
+
 	require("hlargs").setup({
-		color = "#ef9062",
+		color = colors.peach,
 		highlight = {},
 		excluded_filetypes = {},
 		-- disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
