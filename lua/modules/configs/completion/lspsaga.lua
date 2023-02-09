@@ -64,7 +64,8 @@ return function()
 			virtual_text = false,
 		},
 		diagnostic = {
-			show_code_action = false,
+			show_code_action = true,
+			border_follow = true,
 			show_source = true,
 			jump_num_shortcut = true,
 			keys = {
@@ -78,13 +79,12 @@ return function()
 			mark = "x",
 			confirm = "<CR>",
 			exec = "<CR>",
-			in_select = false,
+			in_select = true,
 		},
 		outline = {
 			win_position = "right",
 			win_with = "_sagaoutline",
 			win_width = 30,
-			show_detail = true,
 			auto_preview = false,
 			auto_refresh = true,
 			auto_close = true,
@@ -95,7 +95,6 @@ return function()
 			},
 		},
 		symbol_in_winbar = {
-			in_custom = true,
 			enable = false,
 			separator = " " .. icons.ui.SeparatorDouble,
 			hide_keyword = true,

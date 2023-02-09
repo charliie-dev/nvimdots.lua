@@ -56,7 +56,7 @@ return function()
 		on_attach = function()
 			require("lsp_signature").on_attach({
 				bind = true,
-				use_lspsaga = true,
+				use_lspsaga = false,
 				floating_window = true,
 				fix_pos = true,
 				hint_enable = true,
