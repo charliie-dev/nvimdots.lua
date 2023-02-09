@@ -35,7 +35,7 @@
 </p>
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/32497323/217202324-9fda3025-cee8-4b22-991e-83ffc260e4ad.png"
+  <img src="https://user-images.githubusercontent.com/32497323/217737320-786f9135-f71f-4cec-8322-f6da719c97fd.png"
   width = "90%"
   />
 </p>
@@ -48,7 +48,7 @@
 
 ## 🎐 Intro
 
-- **⚡BLAZINGLY FAST** startup time in ~40ms, with over 100 plugins. (Tested on Micron Crucial MX500)
+- **⚡BLAZINGLY FAST** startup time in ~20ms, with over 100 plugins. (Tested on Micron Crucial MX500)
 - Well structured in `Lua`.
 - Easy to customize.
 - Automized [installation scripts](https://github.com/CharlesChiuGit/nvimdots.lua/blob/main/scripts/setup_config.sh), written in `bash`.
