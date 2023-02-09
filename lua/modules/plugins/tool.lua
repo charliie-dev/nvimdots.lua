@@ -50,20 +50,6 @@ tool["stevearc/oil.nvim"] = {
 	cmd = "Oil",
 	config = require("tool.oil"),
 }
-tool["bennypowers/nvim-regexplainer"] = {
-	lazy = true,
-	cmd = {
-		"RegexplainerShowSplit",
-		"RegexplainerShowPopup",
-		"RegexplainerHide",
-		"RegexplainerToggle",
-	},
-	config = require("tool.regexplainer"),
-	dependencies = {
-		"nvim-treesitter/nvim-treesitter",
-		"MunifTanjim/nui.nvim",
-	},
-}
 tool["ibhagwan/smartyank.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",

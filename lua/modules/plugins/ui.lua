@@ -23,28 +23,24 @@ ui["j-hui/fidget.nvim"] = {
 	event = "BufReadPost",
 	config = require("ui.fidget"),
 }
-ui["f-person/git-blame.nvim"] = {
-	lazy = true,
-	event = "BufReadPost",
-	config = require("ui.git-blame"),
-}
+-- ui["f-person/git-blame.nvim"] = {
+-- 	lazy = true,
+-- 	event = "BufReadPost",
+-- 	config = require("ui.git-blame"),
+-- }
 ui["lewis6991/gitsigns.nvim"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufNewFile" },
 	config = require("ui.gitsigns"),
 }
 -- ui["sainnhe/gruvbox-material"] = {
--- lazy = true,
--- 	config =
--- 		require("ui.gruvbox-material")
--- 	,
+-- 	lazy = true,
+-- 	config = require("ui.gruvbox-material"),
 -- }
--- ui["ellisonleao/gruvbox.nvim"] = {
--- lazy = true,
--- 	config =
--- 		require("ui.gruvbox")
--- 	,
--- }
+ui["ellisonleao/gruvbox.nvim"] = {
+	lazy = true,
+	config = require("ui.gruvbox"),
+}
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
@@ -52,9 +48,7 @@ ui["lukas-reineke/indent-blankline.nvim"] = {
 }
 -- ui["rebelot/kanagawa.nvim"] = {
 -- 	lazy = false,
--- 	config =
--- 		require("ui.kanagawa")
--- 	,
+-- 	config = require("ui.kanagawa"),
 -- }
 ui["hoob3rt/lualine.nvim"] = {
 	lazy = true,
@@ -85,16 +79,17 @@ ui["petertriho/nvim-scrollbar"] = {
 	event = "BufReadPost",
 	config = require("ui.scrollbar"),
 }
--- ui["folke/styler.nvim"] = {
--- 	lazy = true,
--- 	event = "BufReadPost",
--- 	cmd = "Styler",
--- 	config = require("ui.styler"),
--- }
+ui["folke/styler.nvim"] = {
+	lazy = true,
+	event = "BufReadPost",
+	cmd = "Styler",
+	config = require("ui.styler"),
+}
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
 	config = require("ui.todo-comments"),
+	dependencies = "nvim-lua/plenary.nvim",
 }
 ui["itchyny/vim-highlighturl"] = {
 	lazy = true,

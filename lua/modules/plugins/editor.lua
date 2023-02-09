@@ -45,11 +45,6 @@ editor["junegunn/vim-easy-align"] = {
 	lazy = true,
 	cmd = "EasyAlign",
 }
-editor["RRethy/vim-illuminate"] = {
-	lazy = true,
-	event = "BufReadPost",
-	config = require("editor.illuminate"),
-}
 editor["ggandor/leap.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
@@ -81,6 +76,11 @@ editor["kylechui/nvim-surround"] = {
 editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
+}
+editor["RRethy/vim-illuminate"] = {
+	lazy = true,
+	event = "BufReadPost",
+	config = require("editor.vim-illuminate"),
 }
 
 ----------------------------------------------------------------------
