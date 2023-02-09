@@ -8,12 +8,11 @@ return function()
 		ensure_installed = {
 			"bash",
 			"c",
-			-- "comment", -- comments are slowing down TS bigtime, so disable for now
-			"cpp",
 			"css",
 			"gitignore",
 			"go",
 			"gomod",
+			"help",
 			"html",
 			"javascript",
 			"json",
@@ -25,17 +24,16 @@ return function()
 			"norg",
 			"org",
 			"python",
-			"rust",
 			"regex",
+			"rust",
 			"toml",
 			"tsx",
 			"typescript",
 			"vim",
 			"yaml",
-			"help",
 		},
 		sync_install = true,
-		ignore_install = { "comment" },
+		ignore_install = { "comment" }, -- comments are slowing down TS bigtime, so disable for now
 		incremental_selection = {
 			enable = false,
 		},
