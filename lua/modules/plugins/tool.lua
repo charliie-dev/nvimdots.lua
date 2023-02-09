@@ -81,7 +81,7 @@ tool["samjwill/nvim-unception"] = {
 	event = "UIEnter",
 	config = require("tool.unception"),
 }
--- Please don't remove which-key.nvim otherwise you need to set timeoutlen=300 at `lua/core/options.lua`
+-- NOTE: Please don't remove which-key.nvim otherwise you need to set timeoutlen=300 at `lua/core/options.lua`
 tool["folke/which-key.nvim"] = {
 	event = "VeryLazy",
 	config = require("tool.which-key"),
