@@ -36,7 +36,7 @@
   "leap.nvim": { "branch": "main", "commit": "f565a9c4d92245d8b619235bebeaa73cc38aa40e" },
   "lsp_signature.nvim": { "branch": "master", "commit": "6f6252f63b0baf0f2224c4caea33819a27f3f550" },
   "lspkind.nvim": { "branch": "master", "commit": "c68b3a003483cf382428a43035079f78474cd11e" },
-  "lspsaga.nvim": { "branch": "main", "commit": "ab167ab14fab88c7b26dfef281c322349dac4842" },
+  "lspsaga.nvim": { "branch": "main", "commit": "1d56a915d42a79242ef1237dba63836fcf3c7307" },
   "ltex_extra.nvim": { "branch": "master", "commit": "1d2f288ceedc70d5a9c00f55c0d0cc788b5164f2" },
   "lualine.nvim": { "branch": "master", "commit": "0050b308552e45f7128f399886c86afefc3eb988" },
   "markdown-preview.nvim": { "branch": "master", "commit": "02cc3874738bc0f86e4b91f09b8a0ac88aef8e96" },
