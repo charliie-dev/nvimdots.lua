@@ -1,4 +1,5 @@
 return function()
+	local colors = require("modules.utils").get_palette()
 	local icons = {
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
 		misc = require("modules.utils.icons").get("misc", true),
@@ -49,9 +50,12 @@ return function()
 
 	local function get_cwd()
 		local cwd = vim.fn.getcwd()
-		local home = os.getenv("HOME")
-		if cwd:find(home, 1, true) == 1 then
-			cwd = "~" .. cwd:sub(#home + 1)
+		local is_windows = require("core.global").is_windows
+		if not is_windows then
+			local home = require("core.global").home
+			if cwd:find(home, 1, true) == 1 then
+				cwd = "~" .. cwd:sub(#home + 1)
+			end
 		end
 		return icons.ui.RootFolderOpened .. cwd
 	end
@@ -142,9 +146,9 @@ return function()
 					"diagnostics",
 					sources = { "nvim_diagnostic" },
 					symbols = {
-						error = icons.diagnostics.Error .. " ",
-						warn = icons.diagnostics.Warning .. " ",
-						info = icons.diagnostics.Information .. " ",
+						error = icons.diagnostics.Error,
+						warn = icons.diagnostics.Warning,
+						info = icons.diagnostics.Information,
 					},
 				},
 			},
@@ -186,7 +190,7 @@ return function()
 	})
 
 	-- Properly set background color for lspsaga
-	local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, "#000000")
+	local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, colors.mantle)
 	for _, hlGroup in pairs(require("lspsaga.lspkind").get_kind()) do
 		require("modules.utils").extend_hl("LspSagaWinbar" .. hlGroup[1], { bg = winbar_bg })
 	end

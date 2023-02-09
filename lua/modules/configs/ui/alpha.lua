@@ -45,11 +45,11 @@ return function()
 	dashboard.section.buttons.val = {
 		dashboard.button("f", icons.documents.Files .. " Find file", "<cmd>Telescope find_files<cr>"),
 		dashboard.button("e", icons.ui.NewFile .. " New file", "<cmd>enew<cr>"),
-		dashboard.button("p", icons.git.Repo .. " Find project", "<cmd>Telescope project<cr>"),
+		dashboard.button("p", icons.git.Repo .. " Find project", "<cmd>Telescope projects<cr>"),
 		dashboard.button("y", icons.ui.Sort .. " File frecency", "<cmd>Telescope frecency<cr>"),
 		dashboard.button("r", icons.ui.History .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
 		dashboard.button("t", icons.ui.List .. " Find text", "<cmd>Telescope live_grep<cr>"),
-		dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>PackerSync<cr>"),
+		dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>Lazy sync<cr>"),
 		dashboard.button("q", icons.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
 	}
 	dashboard.section.buttons.opts.hl = "String"

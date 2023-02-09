@@ -9,7 +9,7 @@ return function()
 			text = " ",
 			color = nil,
 			cterm = nil,
-			highlight = "CursorColumn",
+			highlight = "ColorColumn",
 			hide_if_all_visible = true, -- Hides handle if all lines are visible
 		},
 		marks = {
