@@ -31,6 +31,7 @@ local plug_map = {
 	-- Plugin: vim-fugitive
 	["n|gps"] = map_cr("G push"):with_noremap():with_silent():with_desc("git: Push"),
 	["n|gpl"] = map_cr("G pull"):with_noremap():with_silent():with_desc("git: Pull"),
+	["n|<leader>G"] = map_cu("Git"):with_noremap():with_silent():with_desc("git: Open git-fugitive"),
 
 	-- Plugin: nvim-tree
 	["n|<C-n>"] = map_cr("NvimTreeToggle"):with_noremap():with_silent():with_desc("filetree: Toggle"),
@@ -149,18 +150,17 @@ local plug_map = {
 		:with_desc("terminal: Toggle float"),
 	["t|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
 	["n|<leader>lg"] = map_callback(function()
-			_LAZYGIT_TOGGLE()
+			_Lazygit_toggle()
 		end)
 		:with_noremap()
 		:with_silent()
 		:with_desc("git: Toggle lazygit"),
 	["t|<leader>lg"] = map_callback(function()
-			_LAZYGIT_TOGGLE()
+			_Lazygit_toggle()
 		end)
 		:with_noremap()
 		:with_silent()
 		:with_desc("git: Toggle lazygit"),
-	["n|<leader>G"] = map_cu("Git"):with_noremap():with_silent():with_desc("git: Open git-fugitive"),
 
 	-- Plugin: trouble
 	["n|<leader>tt"] = map_cr("TroubleToggle"):with_noremap():with_silent():with_desc("lsp: Toggle trouble list"),
@@ -183,13 +183,18 @@ local plug_map = {
 	["n|<leader>tl"] = map_cr("TroubleToggle loclist"):with_noremap():with_silent():with_desc("lsp: Show loclist"),
 
 	-- Plugin: telescope
-	["n|<C-p>"] = map_callback(_Xommand_panel):with_silent():with_noremap():with_desc("tool: Toggle command panel"),
+	["n|<C-p>"] = map_callback(function()
+			_Command_panel()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tool: Toggle command panel"),
 	["n|<leader>u"] = map_callback(function()
 			require("telescope").extensions.undo.undo()
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("editn: Show undo history"),
+		:with_desc("edit: Show undo history"),
 	["n|<leader>fp"] = map_callback(function()
 			require("telescope").extensions.projects.projects({})
 		end)
