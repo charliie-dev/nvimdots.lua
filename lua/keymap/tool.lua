@@ -1,0 +1,289 @@
+local bind = require("keymap.bind")
+local map_cr = bind.map_cr
+local map_cu = bind.map_cu
+local map_cmd = bind.map_cmd
+local map_callback = bind.map_callback
+local et = bind.escape_termcode
+
+local plug_map = {
+	-- Plugin: dial
+	["n|<leader>="] = map_callback(function()
+			return et("<Plug>(dial-increment)")
+		end)
+		:with_noremap()
+		:with_expr(),
+	["v|<leader>="] = map_callback(function()
+			return et("<Plug>(dial-increment)")
+		end)
+		:with_noremap()
+		:with_expr(),
+	["n|<leader>-"] = map_callback(function()
+			return et("<Plug>(dial-decrement)")
+		end)
+		:with_noremap()
+		:with_expr(),
+	["v|<leader>-"] = map_callback(function()
+			return et("<Plug>(dial-decrement)")
+		end)
+		:with_noremap()
+		:with_expr(),
+
+	-- Plugin: vim-fugitive
+	["n|gps"] = map_cr("G push"):with_noremap():with_silent():with_desc("git: Push"),
+	["n|gpl"] = map_cr("G pull"):with_noremap():with_silent():with_desc("git: Pull"),
+
+	-- Plugin: nvim-tree
+	["n|<C-n>"] = map_cr("NvimTreeToggle"):with_noremap():with_silent():with_desc("filetree: Toggle"),
+	["n|<leader>nf"] = map_cr("NvimTreeFindFile"):with_noremap():with_silent():with_desc("filetree: Find file"),
+	["n|<leader>nr"] = map_cr("NvimTreeRefresh"):with_noremap():with_silent():with_desc("filetree: Refresh"),
+
+	--- Plugin: oil
+	["n|<leader>o"] = map_callback(function()
+			require("oil").open_float()
+		end)
+		:with_noremap()
+		:with_desc("filetree: Open Oil"),
+
+	-- Plugin: sniprun
+	["n|<leader>R"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
+	["v|<leader>R"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
+
+	-- Plugin: tmux
+	-- Move from Nvim windows to tmux panes
+	["n|<C-j>"] = map_callback(function()
+			require("tmux").move_bottom()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Move to tmux/nvim bottom window"),
+	["n|<C-k>"] = map_callback(function()
+			require("tmux").move_top()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Move to tmux/nvim top window"),
+	["n|<C-h>"] = map_callback(function()
+			require("tmux").move_left()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Move to tmux/nvim left window"),
+	["n|<C-l>"] = map_callback(function()
+			require("tmux").move_right()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Move tmux/nvim right window"),
+	-- Neovim windos/Tmux panes resize
+	["n|<M-j>"] = map_callback(function()
+			require("tmux").resize_bottom()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Resize tmux/nvim pane downward"),
+	["n|<M-k>"] = map_callback(function()
+			require("tmux").move_top()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Resize to tmux/nvim pane upward"),
+	["n|<M-h>"] = map_callback(function()
+			require("tmux").move_left()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Resize to tmux/nvim pane leftward"),
+	["n|<M-l>"] = map_callback(function()
+			require("tmux").move_right()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("tmux: Resize tmux/nvim pane rightward"),
+
+	-- Plugin: toggleterm
+	["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_silent(), -- switch to normal mode in terminal.
+	["t|jk"] = map_cmd([[<C-\><C-n>]]):with_silent(), -- switch to normal mode in terminal.
+	["n|<C-\\>"] = map_cr([[execute v:count . "ToggleTerm direction=horizontal"]])
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle horizontal"),
+	["i|<C-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=horizontal<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle horizontal"),
+	["t|<C-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle horizontal"),
+	["n|<A-\\>"] = map_cr([[execute v:count . "ToggleTerm direction=vertical"]])
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle vertical"),
+	["i|<A-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle vertical"),
+	["t|<A-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle vertical"),
+	["n|<F5>"] = map_cr([[execute v:count . "ToggleTerm direction=vertical"]])
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle vertical"),
+	["i|<F5>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle vertical"),
+	["t|<F5>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle vertical"),
+	["n|<A-d>"] = map_cr([[execute v:count . "ToggleTerm direction=float"]])
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle float"),
+	["i|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=float<CR>")
+		:with_noremap()
+		:with_silent()
+		:with_desc("terminal: Toggle float"),
+	["t|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
+	["n|<leader>lg"] = map_callback(function()
+			_LAZYGIT_TOGGLE()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("git: Toggle lazygit"),
+	["t|<leader>lg"] = map_callback(function()
+			_LAZYGIT_TOGGLE()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("git: Toggle lazygit"),
+	["n|<leader>G"] = map_cu("Git"):with_noremap():with_silent():with_desc("git: Open git-fugitive"),
+
+	-- Plugin: trouble
+	["n|<leader>tt"] = map_cr("TroubleToggle"):with_noremap():with_silent():with_desc("lsp: Toggle trouble list"),
+	["n|<leader>tr"] = map_cr("TroubleToggle lsp_references")
+		:with_noremap()
+		:with_silent()
+		:with_desc("lsp: Show lsp references"),
+	["n|<leader>td"] = map_cr("TroubleToggle document_diagnostics")
+		:with_noremap()
+		:with_silent()
+		:with_desc("lsp: Show document diagnostics"),
+	["n|<leader>tw"] = map_cr("TroubleToggle workspace_diagnostics")
+		:with_noremap()
+		:with_silent()
+		:with_desc("lsp: Show workspace diagnostics"),
+	["n|<leader>tq"] = map_cr("TroubleToggle quickfix")
+		:with_noremap()
+		:with_silent()
+		:with_desc("lsp: Show quickfix list"),
+	["n|<leader>tl"] = map_cr("TroubleToggle loclist"):with_noremap():with_silent():with_desc("lsp: Show loclist"),
+
+	-- Plugin: telescope
+	["n|<C-p>"] = map_callback(_Xommand_panel):with_silent():with_noremap():with_desc("tool: Toggle command panel"),
+	["n|<leader>u"] = map_callback(function()
+			require("telescope").extensions.undo.undo()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("editn: Show undo history"),
+	["n|<leader>fp"] = map_callback(function()
+			require("telescope").extensions.projects.projects({})
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: Project"),
+	["n|<leader>fr"] = map_callback(function()
+			require("telescope").extensions.frecency.frecency()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: File by frecency"),
+	["n|<leader>fw"] = map_callback(function()
+			require("telescope").extensions.live_grep_args.live_grep_args()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: Word in project"),
+	["n|<leader>fe"] = map_cu("Telescope oldfiles"):with_noremap():with_silent():with_desc("find: File by history"),
+	["n|<leader>ff"] = map_cu("Telescope find_files"):with_noremap():with_silent():with_desc("find: File in project"),
+	["n|<leader>fc"] = map_cu("Telescope colorscheme")
+		:with_noremap()
+		:with_silent()
+		:with_desc("ui: Change colorscheme for current session"),
+	["n|<leader>fn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"), -- TODO:
+	["n|<leader>fg"] = map_cu("Telescope git_files")
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: file in git project"),
+	["n|<leader>fb"] = map_cu("Telescope buffers"):with_noremap():with_silent():with_desc("find: Buffer opened"),
+	["n|<leader>fs"] = map_cu("Telescope grep_string"):with_noremap():with_silent():with_desc("find: Current word"),
+
+	-- Plugin: dap
+	["n|<F6>"] = map_callback(function()
+			require("dap").continue()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Run/Continue"),
+	["n|<F7>"] = map_callback(function()
+			require("dap").terminate()
+			require("dapui").close()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Stop"),
+	["n|<F8>"] = map_callback(function()
+			require("dap").toggle_breakpoint()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Toggle breakpoint"),
+	["n|<F9>"] = map_callback(function()
+			require("dap").step_into()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Step into"),
+	["n|<F10>"] = map_callback(function()
+			require("dap").step_out()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Step out"),
+	["n|<F11>"] = map_callback(function()
+			require("dap").step_over()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Step over"),
+	["n|<leader>db"] = map_callback(function()
+			require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Set breakpoint with condition"),
+	["n|<leader>dc"] = map_callback(function()
+			require("dap").run_to_cursor()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Run to cursor"),
+	["n|<leader>dl"] = map_callback(function()
+			require("dap").run_last()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Run last"),
+	["n|<leader>do"] = map_callback(function()
+			require("dap").repl.open()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("debug: Open REPL"),
+}
+
+bind.nvim_load_mapping(plug_map)

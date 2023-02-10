@@ -33,9 +33,9 @@ return function()
 		---NOTE: If given `false` then the plugin won't create any mappings
 		mappings = {
 			---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
-			basic = false,
+			basic = true,
 			---Extra mapping; `gco`, `gcO`, `gcA`
-			extra = false,
+			extra = true,
 		},
 		---Function to call before (un)comment
 		pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
