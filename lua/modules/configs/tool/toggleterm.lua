@@ -43,8 +43,10 @@ return function()
 
 	local toggleterm_cache = {
 		lazygit = nil,
+		lf = nil,
 		htop = nil,
 		python = nil,
+		nvsmi = nil,
 	}
 
 	function _Lazygit_toggle()
@@ -56,6 +58,19 @@ return function()
 				toggleterm_cache.lazygit:toggle()
 			else
 				not_found_notify("Lazygit")
+			end
+		end
+	end
+
+	function _Lf_toggle()
+		if toggleterm_cache.lf then
+			toggleterm_cache.lf:toggle()
+		else
+			if vim.fn.executable("lf") then
+				toggleterm_cache.lf = Terminal:new({ cmd = "lf", hidden = true, direction = "float" })
+				toggleterm_cache.lf:toggle()
+			else
+				not_found_notify("Lf")
 			end
 		end
 	end
@@ -85,6 +100,20 @@ return function()
 				toggleterm_cache.python:toggle()
 			else
 				not_found_notify("Python")
+			end
+		end
+	end
+
+	function _Nvsmi_toggle()
+		if toggleterm_cache.nvsmi then
+			toggleterm_cache.nvsmi:toggle()
+		else
+			if vim.fn.executable("nvidia-smi") then
+				toggleterm_cache.nvsmi =
+					Terminal:new({ cmd = "watch -n 1 nvidia-smi", hidden = true, direction = "float" })
+				toggleterm_cache.nvsmi:toggle()
+			else
+				not_found_notify("nvidia-smi")
 			end
 		end
 	end
