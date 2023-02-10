@@ -1,4 +1,5 @@
 return function()
+	-- repo readme
 	-- The three "core" operations of add/delete/change can be done
 	-- with the keymaps ys{motion}{char}, ds{char}, and cs{target}{replacement},
 	-- respectively. For the following examples, * will denote the cursor position:
@@ -12,32 +13,31 @@ return function()
 	-- 'change quot*es'            cs'"            "change quotes"
 	-- <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
 	-- delete(functi*on calls)     dsf             function calls
+	-- NOTE: this config doesn't use the default keymaps
 
-	-- HACK: play nice with leap.nvim
-	-- HACK: https://github.com/ggandor/leap.nvim/discussions/59#discussioncomment-3943323
 	require("nvim-surround").setup({
 		move_cursor = "begin", -- set to fasle to disable this
 		keymaps = {
-			insert = "<C-g>z",
-			insert_line = "<C-g>Z",
-			normal = "gz",
-			normal_cur = "gZ",
-			normal_line = "gzz",
-			normal_cur_line = "gZZ",
-			visual = "gz",
-			visual_line = "gZ",
-			delete = "gzd",
-			change = "gzc",
+			insert = nil,
+			insert_line = nil,
+			normal = nil,
+			normal_cur = nil,
+			normal_line = nil,
+			normal_cur_line = nil,
+			visual = nil,
+			visual_line = nil,
+			delete = nil,
+			change = nil,
+		},
+		aliases = {
+			["a"] = ">",
+			["b"] = ")",
+			["B"] = "}",
+			["r"] = "]",
+			["q"] = { '"', "'", "`" },
+			["s"] = { "}", "]", ")", ">", '"', "'", "`" },
+			-- ["t"] = html tag
+			-- ["f"] = function calls
 		},
 	})
-
-	-- aliases = {
-	--     ["a"] = ">",
-	--     ["b"] = ")",
-	--     ["B"] = "}",
-	--     ["r"] = "]",
-	--     ["q"] = { '"', "'", "`" },
-	--     ["s"] = { "}", "]", ")", ">", '"', "'", "`" },
-
-	-- "S" in visual mode: add surround to visual select
 end

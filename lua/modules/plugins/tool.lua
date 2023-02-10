@@ -78,7 +78,7 @@ tool["folke/trouble.nvim"] = {
 }
 tool["samjwill/nvim-unception"] = {
 	lazy = true,
-	event = "UIEnter",
+	event = "VeryLazy",
 	config = require("tool.unception"),
 }
 -- NOTE: Please don't remove which-key.nvim otherwise you need to set timeoutlen=300 at `lua/core/options.lua`
@@ -99,6 +99,7 @@ tool["gelguy/wilder.nvim"] = {
 tool["nvim-telescope/telescope.nvim"] = {
 	lazy = true,
 	cmd = "Telescope",
+	event = "VeryLazy",
 	config = require("tool.telescope"),
 	dependencies = {
 		{ "nvim-tree/nvim-web-devicons" },

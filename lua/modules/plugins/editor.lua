@@ -48,10 +48,8 @@ editor["junegunn/vim-easy-align"] = {
 editor["ggandor/leap.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
-	config = function()
-		require("leap").opts.highlight_unlabeled_phase_one_targets = true
-		require("leap").add_default_mappings()
-	end,
+	config = require("editor.leap"),
+	dependencies = "ggandor/leap-ast.nvim",
 }
 editor["danymat/neogen"] = {
 	lazy = true,
@@ -94,25 +92,11 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	dependencies = {
 		{ "andymass/vim-matchup" },
 		{ "p00f/nvim-ts-rainbow" },
-		{ "mfussenegger/nvim-ts-hint-textobject" },
 		{ "JoosepAlviste/nvim-ts-context-commentstring" },
 		{ "nvim-treesitter/nvim-treesitter-textobjects" },
 		{
-			"chrisgrieser/nvim-various-textobjs",
-			config = function()
-				require("various-textobjs").setup({
-					lookForwardLines = 15, -- default: 5. Set to 0 to only look in the current line
-					useDefaultKeymaps = false,
-				})
-			end,
-		},
-		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.autotag"),
-		},
-		{
-			"m-demare/hlargs.nvim",
-			config = require("editor.hlargs"),
 		},
 		{
 			"Wansmer/treesj",
