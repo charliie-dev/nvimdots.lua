@@ -5,11 +5,7 @@ completion["neovim/nvim-lspconfig"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("completion.lsp"),
 	dependencies = {
-		{
-			"jose-elias-alvarez/null-ls.nvim",
-			dependencies = { "nvim-lua/plenary.nvim" },
-			config = require("completion.null-ls"),
-		},
+		{ "ray-x/lsp_signature.nvim" },
 		{ "williamboman/mason.nvim" },
 		{ "williamboman/mason-lspconfig.nvim" },
 		{
@@ -20,7 +16,11 @@ completion["neovim/nvim-lspconfig"] = {
 			"glepnir/lspsaga.nvim",
 			config = require("completion.lspsaga"),
 		},
-		{ "ray-x/lsp_signature.nvim" },
+		{
+			"jose-elias-alvarez/null-ls.nvim",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			config = require("completion.null-ls"),
+		},
 	},
 }
 completion["hrsh7th/nvim-cmp"] = {
