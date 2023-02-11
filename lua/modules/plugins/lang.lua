@@ -1,10 +1,5 @@
 local lang = {}
 
-lang["gaoDean/autolist.nvim"] = {
-	lazy = true,
-	ft = { "markdown", "org", "txt" },
-	config = require("lang.autolist"),
-}
 lang["lukas-reineke/headlines.nvim"] = {
 	lazy = true,
 	ft = { "markdown", "org" },
