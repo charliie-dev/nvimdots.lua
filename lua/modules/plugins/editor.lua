@@ -91,7 +91,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	config = require("editor.treesitter"),
 	dependencies = {
 		{ "andymass/vim-matchup" },
-		{ "p00f/nvim-ts-rainbow" },
+		{ "mrjones2014/nvim-ts-rainbow" },
 		{ "JoosepAlviste/nvim-ts-context-commentstring" },
 		{ "nvim-treesitter/nvim-treesitter-textobjects" },
 		{
