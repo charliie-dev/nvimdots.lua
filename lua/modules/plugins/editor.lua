@@ -7,7 +7,7 @@ editor["rainbowhxch/accelerated-jk.nvim"] = {
 }
 editor["max397574/better-escape.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.better-escape"),
 }
 editor["LunarVim/bigfile.nvim"] = {
@@ -47,7 +47,7 @@ editor["junegunn/vim-easy-align"] = {
 }
 editor["ggandor/leap.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("editor.leap"),
 	dependencies = "ggandor/leap-ast.nvim",
 }
@@ -77,7 +77,7 @@ editor["romainl/vim-cool"] = {
 }
 editor["RRethy/vim-illuminate"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.vim-illuminate"),
 }
 
@@ -87,7 +87,7 @@ editor["RRethy/vim-illuminate"] = {
 editor["nvim-treesitter/nvim-treesitter"] = {
 	lazy = true,
 	run = ":TSUpdate",
-	event = "BufReadPost",
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.treesitter"),
 	dependencies = {
 		{ "andymass/vim-matchup" },

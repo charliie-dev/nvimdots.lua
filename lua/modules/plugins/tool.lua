@@ -12,12 +12,12 @@ tool["sudormrfbin/cheatsheet.nvim"] = {
 }
 tool["ja-ford/delaytrain.nvim"] = {
 	lazy = true,
+	event = "InsertEnter",
 	config = require("tool.delaytrain"),
-	event = "BufReadPost",
 }
 tool["monaqa/dial.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("tool.dial"),
 	dependencies = "nvim-lua/plenary.nvim",
 }
@@ -52,7 +52,7 @@ tool["stevearc/oil.nvim"] = {
 }
 tool["ibhagwan/smartyank.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = "TextYankPost",
 	config = require("tool.smartyank"),
 }
 tool["michaelb/sniprun"] = {
@@ -63,12 +63,19 @@ tool["michaelb/sniprun"] = {
 }
 tool["aserowy/tmux.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("tool.tmux"),
 }
 tool["akinsho/toggleterm.nvim"] = {
 	lazy = true,
-	event = "UIEnter",
+	cmd = {
+		"ToggleTerm",
+		"ToggleTermSetName",
+		"ToggleTermToggleAll",
+		"ToggleTermSendVisualLines",
+		"ToggleTermSendCurrentLine",
+		"ToggleTermSendVisualSelection",
+	},
 	config = require("tool.toggleterm"),
 }
 tool["folke/trouble.nvim"] = {
