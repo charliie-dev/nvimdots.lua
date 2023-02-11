@@ -5,11 +5,6 @@ lang["lukas-reineke/headlines.nvim"] = {
 	ft = { "markdown", "org" },
 	config = require("lang.headlines"),
 }
-lang["antonk52/markdowny.nvim"] = {
-	lazy = true,
-	ft = { "markdown", "txt" },
-	config = require("lang.markdowny"),
-}
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
 	ft = "markdown",
