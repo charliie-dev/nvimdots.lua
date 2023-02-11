@@ -35,6 +35,7 @@ return function()
 		shell = vim.o.shell, -- change the default shell
 	})
 
+	---@param program string
 	local function not_found_notify(program)
 		vim.notify(string.format("[%s] not found!", program), vim.log.levels.ERROR, { title = "toggleterm.nvim" })
 	end
@@ -42,27 +43,13 @@ return function()
 	local Terminal = require("toggleterm.terminal").Terminal
 
 	local toggleterm_cache = {
-		lazygit = nil,
 		lf = nil,
 		htop = nil,
 		python = nil,
 		nvsmi = nil,
 	}
 
-	function _Lazygit_toggle()
-		if toggleterm_cache.lazygit then
-			toggleterm_cache.lazygit:toggle()
-		else
-			if vim.fn.executable("lazygit") then
-				toggleterm_cache.lazygit = Terminal:new({ cmd = "lazygit", hidden = true, direction = "float" })
-				toggleterm_cache.lazygit:toggle()
-			else
-				not_found_notify("Lazygit")
-			end
-		end
-	end
-
-	function _Lf_toggle()
+	function _G.toggle_lf()
 		if toggleterm_cache.lf then
 			toggleterm_cache.lf:toggle()
 		else
@@ -75,7 +62,7 @@ return function()
 		end
 	end
 
-	function _Htop_toggle()
+	function _G.toggle_htop()
 		if toggleterm_cache.htop then
 			toggleterm_cache.htop:toggle()
 		else
@@ -88,7 +75,7 @@ return function()
 		end
 	end
 
-	function _Python_toggle()
+	function _G.toggle_py()
 		if toggleterm_cache.python then
 			toggleterm_cache.python:toggle()
 		else
