@@ -4,6 +4,7 @@ local map_cu = bind.map_cu
 local map_cmd = bind.map_cmd
 local map_callback = bind.map_callback
 local et = bind.escape_termcode
+require("keymap.helpers")
 
 local plug_map = {
 	-- Plugin: dial
@@ -150,13 +151,13 @@ local plug_map = {
 		:with_desc("terminal: Toggle float"),
 	["t|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
 	["n|<leader>lg"] = map_callback(function()
-			_Lazygit_toggle()
+			_toggle_lazygit()
 		end)
 		:with_noremap()
 		:with_silent()
 		:with_desc("git: Toggle lazygit"),
 	["t|<leader>lg"] = map_callback(function()
-			_Lazygit_toggle()
+			_toggle_lazygit()
 		end)
 		:with_noremap()
 		:with_silent()
@@ -184,7 +185,7 @@ local plug_map = {
 
 	-- Plugin: telescope
 	["n|<C-p>"] = map_callback(function()
-			_Command_panel()
+			_command_panel()
 		end)
 		:with_noremap()
 		:with_silent()
