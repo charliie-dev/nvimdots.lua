@@ -40,7 +40,7 @@ return function()
 			"ltex",
 			"marksman",
 			"pyright",
-			"sumneko_lua",
+			"lua_ls",
 			"taplo",
 			"texlab",
 			"vimls",
@@ -145,11 +145,11 @@ return function()
 			nvim_lsp.pyright.setup(final_opts)
 		end,
 
-		sumneko_lua = function()
+		lua_ls = function()
 			-- require("lua-dev").setup()
-			local _opts = require("completion.servers.sumneko_lua")
+			local _opts = require("completion.servers.lua_ls")
 			local final_opts = vim.tbl_deep_extend("keep", _opts, opts)
-			nvim_lsp.sumneko_lua.setup(final_opts)
+			nvim_lsp.lua_ls.setup(final_opts)
 		end,
 
 		taplo = function()
