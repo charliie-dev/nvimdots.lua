@@ -31,6 +31,7 @@ return {
 				maxPreload = 2000,
 				preloadFileSize = 1000,
 			},
+			format = { enable = false },
 			telemetry = { enable = false },
 			-- Do not override treesitter lua highlighting with lua_ls's highlighting
 			semantic = { enable = false },
