@@ -31,21 +31,7 @@ return function()
 		},
 	})
 	mason_lspconfig.setup({
-		ensure_installed = {
-			"bashls",
-			"clangd",
-			"emmet_ls",
-			"gopls",
-			"jsonls",
-			"ltex",
-			"marksman",
-			"pyright",
-			"lua_ls",
-			"taplo",
-			"texlab",
-			"vimls",
-			"yamlls",
-		},
+		ensure_installed = require("core.settings").lsp,
 		automatic_installation = true,
 	})
 
