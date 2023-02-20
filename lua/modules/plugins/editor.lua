@@ -5,6 +5,11 @@ editor["rainbowhxch/accelerated-jk.nvim"] = {
 	event = "VeryLazy",
 	config = require("editor.accelerated-jk"),
 }
+editor["m4xshen/autoclose.nvim"] = {
+	lazy = true,
+	event = "InsertEnter",
+	config = require("editor.autoclose"),
+}
 editor["max397574/better-escape.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },

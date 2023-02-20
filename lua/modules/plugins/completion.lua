@@ -44,10 +44,6 @@ completion["hrsh7th/nvim-cmp"] = {
 		{ "kdheepak/cmp-latex-symbols" },
 		{ "ray-x/cmp-treesitter" },
 		{ "f3fora/cmp-spell" },
-		{
-			"windwp/nvim-autopairs",
-			config = require("completion.autopairs"),
-		},
 	},
 }
 completion["zbirenbaum/copilot.lua"] = {
