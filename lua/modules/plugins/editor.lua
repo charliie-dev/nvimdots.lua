@@ -107,10 +107,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			config = require("editor.treesj"),
 		},
 		{
-			"folke/paint.nvim",
-			config = require("editor.paint"),
-		},
-		{
 			"ziontee113/syntax-tree-surfer",
 			config = require("editor.tree-surfer"),
 		},

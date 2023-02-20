@@ -70,6 +70,11 @@ ui["rcarriga/nvim-notify"] = {
 	event = "VeryLazy",
 	config = require("ui.notify"),
 }
+ui["folke/paint.nvim"] = {
+	lazy = true,
+	event = "BufReadPost",
+	config = require("ui.paint"),
+}
 -- ui["anuvyklack/pretty-fold.nvim"] = { -- not using fold ATM
 -- 	lazy = true,
 -- 	config = require("ui.pretty-fold"),
