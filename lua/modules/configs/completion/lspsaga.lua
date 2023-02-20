@@ -64,7 +64,7 @@ return function()
 			virtual_text = false,
 		},
 		diagnostic = {
-			on_insert = true,
+			on_insert = false,
 			on_insert_follow = false,
 			show_code_action = true,
 			show_source = true,
