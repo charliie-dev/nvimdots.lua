@@ -172,14 +172,15 @@ local data = {
 		Vim = "",
 	},
 	cmp = {
+		Codeium = "",
 		Copilot = "",
 		Copilot_alt = "",
+		buffer = "",
+		luasnip = "",
 		nvim_lsp = "",
 		nvim_lua = "",
 		path = "",
-		buffer = "",
 		spell = "暈",
-		luasnip = "",
 		treesitter = "",
 	},
 	dap = {
