@@ -30,7 +30,7 @@
     "scope": "source.lua"
   },
   "coroutine.resume": {
-    "body": "coroutine.resume( ${1:co}${2:[, val1, \u00b7\u00b7\u00b7]} )",
+    "body": "coroutine.resume( ${1:co}${2:[, val1, ···]} )",
     "description": "5.1,5.2,5.3\n\ncoroutine.resume",
     "prefix": "coroutine.resume",
     "scope": "source.lua"

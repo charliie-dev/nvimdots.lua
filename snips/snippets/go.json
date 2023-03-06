@@ -16,17 +16,29 @@
   },
   "main": {
     "prefix": "main",
-    "body": ["func main() {", "\t$0", "}"],
+    "body": [
+      "func main() {",
+      "\t$0",
+      "}"
+    ],
     "description": "main function"
   },
   "struct": {
     "prefix": "st",
-    "body": ["type ${1} struct {", "\t${2}", "}"],
+    "body": [
+      "type ${1} struct {",
+      "\t${2}",
+      "}"
+    ],
     "description": "struct"
   },
   "func": {
     "prefix": "fn",
-    "body": ["func ${1}() ${2} {", "\t${3}", "}"],
+    "body": [
+      "func ${1}() ${2} {",
+      "\t${3}",
+      "}"
+    ],
     "description": "function"
   },
   "method declaration": {
