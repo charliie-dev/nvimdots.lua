@@ -36,11 +36,15 @@ return function()
 		},
 		request_timeout = 3000,
 		finder = {
-			edit = { "o", "<CR>" },
-			vsplit = "s",
-			split = "i",
-			tabe = "t",
-			quit = { "q", "<ESC>" },
+			keys = {
+				jump_to = "e",
+				edit = { "o", "<CR>" },
+				vsplit = "s",
+				split = "i",
+				tabe = "t",
+				quit = { "q", "<ESC>" },
+				close_in_preview = "<ESC>",
+			},
 		},
 		definition = {
 			edit = "<C-c>o",
