@@ -10,6 +10,7 @@ settings["format_on_save"] = true
 -- Set the format disabled directories here, files under these dirs won't be formatted on save.
 settings["format_disabled_dirs"] = {
 	home .. "/.config/alacritty",
+	home .. "/Workspace/dockers",
 }
 
 -- NOTE: The startup time will be slowed down when it's true.
