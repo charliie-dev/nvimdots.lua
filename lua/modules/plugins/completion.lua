@@ -14,11 +14,13 @@ completion["neovim/nvim-lspconfig"] = {
 		},
 		{
 			"jose-elias-alvarez/null-ls.nvim",
+			lazy = true,
+			event = { "CursorHold", "CursorHoldI" },
+			config = require("completion.null-ls"),
 			dependencies = {
 				"nvim-lua/plenary.nvim",
 				"jay-babu/mason-null-ls.nvim",
 			},
-			config = require("completion.null-ls"),
 		},
 	},
 }
