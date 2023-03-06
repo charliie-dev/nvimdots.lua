@@ -40,11 +40,14 @@ dap.configurations.go = {
 	{ type = "go", name = "Debug", request = "launch", program = "${file}" },
 	{
 		type = "go",
-		name = "Debug test", -- configuration for debugging test files
+		name = "Debug with args",
 		request = "launch",
-		mode = "test",
 		program = "${file}",
-	}, -- works with go.mod packages and sub packages
+		args = function()
+			local argument_string = vim.fn.input("Program arg(s): ")
+			return vim.fn.split(argument_string, " ", true)
+		end,
+	},
 	{
 		type = "go",
 		name = "Debug test (go.mod)",
