@@ -94,7 +94,7 @@ return function()
 			["<C-j>"] = cmp.mapping.select_next_item(),
 			["<C-d>"] = cmp.mapping.scroll_docs(-4),
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
-			["<C-e>"] = cmp.mapping.close(),
+			["<C-w>"] = cmp.mapping.close(),
 			["<C-c>"] = cmp.mapping({
 				i = cmp.mapping.abort(),
 				c = cmp.mapping.close(),
