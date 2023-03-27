@@ -1,8 +1,8 @@
 name: update lockfile
 on:
-  workflow_dispatch
+  # workflow_dispatch # manual update
   # Scheduled update (each day)
-  # schedule: [{ cron: "30 01 * * *" }]
+  schedule: [{ cron: "30 01 * * 7" }]
 
 jobs:
   update-lockfile:
