@@ -3,6 +3,9 @@ on:
   # Scheduled update (each day)
   schedule: [{ cron: "30 01 * * *" }]
 
+on:
+  workflow_dispatch
+
 jobs:
   update-lockfile:
     if: github.repository_owner == 'CharlesChiuGit'
