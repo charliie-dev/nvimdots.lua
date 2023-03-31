@@ -2,7 +2,7 @@ name: update lockfile
 on:
   # workflow_dispatch # manual update
   # Scheduled update (each day)
-  schedule: [{ cron: "30 01 * * 7" }]
+  schedule: [{ cron: "30 01 * * 0" }]
 
 jobs:
   update-lockfile:
