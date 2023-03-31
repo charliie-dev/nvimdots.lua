@@ -172,7 +172,8 @@ local data = {
 		Vim = "",
 	},
 	cmp = {
-		Codeium = "",
+		Codeium = "",
+		TabNine = "",
 		Copilot = "",
 		Copilot_alt = "",
 		buffer = "",
