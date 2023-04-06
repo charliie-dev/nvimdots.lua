@@ -150,13 +150,7 @@ local plug_map = {
 		:with_silent()
 		:with_desc("terminal: Toggle float"),
 	["t|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
-	["n|<leader>lg"] = map_callback(function()
-			_toggle_lazygit()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("git: Toggle lazygit"),
-	["t|<leader>lg"] = map_callback(function()
+	["nt|<leader>lg"] = map_callback(function()
 			_toggle_lazygit()
 		end)
 		:with_noremap()
