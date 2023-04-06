@@ -7,7 +7,6 @@ tool["sudormrfbin/cheatsheet.nvim"] = {
 	dependencies = {
 		{ "nvim-telescope/telescope.nvim" },
 		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-lua/popup.nvim" },
 	},
 }
 tool["ja-ford/delaytrain.nvim"] = {
@@ -110,7 +109,6 @@ tool["nvim-telescope/telescope.nvim"] = {
 	dependencies = {
 		{ "nvim-tree/nvim-web-devicons" },
 		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-lua/popup.nvim" },
 		{ "LinArcX/telescope-env.nvim" },
 		{
 			"ahmedkhalf/project.nvim",
