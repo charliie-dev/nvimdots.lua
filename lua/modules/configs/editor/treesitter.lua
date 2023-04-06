@@ -11,7 +11,6 @@ return vim.schedule_wrap(function()
 			"cpp",
 			"css",
 			"gitignore",
-			"help",
 			"html",
 			"javascript",
 			"json",
@@ -27,6 +26,7 @@ return vim.schedule_wrap(function()
 			"tsx",
 			"typescript",
 			"yaml",
+			"vimdoc",
 		},
 		sync_install = true,
 		ignore_install = { "comment" }, -- comments are slowing down TS bigtime, so disable for now
