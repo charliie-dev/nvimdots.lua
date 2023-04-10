@@ -48,9 +48,8 @@ return function()
 		ensure_installed = require("core.settings").null_ls_deps,
 		automatic_installation = false,
 		automatic_setup = true,
+        handlers = {},
 	})
-
-	mason_null_ls.setup_handlers()
 
 	require("completion.formatting").configure_format_on_save()
 end
