@@ -87,9 +87,9 @@ tool["samjwill/nvim-unception"] = {
 	event = "VeryLazy",
 	config = require("tool.unception"),
 }
--- NOTE: Please don't remove which-key.nvim otherwise you need to set timeoutlen=300 at `lua/core/options.lua`
 tool["folke/which-key.nvim"] = {
-	event = "VeryLazy",
+	lazy = true,
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("tool.which-key"),
 }
 tool["gelguy/wilder.nvim"] = {
