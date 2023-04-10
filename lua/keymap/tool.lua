@@ -103,8 +103,8 @@ local plug_map = {
 		:with_desc("tmux: Resize tmux/nvim pane rightward"),
 
 	-- Plugin: toggleterm
-	["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_silent(), -- switch to normal mode in terminal.
-	["t|jk"] = map_cmd([[<C-\><C-n>]]):with_silent(), -- switch to normal mode in terminal.
+	["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
+	["t|jk"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
 	["n|<C-\\>"] = map_cr([[execute v:count . "ToggleTerm direction=horizontal"]])
 		:with_noremap()
 		:with_silent()
