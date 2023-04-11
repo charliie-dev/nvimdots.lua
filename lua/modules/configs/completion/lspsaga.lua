@@ -69,7 +69,7 @@ return function()
 		},
 		diagnostic = {
 			text_hl_follow = true,
-			on_insert = false,
+			on_insert = true,
 			on_insert_follow = false,
 			show_code_action = true,
 			show_source = true,
@@ -79,7 +79,6 @@ return function()
 			keys = {
 				exec_action = "r",
 				quit = "q",
-				go_action = "g",
 				expand_or_jump = "<CR>",
 				quit_in_show = { "q", "<ESC>" },
 			},
@@ -120,6 +119,7 @@ return function()
 			frequency = 12,
 		},
 		ui = {
+			title = false,
 			border = "single", -- Can be single, double, rounded, solid, shadow.
 			winblend = 0,
 			actionfix = icons.ui.Spell,
