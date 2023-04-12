@@ -67,6 +67,11 @@ editor["roobert/search-replace.nvim"] = {
 	event = "BufReadPost",
 	config = require("editor.search-replace"),
 }
+editor["lambdalisue/suda.vim"] = {
+	lazy = true,
+	cmd = { "SudaRead", "SudaWrite" },
+	config = require("editor.suda"),
+}
 editor["kylechui/nvim-surround"] = {
 	lazy = true,
 	event = "BufReadPre",
