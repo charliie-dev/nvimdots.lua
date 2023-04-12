@@ -37,7 +37,7 @@ local data = {
 		Text = "",
 		TypeParameter = "",
 		Unit = "",
-		Undefinded = "",
+		Undefined = "",
 		Value = "",
 		Variable = "",
 		-- ccls-specific icons.
@@ -180,7 +180,6 @@ local data = {
 		Copilot_alt = "",
 		-- User needs to add a icon according to the source after adding it.
 		-- sources
-		Undefinded = "",
 		buffer = "",
 		cmp_tabnine = "",
 		codeium = "",
@@ -194,6 +193,7 @@ local data = {
 		spell = "暈",
 		tmux = "",
 		treesitter = "",
+		undefined = "",
 	},
 	dap = {
 		Breakpoint = "ß",
