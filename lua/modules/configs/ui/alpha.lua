@@ -5,6 +5,7 @@ return function()
 		git = require("modules.utils.icons").get("git"),
 		ui = require("modules.utils.icons").get("ui"),
 	}
+	require("modules.utils").gen_alpha_hl()
 
 	-- Header
 	dashboard.section.header.val = {
@@ -39,7 +40,7 @@ return function()
 		[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⠿⢿⠿⠷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
 		-- [[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ]],
 	}
-	dashboard.section.header.opts.hl = "Boolean"
+	dashboard.section.header.opts.hl = "AlphaHeader"
 
 	-- Buttons
 	dashboard.section.buttons.val = {
@@ -52,7 +53,7 @@ return function()
 		dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>Lazy sync<cr>"),
 		dashboard.button("q", icons.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
 	}
-	dashboard.section.buttons.opts.hl = "String"
+	dashboard.section.buttons.opts.hl = "AlphaButton"
 
 	-- Footer
 	local function footer()
@@ -88,7 +89,7 @@ return function()
 	end
 
 	dashboard.section.footer.val = footer()
-	dashboard.section.footer.opts.hl = "Function"
+	dashboard.section.footer.opts.hl = "AlphaFooter"
 
 	local head_butt_padding = 1
 	local occu_height = #dashboard.section.header.val + 2 * #dashboard.section.buttons.val + head_butt_padding
