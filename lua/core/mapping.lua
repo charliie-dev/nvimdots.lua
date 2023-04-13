@@ -12,8 +12,6 @@ local core_map = {
 	["n|n"] = map_cmd("nzzzv"):with_noremap():with_desc("edit: Next search result"),
 	["n|N"] = map_cmd("Nzzzv"):with_noremap():with_desc("edit: Prev search result"),
 	["n|<Esc>"] = map_cmd("<Cmd>noh<CR>"):with_noremap():with_silent():with_desc("edit: Clear search highlight"),
-	-- Do nothing when press "Q", @ThePrimeagen
-	["n|Q"] = map_cmd("<nop>"):with_noremap():with_silent():with_desc("edit: Do nothing when press Q"),
 	-- Keep cursor inplace if below line being append to current line when moving, @ThePrimeagen
 	["n|J"] = map_cmd("mzJ`z"):with_noremap():with_desc("edit: Join next line"),
 	["n|<C-h>"] = map_cmd("<C-w>h"):with_noremap():with_desc("window: Focus left"),
@@ -33,7 +31,7 @@ local core_map = {
 	["n|<leader>o"] = map_cr("setlocal spell! spelllang=en_us"):with_desc("edit: Toggle spell check"),
 	["n|+"] = map_cmd("<C-a>"):with_noremap():with_silent():with_desc("edit: Increment"),
 	["n|-"] = map_cmd("<C-x>"):with_noremap():with_silent():with_desc("edit: Decrement"),
-	["n|<C-a>"] = map_cmd("gg<S-v>G"):with_noremap():with_silent():with_desc("edit: Select all"),
+	["n|<C-a>"] = map_cmd("gg0vG$"):with_noremap():with_silent():with_desc("edit: Select all"),
 	["n|tn"] = map_cmd("<Cmd>tabnew<CR>"):with_noremap():with_silent():with_desc("tab: Create a new tab"),
 	["n|tk"] = map_cmd("<Cmd>tabnext<CR>"):with_noremap():with_silent():with_desc("tab: Move to next tab"),
 	["n|tj"] = map_cmd("<Cmd>tabprevious<CR>"):with_noremap():with_silent():with_desc("tab: Move to previous tab"),
