@@ -31,8 +31,6 @@ return function()
 		return info
 	end
 
-	vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#57fa85" })
-
 	local compare = require("cmp.config.compare")
 	compare.lsp_scores = function(entry1, entry2)
 		local diff
@@ -56,7 +54,7 @@ return function()
 			local source_symbol = opts.symbol_map[entry.source.name] or icons.cmp.undefined
 
 			vim_item.menu = " " .. source_symbol .. "  |"
-			vim_item.kind = string.format("  〘 %s %s 〙", kind_symbol, vim_item.kind)
+			vim_item.kind = string.format(" 〔 %s %s 〕", kind_symbol, vim_item.kind)
 
 			if opts.maxwidth ~= nil then
 				if opts.ellipsis_char == nil then
