@@ -176,14 +176,13 @@ local data = {
 		-- kind_text
 		Codeium = "",
 		TabNine = "",
-		Copilot = "",
-		Copilot_alt = "",
-		-- User needs to add a icon according to the source after adding it.
-		-- sources
+		Copilot = "",
+		-- Add source-specific icons here
 		buffer = "",
-		cmp_tabnine = "",
-		codeium = "",
+		cmp_tabnine = "",
+		codeium = "",
 		copilot = "",
+		copilot_alt = "",
 		latex_symbols = "",
 		luasnip = "",
 		nvim_lsp = "",
