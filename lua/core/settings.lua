@@ -69,13 +69,13 @@ settings["lsp_deps"] = {
 	"lua_ls",
 	"marksman",
 	"pyright",
+	"taplo",
+	"yamlls",
 	-- "emmet_ls",
 	-- "gopls",
 	-- "ltex",
-	-- "taplo",
 	-- "texlab",
 	-- "vimls",
-	-- "yamlls",
 }
 
 -- Set the general-purpose servers that will be installed during bootstrap here
