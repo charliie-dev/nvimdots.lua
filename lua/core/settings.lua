@@ -85,7 +85,6 @@ settings["lsp_deps"] = {
 ---@type string[]
 settings["null_ls_deps"] = {
 	-- formatting
-	"black",
 	"clang_format",
 	"eslint_d",
 	"jq",
@@ -94,6 +93,7 @@ settings["null_ls_deps"] = {
 	"rustfmt",
 	"shfmt",
 	"stylua",
+	"ruff",
 
 	-- diagnostics
 	"shellcheck",
