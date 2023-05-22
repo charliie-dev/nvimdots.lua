@@ -173,5 +173,10 @@ return function()
 			{ name = "codeium" },
 			{ name = "cmp_tabnine" },
 		},
+		experimental = {
+			ghost_text = {
+				hl_group = "Whitespace",
+			},
+		},
 	})
 end
