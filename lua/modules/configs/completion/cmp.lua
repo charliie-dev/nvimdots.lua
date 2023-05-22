@@ -22,15 +22,6 @@ return function()
 		}
 	end
 
-	local cmp_window = require("cmp.utils.window")
-
-	cmp_window.info_ = cmp_window.info
-	cmp_window.info = function(self)
-		local info = self:info_()
-		info.scrollable = false
-		return info
-	end
-
 	local compare = require("cmp.config.compare")
 	compare.lsp_scores = function(entry1, entry2)
 		local diff
@@ -72,13 +63,14 @@ return function()
 	end
 
 	local cmp = require("cmp")
-
 	cmp.setup({
+		preselect = cmp.PreselectMode.Item,
 		window = {
 			completion = {
 				border = border("CmpBorder"),
 				max_width = 80,
 				max_height = 20,
+				scrollbar = false,
 			},
 			documentation = {
 				border = border("CmpDocBorder"),
@@ -90,9 +82,14 @@ return function()
 				require("copilot_cmp.comparators").prioritize,
 				require("copilot_cmp.comparators").score,
 				require("cmp_tabnine.compare"),
-				compare.offset,
+				compare.offset, -- Items closer to cursor will have lower priority
 				compare.exact,
+				-- compare.scopes,
 				compare.lsp_scores,
+				compare.sort_text,
+				compare.score,
+				compare.recently_used,
+				-- compare.locality, -- Items closer to cursor will have higher priority, conflicts with `offset`
 				require("cmp-under-comparator").under,
 				compare.kind,
 				compare.sort_text,
@@ -110,6 +107,9 @@ return function()
 				})(entry, vim_item)
 				return kind
 			end,
+		},
+		matching = {
+			disallow_partial_fuzzy_matching = false,
 		},
 		-- You can set mappings if you want
 		mapping = cmp.mapping.preset.insert({
@@ -149,7 +149,7 @@ return function()
 		},
 		-- You should specify your *installed* sources.
 		sources = {
-			{ name = "nvim_lsp" },
+			{ name = "nvim_lsp", max_item_count = 350 },
 			{ name = "nvim_lua" },
 			{ name = "luasnip" },
 			{ name = "path" },
