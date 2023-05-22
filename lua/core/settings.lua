@@ -64,6 +64,7 @@ settings["server_formatting_block_list"] = {
 	tsserver = true,
 	clangd = true,
 	jsonls = true,
+	pylsp = true,
 }
 
 -- Servers in this list will skip setting formatting capabilities if rhs is true
@@ -76,7 +77,7 @@ settings["lsp_deps"] = {
 	"jsonls",
 	"lua_ls",
 	"marksman",
-	"pyright",
+	"pylsp",
 	-- "emmet_ls",
 	-- "gopls",
 	-- "ltex",
