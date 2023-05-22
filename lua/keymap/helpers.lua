@@ -25,7 +25,7 @@ local toggleterm_cache = {
 }
 
 _G._toggle_lazygit = function()
-	if vim.fn.executable("lazygit") then
+	if vim.fn.executable("lazygit") == 1 then
 		if not toggleterm_cache.lazygit then
 			toggleterm_cache.lazygit = require("toggleterm.terminal").Terminal:new({
 				cmd = "lazygit",
