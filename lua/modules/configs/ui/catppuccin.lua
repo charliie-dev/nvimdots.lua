@@ -1,27 +1,5 @@
 return function()
-	--- Get hex by highlight group
-	--- hl_group string highlight group name
-	--- use_bg boolean
-	--- string
-	-- local function hlToRgb(hl_group, use_bg)
-	-- 	if use_bg == true then
-	-- 		local color = vim.api.nvim_get_hl_by_name(hl_group, true).background
-	-- 		local hex = color ~= nil and string.format("#%06x", color) or "#000000"
-	-- 		return hex
-	-- 	else
-	-- 		local color = vim.api.nvim_get_hl_by_name(hl_group, true).foreground
-	-- 		local hex = color ~= nil and string.format("#%06x", color) or "#111111"
-	-- 		return hex
-	-- 	end
-	-- end
-
 	local util = require("catppuccin.utils.colors")
-
-	-- local bg = hlToRgb("Normal", true)
-	-- local indent_hl = "#FFA066" -- only for current scoop
-	-- local alpha = 0.4
-	-- print(vim.inspect(util.blend(indent_hl, bg, alpha)))
-
 	local transparent_background = require("core.settings").transparent_background
 
 	require("catppuccin").setup({
@@ -41,7 +19,7 @@ return function()
 		styles = {
 			comments = { "italic" },
 			properties = { "italic" },
-			functions = { "italic", "bold" },
+			functions = { "bold" },
 			keywords = { "italic" },
 			operators = { "bold" },
 			conditionals = { "bold" },
@@ -301,6 +279,7 @@ return function()
 					["@property.css"] = { fg = cp.yellow, style = { "italic" } },
 
 					["@type.builtin.c"] = { fg = cp.yellow, style = {} },
+
 					["@property.cpp"] = { fg = cp.text },
 					["@type.builtin.cpp"] = { fg = cp.yellow, style = {} },
 
