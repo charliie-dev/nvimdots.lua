@@ -111,12 +111,6 @@ return function()
 		return ""
 	end
 
-	-- check your colorscheme in REPO/lua/lualine/themes/THEME.lua -> normal.b.bg
-	-- if vim.g.colors_name == "catppuccin" then
-	-- 	vim.api.nvim_set_hl(0, "SLGitIcon", { fg = "#E8AB53", bg = "#575268" })
-	-- 	vim.api.nvim_set_hl(0, "SLBranchName", { fg = "#D4D4D4", bg = "#575268" })
-	-- end
-
 	require("lualine").setup({
 		options = {
 			icons_enabled = true,
@@ -132,7 +126,6 @@ return function()
 				{
 					"branch",
 					icons_enabled = true,
-					-- icon = "%#SLGitIcon#" .. icons.git.Branch .. "%*" .. "%#SLBranchName#",
 					icon = icons.git.Branch,
 				},
 				{ "diff", source = diff_source },

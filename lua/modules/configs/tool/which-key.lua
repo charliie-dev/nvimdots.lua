@@ -19,7 +19,7 @@ return function()
 
 		icons = {
 			breadcrumb = icons.ui.SeparatorDouble,
-			separator = " " .. icons.ui.SeparatorDouble .. " ",
+			separator = " " .. icons.ui.DoubleSeparator .. " ",
 			group = icons.misc.Add,
 		},
 

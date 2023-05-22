@@ -109,7 +109,7 @@ return function()
 		},
 		symbol_in_winbar = {
 			enable = false,
-			separator = " " .. icons.ui.SeparatorDouble,
+			separator = " " .. icons.ui.DoubleSeparator,
 			hide_keyword = true,
 			show_file = false,
 			color_mode = true,
