@@ -9,6 +9,10 @@ settings["use_ssh"] = false
 ---@type boolean
 settings["format_on_save"] = true
 
+-- Set it to false if the nofitication after formatting is annoying for you.
+---@type boolean
+settings["format_notify"] = true
+
 -- Set the format disabled directories here, files under these dirs won't be formatted on save.
 ---@type string[]
 settings["format_disabled_dirs"] = {
