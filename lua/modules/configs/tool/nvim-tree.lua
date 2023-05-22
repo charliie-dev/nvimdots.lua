@@ -67,7 +67,7 @@ return function()
 					git = true,
 				},
 				padding = " ",
-				symlink_arrow = "  ",
+				symlink_arrow = " 󰁔 ",
 				glyphs = {
 					default = icons.documents.Default,
 					symlink = icons.documents.Symlink,
