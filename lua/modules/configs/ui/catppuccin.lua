@@ -70,6 +70,7 @@ return function()
 				},
 			},
 			aerial = false,
+			alpha = false,
 			barbar = false,
 			beacon = false,
 			cmp = true,
