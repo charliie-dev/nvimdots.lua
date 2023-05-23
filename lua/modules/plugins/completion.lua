@@ -13,6 +13,13 @@ completion["neovim/nvim-lspconfig"] = {
 			config = require("completion.lspsaga"),
 		},
 		{
+			"lvimuser/lsp-inlayhints.nvim",
+			config = require("completion.inlay-hints"),
+			lazy = true,
+			branch = "anticonceal",
+			event = { "LspAttach" },
+		},
+		{
 			"jose-elias-alvarez/null-ls.nvim",
 			lazy = true,
 			event = { "CursorHold", "CursorHoldI" },
