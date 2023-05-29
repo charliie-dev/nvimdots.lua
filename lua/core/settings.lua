@@ -68,16 +68,15 @@ settings["server_formatting_block_list"] = {
 	tsserver = true,
 	clangd = true,
 	jsonls = true,
-	pylsp = true,
 }
 
 -- Servers in this list will skip setting formatting capabilities if rhs is true
 ---@type table<string, boolean>
 settings["lsp_deps"] = {
 	"bashls",
-	"clangd",
-	"docker_compose_language_service",
-	"dockerls",
+	-- "clangd",
+	-- "docker_compose_language_service",
+	-- "dockerls",
 	"jsonls",
 	"lua_ls",
 	"marksman",
@@ -98,15 +97,14 @@ settings["lsp_deps"] = {
 ---@type string[]
 settings["null_ls_deps"] = {
 	-- formatting
-	"clang_format",
+	-- "clang_format",
 	"eslint_d",
 	"jq",
 	"markdownlint",
 	"prettier",
-	"rustfmt",
+	-- "rustfmt",
 	"shfmt",
 	"stylua",
-	"ruff",
 
 	-- diagnostics
 	"shellcheck",
