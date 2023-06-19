@@ -53,7 +53,7 @@ return function()
 		dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>Lazy sync<cr>"),
 		dashboard.button("q", icons.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
 	}
-	dashboard.section.buttons.opts.hl = "AlphaButton"
+	dashboard.section.buttons.opts.hl = "AlphaButtons"
 
 	-- Footer
 	local function footer()
