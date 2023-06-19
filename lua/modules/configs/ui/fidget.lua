@@ -25,6 +25,7 @@ return function()
 		fmt = {
 			leftpad = true, -- right-justify text in fidget box
 			stack_upwards = true, -- list of tasks grows upwards
+			max_messages = 3, -- The maximum number of messages stacked at any give time
 			max_width = 0, -- maximum width of the fidget box
 			-- function to format fidget title
 			fidget = function(fidget_name, spinner)
