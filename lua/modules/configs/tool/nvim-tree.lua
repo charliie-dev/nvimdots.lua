@@ -63,7 +63,7 @@ return function()
 				show = {
 					file = true,
 					folder = true,
-					folder_arrow = false,
+					folder_arrow = true,
 					git = true,
 				},
 				padding = " ",
