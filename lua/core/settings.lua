@@ -1,5 +1,4 @@
 local settings = {}
-local home = require("core.global").home
 
 -- Set it to false if you want to use https to update plugins and treesitter parsers.
 ---@type boolean
@@ -28,8 +27,7 @@ settings["diagnostics_level"] = "Hint"
 -- Set the format disabled directories here, files under these dirs won't be formatted on save.
 ---@type string[]
 settings["format_disabled_dirs"] = {
-	home .. "/.config/alacritty",
-	home .. "/Workspace/dockers",
+	"~/Workspace/dockers",
 }
 
 -- Set it to false if you don't use nvim to open big files.
