@@ -1,5 +1,4 @@
 return function()
-	vim.api.nvim_set_hl(0, "BLIndicatorIcon", { fg = "#E8AB53", bg = "NONE" })
 	local icons = { ui = require("modules.utils.icons").get("ui") }
 
 	local opts = {
@@ -26,8 +25,7 @@ return function()
 				return "(" .. count .. ")"
 			end,
 			indicator = {
-				-- icon = "▎",
-				icon = "%#BLIndicatorIcon#" .. " " .. icons.ui.Indicator .. " ",
+				icon = icons.ui.Indicator,
 				style = "icon",
 			},
 			offsets = {
