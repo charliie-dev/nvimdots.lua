@@ -9,7 +9,7 @@ return function()
 			buffer_close_icon = icons.ui.Close,
 			left_trunc_marker = icons.ui.Left,
 			right_trunc_marker = icons.ui.Right,
-			max_name_length = 14,
+			max_name_length = 20,
 			max_prefix_length = 13,
 			tab_size = 20,
 			color_icons = true,
@@ -35,7 +35,7 @@ return function()
 					filetype = "NvimTree",
 					text = "File Explorer",
 					text_align = "center",
-					padding = 1,
+					padding = 0,
 				},
 				{
 					filetype = "lspsagaoutline",
@@ -43,6 +43,7 @@ return function()
 					text_align = "center",
 					highlight = "Directory",
 					separator = true,
+					padding = 0,
 				},
 			},
 			-- Change bufferline's highlights here! See `:h bufferline-highlights` for detailed explanation.

@@ -5,13 +5,9 @@ completion["neovim/nvim-lspconfig"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("completion.lsp"),
 	dependencies = {
-		{ "ray-x/lsp_signature.nvim" },
 		{ "williamboman/mason.nvim" },
 		{ "williamboman/mason-lspconfig.nvim" },
-		{
-			"nvimdev/lspsaga.nvim",
-			config = require("completion.lspsaga"),
-		},
+		{ "ray-x/lsp_signature.nvim" },
 		{
 			"lvimuser/lsp-inlayhints.nvim",
 			config = require("completion.inlay-hints"),
@@ -19,16 +15,21 @@ completion["neovim/nvim-lspconfig"] = {
 			branch = "anticonceal",
 			event = { "LspAttach" },
 		},
-		{
-			"jose-elias-alvarez/null-ls.nvim",
-			lazy = true,
-			event = { "CursorHold", "CursorHoldI" },
-			config = require("completion.null-ls"),
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"jay-babu/mason-null-ls.nvim",
-			},
-		},
+	},
+}
+completion["nvimdev/lspsaga.nvim"] = {
+	lazy = true,
+	event = "LspAttach",
+	config = require("completion.lspsaga"),
+	dependencies = { "nvim-tree/nvim-web-devicons" },
+}
+completion["jose-elias-alvarez/null-ls.nvim"] = {
+	lazy = true,
+	event = { "CursorHold", "CursorHoldI" },
+	config = require("completion.null-ls"),
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		"jay-babu/mason-null-ls.nvim",
 	},
 }
 completion["hrsh7th/nvim-cmp"] = {
@@ -74,10 +75,10 @@ completion["zbirenbaum/copilot.lua"] = {
 		},
 	},
 }
-completion["barreiroleo/ltex_extra.nvim"] = {
-	lazy = true,
-	ft = "tex",
-}
+-- completion["barreiroleo/ltex_extra.nvim"] = {
+-- 	lazy = true,
+-- 	ft = "tex",
+-- }
 
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get
 -- hover docs and function signatures, but it takes too much time to load all dirs, use it if needed.
