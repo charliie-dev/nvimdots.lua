@@ -62,6 +62,20 @@ editor["danymat/neogen"] = {
 	config = require("editor.neogen"),
 	dependencies = "nvim-treesitter/nvim-treesitter",
 }
+editor["olimorris/persisted.nvim"] = {
+	lazy = true,
+	cmd = {
+		"SessionToggle",
+		"SessionStart",
+		"SessionStop",
+		"SessionSave",
+		"SessionLoad",
+		"SessionLoadLast",
+		"SessionLoadFromFile",
+		"SessionDelete",
+	},
+	config = require("editor.persisted"),
+}
 editor["roobert/search-replace.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",

@@ -14,6 +14,11 @@ local plug_map = {
 		return et("<Plug>(accelerated_jk_gk)")
 	end):with_expr(),
 
+	-- Plugin persisted.nvim
+	["n|<leader>ss"] = map_cu("SessionSave"):with_noremap():with_silent():with_desc("session: Save"),
+	["n|<leader>sl"] = map_cu("SessionLoad"):with_noremap():with_silent():with_desc("session: Load current"),
+	["n|<leader>sd"] = map_cu("SessionDelete"):with_noremap():with_silent():with_desc("session: Delete"),
+
 	-- Plugin: nvim-bufdel
 	["n|<F4>"] = map_cr("BufDel"):with_noremap():with_silent():with_desc("buffer: Close current"),
 
