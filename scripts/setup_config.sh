@@ -4,15 +4,15 @@ set -e
 set -o pipefail
 
 abort() {
-    printf "%s\n" "$@" >&2
-    exit 1
+	printf "%s\n" "$@" >&2
+	exit 1
 }
 
 # string formatters
 if [[ -t 1 ]]; then
-    tty_escape() { printf "\033[%sm" "$1"; }
+	tty_escape() { printf "\033[%sm" "$1"; }
 else
-    tty_escape() { :; }
+	tty_escape() { :; }
 fi
 
 tty_mkbold() { tty_escape "1;$1"; }
@@ -41,12 +41,12 @@ printf "Using ${tty_blue}system${tty_reset} Python to install ${tty_green}${py_p
 # user HOME, since we do not have permissions to install them under system
 # directories.
 for p in "${py_packages[@]}"; do
-    pip3 install --user "$p" -q
+	pip3 install --user "$p" -q
 done
 
 printf "Using ${tty_cyan}conda${tty_reset} Python to install ${tty_green}${py_packages[*]}${tty_reset}\n"
 for p in "${py_packages[@]}"; do
-    "$CONDA_DIR/bin/pip3" install "$p" -q
+	"$CONDA_DIR/bin/pip3" install "$p" -q
 done
 
 printf "Done.\n\n"
@@ -55,14 +55,13 @@ printf "Done.\n\n"
 #                       Install Node packages                        #
 ######################################################################
 printf "Installing ${tty_magenta}Node${tty_reset} packages.\n"
-NODE_DIR=$HOME/tools/nodejs
 
-"$NODE_DIR/bin/npm" install npm@latest --location=global --silent
+npm install npm@latest --location=global --silent
 # Install neovim support for node plugins
-"$NODE_DIR/bin/npm" install neovim --location=global --silent
+npm install neovim --location=global --silent
 
 # Add for markdown-preview.nvim
-"$NODE_DIR/bin/npm" install tslib --location=global --silent
+npm install tslib --location=global --silent
 
 printf "Done.\n\n"
 
@@ -142,14 +141,14 @@ printf "Done.\n\n"
 ######################################################################
 USE_WSL=false
 if [[ "$USE_WSL" = true ]]; then
-    printf "Installing ${tty_magenta}win32yank${tty_reset} for ${tty_red}WSL${tty_reset} ${tty_underline}clipboard${tty_reset}.\n"
+	printf "Installing ${tty_magenta}win32yank${tty_reset} for ${tty_red}WSL${tty_reset} ${tty_underline}clipboard${tty_reset}.\n"
 
-    curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
-    unzip -p /tmp/win32yank.zip win32yank.exe >/tmp/win32yank.exe
-    chmod +x /tmp/win32yank.exe
-    sudo mv /tmp/win32yank.exe /usr/local/bin/
+	curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
+	unzip -p /tmp/win32yank.zip win32yank.exe >/tmp/win32yank.exe
+	chmod +x /tmp/win32yank.exe
+	sudo mv /tmp/win32yank.exe /usr/local/bin/
 
-    printf "Done.\n\n"
+	printf "Done.\n\n"
 fi
 # NOTE: don't forget to `set clipboard=unnamedplus`
 
@@ -158,19 +157,19 @@ fi
 ######################################################################
 
 if ! command -v nvim >/dev/null; then
-    abort "$(
+	abort "$(
 		cat <<EOABORT
 You must install NeoVim before installing this Nvim config. See:
   ${tty_underline}https://github.com/neovim/neovim/wiki/Installing-Neovim${tty_reset}
 EOABORT
-    )"
+	)"
 fi
 
 NVIM_DIR=$HOME/tools/nvim
 NVIM_CONFIG_DIR=$HOME/.config/nvim
 printf "${tty_bold}Setting up config and installing plugins${tty_reset}.\n"
 if [[ -d "$NVIM_CONFIG_DIR" ]]; then
-    mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
+	mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
 fi
 
 git clone git@github.com:CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
