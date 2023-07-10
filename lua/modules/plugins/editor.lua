@@ -115,13 +115,16 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			vim.api.nvim_command("TSUpdate")
 		end
 	end,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "BufReadPre",
 	config = require("editor.treesitter"),
 	dependencies = {
 		{ "andymass/vim-matchup" },
-		{ "mrjones2014/nvim-ts-rainbow" },
 		{ "JoosepAlviste/nvim-ts-context-commentstring" },
 		{ "nvim-treesitter/nvim-treesitter-textobjects" },
+		{
+			"hiphish/rainbow-delimiters.nvim",
+			config = require("editor.rainbow_delims"),
+		},
 		{
 			"nvim-treesitter/nvim-treesitter-context",
 			config = require("editor.ts-context"),
