@@ -84,7 +84,7 @@ return function()
 			semantic_tokens = true,
 			symbols_outline = false,
 			telekasten = false,
-			telescope = true,
+			telescope = { enabled = true, style = "nvchad" },
 			treesitter_context = true,
 			ts_rainbow = false,
 			vim_sneak = false,
@@ -130,13 +130,6 @@ return function()
 						bg = transparent_background and cp.none or cp.mantle,
 					},
 
-					-- For lspsaga.nvim
-					OutlineNormal = { bg = transparent_background and cp.none or cp.mantle },
-					OutlineWinSeparator = {
-						bg = transparent_background and cp.none or cp.base,
-						fg = transparent_background and cp.surface1 or cp.base,
-					},
-
 					-- For fidget
 					FidgetTask = { bg = cp.none, fg = cp.surface2 },
 					FidgetTitle = { fg = cp.blue, style = { "bold" } },
@@ -178,41 +171,9 @@ return function()
 					Dash = { bg = "#D19A66", style = { "bold" } },
 
 					-- For telescope.nvim
-					TelescopeBorder = {
-						fg = transparent_background and cp.blue or cp.mantle,
-						bg = transparent_background and cp.none or cp.mantle,
-					},
-					TelescopePromptBorder = {
-						fg = transparent_background and cp.blue or cp.surface0,
-						bg = transparent_background and cp.none or cp.surface0,
-					},
-					TelescopePromptNormal = {
-						fg = cp.text,
-						bg = transparent_background and cp.none or cp.surface0,
-					},
-					TelescopePromptPrefix = {
-						fg = cp.flamingo,
-						bg = transparent_background and cp.none or cp.surface0,
-					},
-					TelescopeNormal = {
-						bg = transparent_background and cp.none or cp.mantle,
-					},
-					TelescopePreviewTitle = {
-						fg = transparent_background and cp.green or cp.base,
-						bg = transparent_background and cp.none or cp.green,
-					},
-					TelescopePromptTitle = {
-						fg = transparent_background and cp.red or cp.base,
-						bg = transparent_background and cp.none or cp.red,
-					},
-					TelescopeResultsTitle = {
-						fg = cp.mantle,
-						bg = transparent_background and cp.none or cp.mantle,
-					},
-					TelescopeSelection = {
-						fg = transparent_background and cp.subtext0 or cp.text,
-						bg = transparent_background and cp.none or cp.surface0,
-					},
+					TelescopeResultsDiffAdd = { fg = cp.green },
+					TelescopeResultsDiffChange = { fg = cp.yellow },
+					TelescopeResultsDiffDelete = { fg = cp.red },
 
 					-- For treesitter
 					["@keyword.return"] = { fg = cp.pink, style = clear },
