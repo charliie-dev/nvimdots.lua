@@ -171,6 +171,7 @@ return function()
 					Dash = { bg = "#D19A66", style = { "bold" } },
 
 					-- For telescope.nvim
+					TelescopeMatching = { fg = cp.lavender },
 					TelescopeResultsDiffAdd = { fg = cp.green },
 					TelescopeResultsDiffChange = { fg = cp.yellow },
 					TelescopeResultsDiffDelete = { fg = cp.red },
