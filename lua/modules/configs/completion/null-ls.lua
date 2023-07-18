@@ -73,5 +73,17 @@ return function()
 		complete = _gen_completion,
 	})
 
+	-- auto stop bashls, shellcheck and shfmt when editing docker-related files
+	vim.api.nvim_create_autocmd("LspAttach", {
+		pattern = {
+			".env",
+		},
+		callback = function()
+			vim.api.nvim_command([[LspStop bashls]])
+			vim.api.nvim_command([[NullLsToggle shellcheck]])
+			vim.api.nvim_command([[NullLsToggle shfmt]])
+		end,
+	})
+
 	require("completion.formatting").configure_format_on_save()
 end

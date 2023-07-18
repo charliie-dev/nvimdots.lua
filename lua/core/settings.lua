@@ -27,7 +27,7 @@ settings["diagnostics_level"] = "Hint"
 -- Set the format disabled directories here, files under these dirs won't be formatted on save.
 ---@type string[]
 settings["format_disabled_dirs"] = {
-	"~/Workspace/dockers",
+	-- "~/Workspace/dockers",
 }
 
 -- Set it to false if you don't use nvim to open big files.
@@ -80,8 +80,8 @@ settings["server_formatting_block_list"] = {
 settings["lsp_deps"] = {
 	"bashls",
 	-- "clangd",
-	-- "docker_compose_language_service",
-	-- "dockerls",
+	"docker_compose_language_service",
+	"dockerls",
 	"jsonls",
 	"lua_ls",
 	"marksman",
