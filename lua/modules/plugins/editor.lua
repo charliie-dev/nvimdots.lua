@@ -22,7 +22,7 @@ editor["LunarVim/bigfile.nvim"] = {
 }
 editor["ojroques/nvim-bufdel"] = {
 	lazy = true,
-	event = "BufReadPost",
+	cmd = { "BufDel", "BufDelAll", "BufDelOthers" },
 }
 editor["s1n7ax/nvim-comment-frame"] = {
 	lazy = true,
@@ -115,7 +115,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			vim.api.nvim_command("TSUpdate")
 		end
 	end,
-	event = "BufReadPre",
+	event = "BufReadPost",
 	config = require("editor.treesitter"),
 	dependencies = {
 		{ "andymass/vim-matchup" },

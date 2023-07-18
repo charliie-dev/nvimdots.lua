@@ -57,7 +57,7 @@ tool["ibhagwan/smartyank.nvim"] = {
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	build = "bash ./install.sh",
-	cmd = { "SnipRun" },
+	cmd = "SnipRun",
 	config = require("tool.sniprun"),
 }
 tool["aserowy/tmux.nvim"] = {
@@ -112,7 +112,7 @@ tool["nvim-telescope/telescope.nvim"] = {
 		{ "LinArcX/telescope-env.nvim" },
 		{
 			"ahmedkhalf/project.nvim",
-			event = "BufReadPost",
+			event = { "CursorHold", "CursorHoldI" },
 			config = require("tool.project"),
 		},
 		{ "debugloop/telescope-undo.nvim" },
