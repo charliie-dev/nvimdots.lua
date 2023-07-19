@@ -34,5 +34,9 @@ lang["mtdl9/vim-log-highlighting"] = {
 		"log",
 	},
 }
+lang["chr4/nginx.vim"] = {
+	lazy = true,
+	ft = "conf",
+}
 
 return lang
