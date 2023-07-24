@@ -35,6 +35,14 @@ return function()
 				size = 0.3,
 				position = "right",
 			},
+			{
+				elements = {
+					{ id = "console", size = 0.55 },
+					{ id = "repl", size = 0.45 },
+				},
+				position = "bottom",
+				size = 0.25,
+			},
 		},
 		controls = {
 			enabled = true,
