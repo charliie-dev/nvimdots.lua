@@ -23,16 +23,16 @@ return function()
 				package_installed = icons.ui.Check,
 				package_uninstalled = icons.misc.Ghost,
 			},
-		},
-		keymaps = {
-			toggle_server_expand = "<CR>",
-			install_server = "i",
-			update_server = "u",
-			check_server_version = "c",
-			update_all_servers = "U",
-			check_outdated_servers = "C",
-			uninstall_server = "X",
-			cancel_installation = "<C-c>",
+			keymaps = {
+				toggle_server_expand = "<CR>",
+				install_server = "i",
+				update_server = "u",
+				check_server_version = "c",
+				update_all_servers = "U",
+				check_outdated_servers = "C",
+				uninstall_server = "X",
+				cancel_installation = "<C-c>",
+			},
 		},
 	})
 
@@ -48,6 +48,7 @@ return function()
 			local python = is_windows and venv .. "/Scripts/python.exe" or venv .. "/bin/python"
 			local black = is_windows and venv .. "/Scripts/black.exe" or venv .. "/bin/black"
 			local ruff = is_windows and venv .. "/Scripts/ruff.exe" or venv .. "/bin/ruff"
+
 			require("plenary.job")
 				:new({
 					command = python,
