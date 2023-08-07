@@ -203,7 +203,8 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
 
 ### Trendy neovim news
 
-- [This Week In Neovim, aka TWiN](https://this-week-in-neovim.org/), highly recommended
+- [This Week In Neovim, aka TWiN](https://this-week-in-neovim.org/), ~~highly recommended~~, Archived
+- [This Week In Neovim, hosted by dotfly.com](https://dotfyle.com/this-week-in-neovim)
 - [Reddit/neovim](https://www.reddit.com/r/neovim/)
 - [Twitter/neovim](https://twitter.com/Neovim)
 - [Neovim Official News](https://neovim.io/news/), not so up-to-date
