@@ -36,8 +36,8 @@ return function()
 					padding = 0,
 				},
 				{
-					filetype = "lspsagaoutline",
-					text = "Lspsaga Outline",
+					filetype = "Outline",
+					text = "Symbol Outline",
 					text_align = "center",
 					highlight = "Directory",
 					separator = true,
