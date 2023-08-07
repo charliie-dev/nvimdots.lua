@@ -14,13 +14,11 @@ function autocmd.nvim_create_augroups(definitions)
 end
 
 local mapping = require("keymap.completion")
-_G._lspkeymap_loaded_bufnr = {}
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)
-		if not _lspkeymap_loaded_bufnr[event.buf] then
+		if not _G._debugging then
 			mapping.lsp(event.buf)
-			_lspkeymap_loaded_bufnr[event.buf] = true
 		end
 		local inlay_hints = require("lsp-inlayhints")
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
