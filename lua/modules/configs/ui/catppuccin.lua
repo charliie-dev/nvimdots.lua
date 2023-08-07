@@ -1,5 +1,4 @@
 return function()
-	local util = require("catppuccin.utils.colors")
 	local transparent_background = require("core.settings").transparent_background
 	local clear = {}
 
@@ -63,7 +62,7 @@ return function()
 			gitgutter = false,
 			gitsigns = true,
 			harpoon = false,
-			headlines = false,
+			headlines = true,
 			hop = false,
 			illuminate = true,
 			indent_blankline = { enabled = true, colored_indent_levels = false },
@@ -145,34 +144,10 @@ return function()
 					-- For trouble.nvim
 					TroubleNormal = { bg = transparent_background and cp.none or cp.base },
 
-					-- Foe Leap
-					LeapMatch = {
-						fg = cp.pink or util.vary_color({ latte = "#222222" }, util.brighten(cp.green, 0.3)),
-						style = { "underline", "nocombine", "bold" or nil },
-					},
-					LeapLabelPrimary = {
-						fg = cp.green or util.vary_color({ latte = "#222222" }, cp.base),
-						bg = cp.none
-							or util.vary_color({ latte = util.brighten(cp.red, 0.4) }, util.brighten(cp.green, 0.3)),
-						style = { "nocombine", "bold" or nil },
-					},
-					LeapLabelSecondary = {
-						fg = cp.blue or util.vary_color({ latte = "#222222" }, cp.base),
-						bg = cp.none or util.vary_color({ latte = util.brighten(cp.sky, 0.3) }, cp.sky),
-						style = { "nocombine", "bold" or nil },
-					},
-					LeapBackdrop = { fg = cp.overlay0 or cp.none },
-
 					-- For Illuminate
 					IlluminatedWordText = { style = { "underline" } },
 					IlluminatedWordRead = { style = { "underline" } },
 					IlluminatedWordWrite = { style = { "underline" } },
-
-					-- For HeadLine
-					HeadLine1 = { fg = "#8bc56f", bg = "#1b2816" },
-					HeadLine2 = { fg = "#1db8c4", bg = "#20262e" },
-					CodeBloack = { bg = "#1c1c1c" },
-					Dash = { bg = "#D19A66", style = { "bold" } },
 
 					-- For telescope.nvim
 					TelescopeMatching = { fg = cp.lavender },

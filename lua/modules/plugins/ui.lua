@@ -86,12 +86,12 @@ ui["petertriho/nvim-scrollbar"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.scrollbar"),
 }
-ui["folke/styler.nvim"] = {
-	lazy = true,
-	event = "BufReadPost",
-	cmd = "Styler",
-	config = require("ui.styler"),
-}
+-- ui["folke/styler.nvim"] = {
+-- 	lazy = true,
+-- 	event = "BufReadPost",
+-- 	cmd = "Styler",
+-- 	config = require("ui.styler"),
+-- }
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
