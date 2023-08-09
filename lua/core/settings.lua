@@ -93,7 +93,7 @@ settings["lsp_deps"] = {
 	-- "emmet_ls",
 	-- "gopls",
 	-- "ltex",
-	-- "taplo",
+	"taplo",
 	-- "texlab",
 	-- "vimls",
 	-- "yamlls",
