@@ -112,6 +112,8 @@ settings["lsp_deps"] = {
 settings["null_ls_deps"] = {
 	-- formatting
 	-- "clang_format",
+	-- "gofumpt",
+	-- "goimports",
 	"eslint_d",
 	"jq",
 	"markdownlint",
