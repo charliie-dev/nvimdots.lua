@@ -2,7 +2,7 @@ return function()
 	local langs = {--[[ configuration for languages ]]
 	}
 
-	require("treesj").setup({
+	require("modules.utils").load_plugin("treesj", {
 		-- Use default keymaps
 		-- (<space>m - toggle, <space>j - join, <space>s - split)
 		use_default_keymaps = false,

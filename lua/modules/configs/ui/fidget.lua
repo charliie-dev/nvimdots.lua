@@ -3,7 +3,7 @@ return function()
 		ui = require("modules.utils.icons").get("ui"),
 	}
 
-	require("fidget").setup({
+	require("modules.utils").load_plugin("fidget", {
 		text = {
 			spinner = "pipe", -- animation shown when tasks are ongoing
 			done = icons.ui.Check, -- character shown when all tasks are complete

@@ -1,5 +1,5 @@
 return function()
-	require("oil").setup({
+	require("modules.utils").load_plugin("oil", {
 		-- Id is automatically added at the beginning, and name at the end
 		-- See :help oil-columns
 		columns = {

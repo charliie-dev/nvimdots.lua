@@ -1,5 +1,5 @@
 return function()
-	require("tmux").setup({
+	require("modules.utils").load_plugin("tmux", {
 		copy_sync = {
 			-- enables copy sync and overwrites all register actions to
 			-- sync registers *, +, unnamed, and 0 till 9 from tmux in advance

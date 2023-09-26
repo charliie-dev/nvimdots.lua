@@ -1,5 +1,5 @@
 return function()
-	require("sniprun").setup({
+	require("modules.utils").load_plugin("sniprun", {
 		selected_interpreters = {}, -- " use those instead of the default for the current filetype
 		repl_enable = {
 			"Python3_original",

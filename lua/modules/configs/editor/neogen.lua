@@ -1,5 +1,5 @@
 return function()
-	require("neogen").setup({
+	require("modules.utils").load_plugin("neogen", {
 		snippet_engine = "luasnip",
 		enabled = true,
 		languages = {

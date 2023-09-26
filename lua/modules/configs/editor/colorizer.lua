@@ -1,5 +1,5 @@
 return function()
-	require("colorizer").setup({
+	require("modules.utils").load_plugin("colorizer", {
 		filetypes = { "*" },
 		user_default_options = {
 			RGB = true, -- #RGB hex codes

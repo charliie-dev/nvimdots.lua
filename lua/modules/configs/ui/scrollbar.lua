@@ -1,5 +1,5 @@
 return function()
-	require("scrollbar").setup({
+	require("modules.utils").load_plugin("scrollbar", {
 		show = true,
 		show_in_active_only = false,
 		set_highlights = true,

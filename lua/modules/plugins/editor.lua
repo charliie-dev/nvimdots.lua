@@ -138,10 +138,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			config = require("editor.treesj"),
 		},
 		{
-			"ziontee113/syntax-tree-surfer",
-			config = require("editor.tree-surfer"),
-		},
-		{
 			"NvChad/nvim-colorizer.lua",
 			config = require("editor.colorizer"),
 		},

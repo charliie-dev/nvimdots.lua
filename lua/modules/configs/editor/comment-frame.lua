@@ -1,5 +1,5 @@
 return function()
-	require("nvim-comment-frame").setup({
+	require("modules.utils").load_plugin("nvim-comment-frame", {
 		-- width of the comment frame
 		frame_width = 70,
 

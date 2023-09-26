@@ -1,19 +1,5 @@
 local tool = {}
 
-tool["sudormrfbin/cheatsheet.nvim"] = {
-	lazy = true,
-	cmd = "Cheatsheet",
-	config = require("tool.cheatsheet"),
-	dependencies = {
-		{ "nvim-telescope/telescope.nvim" },
-		{ "nvim-lua/plenary.nvim" },
-	},
-}
-tool["ja-ford/delaytrain.nvim"] = {
-	lazy = true,
-	event = "InsertEnter",
-	config = require("tool.delaytrain"),
-}
 tool["monaqa/dial.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },

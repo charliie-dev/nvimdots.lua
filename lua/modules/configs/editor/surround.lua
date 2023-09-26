@@ -15,7 +15,7 @@ return function()
 	-- delete(functi*on calls)     dsf             function calls
 	-- NOTE: this config doesn't use the default keymaps
 
-	require("nvim-surround").setup({
+	require("modules.utils").load_plugin("nvim-surround", {
 		move_cursor = "begin", -- set to fasle to disable this
 		keymaps = {
 			insert = nil,

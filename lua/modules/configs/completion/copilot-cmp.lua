@@ -1,5 +1,5 @@
 return function()
-	require("copilot_cmp").setup({
+	require("modules.utils").load_plugin("copilot_cmp", {
 		method = "getCompletionsCycling",
 		-- formatters = {
 		-- 	label = require("copilot_cmp.format").format_label_text,

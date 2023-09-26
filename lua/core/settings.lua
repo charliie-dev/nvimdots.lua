@@ -34,6 +34,11 @@ settings["format_disabled_dirs"] = {
 	-- "~/Workspace/dockers",
 }
 
+-- Set the plugins to disable here.
+-- Example: "Some-User/A-Repo"
+---@type string[]
+settings["disabled_plugins"] = {}
+
 -- Set it to false if you don't use nvim to open big files.
 ---@type boolean
 settings["load_big_files_faster"] = false
@@ -130,4 +135,32 @@ settings["dap_deps"] = {
 	"python", -- Python (debugpy)
 }
 
-return settings
+-- Set the Treesitter parsers that will be installed during bootstrap here.
+-- Check the below link for all supported languages:
+-- https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
+---@type string[]
+settings["treesitter_deps"] = {
+	"bash",
+	"c",
+	"cpp",
+	"css",
+	"gitignore",
+	"html",
+	"javascript",
+	"json",
+	"latex",
+	"lua",
+	"make",
+	"markdown",
+	"markdown_inline",
+	"python",
+	"regex",
+	"rust",
+	"toml",
+	"tsx",
+	"typescript",
+	"yaml",
+	"vimdoc",
+}
+
+return require("modules.utils").extend_config(settings, "user.settings")

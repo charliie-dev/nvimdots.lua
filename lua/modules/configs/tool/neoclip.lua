@@ -1,5 +1,5 @@
 return function()
-	require("neoclip").setup({
+	require("modules.utils").load_plugin("neoclip", {
 		history = 1000,
 		enable_persistent_history = true,
 		length_limit = 1048576,

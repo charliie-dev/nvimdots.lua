@@ -11,7 +11,7 @@ return function()
 	local perf_purple = "#7C3AED"
 	local note_green = "#10B981"
 
-	require("todo-comments").setup({
+	require("modules.utils").load_plugin("todo-comments", {
 		signs = true, -- show icons in the signs column
 		sign_priority = 8, -- sign priority
 		-- keywords recognized as todo comments

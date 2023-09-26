@@ -4,30 +4,8 @@ return vim.schedule_wrap(function()
 	vim.api.nvim_set_option_value("foldmethod", "expr", {})
 	vim.api.nvim_set_option_value("foldexpr", "nvim_treesitter#foldexpr()", {})
 
-	require("nvim-treesitter.configs").setup({
-		ensure_installed = {
-			"bash",
-			"c",
-			"cpp",
-			"css",
-			"gitignore",
-			"html",
-			"javascript",
-			"json",
-			"latex",
-			"lua",
-			"make",
-			"markdown",
-			"markdown_inline",
-			"python",
-			"regex",
-			"rust",
-			"toml",
-			"tsx",
-			"typescript",
-			"yaml",
-			"vimdoc",
-		},
+	require("modules.utils").load_plugin("nvim-treesitter", {
+		ensure_installed = require("core.settings").treesitter_deps,
 		sync_install = true,
 		ignore_install = { "comment" }, -- comments are slowing down TS bigtime, so disable for now
 		incremental_selection = {
@@ -94,7 +72,7 @@ return vim.schedule_wrap(function()
 			enable_autocmd = false,
 		},
 		matchup = { enable = true },
-	})
+	}, false, require("nvim-treesitter.configs").setup)
 
 	require("nvim-treesitter.install").prefer_git = true
 	if use_ssh then
