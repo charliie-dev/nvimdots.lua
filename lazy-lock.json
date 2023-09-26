@@ -42,7 +42,7 @@
   "mason-null-ls.nvim": { "branch": "main", "commit": "ae0c5fa57468ac65617f1bf821ba0c3a1e251f0c" },
   "mason-nvim-dap.nvim": { "branch": "main", "commit": "6148b51db945b55b3b725da39eaea6441e59dff8" },
   "mason.nvim": { "branch": "main", "commit": "d66c60e17dd6fd8165194b1d14d21f7eb2c1697a" },
-  "neodim": { "branch": "master", "commit": "41535b577deed1bb770830fd9263c3923b70a18c" },
+  "neodim": { "branch": "master", "commit": "9477da03b93f1984a81fee3b92e6ac7c6ada6aa4" },
   "neogen": { "branch": "main", "commit": "70127baaff25611deaf1a29d801fc054ad9d2dc1" },
   "neoscroll.nvim": { "branch": "master", "commit": "4bc0212e9f2a7bc7fe7a6bceb15b33e39f0f41fb" },
   "nginx.vim": { "branch": "master", "commit": "8a42e93c9f004fbc5b32bb2e4940107fb7b70a42" },
