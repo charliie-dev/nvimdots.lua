@@ -44,6 +44,7 @@ ui["ellisonleao/gruvbox.nvim"] = {
 	config = require("ui.gruvbox"),
 }
 ui["lukas-reineke/indent-blankline.nvim"] = {
+	main = "ibl",
 	lazy = true,
 	event = "BufReadPost",
 	config = require("ui.indent-blankline"),
