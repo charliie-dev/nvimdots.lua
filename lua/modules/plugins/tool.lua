@@ -68,11 +68,11 @@ tool["folke/trouble.nvim"] = {
 	cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
 	config = require("tool.trouble"),
 }
-tool["samjwill/nvim-unception"] = {
-	lazy = true,
-	event = "VeryLazy",
-	config = require("tool.unception"),
-}
+-- tool["samjwill/nvim-unception"] = {
+-- 	lazy = true,
+-- 	event = "VeryLazy",
+-- 	config = require("tool.unception"),
+-- }
 tool["folke/which-key.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
