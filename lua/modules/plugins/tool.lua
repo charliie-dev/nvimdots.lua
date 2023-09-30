@@ -46,11 +46,6 @@ tool["michaelb/sniprun"] = {
 	cmd = "SnipRun",
 	config = require("tool.sniprun"),
 }
-tool["aserowy/tmux.nvim"] = {
-	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
-	config = require("tool.tmux"),
-}
 tool["akinsho/toggleterm.nvim"] = {
 	lazy = true,
 	cmd = {
@@ -82,7 +77,7 @@ tool["gelguy/wilder.nvim"] = {
 	lazy = true,
 	event = "CmdlineEnter",
 	config = require("tool.wilder"),
-	dependencies = "romgrk/fzy-lua-native",
+	dependencies = { "romgrk/fzy-lua-native" },
 }
 
 ----------------------------------------------------------------------

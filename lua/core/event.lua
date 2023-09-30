@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 			and vim.api.nvim_get_option_value("filetype", { buf = vim.api.nvim_win_get_buf(layout[2]) }) == "NvimTree"
 			and layout[3] == nil
 		then
-			cmd("confirm quit")
+			cmd([[confirm quit]])
 		end
 	end,
 })
@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd("BufRead", {
 	callback = function()
 		vim.api.nvim_create_autocmd("BufWinEnter", {
 			once = true,
-			command = "normal! zz",
+			command = "normal! zx",
 		})
 	end,
 })
@@ -101,6 +101,12 @@ function autocmd.load_autocmds()
 			{ "BufWritePre", "MERGE_MSG", "setlocal noundofile" },
 			{ "BufWritePre", "*.tmp", "setlocal noundofile" },
 			{ "BufWritePre", "*.bak", "setlocal noundofile" },
+			-- auto place to last edit
+			{
+				"BufReadPost",
+				"*",
+				[[if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif]],
+			},
 			-- auto change directory
 			-- { "BufEnter", "*", "silent! lcd %:p:h" },
 		},

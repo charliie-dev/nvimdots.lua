@@ -8,7 +8,7 @@ settings["use_ssh"] = false
 ---@type boolean
 settings["format_on_save"] = true
 
--- Set it to false if the nofitication after formatting is annoying for you.
+-- Set it to false if the notification after formatting is annoying.
 ---@type boolean
 settings["format_notify"] = true
 
@@ -16,7 +16,7 @@ settings["format_notify"] = true
 ---@type boolean
 settings["use_copilot"] = true
 
--- Set it to false if diagnostics virtual text is annoying for you
+-- Set it to false if diagnostics virtual text is annoying.
 -- If disabled, you may browse lsp diagnostics using trouble.nvim (press `gt` to toggle it).
 ---@type boolean
 settings["diagnostics_virtual_text"] = true
@@ -29,6 +29,8 @@ settings["diagnostics_virtual_text"] = true
 settings["diagnostics_level"] = "Hint"
 
 -- Set the format disabled directories here, files under these dirs won't be formatted on save.
+--- NOTE: Directories may contain regular expressions (grammar: vim). |regexp|
+--- NOTE: Directories are automatically normalized. |vim.fs.normalize()|
 ---@type string[]
 settings["format_disabled_dirs"] = {
 	-- "~/Workspace/dockers",
@@ -43,24 +45,24 @@ settings["disabled_plugins"] = {}
 ---@type boolean
 settings["load_big_files_faster"] = false
 
----Change the colors of the global palette here.
----Settings will complete their replacement at initialization.
----Parameters will be automatically completed as you type.
----Example: { sky = "#04A5E5" }
+-- Change the colors of the global palette here.
+-- Settings will complete their replacement at initialization.
+-- Parameters will be automatically completed as you type.
+-- Example: { sky = "#04A5E5" }
 ---@type palette[]
 settings["palette_overwrite"] = {}
 
 -- Set the colorscheme to use here.
--- Available values are: `catppuccin`, `edge`, `nord`.
+-- Available values are: `catppuccin`, `catppuccin-latte`, `catppucin-mocha`, `catppuccin-frappe`, `catppuccin-macchiato
 ---@type string
 settings["colorscheme"] = "catppuccin"
 
 -- Set it to true if your terminal has transparent background.
 ---@type boolean
-settings["transparent_background"] = true
+settings["transparent_background"] = false
 
 -- Set background color to use here.
--- Useful for when you want to use a colorscheme that has a light and dark variant like `edge`.
+-- Useful if you would like to use a colorscheme that has a light and dark variant like `edge`.
 ---@type "dark"|"light"
 settings["background"] = "dark"
 
@@ -69,13 +71,13 @@ settings["background"] = "dark"
 ---@type string
 settings["external_browser"] = "chrome-cli open"
 
--- Filetypes in this list will skip lsp formatting if rhs is true
+-- Filetypes in this list will skip lsp formatting if rhs is true.
 ---@type table<string, boolean>
 settings["formatter_block_list"] = {
 	lua = false, -- example
 }
 
--- Servers in this list will skip setting formatting capabilities if rhs is true
+-- Servers in this list will skip setting formatting capabilities if rhs is true.
 ---@type table<string, boolean>
 settings["server_formatting_block_list"] = {
 	lua_ls = true,
@@ -84,8 +86,10 @@ settings["server_formatting_block_list"] = {
 	jsonls = true,
 }
 
--- Servers in this list will skip setting formatting capabilities if rhs is true
----@type table<string, boolean>
+-- Set the language servers that will be installed during bootstrap here.
+-- check the below link for all the supported LSPs:
+-- https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations
+---@type string[]
 settings["lsp_deps"] = {
 	"bashls",
 	-- "clangd",
@@ -104,8 +108,8 @@ settings["lsp_deps"] = {
 	-- "yamlls",
 }
 
--- Set the general-purpose servers that will be installed during bootstrap here
--- check the below link for all supported sources
+-- Set the general-purpose servers that will be installed during bootstrap here.
+-- Check the below link for all supported sources.
 -- in `code_actions`, `completion`, `diagnostics`, `formatting`, `hover` folders:
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins
 ---@type string[]

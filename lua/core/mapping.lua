@@ -35,10 +35,10 @@ local core_map = {
 	["n|-"] = map_cmd("<C-x>"):with_noremap():with_silent():with_desc("edit: Decrement"),
 	["n|<C-a>"] = map_cmd("gg0vG$"):with_noremap():with_silent():with_desc("edit: Select all"),
 	["x|<C-a>"] = map_cmd("<Esc>gg0vG$"):with_noremap():with_silent():with_desc("edit: Select all"),
-	["n|tn"] = map_cmd("<Cmd>tabnew<CR>"):with_noremap():with_silent():with_desc("tab: Create a new tab"),
-	["n|tk"] = map_cmd("<Cmd>tabnext<CR>"):with_noremap():with_silent():with_desc("tab: Move to next tab"),
-	["n|tj"] = map_cmd("<Cmd>tabprevious<CR>"):with_noremap():with_silent():with_desc("tab: Move to previous tab"),
-	["n|to"] = map_cmd("<Cmd>tabonly<CR>"):with_noremap():with_silent():with_desc("tab: Only keep current tab"),
+	["n|tn"] = map_cr("tabnew"):with_noremap():with_silent():with_desc("tab: Create a new tab"),
+	["n|tk"] = map_cr("tabnext"):with_noremap():with_silent():with_desc("tab: Move to next tab"),
+	["n|tj"] = map_cr("tabprevious"):with_noremap():with_silent():with_desc("tab: Move to previous tab"),
+	["n|to"] = map_cr("tabonly"):with_noremap():with_silent():with_desc("tab: Only keep current tab"),
 	-- -- chmod +x current file, @ThePrimeagen
 	["n|<leader><leader>x"] = map_cmd("<Cmd>!chmod +x %<CR>"):with_silent():with_desc("file: chmod +x current file"),
 	-- Insert mode

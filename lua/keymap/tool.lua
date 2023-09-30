@@ -47,65 +47,13 @@ local plug_map = {
 		:with_desc("filetree: Open Oil"),
 
 	-- Plugin: sniprun
-	["n|<leader>R"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
-	["v|<leader>R"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
-
-	-- Plugin: tmux
-	-- Move from Nvim windows to tmux panes
-	["n|<C-j>"] = map_callback(function()
-			require("tmux").move_bottom()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Move to tmux/nvim bottom window"),
-	["n|<C-k>"] = map_callback(function()
-			require("tmux").move_top()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Move to tmux/nvim top window"),
-	["n|<C-h>"] = map_callback(function()
-			require("tmux").move_left()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Move to tmux/nvim left window"),
-	["n|<C-l>"] = map_callback(function()
-			require("tmux").move_right()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Move tmux/nvim right window"),
-	-- Neovim windos/Tmux panes resize
-	["n|<M-j>"] = map_callback(function()
-			require("tmux").resize_bottom()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Resize tmux/nvim pane downward"),
-	["n|<M-k>"] = map_callback(function()
-			require("tmux").move_top()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Resize to tmux/nvim pane upward"),
-	["n|<M-h>"] = map_callback(function()
-			require("tmux").move_left()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Resize to tmux/nvim pane leftward"),
-	["n|<M-l>"] = map_callback(function()
-			require("tmux").move_right()
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("tmux: Resize tmux/nvim pane rightward"),
+	["v|<leader>r"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
+	["n|<leader>r"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
 
 	-- Plugin: toggleterm
 	["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
 	["t|jk"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
-	["n|<C-\\>"] = map_cr([[execute v:count . "ToggleTerm direction=horizontal"]])
+	["n|<C-\\>"] = map_cr("ToggleTerm direction=horizontal")
 		:with_noremap()
 		:with_silent()
 		:with_desc("terminal: Toggle horizontal"),
@@ -114,7 +62,7 @@ local plug_map = {
 		:with_silent()
 		:with_desc("terminal: Toggle horizontal"),
 	["t|<C-\\>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle horizontal"),
-	["n|<A-\\>"] = map_cr([[execute v:count . "ToggleTerm direction=vertical"]])
+	["n|<A-\\>"] = map_cr("ToggleTerm direction=vertical")
 		:with_noremap()
 		:with_silent()
 		:with_desc("terminal: Toggle vertical"),
@@ -123,7 +71,7 @@ local plug_map = {
 		:with_silent()
 		:with_desc("terminal: Toggle vertical"),
 	["t|<A-\\>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle vertical"),
-	["n|<F5>"] = map_cr([[execute v:count . "ToggleTerm direction=vertical"]])
+	["n|<F5>"] = map_cr("ToggleTerm direction=vertical")
 		:with_noremap()
 		:with_silent()
 		:with_desc("terminal: Toggle vertical"),
@@ -132,10 +80,7 @@ local plug_map = {
 		:with_silent()
 		:with_desc("terminal: Toggle vertical"),
 	["t|<F5>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle vertical"),
-	["n|<A-d>"] = map_cr([[execute v:count . "ToggleTerm direction=float"]])
-		:with_noremap()
-		:with_silent()
-		:with_desc("terminal: Toggle float"),
+	["n|<A-d>"] = map_cr("ToggleTerm direction=float"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
 	["i|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=float<CR>")
 		:with_noremap()
 		:with_silent()
@@ -205,7 +150,7 @@ local plug_map = {
 		:with_noremap()
 		:with_silent()
 		:with_desc("ui: Change colorscheme for current session"),
-	["n|<leader>fn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"), -- TODO:
+	["n|<leader>fn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"),
 	["n|<leader>fg"] = map_cu("Telescope git_files")
 		:with_noremap()
 		:with_silent()
@@ -223,7 +168,6 @@ local plug_map = {
 		:with_desc("debug: Run/Continue"),
 	["n|<F7>"] = map_callback(function()
 			require("dap").terminate()
-			require("dapui").close()
 		end)
 		:with_noremap()
 		:with_silent()

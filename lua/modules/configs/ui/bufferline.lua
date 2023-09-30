@@ -24,10 +24,6 @@ return function()
 			diagnostics_indicator = function(count)
 				return "(" .. count .. ")"
 			end,
-			indicator = {
-				icon = icons.ui.Indicator,
-				style = "icon",
-			},
 			offsets = {
 				{
 					filetype = "NvimTree",
@@ -39,15 +35,13 @@ return function()
 					filetype = "Outline",
 					text = "Symbol Outline",
 					text_align = "center",
-					highlight = "Directory",
-					separator = true,
 					padding = 0,
 				},
 			},
-			-- Change bufferline's highlights here! See `:h bufferline-highlights` for detailed explanation.
-			-- Note: If you use catppuccin then modify the colors below!
-			highlights = {},
 		},
+		-- Change bufferline's highlights here! See `:h bufferline-highlights` for detailed explanation.
+		-- Note: If you use catppuccin then modify the colors below!
+		highlights = {},
 	}
 
 	if vim.g.colors_name:find("catppuccin") then

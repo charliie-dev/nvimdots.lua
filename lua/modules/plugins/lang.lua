@@ -21,11 +21,6 @@ lang["ranelpadon/python-copy-reference.vim"] = {
 	ft = "python",
 	cmd = { "PythonCopyReferenceDotted", "PythonCopyReferencePytest" },
 }
-lang["AckslD/swenv.nvim"] = {
-	lazy = true,
-	ft = "python",
-	config = require("lang.swenv"),
-}
 lang["mtdl9/vim-log-highlighting"] = {
 	lazy = true,
 	ft = {

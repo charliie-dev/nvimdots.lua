@@ -38,13 +38,7 @@ editor["numToStr/Comment.nvim"] = {
 }
 editor["sindrets/diffview.nvim"] = {
 	lazy = true,
-	cmd = {
-		"DiffviewOpen",
-		"DiffviewFileHistory",
-		"DiffviewFocusFiles",
-		"DiffviewToggleFiles",
-		"DiffviewRefresh",
-	},
+	cmd = { "DiffviewOpen", "DiffviewClose" },
 }
 editor["junegunn/vim-easy-align"] = {
 	lazy = true,
@@ -54,7 +48,6 @@ editor["ggandor/leap.nvim"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("editor.leap"),
-	dependencies = "ggandor/leap-ast.nvim",
 }
 editor["danymat/neogen"] = {
 	lazy = true,
@@ -75,11 +68,6 @@ editor["olimorris/persisted.nvim"] = {
 		"SessionDelete",
 	},
 	config = require("editor.persisted"),
-}
-editor["roobert/search-replace.nvim"] = {
-	lazy = true,
-	event = "BufReadPost",
-	config = require("editor.search-replace"),
 }
 editor["lambdalisue/suda.vim"] = {
 	lazy = true,
@@ -132,10 +120,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.autotag"),
-		},
-		{
-			"Wansmer/treesj",
-			config = require("editor.treesj"),
 		},
 		{
 			"NvChad/nvim-colorizer.lua",

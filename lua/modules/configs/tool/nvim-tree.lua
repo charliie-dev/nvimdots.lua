@@ -17,7 +17,6 @@ return function()
 		respect_buf_cwd = false,
 		sort_by = "name",
 		sync_root_with_cwd = true,
-		update_cwd = true,
 		view = {
 			adaptive_size = false,
 			centralize_selection = false,
@@ -56,7 +55,7 @@ return function()
 					none = "  ",
 				},
 			},
-			root_folder_modifier = ":.:s?.*?/..?",
+			root_folder_label = ":.:s?.*?/..?",
 			icons = {
 				webdev_colors = true,
 				git_placement = "after",
@@ -101,7 +100,7 @@ return function()
 		update_focused_file = {
 			enable = true,
 			update_root = true,
-			ignore_list = { "help" },
+			ignore_list = {},
 		},
 		filters = {
 			dotfiles = false,

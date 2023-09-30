@@ -4,9 +4,7 @@ local function load_options()
 	local global_local = {
 		-- backupdir = global.cache_dir .. "backup/",
 		-- directory = global.cache_dir .. "swap/",
-		-- spell = true,
 		-- spellfile = global.cache_dir .. "spell/en.uft-8.add",
-		-- spelllang = "en_us",
 		-- viewdir = global.cache_dir .. "view/",
 		autoindent = true,
 		autoread = true,
@@ -41,11 +39,11 @@ local function load_options()
 		hidden = true,
 		history = 2000,
 		ignorecase = true,
-		inccommand = "split", -- nosplit
+		inccommand = "nosplit",
 		incsearch = true,
 		infercase = true,
 		jumpoptions = "stack",
-		laststatus = 3, -- global status line
+		laststatus = 2, -- global status line
 		-- lazyredraw = true,
 		linebreak = true,
 		list = true,
@@ -82,7 +80,7 @@ local function load_options()
 		startofline = false,
 		swapfile = false,
 		switchbuf = "usetab,uselast",
-		synmaxcol = 500,
+		synmaxcol = 2500,
 		tabstop = 4,
 		termguicolors = true,
 		timeout = true,
@@ -108,10 +106,6 @@ local function load_options()
 		wrapscan = true,
 		writebackup = false,
 	}
-
-	for name, value in pairs(global_local) do
-		vim.o[name] = value
-	end
 
 	local function isempty(s)
 		return s == nil or s == ""
