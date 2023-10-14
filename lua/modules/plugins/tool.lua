@@ -10,15 +10,6 @@ tool["tpope/vim-fugitive"] = {
 	lazy = true,
 	cmd = { "Git", "G" },
 }
-tool["AckslD/nvim-neoclip.lua"] = {
-	lazy = true,
-	event = { "CmdlineEnter", "TextYankPost" },
-	config = require("tool.neoclip"),
-	dependencies = {
-		{ "kkharji/sqlite.lua" },
-		{ "nvim-telescope/telescope.nvim" },
-	},
-}
 tool["nvim-tree/nvim-tree.lua"] = {
 	lazy = true,
 	cmd = {
@@ -99,9 +90,7 @@ tool["nvim-telescope/telescope.nvim"] = {
 		{ "debugloop/telescope-undo.nvim" },
 		{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-		{ "nvim-telescope/telescope-frecency.nvim", dependencies = {
-			{ "kkharji/sqlite.lua" },
-		} },
+		{ "nvim-telescope/telescope-frecency.nvim" },
 	},
 }
 
