@@ -24,7 +24,7 @@ return function()
 						"arguments",
 						"assignment_statement",
 						"Block",
-						"chunk",
+						-- "chunk",
 						"class",
 						"ContainerDecl",
 						"dictionary",
