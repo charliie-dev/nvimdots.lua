@@ -11,6 +11,17 @@ _G._command_panel = function()
 	})
 end
 
+_G._flash_esc_or_noh = function()
+	local flash_active, state = pcall(function()
+		return require("flash.plugins.char").state
+	end)
+	if flash_active and state then
+		state:hide()
+	else
+		vim.cmd([[noh]])
+	end
+end
+
 ---@param program string
 local function not_found_notify(program)
 	vim.notify(string.format("[%s] not found!", program), vim.log.levels.ERROR, { title = "toggleterm.nvim" })

@@ -2,6 +2,7 @@ local bind = require("keymap.bind")
 local map_cr = bind.map_cr
 local map_cu = bind.map_cu
 local map_cmd = bind.map_cmd
+local map_callback = bind.map_callback
 
 local core_map = {
 	-- Suckless
@@ -11,7 +12,12 @@ local core_map = {
 	["n|D"] = map_cmd("d$"):with_desc("edit: Delete text to EOL"),
 	["n|n"] = map_cmd("nzzzv"):with_noremap():with_desc("edit: Next search result"),
 	["n|N"] = map_cmd("Nzzzv"):with_noremap():with_desc("edit: Prev search result"),
-	["n|<Esc>"] = map_cr("noh"):with_noremap():with_silent():with_desc("edit: Clear search highlight"),
+	["n|<Esc>"] = map_callback(function()
+			_flash_esc_or_noh()
+		end)
+		:with_noremap()
+		:with_silent()
+		:with_desc("edit: Clear search highlight"),
 	-- Keep cursor inplace if below line being append to current line when moving, @ThePrimeagen
 	["n|J"] = map_cmd("mzJ`z"):with_noremap():with_desc("edit: Join next line"),
 	["n|<C-h>"] = map_cmd("<C-w>h"):with_noremap():with_desc("window: Focus left"),
