@@ -67,7 +67,7 @@ return function()
 		-- Number of plugins
 		local stats = require("lazy").stats()
 		local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-		local plugins_text = "           v"
+		local plugins_text = "           v"
 			.. vim.version().major
 			.. "."
 			.. vim.version().minor
