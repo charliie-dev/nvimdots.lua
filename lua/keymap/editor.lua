@@ -4,6 +4,7 @@ local map_cu = bind.map_cu
 local map_cmd = bind.map_cmd
 local map_callback = bind.map_callback
 local et = bind.escape_termcode
+require("keymap.helpers")
 
 local plug_map = {
 	-- Plugin: accelerate-jk
@@ -63,6 +64,26 @@ local plug_map = {
 		:with_silent()
 		:with_noremap()
 		:with_desc("edit: Toggle comment for block with selection"),
+
+	-- Plugin: flash
+	["nxo|s"] = map_callback(function()
+			require("flash").jump()
+		end)
+		:with_silent()
+		:with_noremap()
+		:with_desc("edit: Flash search"),
+	["nxo|S"] = map_callback(function()
+			require("flash").treesitter()
+		end)
+		:with_silent()
+		:with_noremap()
+		:with_desc("edit: Flash Treesitter"),
+	["c|<C-s>"] = map_callback(function()
+			require("flash").toggle()
+		end)
+		:with_silent()
+		:with_noremap()
+		:with_desc("editi: Flash Telescope"),
 
 	-- Plugin: diffview
 	["n|<leader>dv"] = map_cr("DiffviewOpen"):with_silent():with_noremap():with_desc("git: Show diff"),
