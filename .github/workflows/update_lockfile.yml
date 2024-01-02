@@ -20,7 +20,7 @@ jobs:
           files: "lazy-lock.json"
       - name: Run count-new-commits
         run: |
-          echo "NEW_COMMIT_COUNT=$(git log --oneline --since '24 hours ago' --perl-regexp --author='^((?!github-actions).*)$' | wc -l)" >> "$GITHUB_ENV"
+          echo "NEW_COMMIT_COUNT=$(git log --oneline --since '4 months ago' --perl-regexp --author='^((?!github-actions).*)$' | wc -l)" >> "$GITHUB_ENV"
       - uses: rhysd/action-setup-vim@v1
         if: ${{ steps.check_lockfile.outputs.files_exists == 'true' && env.NEW_COMMIT_COUNT > 0 }}
         with:
