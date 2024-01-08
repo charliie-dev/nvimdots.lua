@@ -34,7 +34,7 @@ tool["ibhagwan/smartyank.nvim"] = {
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	build = "bash ./install.sh",
-	cmd = "SnipRun",
+	cmd = { "SnipRun", "SnipReset", "SnipInfo" },
 	config = require("tool.sniprun"),
 }
 tool["akinsho/toggleterm.nvim"] = {
