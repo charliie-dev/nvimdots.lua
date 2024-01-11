@@ -74,6 +74,7 @@ end
 
 local leader_map = function()
 	vim.g.mapleader = ","
+	-- Below lines is only needed when leader is set to <Space>
 	vim.api.nvim_set_keymap("n", " ", "", { noremap = true })
 	vim.api.nvim_set_keymap("x", " ", "", { noremap = true })
 end
