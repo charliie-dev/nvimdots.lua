@@ -86,8 +86,8 @@ local plug_map = {
 		:with_desc("editi: Flash Telescope"),
 
 	-- Plugin: diffview
-	["n|<leader>dv"] = map_cr("DiffviewOpen"):with_silent():with_noremap():with_desc("git: Show diff"),
-	["n|<leader><leader>dv"] = map_cr("DiffviewClose"):with_silent():with_noremap():with_desc("git: Close diff"),
+	["n|<leader>gd"] = map_cr("DiffviewOpen"):with_silent():with_noremap():with_desc("git: Show diff"),
+	["n|<leader>gD"] = map_cr("DiffviewClose"):with_silent():with_noremap():with_desc("git: Close diff"),
 
 	-- Plugin: vim-easy-align
 	["nx|gea"] = map_cr("EasyAlign"):with_desc("edit: Align with delimiter"),

@@ -163,9 +163,9 @@ local load_core = function()
 
 	require("core.options")
 	require("core.mapping")
-	require("keymap")
 	require("core.event")
 	require("core.pack")
+	require("keymap")
 
 	local colorscheme = require("core.settings").colorscheme
 	local background = require("core.settings").background
