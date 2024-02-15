@@ -22,6 +22,18 @@ _G._flash_esc_or_noh = function()
 	end
 end
 
+_G._buf_vtext = function()
+	local a_orig = vim.fn.getreg("a")
+	local mode = vim.fn.mode()
+	if mode ~= "v" and mode ~= "V" then
+		vim.cmd([[normal! gv]])
+	end
+	vim.cmd([[silent! normal! "aygv]])
+	local text = vim.fn.getreg("a")
+	vim.fn.setreg("a", a_orig)
+	return text
+end
+
 ---@param program string
 local function not_found_notify(program)
 	vim.notify(string.format("[%s] not found!", program), vim.log.levels.ERROR, { title = "toggleterm.nvim" })
