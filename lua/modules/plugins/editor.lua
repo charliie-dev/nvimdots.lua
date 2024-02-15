@@ -39,6 +39,7 @@ editor["numToStr/Comment.nvim"] = {
 editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
+	config = require("editor.diffview"),
 }
 -- NOTE: `flash.nvim` is a powerful plugin that can be used as partial or complete replacements for:
 --  > `hop.nvim`,
