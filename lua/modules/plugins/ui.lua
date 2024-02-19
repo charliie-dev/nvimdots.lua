@@ -63,11 +63,6 @@ ui["petertriho/nvim-scrollbar"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.scrollbar"),
 }
-ui["edluffy/specs.nvim"] = {
-	lazy = true,
-	event = "CursorMoved",
-	config = require("ui.specs"),
-}
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = "BufReadPost",
