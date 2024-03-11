@@ -38,7 +38,7 @@ return function()
 		btns.diagnostics.markdownlint.with({
 			extra_args = { "--disable MD033" },
 		}),
-        btns.diagnostics.zsh,
+		btns.diagnostics.zsh,
 		-- example for changing diagnostics_format
 		-- btns.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{s} #{c}]" }),
 	}

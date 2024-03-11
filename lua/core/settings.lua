@@ -135,7 +135,7 @@ settings["null_ls_deps"] = {
 	"stylua",
 
 	-- diagnostics
-    "zsh",
+	"zsh",
 	-- "shellcheck",
 	-- "markdownlint",
 }
