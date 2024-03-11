@@ -18,12 +18,15 @@ local mapping = require("keymap.completion")
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)
-		if not _G._debugging then
-			mapping.lsp(event.buf)
+		if _G._debugging then
+			return
 		end
-		local inlay_hints = require("lsp-inlayhints")
+
+		mapping.lsp(event.buf)
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
-		inlay_hints.on_attach(client, event.buf)
+		if client ~= nil and client.server_capabilities.inlayHintProvider ~= nil then
+			vim.lsp.inlay_hint.enable(event.buf, true)
+		end
 	end,
 })
 
@@ -116,6 +119,7 @@ function autocmd.load_autocmds()
 			{
 				"VimLeave",
 				"*",
+				-- `:wviminfo` will be deprecated in v0.11
 				[[if has('nvim') | wshada | else | wviminfo! | endif]],
 			},
 			-- Check if file changed when its window is focus, more eager than 'autoread'

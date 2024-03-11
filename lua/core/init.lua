@@ -84,7 +84,8 @@ local clipboard_config = function()
 		vim.g.clipboard = {
 			name = "macOS-clipboard",
 			copy = { ["+"] = "pbcopy", ["*"] = "pbcopy" },
-			paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
+			-- `paste` wull obsolete options
+			-- paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
 			cache_enabled = 0,
 		}
 	elseif global.is_wsl then
@@ -94,10 +95,11 @@ local clipboard_config = function()
 				["+"] = "clip.exe",
 				["*"] = "clip.exe",
 			},
-			paste = {
-				["+"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
-				["*"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
-			},
+			-- `paste` wull obsolete options
+			-- paste = {
+			-- 	["+"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
+			-- 	["*"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
+			-- },
 			cache_enabled = 0,
 		}
 	elseif os.getenv("TMUX") then
@@ -107,10 +109,11 @@ local clipboard_config = function()
 				["+"] = "tmux set-buffer -w",
 				["*"] = "tmux set-buffer -w",
 			},
-			paste = {
-				["+"] = "tmux save-buffer -",
-				["*"] = "tmux save-buffer -",
-			},
+			-- `paste` wull obsolete options
+			-- paste = {
+			-- 	["+"] = "tmux save-buffer -",
+			-- 	["*"] = "tmux save-buffer -",
+			-- },
 			cache_enabled = 0,
 		}
 	end
@@ -120,7 +123,7 @@ local shell_config = function()
 	if global.is_windows then
 		if not (vim.fn.executable("pwsh") == 1 or vim.fn.executable("powershell") == 1) then
 			vim.notify(
-				[[
+				[[paste
 Failed to setup terminal config
 PowerShell is either not installed, missing from PATH, or not executable;
 cmd.exe will be used instead for `:!` (shell bang) and toggleterm.nvim.

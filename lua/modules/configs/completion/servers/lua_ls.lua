@@ -26,6 +26,9 @@ require("neodev").setup({
 return {
 	settings = {
 		Lua = {
+			runtime = {
+				version = "LuaJIT",
+			},
 			completion = {
 				callSnippet = "Replace",
 			},
