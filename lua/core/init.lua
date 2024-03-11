@@ -97,8 +97,8 @@ local clipboard_config = function()
 			},
 			-- `paste` wull obsolete options
 			-- paste = {
-			-- 	["+"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
-			-- 	["*"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
+			-- 	["+"] = [[pwsl.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
+			-- 	["*"] = [[pwsl.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
 			-- },
 			cache_enabled = 0,
 		}
