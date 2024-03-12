@@ -19,15 +19,13 @@ jobs:
         id: check_lockfile
         with:
           files: "lazy-lock.json"
-      - name: Run count-new-commits
-        run: |
-          echo "NEW_COMMIT_COUNT=$(git log --oneline --since '1 week ago' --perl-regexp --author='^((?!github-actions).*)$' | wc -l)" >> "$GITHUB_ENV"
       - uses: rhysd/action-setup-vim@v1
         if: ${{ steps.check_lockfile.outputs.files_exists == 'true' && env.NEW_COMMIT_COUNT > 0 }}
         with:
           neovim: true
+          version: nightly
       - name: Run lockfile-autoupdate
-        if: ${{ steps.check_lockfile.outputs.files_exists == 'true' && env.NEW_COMMIT_COUNT > 0 }}
+        if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
         timeout-minutes: 5
         run: |
           ./scripts/update_lockfile.sh
