@@ -84,8 +84,7 @@ local clipboard_config = function()
 		vim.g.clipboard = {
 			name = "macOS-clipboard",
 			copy = { ["+"] = "pbcopy", ["*"] = "pbcopy" },
-			-- `paste` wull obsolete options
-			-- paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
+			paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
 			cache_enabled = 0,
 		}
 	elseif global.is_wsl then
@@ -95,11 +94,10 @@ local clipboard_config = function()
 				["+"] = "clip.exe",
 				["*"] = "clip.exe",
 			},
-			-- `paste` wull obsolete options
-			-- paste = {
-			-- 	["+"] = [[pwsl.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
-			-- 	["*"] = [[pwsl.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
-			-- },
+			paste = {
+				["+"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
+				["*"] = [[powershell.exe -NoProfile -NoLogo -NonInteractive -Command [console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))]],
+			},
 			cache_enabled = 0,
 		}
 	elseif os.getenv("TMUX") then
@@ -109,11 +107,10 @@ local clipboard_config = function()
 				["+"] = "tmux set-buffer -w",
 				["*"] = "tmux set-buffer -w",
 			},
-			-- `paste` wull obsolete options
-			-- paste = {
-			-- 	["+"] = "tmux save-buffer -",
-			-- 	["*"] = "tmux save-buffer -",
-			-- },
+			paste = {
+				["+"] = "tmux save-buffer -",
+				["*"] = "tmux save-buffer -",
+			},
 			cache_enabled = 0,
 		}
 	end

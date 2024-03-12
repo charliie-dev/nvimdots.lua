@@ -123,7 +123,7 @@ settings["lsp_deps"] = {
 ---@type string[]
 settings["null_ls_deps"] = {
 	-- formatting
-	-- "clang_format",
+	"clang_format",
 	-- "gofumpt",
 	-- "goimports",
 	"eslint_d",
@@ -175,6 +175,7 @@ settings["treesitter_deps"] = {
 	"tsx",
 	"typescript",
 	"yaml",
+	"vim",
 	"vimdoc",
 }
 
