@@ -64,8 +64,8 @@ ui["petertriho/nvim-scrollbar"] = {
 }
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
-	config = require("ui.todo-comments"),
+	event = { "CursorHold", "CursorHoldI" },
+	config = require("ui.todo"),
 	dependencies = "nvim-lua/plenary.nvim",
 }
 ui["itchyny/vim-highlighturl"] = {
