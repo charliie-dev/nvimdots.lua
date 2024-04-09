@@ -26,11 +26,6 @@ tool["stevearc/oil.nvim"] = {
 	cmd = "Oil",
 	config = require("tool.oil"),
 }
-tool["ibhagwan/smartyank.nvim"] = {
-	lazy = true,
-	event = "TextYankPost",
-	config = require("tool.smartyank"),
-}
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	build = "bash ./install.sh",
