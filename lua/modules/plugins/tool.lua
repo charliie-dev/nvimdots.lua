@@ -10,6 +10,12 @@ tool["tpope/vim-fugitive"] = {
 	lazy = true,
 	cmd = { "Git", "G" },
 }
+tool["Bekaboo/dropbar.nvim"] = {
+	lazy = false,
+	dependencies = {
+		"nvim-telescope/telescope-fzf-native.nvim",
+	},
+}
 tool["nvim-tree/nvim-tree.lua"] = {
 	lazy = true,
 	cmd = {
