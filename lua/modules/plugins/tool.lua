@@ -27,11 +27,6 @@ tool["nvim-tree/nvim-tree.lua"] = {
 	},
 	config = require("tool.nvim-tree"),
 }
-tool["stevearc/oil.nvim"] = {
-	lazy = true,
-	cmd = "Oil",
-	config = require("tool.oil"),
-}
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	build = "bash ./install.sh",
