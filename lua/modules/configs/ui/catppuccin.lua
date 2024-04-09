@@ -64,7 +64,7 @@ return function()
 			harpoon = false,
 			headlines = true,
 			hop = false,
-			illuminate = true,
+			illuminate = false,
 			indent_blankline = { enabled = true, colored_indent_levels = false },
 			leap = true,
 			lightspeed = false,
@@ -146,11 +146,6 @@ return function()
 
 					-- For trouble.nvim
 					TroubleNormal = { bg = transparent_background and cp.none or cp.base },
-
-					-- For Illuminate
-					IlluminatedWordText = { style = { "underline" } },
-					IlluminatedWordRead = { style = { "underline" } },
-					IlluminatedWordWrite = { style = { "underline" } },
 
 					-- For telescope.nvim
 					TelescopeMatching = { fg = cp.lavender },

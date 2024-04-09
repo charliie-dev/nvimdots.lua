@@ -8,6 +8,7 @@ completion["neovim/nvim-lspconfig"] = {
 	dependencies = {
 		{ "williamboman/mason.nvim" },
 		{ "williamboman/mason-lspconfig.nvim" },
+		{ "folke/neoconf.nvim" },
 		{
 			"Jint-lzxy/lsp_signature.nvim",
 			config = require("completion.lsp-signature"),
@@ -62,7 +63,7 @@ completion["hrsh7th/nvim-cmp"] = {
 		{ "f3fora/cmp-spell" },
 		{ "hrsh7th/cmp-buffer" },
 		{ "kdheepak/cmp-latex-symbols" },
-		{ "ray-x/cmp-treesitter", commit = "c8e3a74" },
+		{ "ray-x/cmp-treesitter" },
 		-- { "tzachar/cmp-tabnine", build = "./install.sh", config = require("completion.tabnine") },
 		-- {
 		-- 	"jcdickinson/codeium.nvim",

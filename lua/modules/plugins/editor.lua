@@ -1,20 +1,10 @@
 local editor = {}
 
-editor["rainbowhxch/accelerated-jk.nvim"] = {
-	lazy = true,
-	event = "VeryLazy",
-	config = require("editor.accelerated-jk"),
-}
 -- editor["m4xshen/autoclose.nvim"] = {
 -- 	lazy = true,
 -- 	event = "InsertEnter",
 -- 	config = require("editor.autoclose"),
 -- }
-editor["max397574/better-escape.nvim"] = {
-	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
-	config = require("editor.better-escape"),
-}
 editor["LunarVim/bigfile.nvim"] = {
 	lazy = false,
 	config = require("editor.bigfile"),
@@ -40,6 +30,10 @@ editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
 	config = require("editor.diffview"),
+}
+editor["echasnovski/mini.align"] = {
+	version = false,
+	config = require("editor.mini-align"),
 }
 -- NOTE: `flash.nvim` is a powerful plugin that can be used as partial or complete replacements for:
 --  > `hop.nvim`,
@@ -95,10 +89,23 @@ editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
 }
-editor["RRethy/vim-illuminate"] = {
+editor["tzachar/local-highlight.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
-	config = require("editor.vim-illuminate"),
+	config = require("editor.local-highlight"),
+}
+editor["tpope/vim-sleuth"] = {
+	lazy = true,
+	event = "BufReadPre",
+}
+editor["nvim-pack/nvim-spectre"] = {
+	lazy = true,
+	cmd = { "Spectre" },
+}
+editor["mrjones2014/smart-splits.nvim"] = {
+	lazy = true,
+	event = { "CursorHoldI", "CursorHold" },
+	config = require("editor.smart-splits"),
 }
 
 ----------------------------------------------------------------------
@@ -116,10 +123,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	dependencies = {
 		{ "andymass/vim-matchup" },
 		{ "nvim-treesitter/nvim-treesitter-textobjects" },
-		{
-			"abecodes/tabout.nvim",
-			config = require("editor.tabout"),
-		},
 		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.autotag"),

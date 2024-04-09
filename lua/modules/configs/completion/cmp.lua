@@ -146,7 +146,7 @@ return function()
 				if cmp.visible() then
 					cmp.select_next_item()
 				elseif require("luasnip").expand_or_locally_jumpable() then
-					vim.fn.feedkeys(t("<Plug>luasnip-expand-or-jump"))
+					require("luasnip").expand_or_jump()
 				else
 					fallback()
 				end

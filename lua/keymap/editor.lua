@@ -7,14 +7,6 @@ local et = bind.escape_termcode
 require("keymap.helpers")
 
 local plug_map = {
-	-- Plugin: accelerate-jk
-	["n|j"] = map_callback(function()
-		return et("<Plug>(accelerated_jk_gj)")
-	end):with_expr(),
-	["n|k"] = map_callback(function()
-		return et("<Plug>(accelerated_jk_gk)")
-	end):with_expr(),
-
 	-- Plugin persisted.nvim
 	["n|<leader>ss"] = map_cu("SessionSave"):with_noremap():with_silent():with_desc("session: Save"),
 	["n|<leader>sl"] = map_cu("SessionLoad"):with_noremap():with_silent():with_desc("session: Load current"),
@@ -65,6 +57,10 @@ local plug_map = {
 		:with_noremap()
 		:with_desc("edit: Toggle comment for block with selection"),
 
+	-- Plugin: diffview.nvim
+	["n|<leader>gd"] = map_cr("DiffviewOpen"):with_silent():with_noremap():with_desc("git: Show diff"),
+	["n|<leader>gD"] = map_cr("DiffviewClose"):with_silent():with_noremap():with_desc("git: Close diff"),
+
 	-- Plugin: flash
 	["nxo|s"] = map_callback(function()
 			require("flash").jump()
@@ -84,13 +80,6 @@ local plug_map = {
 		:with_silent()
 		:with_noremap()
 		:with_desc("editi: Flash Telescope"),
-
-	-- Plugin: diffview
-	["n|<leader>gd"] = map_cr("DiffviewOpen"):with_silent():with_noremap():with_desc("git: Show diff"),
-	["n|<leader>gD"] = map_cr("DiffviewClose"):with_silent():with_noremap():with_desc("git: Close diff"),
-
-	-- Plugin: vim-easy-align
-	["nx|gea"] = map_cr("EasyAlign"):with_desc("edit: Align with delimiter"),
 
 	--- Plugin: nvim-surround
 	["n|ys"] = map_callback(function()
@@ -134,9 +123,37 @@ local plug_map = {
 		:with_expr()
 		:with_desc("edit: Change a surrounding pair"),
 
-	-- Plugin: tabout
-	["i|<A-l>"] = map_cmd("<Plug>(TaboutMulti)"):with_silent():with_noremap():with_desc("edit: Goto end of pair"),
-	["i|<A-h>"] = map_cmd("<Plug>(TaboutBackMulti)"):with_silent():with_noremap():with_desc("edit: Goto begin of pair"),
+	-- Plugin: smart-splits.nvim
+	["n|<A-h>"] = map_cu("SmartResizeLeft"):with_silent():with_noremap():with_desc("window: Resize -3 horizontally"),
+	["n|<A-j>"] = map_cu("SmartResizeDown"):with_silent():with_noremap():with_desc("window: Resize -3 vertically"),
+	["n|<A-k>"] = map_cu("SmartResizeUp"):with_silent():with_noremap():with_desc("window: Resize +3 vertically"),
+	["n|<A-l>"] = map_cu("SmartResizeRight"):with_silent():with_noremap():with_desc("window: Resize +3 horizontally"),
+	["n|<C-h>"] = map_cu("SmartCursorMoveLeft"):with_silent():with_noremap():with_desc("window: Focus left"),
+	["n|<C-j>"] = map_cu("SmartCursorMoveDown"):with_silent():with_noremap():with_desc("window: Focus down"),
+	["n|<C-k>"] = map_cu("SmartCursorMoveUp"):with_silent():with_noremap():with_desc("window: Focus up"),
+	["n|<C-l>"] = map_cu("SmartCursorMoveRight"):with_silent():with_noremap():with_desc("window: Focus right"),
+	["n|<leader>Wh"] = map_cu("SmartSwapLeft"):with_silent():with_noremap():with_desc("window: Move window to left"),
+	["n|<leader>Wj"] = map_cu("SmartSwapDown"):with_silent():with_noremap():with_desc("window: Move window to down"),
+	["n|<leader>Wk"] = map_cu("SmartSwapUp"):with_silent():with_noremap():with_desc("window: Move window to up"),
+	["n|<leader>Wl"] = map_cu("SmartSwapRight"):with_silent():with_noremap():with_desc("window: Move window to right"),
+
+	-- Plugin: nvim-spectre
+	["n|<leader>Ss"] = map_cmd([[<Cmd>lua require("spectre").toggle()<CR>]])
+		:with_silent()
+		:with_noremap()
+		:with_desc("editn: Toggle search&replace panel"),
+	["n|<leader>Sp"] = map_cmd([[<Cmd>lua require("spectre").open_visual({select_word=true})<CR>]])
+		:with_silent()
+		:with_noremap()
+		:with_desc("editn: search&replace current word (project)"),
+	["v|<leader>Sp"] = map_cmd([[<Esc><Cmd>lua require("spectre").open_visual()<CR>]])
+		:with_silent()
+		:with_noremap()
+		:with_desc("edit: search&replace current word (project)"),
+	["n|<leader>Sf"] = map_cmd([[<Cmd>lua require("spectre").open_file_search({select_word=true})<CR>]])
+		:with_silent()
+		:with_noremap()
+		:with_desc("editn: search&replace current word (file)"),
 
 	-- Plugin suda.vim
 	["n|<A-s>"] = map_cu("SudaWrite"):with_silent():with_noremap():with_desc("editn: Save file using sudo"),
