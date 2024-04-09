@@ -43,7 +43,7 @@ local function load_options()
 		incsearch = true,
 		infercase = true,
 		jumpoptions = "stack",
-		laststatus = 2, -- global status line
+		laststatus = 3, -- global status line
 		-- lazyredraw = true,
 		linebreak = true,
 		list = true,

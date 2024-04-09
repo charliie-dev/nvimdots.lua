@@ -54,22 +54,22 @@ return function()
 		end
 	end
 
-	local mini_sections = {
-		lualine_a = { "filetype" },
-		lualine_b = {},
-		lualine_c = {},
-		lualine_x = {},
-		lualine_y = {},
-		lualine_z = {},
-	}
-	local outline = {
-		sections = mini_sections,
-		filetypes = { "Outline" },
-	}
-	local diffview = {
-		sections = mini_sections,
-		filetypes = { "DiffviewFiles" },
-	}
+	-- local mini_sections = {
+	-- 	lualine_a = { "filetype" },
+	-- 	lualine_b = {},
+	-- 	lualine_c = {},
+	-- 	lualine_x = {},
+	-- 	lualine_y = {},
+	-- 	lualine_z = {},
+	-- }
+	-- local outline = {
+	-- 	sections = mini_sections,
+	-- 	filetypes = { "Outline" },
+	-- }
+	-- local diffview = {
+	-- 	sections = mini_sections,
+	-- 	filetypes = { "DiffviewFiles" },
+	-- }
 
 	local conditionals = {
 		has_enough_room = function()
@@ -359,13 +359,13 @@ return function()
 		},
 		tabline = {},
 		extensions = {
-			"quickfix",
-			"nvim-tree",
-			"nvim-dap-ui",
-			"toggleterm",
-			"fugitive",
-			outline,
-			diffview,
+			-- "quickfix",
+			-- "nvim-tree",
+			-- "nvim-dap-ui",
+			-- "toggleterm",
+			-- "fugitive",
+			-- outline,
+			-- diffview,
 		},
 	})
 end
