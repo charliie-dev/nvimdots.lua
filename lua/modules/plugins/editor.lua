@@ -80,7 +80,7 @@ editor["olimorris/persisted.nvim"] = {
 editor["lambdalisue/suda.vim"] = {
 	lazy = true,
 	cmd = { "SudaRead", "SudaWrite" },
-	config = require("editor.suda"),
+	init = require("editor.suda"),
 }
 editor["kylechui/nvim-surround"] = {
 	lazy = true,
