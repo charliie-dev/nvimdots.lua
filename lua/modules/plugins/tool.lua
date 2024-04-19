@@ -6,20 +6,6 @@ tool["monaqa/dial.nvim"] = {
 	config = require("tool.dial"),
 	dependencies = "nvim-lua/plenary.nvim",
 }
-tool["aaronhallaert/advanced-git-search.nvim"] = {
-	lazy = true,
-	cmd = { "AdvancedGitSearch" },
-	dependencies = {
-		"nvim-telescope/telescope.nvim",
-		-- to show diff splits and open commits in browser
-		"tpope/vim-fugitive",
-		-- to open commits in browser with fugitive
-		"tpope/vim-rhubarb",
-		-- optional: to replace the diff from fugitive with diffview.nvim
-		-- (fugitive is still needed to open in browser)
-		"sindrets/diffview.nvim",
-	},
-}
 tool["tpope/vim-fugitive"] = {
 	lazy = true,
 	cmd = { "Git", "G" },
@@ -101,6 +87,19 @@ tool["nvim-telescope/telescope.nvim"] = {
 		{ "nvim-telescope/telescope-live-grep-args.nvim" },
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		{ "nvim-telescope/telescope-frecency.nvim" },
+		{
+			"aaronhallaert/advanced-git-search.nvim",
+			cmd = { "AdvancedGitSearch" },
+			dependencies = {
+				-- to show diff splits and open commits in browser
+				"tpope/vim-fugitive",
+				-- to open commits in browser with fugitive
+				"tpope/vim-rhubarb",
+				-- optional: to replace the diff from fugitive with diffview.nvim
+				-- (fugitive is still needed to open in browser)
+				"sindrets/diffview.nvim",
+			},
+		},
 	},
 }
 
