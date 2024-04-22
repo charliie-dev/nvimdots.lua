@@ -27,6 +27,11 @@ tool["nvim-tree/nvim-tree.lua"] = {
 	},
 	config = require("tool.nvim-tree"),
 }
+tool["ibhagwan/smartyank.nvim"] = {
+	lazy = true,
+	event = "TextYankPost",
+	config = require("tool.smartyank"),
+}
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	build = "bash ./install.sh",
