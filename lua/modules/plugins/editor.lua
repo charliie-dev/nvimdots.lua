@@ -129,8 +129,8 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			config = require("editor.autotag"),
 		},
 		{
-			"NvChad/nvim-colorizer.lua",
-			config = require("editor.colorizer"),
+			"brenoprata10/nvim-highlight-colors",
+			config = require("editor.highlight-colors"),
 		},
 		{
 			"hiphish/rainbow-delimiters.nvim",
