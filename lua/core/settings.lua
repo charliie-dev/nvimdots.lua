@@ -114,6 +114,7 @@ settings["lsp_deps"] = {
 	-- "texlab",
 	-- "vimls",
 	-- "yamlls",
+	"nil_ls",
 }
 
 -- Set the general-purpose servers that will be installed during bootstrap here.
@@ -135,14 +136,12 @@ settings["null_ls_deps"] = {
 	"stylua",
 
 	-- diagnostics
-	"zsh",
+	-- "zsh",
 	-- "shellcheck",
 	-- "markdownlint",
 
 	--nix
-	"nixfmt",
 	"nixpkgs_fmt",
-	"deadnix",
 }
 
 -- Set the Debug Adapter Protocol (DAP) clients that will be installed and configured during bootstrap here.
@@ -169,7 +168,7 @@ settings["treesitter_deps"] = {
 	"javascript",
 	"json",
 	"jsonc",
-	"latex",
+	-- "latex",
 	"lua",
 	"make",
 	"markdown",
@@ -223,6 +222,6 @@ settings["dashboard_image"] = {
 
 -- Set it to false if you don't  want to show inlay hint
 ---@type boolean
-settings["enable_inlayhint"] = true
+settings["enable_inlayhint"] = false
 
 return require("modules.utils").extend_config(settings, "user.settings")
