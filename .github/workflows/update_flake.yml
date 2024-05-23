@@ -1,5 +1,6 @@
 name: update flake.lock
 on:
+  workflow_dispatch: # allows manual triggering
   # Scheduled update (1st of every month)
   schedule: [{ cron: "30 02 1 * *" }]
 
