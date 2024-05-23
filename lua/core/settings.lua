@@ -10,7 +10,7 @@ settings["use_copilot"] = true
 
 -- Set it to false if you want to turn off LSP Inlay Hints
 ---@type boolean
-settings["lsp_inlayhints"] = true
+settings["lsp_inlayhints"] = false
 
 -- Set it to false if there are no need to format on save.
 ---@type boolean
