@@ -26,15 +26,18 @@ require("neodev").setup({
 return {
 	settings = {
 		Lua = {
-			runtime = {
-				version = "LuaJIT",
-			},
-			completion = {
-				callSnippet = "Replace",
-			},
+			runtime = { version = "LuaJIT" },
 			diagnostics = {
 				globals = { "vim" },
 				disable = { "different-requires", "undefined-field" },
+			},
+			workspace = {
+				library = {
+					vim.fn.expand("$VIMRUNTIME/lua"),
+					vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
+				},
+				maxPreload = 100000,
+				preloadFileSize = 10000,
 			},
 			hint = { enable = true, setType = true },
 			format = { enable = false },
