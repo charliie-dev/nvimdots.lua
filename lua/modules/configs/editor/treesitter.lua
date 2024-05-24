@@ -6,11 +6,6 @@ return vim.schedule_wrap(function()
 
 	require("modules.utils").load_plugin("nvim-treesitter", {
 		ensure_installed = require("core.settings").treesitter_deps,
-		sync_install = true,
-		ignore_install = { "comment" }, -- comments are slowing down TS bigtime, so disable for now
-		incremental_selection = {
-			enable = false,
-		},
 		playground = {
 			enable = true,
 			disable = {},
@@ -28,9 +23,6 @@ return vim.schedule_wrap(function()
 				return ok and is_large_file
 			end,
 			additional_vim_regex_highlighting = false,
-		},
-		autotag = {
-			enable = true,
 		},
 		textobjects = {
 			select = {
