@@ -6,7 +6,7 @@ function autocmd.nvim_create_augroups(definitions)
 		cmd("augroup " .. group_name)
 		cmd("autocmd!")
 		for _, def in ipairs(definition) do
-			local command = table.concat(vim.tbl_flatten({ "autocmd", def }), " ")
+			local command = table.concat(vim.iter({ "autocmd", def }):flatten(), " ")
 			cmd(command)
 		end
 		cmd("augroup END")
