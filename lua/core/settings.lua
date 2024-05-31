@@ -85,13 +85,13 @@ settings["external_browser"] = "chrome-cli open"
 
 -- Filetypes in this list will skip lsp formatting if rhs is true.
 ---@type table<string, boolean>
-settings["formatter_block_list"] = {
-	lua = false, -- example
+settings["ft_format_block_list"] = {
+	"nim", -- example
 }
 
 -- Servers in this list will skip setting formatting capabilities if rhs is true.
 ---@type table<string, boolean>
-settings["server_formatting_block_list"] = {
+settings["server_format_block_list"] = {
 	lua_ls = true,
 	tsserver = true,
 	clangd = true,
