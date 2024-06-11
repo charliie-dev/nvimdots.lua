@@ -158,7 +158,7 @@ return function()
 				Array = { icons.type.Array, "LspKindArray" },
 				Boolean = { icons.type.Boolean, "LspKindBoolean" },
 				Null = { icons.type.Null, "LspKindNull" },
-				Number = { icons.kind.Number, "LspKindNumber" },
+				Number = { icons.type.Number, "LspKindNumber" },
 				Object = { icons.type.Object, "LspKindObject" },
 				String = { icons.type.String, "LspKindString" },
 				-- ccls-specific icons.
