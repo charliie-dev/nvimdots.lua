@@ -83,11 +83,6 @@ return function()
 			},
 			undo = {
 				use_delta = true,
-				side_by_side = true,
-				layout_strategy = "vertical",
-				layout_config = {
-					preview_height = 0.7,
-				},
 				mappings = {
 					i = {
 						["<cr>"] = require("telescope-undo.actions").yank_additions,
