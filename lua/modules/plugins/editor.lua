@@ -92,8 +92,13 @@ editor["romainl/vim-cool"] = {
 }
 editor["tzachar/local-highlight.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("editor.local-highlight"),
+}
+editor["brenoprata10/nvim-highlight-colors"] = {
+	lazy = true,
+	event = { "CursorHold", "CursorHoldI" },
+	config = require("editor.highlight-colors"),
 }
 editor["tpope/vim-sleuth"] = {
 	lazy = true,
@@ -127,10 +132,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.autotag"),
-		},
-		{
-			"brenoprata10/nvim-highlight-colors",
-			config = require("editor.highlight-colors"),
 		},
 		{
 			"hiphish/rainbow-delimiters.nvim",

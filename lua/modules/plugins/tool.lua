@@ -81,34 +81,30 @@ tool["nvim-telescope/telescope.nvim"] = {
 	cmd = "Telescope",
 	config = require("tool.telescope"),
 	dependencies = {
-		{ "nvim-tree/nvim-web-devicons" },
 		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-tree/nvim-web-devicons" },
 		{ "LinArcX/telescope-env.nvim" },
+		{ "debugloop/telescope-undo.nvim" },
+		{ "nvim-telescope/telescope-frecency.nvim" },
+		{ "nvim-telescope/telescope-live-grep-args.nvim" },
+		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		{
 			"ahmedkhalf/project.nvim",
 			event = { "CursorHold", "CursorHoldI" },
 			config = require("tool.project"),
 		},
-		{ "debugloop/telescope-undo.nvim" },
-		{ "nvim-telescope/telescope-live-grep-args.nvim" },
-		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-		{ "nvim-telescope/telescope-frecency.nvim" },
+		{
+			"FabianWirth/search.nvim",
+			config = require("tool.search"),
+		},
 		{
 			"aaronhallaert/advanced-git-search.nvim",
 			cmd = { "AdvancedGitSearch" },
 			dependencies = {
-				-- to show diff splits and open commits in browser
-				"tpope/vim-fugitive",
-				-- to open commits in browser with fugitive
 				"tpope/vim-rhubarb",
-				-- optional: to replace the diff from fugitive with diffview.nvim
-				-- (fugitive is still needed to open in browser)
+				"tpope/vim-fugitive",
 				"sindrets/diffview.nvim",
 			},
-		},
-		{
-			"FabianWirth/search.nvim",
-			config = require("tool.search"),
 		},
 	},
 }
