@@ -1,13 +1,13 @@
 local M = {}
 
 local conform = require("conform")
-local settings = require("core.settings")
-local disabled_workspaces = settings.format_disabled_dirs
-local format_on_save = settings.format_on_save
-local format_notify = settings.format_notify
-local format_modifications_only = settings.format_modifications_only
-local server_format_block_list = settings.server_format_block_list
-local ft_format_block_list = settings.formatter_block_list
+local format_opts = require("core.settings").format_opts
+local disabled_workspaces = format_opts.format_disabled_dirs
+local format_on_save = format_opts.format_on_save
+local format_notify = format_opts.format_notify
+local format_modifications_only = format_opts.format_modifications_only
+local server_format_block_list = format_opts.server_format_block_list
+local ft_format_block_list = format_opts.formatter_block_list
 
 vim.api.nvim_create_user_command("FormatToggle", function()
 	M.toggle_format_on_save()
@@ -38,7 +38,7 @@ end
 
 function M.format_on_save(bufnr)
 	if not format_on_save then
-		return
+		return false
 	end
 	-- Disable autoformat for files for certain filetypes
 	if vim.tbl_contains(ft_format_block_list, vim.bo[bufnr].filetype) then
@@ -49,7 +49,7 @@ function M.format_on_save(bufnr)
 				{ title = "LSP Formatter Warning" }
 			)
 		end
-		return
+		return false
 	end
 	-- Disable autoformat for files in a certain path
 	local bufname = vim.api.nvim_buf_get_name(bufnr)
@@ -65,10 +65,14 @@ function M.format_on_save(bufnr)
 					{ title = "LSP Formatter Warning" }
 				)
 			end
-			return
+			return false
 		end
 	end
 	-- Limit certain LSPs from autoformatting
 
 	-- local bufnr =
+
+
+	-- return true if none of the above conditions are met
+	return true
 end
