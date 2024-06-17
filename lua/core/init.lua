@@ -1,3 +1,4 @@
+local settings = require("core.settings")
 local global = require("core.global")
 
 -- Create cache dir and data dirs
@@ -168,10 +169,8 @@ local load_core = function()
 	require("core.pack")
 	require("keymap")
 
-	local colorscheme = require("core.settings").colorscheme
-	local background = require("core.settings").background
-	vim.api.nvim_command("set background=" .. background)
-	vim.api.nvim_command("colorscheme " .. colorscheme)
+	vim.api.nvim_set_option_value("background", settings.background, {})
+	vim.cmd.colorscheme(settings.colorscheme)
 end
 
 load_core()
