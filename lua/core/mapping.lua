@@ -45,6 +45,7 @@ local core_map = {
 	["n|tk"] = map_cr("tabnext"):with_noremap():with_silent():with_desc("tab: Move to next tab"),
 	["n|tj"] = map_cr("tabprevious"):with_noremap():with_silent():with_desc("tab: Move to previous tab"),
 	["n|to"] = map_cr("tabonly"):with_noremap():with_silent():with_desc("tab: Only keep current tab"),
+	["n|<leader>bn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"),
 	-- -- chmod +x current file, @ThePrimeagen
 	["n|<leader><leader>x"] = map_cmd("<Cmd>!chmod +x %<CR>"):with_silent():with_desc("file: chmod +x current file"),
 	-- Insert mode
