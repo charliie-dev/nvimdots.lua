@@ -144,16 +144,19 @@ local plug_map = {
 		:with_noremap()
 		:with_silent()
 		:with_desc("ui: Change colorscheme for current session"),
-	["n|<leader>bn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"),
 	["n|<leader>fg"] = map_callback(function()
 			require("search").open({ collection = "git" })
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("find: file in git project"),
-	["n|<leader>fb"] = map_cu("Telescope buffers"):with_noremap():with_silent():with_desc("find: Buffer opened"),
-	["nv|<leader>fs"] = map_cu("Telescope grep_string"):with_noremap():with_silent():with_desc("find: Current word"),
+		:with_desc("find: Git objects"),
+	["nv|<leader>fs"] = map_cu("Telescope grep_string")
+		:with_noremap()
+		:with_silent()
+		:with_desc("find: Word under cursor"),
+	["n|<leader>fb"] = map_cu("Telescope buffers"):with_noremap():with_silent():with_desc("find: Open buffer(s)"),
 	["n|<leader>fd"] = map_cu("Telescope persisted"):with_noremap():with_silent():with_desc("find: Session"),
+	["n|<leader>bn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"),
 
 	-- Plugin: dap
 	["n|<F6>"] = map_callback(function()
