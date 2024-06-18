@@ -11,20 +11,20 @@ _G._command_panel = function()
 	})
 end
 
-_G._telescope_collections = function(opts)
+_G._telescope_collections = function(picker_type)
+	local actions = require("telescope.actions")
+	local action_state = require("telescope.actions.state")
 	local pickers = require("telescope.pickers")
 	local finder = require("telescope.finders")
 	local conf = require("telescope.config").values
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
-	opts = opts or {}
+	picker_type = picker_type or {}
 
 	local collections = vim.tbl_keys(require("search.tabs").collections)
 	pickers
-		.new(opts, {
+		.new(picker_type, {
 			prompt_title = "Telescope Collections",
 			finder = finder.new_table({ results = collections }),
-			sorter = conf.generic_sorter(opts),
+			sorter = conf.generic_sorter(picker_type),
 			attach_mappings = function(bufnr)
 				actions.select_default:replace(function()
 					actions.close(bufnr)

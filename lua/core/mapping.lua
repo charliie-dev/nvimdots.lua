@@ -37,6 +37,7 @@ local core_map = {
 	["n|<C-n>"] = map_cmd("<Nop>"):with_noremap():with_silent():with_desc("Disable native cmp"),
 	["n|<A-S-q>"] = map_cr("q!"):with_desc("edit: Force quit"),
 	["n|<leader>o"] = map_cr("setlocal spell! spelllang=en_us"):with_desc("edit: Toggle spell check"),
+	["n|<leader>bn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"),
 	["n|+"] = map_cmd("<C-a>"):with_noremap():with_silent():with_desc("edit: Increment"),
 	["n|-"] = map_cmd("<C-x>"):with_noremap():with_silent():with_desc("edit: Decrement"),
 	["n|<C-a>"] = map_cmd("gg0vG$"):with_noremap():with_silent():with_desc("edit: Select all"),
@@ -45,7 +46,6 @@ local core_map = {
 	["n|tk"] = map_cr("tabnext"):with_noremap():with_silent():with_desc("tab: Move to next tab"),
 	["n|tj"] = map_cr("tabprevious"):with_noremap():with_silent():with_desc("tab: Move to previous tab"),
 	["n|to"] = map_cr("tabonly"):with_noremap():with_silent():with_desc("tab: Only keep current tab"),
-	["n|<leader>bn"] = map_cu(":enew"):with_noremap():with_silent():with_desc("buffer: New"),
 	-- -- chmod +x current file, @ThePrimeagen
 	["n|<leader><leader>x"] = map_cmd("<Cmd>!chmod +x %<CR>"):with_silent():with_desc("file: chmod +x current file"),
 	-- Insert mode
