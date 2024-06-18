@@ -35,25 +35,14 @@ completion["joechrisellis/lsp-format-modifications.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
 }
--- completion["nvimtools/none-ls.nvim"] = {
--- 	lazy = true,
--- 	event = { "CursorHold", "CursorHoldI" },
--- 	config = require("completion.null-ls"),
--- 	dependencies = {
--- 		"nvim-lua/plenary.nvim",
--- 		"jay-babu/mason-null-ls.nvim",
--- 	},
--- }
-
-completion["stevearc/conform.nvim"] = {
+completion["nvimtools/none-ls.nvim"] = {
 	lazy = true,
-	event = { "BufWritePre" },
-	cmd = { "ConformInfo" },
-	config = require("completion.conform"),
-	init = function()
-		-- If you want the formatexpr, here is the place to set it
-		vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-	end,
+	event = { "CursorHold", "CursorHoldI" },
+	config = require("completion.null-ls"),
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		"jay-babu/mason-null-ls.nvim",
+	},
 }
 
 completion["hrsh7th/nvim-cmp"] = {
