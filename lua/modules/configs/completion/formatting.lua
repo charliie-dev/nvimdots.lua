@@ -1,18 +1,19 @@
 local M = {}
 
-local method = "textDocument/formatting"
 local settings = require("core.settings")
-local disabled_workspaces = settings.format_disabled_dirs
-local format_on_save = settings.format_on_save
-local format_notify = settings.format_notify
-local format_modifications_only = settings.format_modifications_only
-local server_formatting_block_list = settings.server_formatting_block_list
+local format_opts = settings.format_opts
+local disabled_workspaces = format_opts.format_disabled_dirs
+local format_on_save = format_opts.format_on_save
+local format_notify = format_opts.format_notify
+local format_timeout = format_opts.format_timeout
+local format_modifications_only = format_opts.format_modifications_only
+local server_formatting_block_list = format_opts.server_formatting_block_list
 
 vim.api.nvim_create_user_command("FormatToggle", function()
 	M.toggle_format_on_save()
 end, {})
 
-local block_list = require("core.settings").formatter_block_list
+local block_list = require("core.settings").format_opts.formatter_block_list
 vim.api.nvim_create_user_command("FormatterToggleFt", function(opts)
 	if block_list[opts.args] == nil then
 		vim.notify(
@@ -36,7 +37,7 @@ vim.api.nvim_create_user_command("FormatterToggleFt", function(opts)
 end, { nargs = 1, complete = "filetype" })
 
 function M.enable_format_on_save(is_configured)
-	local opts = { pattern = "*", timeout = 1000 }
+	local opts = { pattern = "*", timeout = format_timeout }
 	vim.api.nvim_create_augroup("format_on_save", { clear = true })
 	vim.api.nvim_create_autocmd("BufWritePre", {
 		group = "format_on_save",
@@ -91,14 +92,12 @@ end
 function M.format_filter(clients)
 	return vim.tbl_filter(function(client)
 		local status_ok, formatting_supported = pcall(function()
-			return client.supports_method(method)
+			return client.supports_method("textDocument/formatting")
 		end)
 		if status_ok and formatting_supported and client.name == "null-ls" then
-			---@diagnostic disable-next-line
 			return "null-ls"
 		elseif not server_formatting_block_list[client.name] and status_ok and formatting_supported then
 			return client.name
-			---@diagnostic disable-next-line
 		end
 	end, clients)
 end
@@ -120,7 +119,7 @@ function M.format(opts)
 	end
 
 	local bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
-	local clients = vim.lsp.get_clients({ bufnr = bufnr, method = method })
+	local clients = vim.lsp.buf_get_clients(bufnr)
 
 	if opts.filter then
 		clients = opts.filter(clients)
@@ -133,6 +132,10 @@ function M.format(opts)
 			return client.name == opts.name
 		end, clients)
 	end
+
+	clients = vim.tbl_filter(function(client)
+		return client.supports_method("textDocument/formatting")
+	end, clients)
 
 	if #clients == 0 then
 		vim.notify(
@@ -171,8 +174,7 @@ function M.format(opts)
 
 		-- Fall back to format the whole buffer (even if partial formatting failed)
 		local params = vim.lsp.util.make_formatting_params(opts.formatting_options)
-		---@diagnostic disable-next-line
-		local result, err = client.request_sync(method, params, timeout_ms, bufnr)
+		local result, err = client.request_sync("textDocument/formatting", params, timeout_ms, bufnr)
 		if result and result.result then
 			vim.lsp.util.apply_text_edits(result.result, bufnr, client.offset_encoding)
 			if format_notify then
