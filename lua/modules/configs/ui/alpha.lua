@@ -1,10 +1,5 @@
 return function()
 	local dashboard = require("alpha.themes.dashboard")
-	local icons = {
-		documents = require("modules.utils.icons").get("documents"),
-		git = require("modules.utils.icons").get("git"),
-		ui = require("modules.utils.icons").get("ui"),
-	}
 	require("modules.utils").gen_alpha_hl()
 
 	-- Header
@@ -12,6 +7,13 @@ return function()
 	dashboard.section.header.opts.hl = "AlphaHeader"
 
 	-- Buttons
+	local icons = {
+		documents = require("modules.utils.icons").get("documents", true),
+		git = require("modules.utils.icons").get("git", true),
+		ui = require("modules.utils.icons").get("ui", true),
+		misc = require("modules.utils.icons").get("misc", true),
+	}
+
 	dashboard.section.buttons.val = {
 		dashboard.button("f", icons.documents.Files .. " Find file", "<cmd>Telescope find_files<cr>"),
 		dashboard.button("e", icons.ui.NewFile .. " New file", "<cmd>enew<cr>"),
@@ -22,21 +24,15 @@ return function()
 		dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>Lazy sync<cr>"),
 		dashboard.button("q", icons.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
 	}
+
 	dashboard.section.buttons.opts.hl = "AlphaButtons"
 
 	-- Footer
 	local function footer()
-		-- NOTE: requires the fortune-mod package to work
-		-- local handle = io.popen("fortune")
-		-- local fortune = handle:read("*a")
-		-- handle:close()
-		-- return fortune
-		------
-
 		-- Number of plugins
 		local stats = require("lazy").stats()
 		local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-		local plugins_text = "           v"
+		local plugins_text = "    v"
 			.. vim.version().major
 			.. "."
 			.. vim.version().minor
@@ -49,12 +45,12 @@ return function()
 			.. "ms"
 
 		-- Quote
-		local fortune = require("alpha.fortune")
-		local quote = table.concat(fortune(), "\n")
-		-- local site = "https://charleschiugit.github.io/" .. "\n"
+		-- local fortune = require("alpha.fortune")
+		-- local quote = table.concat(fortune(), "\n")
+		local site = "https://blog.charliie.dev/"
 
-		return plugins_text .. "\n" .. quote
-		-- return "https://charleschiugit.github.io/"
+		return plugins_text .. "\n" .. "        " .. site
+		-- return "https://blog.charliie.dev/"
 	end
 
 	dashboard.section.footer.val = footer()
