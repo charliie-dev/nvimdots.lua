@@ -15,7 +15,7 @@ return function()
 		sign_priority = 6,
 		update_debounce = 100,
 		word_diff = false,
-		current_line_blame = true,
+		current_line_blame = false,
 		diff_opts = { internal = true },
 		watch_gitdir = { follow_files = true },
 		current_line_blame_opts = { delay = 1000, virt_text = true, virtual_text_pos = "eol" },
