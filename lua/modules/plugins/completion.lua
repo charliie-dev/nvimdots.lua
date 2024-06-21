@@ -64,7 +64,7 @@ completion["hrsh7th/nvim-cmp"] = {
 		{ "hrsh7th/cmp-path" },
 		{ "f3fora/cmp-spell" },
 		{ "hrsh7th/cmp-buffer" },
-		{ "kdheepak/cmp-latex-symbols" },
+		-- { "kdheepak/cmp-latex-symbols" },
 		{ "ray-x/cmp-treesitter", commit = "c8e3a74" },
 		-- { "tzachar/cmp-tabnine", build = "./install.sh", config = require("completion.tabnine") },
 		-- {
@@ -77,20 +77,20 @@ completion["hrsh7th/nvim-cmp"] = {
 		-- },
 	},
 }
-if use_copilot then
-	completion["zbirenbaum/copilot.lua"] = {
-		lazy = true,
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = require("completion.copilot"),
-		dependencies = {
-			{
-				"zbirenbaum/copilot-cmp",
-				config = require("completion.copilot-cmp"),
-			},
-		},
-	}
-end
+-- if use_copilot then
+-- 	completion["zbirenbaum/copilot.lua"] = {
+-- 		lazy = true,
+-- 		cmd = "Copilot",
+-- 		event = "InsertEnter",
+-- 		config = require("completion.copilot"),
+-- 		dependencies = {
+-- 			{
+-- 				"zbirenbaum/copilot-cmp",
+-- 				config = require("completion.copilot-cmp"),
+-- 			},
+-- 		},
+-- 	}
+-- end
 -- completion["barreiroleo/ltex_extra.nvim"] = {
 -- 	lazy = true,
 -- 	ft = "tex",

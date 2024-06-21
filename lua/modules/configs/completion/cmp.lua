@@ -32,8 +32,8 @@ return function()
 	local use_copilot = require("core.settings").use_copilot
 	local comparators = use_copilot == true
 			and {
-				require("copilot_cmp.comparators").prioritize,
-				require("copilot_cmp.comparators").score,
+				-- require("copilot_cmp.comparators").prioritize,
+				-- require("copilot_cmp.comparators").score,
 				-- require("cmp_tabnine.compare"),
 				compare.offset, -- Items closer to cursor will have lower priority
 				compare.exact,
@@ -128,38 +128,36 @@ return function()
 		},
 		-- You can set mappings if you want
 		mapping = cmp.mapping.preset.insert({
-			["<CR>"] = cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Replace }),
-			["<C-k>"] = cmp.mapping.select_prev_item(),
-			["<C-j>"] = cmp.mapping.select_next_item(),
-			["<C-d>"] = cmp.mapping.scroll_docs(-4),
-			["<C-f>"] = cmp.mapping.scroll_docs(4),
-			["<C-w>"] = cmp.mapping.close(),
+			["<C-n>"] = cmp.mapping(function(fallback)
+		if cmp.visible() then
+			cmp.select_next_item()
+		elseif require("luasnip").expand_or_locally_jumpable() then
+			require("luasnip").expand_or_jump()
+		else
+			fallback()
+		end
+			end, { "i", "s" }),
+			["<C-p>"] = cmp.mapping(function(fallback)
+		if cmp.visible() then
+			cmp.select_prev_item()
+		elseif require("luasnip").expand_or_locally_jumpable() then
+			require("luasnip").expand_or_jump()
+		else
+			fallback()
+		end
+			end, { "i", "s" }),
+			["<CR>"] = cmp.mapping(cmp.mapping.confirm({
+				behavior = cmp.ConfirmBehavior.Replace,
+				select = true,
+			}, { "i", "c" })),
 			["<C-c>"] = cmp.mapping({
 				i = cmp.mapping.abort(),
 				c = cmp.mapping.close(),
 			}),
-			["<Tab>"] = cmp.mapping(function(fallback)
-				if cmp.visible() then
-					cmp.select_next_item()
-				elseif require("luasnip").expand_or_locally_jumpable() then
-					require("luasnip").expand_or_jump()
-				else
-					fallback()
-				end
-			end, { "i", "s" }),
-			["<S-Tab>"] = cmp.mapping(function(fallback)
-				if cmp.visible() then
-					cmp.select_prev_item()
-				elseif require("luasnip").jumpable(-1) then
-					require("luasnip").jump(-1)
-				else
-					fallback()
-				end
-			end, { "i", "s" }),
 		}),
 		snippet = {
 			expand = function(args)
-				require("luasnip").lsp_expand(args.body)
+		require("luasnip").expand(args.body)
 			end,
 		},
 		-- You should specify your *installed* sources.
@@ -180,10 +178,10 @@ return function()
 					end,
 				},
 			},
-			{ name = "latex_symbols" },
-			{ name = "copilot" },
-			{ name = "codeium" },
-			{ name = "cmp_tabnine" },
+			-- { name = "latex_symbols" },
+			-- { name = "copilot" },
+			-- { name = "codeium" },
+			-- { name = "cmp_tabnine" },
 		},
 		experimental = {
 			ghost_text = {
