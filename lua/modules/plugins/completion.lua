@@ -1,5 +1,5 @@
 local completion = {}
-local use_copilot = require("core.settings").use_copilot
+-- local use_copilot = require("core.settings").use_copilot
 
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,

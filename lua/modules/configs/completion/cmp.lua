@@ -129,22 +129,22 @@ return function()
 		-- You can set mappings if you want
 		mapping = cmp.mapping.preset.insert({
 			["<C-n>"] = cmp.mapping(function(fallback)
-		if cmp.visible() then
-			cmp.select_next_item()
-		elseif require("luasnip").expand_or_locally_jumpable() then
-			require("luasnip").expand_or_jump()
-		else
-			fallback()
-		end
+				if cmp.visible() then
+					cmp.select_next_item()
+				elseif require("luasnip").expand_or_locally_jumpable() then
+					require("luasnip").expand_or_jump()
+				else
+					fallback()
+				end
 			end, { "i", "s" }),
 			["<C-p>"] = cmp.mapping(function(fallback)
-		if cmp.visible() then
-			cmp.select_prev_item()
-		elseif require("luasnip").expand_or_locally_jumpable() then
-			require("luasnip").expand_or_jump()
-		else
-			fallback()
-		end
+				if cmp.visible() then
+					cmp.select_prev_item()
+				elseif require("luasnip").expand_or_locally_jumpable() then
+					require("luasnip").expand_or_jump()
+				else
+					fallback()
+				end
 			end, { "i", "s" }),
 			["<CR>"] = cmp.mapping(cmp.mapping.confirm({
 				behavior = cmp.ConfirmBehavior.Replace,
@@ -157,7 +157,7 @@ return function()
 		}),
 		snippet = {
 			expand = function(args)
-		require("luasnip").expand(args.body)
+				require("luasnip").expand(args.body)
 			end,
 		},
 		-- You should specify your *installed* sources.
