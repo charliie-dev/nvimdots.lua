@@ -61,12 +61,12 @@ local data = {
 	documents = {
 		Default = "",
 		File = "",
-		Files = "",
-		FileTree = "󰙅",
 		FileFind = "󰈞",
-		Word = "",
+		FileTree = "󰙅",
+		Files = "",
 		Import = "",
 		Symlink = "",
+		Word = "",
 	},
 	git = {
 		Add = "",

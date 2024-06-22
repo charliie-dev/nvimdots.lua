@@ -4,7 +4,7 @@ return function()
 
 	require("modules.utils").load_plugin("search", {
 		collections = {
-			-- Search by file name
+			-- Search using filenames
 			file = {
 				initial_tab = 1,
 				tabs = {
@@ -39,8 +39,8 @@ return function()
 					},
 				},
 			},
-			-- Search by word
-			word = {
+			-- Search using patterns
+			pattern = {
 				initial_tab = 1,
 				tabs = {
 					{
@@ -88,8 +88,8 @@ return function()
 					},
 				},
 			},
-			-- Search by rootdir name
-			rootdir = {
+			-- Retrieve dossiers
+			dossier = {
 				initial_tab = 1,
 				tabs = {
 					{
@@ -106,13 +106,20 @@ return function()
 					},
 				},
 			},
+			-- Miscellaneous
 			misc = {
 				initial_tab = 1,
 				tabs = {
 					{
 						name = "Colorschemes",
 						tele_func = function()
-							builtin.colorscheme({ enable_preview = true })
+		builtin.colorscheme({ enable_preview = true })
+						end,
+					},
+					{
+						name = "Notify",
+						tele_func = function()
+							extensions.notify.notify()
 						end,
 					},
 					{

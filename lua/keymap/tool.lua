@@ -121,39 +121,39 @@ local plug_map = {
 		:with_silent()
 		:with_desc("tool: Open Telescope (collections)"),
 	["n|<leader>ff"] = map_callback(function()
-			require("search").open({ collection = "file" })
+	require("search").open({ collection = "file" })
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("tool: Open Telescope (file)"),
-	["n|<leader>fw"] = map_callback(function()
-			require("search").open({ collection = "word" })
+		:with_desc("tool: Find files"),
+	["n|<leader>fp"] = map_callback(function()
+			require("search").open({ collection = "pattern" })
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("tool: Open Telescope (word)"),
+		:with_desc("tool: Find patterns"),
 	["v|<leader>fs"] = map_cu("Telescope grep_string")
 		:with_noremap()
 		:with_silent()
-		:with_desc("tool: Open Telescope (selected)"),
+		:with_desc("tool: Find word under cursor"),
 	["n|<leader>fg"] = map_callback(function()
-			require("search").open({ collection = "git" })
+	require("search").open({ collection = "git" })
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("tool: Open Telescope (git)"),
-	["n|<leader>fr"] = map_callback(function()
-			require("search").open({ collection = "rootdir" })
+		:with_desc("tool: Locate Git objects"),
+	["n|<leader>fd"] = map_callback(function()
+			require("search").open({ collection = "dossier" })
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("tool: Open Telescope (rootdir)"),
+		:with_desc("tool: Retrieve dossiers"),
 	["n|<leader>fm"] = map_callback(function()
 			require("search").open({ collection = "misc" })
 		end)
 		:with_noremap()
 		:with_silent()
-		:with_desc("tool: Open Telescope (misc)"),
+		:with_desc("tool: Miscellaneous"),
 
 	-- Plugin: dap
 	["n|<F6>"] = map_callback(function()
