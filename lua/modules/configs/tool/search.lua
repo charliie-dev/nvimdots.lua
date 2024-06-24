@@ -113,7 +113,7 @@ return function()
 					{
 						name = "Colorschemes",
 						tele_func = function()
-		builtin.colorscheme({ enable_preview = true })
+							builtin.colorscheme({ enable_preview = true })
 						end,
 					},
 					{
