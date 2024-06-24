@@ -121,7 +121,7 @@ local plug_map = {
 		:with_silent()
 		:with_desc("tool: Open Telescope (collections)"),
 	["n|<leader>ff"] = map_callback(function()
-	require("search").open({ collection = "file" })
+			require("search").open({ collection = "file" })
 		end)
 		:with_noremap()
 		:with_silent()
@@ -137,7 +137,7 @@ local plug_map = {
 		:with_silent()
 		:with_desc("tool: Find word under cursor"),
 	["n|<leader>fg"] = map_callback(function()
-	require("search").open({ collection = "git" })
+			require("search").open({ collection = "git" })
 		end)
 		:with_noremap()
 		:with_silent()
