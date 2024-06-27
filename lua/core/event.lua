@@ -133,7 +133,7 @@ function autocmd.load_autocmds()
 		ft = {
 			{ "FileType", "*", "setlocal formatoptions-=cro" },
 			{ "FileType", "alpha", "setlocal showtabline=0" },
-			{ "FileType", "markdown", "setlocal wrap" },
+			{ "FileType", "markdown", "setlocal wrap shiftwidth=2 tabstop=2" },
 			{ "FileType", "dap-repl", "lua require('dap.ext.autocompl').attach()" },
 			{
 				"FileType",
