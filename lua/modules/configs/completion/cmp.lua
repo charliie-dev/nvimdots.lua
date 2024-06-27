@@ -128,28 +128,19 @@ return function()
 		},
 		-- You can set mappings if you want
 		mapping = cmp.mapping.preset.insert({
-			["<C-n>"] = cmp.mapping(function(fallback)
-				if cmp.visible() then
-					cmp.select_next_item()
-				elseif require("luasnip").expand_or_locally_jumpable() then
-					require("luasnip").expand_or_jump()
-				else
-					fallback()
-				end
-			end, { "i", "s" }),
-			["<C-p>"] = cmp.mapping(function(fallback)
-				if cmp.visible() then
-					cmp.select_prev_item()
-				elseif require("luasnip").expand_or_locally_jumpable() then
-					require("luasnip").expand_or_jump()
-				else
-					fallback()
-				end
-			end, { "i", "s" }),
-			["<CR>"] = cmp.mapping(cmp.mapping.confirm({
-				behavior = cmp.ConfirmBehavior.Replace,
-				select = true,
-			}, { "i", "c" })),
+			["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select, count = 1 }),
+			["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select, count = 1 }),
+			["<CR>"] = cmp.mapping({
+				i = function(fallback)
+					if cmp.visible() and cmp.get_active_entry() then
+						cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = false })
+					else
+						fallback()
+					end
+				end,
+				s = cmp.mapping.confirm({ select = true }),
+				c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true }),
+			}),
 			["<C-c>"] = cmp.mapping({
 				i = cmp.mapping.abort(),
 				c = cmp.mapping.close(),
@@ -157,7 +148,7 @@ return function()
 		}),
 		snippet = {
 			expand = function(args)
-				require("luasnip").expand(args.body)
+				require("luasnip").lsp_expand(args.body)
 			end,
 		},
 		-- You should specify your *installed* sources.
