@@ -50,6 +50,7 @@ return function()
 		update_in_insert = false,
 		diagnostics_format = "[#{s} #{c}] #{m}",
 		sources = sources,
+		default_timeout = require("core.settings").format_timeout,
 	})
 
 	require("completion.mason-null-ls").setup()

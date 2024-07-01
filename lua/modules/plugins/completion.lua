@@ -1,5 +1,5 @@
 local completion = {}
--- local use_copilot = require("core.settings").use_copilot
+local use_copilot = require("core.settings").use_copilot
 
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
@@ -77,20 +77,22 @@ completion["hrsh7th/nvim-cmp"] = {
 		-- },
 	},
 }
--- if use_copilot then
--- 	completion["zbirenbaum/copilot.lua"] = {
--- 		lazy = true,
--- 		cmd = "Copilot",
--- 		event = "InsertEnter",
--- 		config = require("completion.copilot"),
--- 		dependencies = {
--- 			{
--- 				"zbirenbaum/copilot-cmp",
--- 				config = require("completion.copilot-cmp"),
--- 			},
--- 		},
--- 	}
--- end
+
+if use_copilot then
+	completion["zbirenbaum/copilot.lua"] = {
+		lazy = true,
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = require("completion.copilot"),
+		dependencies = {
+			{
+				"zbirenbaum/copilot-cmp",
+				config = require("completion.copilot-cmp"),
+			},
+		},
+	}
+end
+
 -- completion["barreiroleo/ltex_extra.nvim"] = {
 -- 	lazy = true,
 -- 	ft = "tex",
