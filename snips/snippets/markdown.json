@@ -1,4 +1,23 @@
 {
+  "markdownlint": {
+    "prefix": "markdownlint",
+    "body": [
+      " ",
+      "<!-- markdownlint-disable -->",
+      " ",
+      "> $1",
+      " ",
+      "<!-- markdownlint-restore -->"
+    ],
+    "description": "Markdownlint disable range"
+  },
+  "todo item": {
+    "prefix": "todo",
+    "body": [
+      "<!-- TODO: $1 -->"
+    ],
+    "description": "Create a todo item"
+  },
   "header 1": {
     "prefix": "h1",
     "body": [
