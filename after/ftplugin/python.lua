@@ -1,9 +1,11 @@
-vim.opt_local.autoindent = true
-vim.opt_local.cindent = true
-vim.opt_local.copyindent = true
-vim.opt_local.expandtab = true
-vim.opt_local.smartindent = true
-vim.opt_local.shiftwidth = 4
-vim.opt_local.smarttab = true
-vim.opt_local.softtabstop = 4
-vim.opt_local.tabstop = 8
+local set = vim.opt_local
+
+set.autoindent = true
+set.cindent = true
+set.copyindent = true
+set.expandtab = true
+set.smartindent = true
+set.shiftwidth = 4
+set.smarttab = true
+set.softtabstop = 4
+set.tabstop = 8

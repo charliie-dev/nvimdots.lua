@@ -1,8 +1,10 @@
-vim.opt_local.autoindent = true
-vim.opt_local.conceallevel = 0
-vim.opt_local.expandtab = true
-vim.opt_local.foldmethod = "syntax"
-vim.opt_local.formatoptions = "tcq2l"
-vim.opt_local.shiftwidth = 2
-vim.opt_local.softtabstop = 2
-vim.opt_local.tabstop = 4
+local set = vim.opt_local
+
+set.autoindent = true
+set.conceallevel = 0
+set.expandtab = true
+set.foldmethod = "syntax"
+set.formatoptions = "tcq2l"
+set.shiftwidth = 2
+set.softtabstop = 2
+set.tabstop = 4

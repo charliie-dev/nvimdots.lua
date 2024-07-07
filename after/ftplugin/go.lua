@@ -1,5 +1,7 @@
-vim.opt_local.commentstring = "//%s"
-vim.opt_local.expandtab = false
-vim.opt_local.shiftwidth = 4
-vim.opt_local.softtabstop = 4
-vim.opt_local.tabstop = 4
+local set = vim.opt_local
+
+set.commentstring = "//%s"
+set.expandtab = false
+set.shiftwidth = 4
+set.softtabstop = 4
+set.tabstop = 4

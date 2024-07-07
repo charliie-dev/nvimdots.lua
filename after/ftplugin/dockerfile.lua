@@ -1,5 +1,7 @@
-vim.opt_local.cindent = false
-vim.opt_local.expandtab = false
-vim.opt_local.shiftwidth = 2
-vim.opt_local.softtabstop = 2
-vim.opt_local.tabstop = 2
+local set = vim.opt_local
+
+set.cindent = false
+set.expandtab = false
+set.shiftwidth = 2
+set.softtabstop = 2
+set.tabstop = 2
