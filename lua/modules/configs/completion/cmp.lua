@@ -130,14 +130,18 @@ return function()
 		mapping = cmp.mapping.preset.insert({
 			["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select, count = 1 }),
 			["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select, count = 1 }),
-			["<Tab>"] = cmp.mapping(function()
+			["<Tab>"] = cmp.mapping(function(fallback)
 				if require("luasnip").expand_or_locally_jumpable() then
 					require("luasnip").expand_or_jump()
+				else
+					fallback()
 				end
 			end, { "i", "s" }),
-			["<S-Tab>"] = cmp.mapping(function()
+			["<S-Tab>"] = cmp.mapping(function(fallback)
 				if require("luasnip").jumpable(-1) then
 					require("luasnip").jump(-1)
+				else
+					fallback()
 				end
 			end, { "i", "s" }),
 			["<CR>"] = cmp.mapping({
