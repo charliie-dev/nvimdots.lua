@@ -112,12 +112,10 @@ settings["lsp_deps"] = {
 	"marksman",
 	"pylsp",
 	-- "emmet_ls",
-	-- "gopls",
 	-- "ltex",
 	"taplo",
-	-- "texlab",
 	-- "vimls",
-	-- "yamlls",
+	"yamlls",
 	"nil_ls",
 }
 
@@ -127,24 +125,16 @@ settings["lsp_deps"] = {
 -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
 ---@type string[]
 settings["null_ls_deps"] = {
-	-- formatting
-	"clang_format",
-	-- "gofumpt",
-	-- "goimports",
+	-- "clang_format",
+	"cmake_lint",
+	"commitlint",
 	"eslint_d",
 	"jq",
-	"markdownlint",
 	"prettier",
-	-- "rustfmt",
 	"shfmt",
 	"stylua",
-
-	-- diagnostics
-	-- "zsh",
-	-- "shellcheck",
-	-- "markdownlint",
-
-	--nix
+	"shellcheck",
+	"markdownlint_cli2",
 	"nixpkgs_fmt",
 }
 
