@@ -10,9 +10,14 @@ lang["kevinhwang91/nvim-bqf"] = {
 }
 lang["lukas-reineke/headlines.nvim"] = {
 	lazy = true,
-	ft = { "markdown", "org" },
+	ft = "markdown",
 	config = require("lang.headlines"),
 }
+lang["bullets-vim/bullets.vim"] = {
+	lazy = true,
+	ft = { "markdown", "text", "gitcommit" },
+}
+
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
 	ft = "markdown",
