@@ -39,13 +39,6 @@ local plug_map = {
 	["n|<leader>nf"] = map_cr("NvimTreeFindFile"):with_noremap():with_silent():with_desc("filetree: Find file"),
 	["n|<leader>nr"] = map_cr("NvimTreeRefresh"):with_noremap():with_silent():with_desc("filetree: Refresh"),
 
-	--- Plugin: oil
-	["n|<leader>o"] = map_callback(function()
-			require("oil").open_float()
-		end)
-		:with_noremap()
-		:with_desc("filetree: Open Oil"),
-
 	-- Plugin: sniprun
 	["v|<leader>r"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
 	["n|<leader>r"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
