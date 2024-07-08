@@ -127,7 +127,6 @@ settings["lsp_deps"] = {
 settings["null_ls_deps"] = {
 	-- "clang_format",
 	"cmake_lint",
-	"commitlint",
 	"eslint_d",
 	"jq",
 	"prettier",
