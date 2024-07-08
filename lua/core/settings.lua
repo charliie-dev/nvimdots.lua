@@ -130,7 +130,6 @@ settings["null_ls_deps"] = {
 	"eslint_d",
 	"jq",
 	"prettier",
-	"shfmt",
 	"stylua",
 	"shellcheck",
 	"markdownlint_cli2",
