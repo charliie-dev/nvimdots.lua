@@ -131,7 +131,7 @@ settings["null_ls_deps"] = {
 	"jq",
 	"prettier",
 	"stylua",
-	"shellcheck",
+	"shellharden",
 	"markdownlint_cli2",
 	"nixpkgs_fmt",
 }
