@@ -83,15 +83,6 @@ editor["lambdalisue/suda.vim"] = {
 	cmd = { "SudaRead", "SudaWrite" },
 	init = require("editor.suda"),
 }
-editor["kylechui/nvim-surround"] = {
-	lazy = true,
-	event = "BufReadPre",
-	config = require("editor.surround"),
-	dependencies = {
-		"nvim-treesitter/nvim-treesitter",
-		"nvim-treesitter/nvim-treesitter-textobjects",
-	},
-}
 editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
