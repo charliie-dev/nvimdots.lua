@@ -119,7 +119,7 @@ editor["joshuadanpeterson/typewriter.nvim"] = {
 	dependencies = "nvim-treesitter/nvim-treesitter",
 	config = require("editor.typewriter"),
 	init = function()
-		require("typewriter.commands")
+		require("typewriter.commands").enable_typewriter_mode()
 	end,
 }
 
