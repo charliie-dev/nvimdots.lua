@@ -1,10 +1,10 @@
 local editor = {}
 
--- editor["m4xshen/autoclose.nvim"] = {
--- 	lazy = true,
--- 	event = "InsertEnter",
--- 	config = require("editor.autoclose"),
--- }
+editor["m4xshen/autoclose.nvim"] = {
+	lazy = true,
+	event = "InsertEnter",
+	config = require("editor.autoclose"),
+}
 editor["LunarVim/bigfile.nvim"] = {
 	lazy = false,
 	config = require("editor.bigfile"),
