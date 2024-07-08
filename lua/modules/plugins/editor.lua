@@ -36,6 +36,12 @@ editor["echasnovski/mini.align"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.align"),
 }
+editor["echasnovski/mini.surround"] = {
+	lazy = true,
+	event = { "BufNewFile", "BufReadPre" },
+	version = false,
+	config = require("editor.surround"),
+}
 -- NOTE: `flash.nvim` is a powerful plugin that can be used as partial or complete replacements for:
 --  > `hop.nvim`,
 --  > `wilder.nvim`

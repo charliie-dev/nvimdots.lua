@@ -81,47 +81,8 @@ local plug_map = {
 		:with_noremap()
 		:with_desc("editi: Flash Telescope"),
 
-	--- Plugin: nvim-surround
-	["n|ys"] = map_callback(function()
-			return et("<Plug>(nvim-surround-normal)")
-		end)
-		:with_expr()
-		:with_desc("edit: Add a surrounding pair around a motion"),
-	["n|yss"] = map_callback(function()
-			return et("<Plug>(nvim-surround-normal-cur")
-		end)
-		:with_expr()
-		:with_desc("edit: Add a surrounding pair around current line"),
-	["n|yS"] = map_callback(function()
-			return et("<Plug>(nvim-surround-normal-line)")
-		end)
-		:with_expr()
-		:with_desc("edit: Add a surrounding pair around a motion, on new lines"),
-	["n|ySS"] = map_callback(function()
-			return et("<Plug>(nvim-surround-normal-cur-line)")
-		end)
-		:with_expr()
-		:with_desc("edit: Add a surrounding pair around the current line, on new lines"),
-	["x|ys"] = map_callback(function()
-			return et("<Plug>(nvim-surround-visual")
-		end)
-		:with_expr()
-		:with_desc("edit: Add a surrounding pair around a visual selection"),
-	["x|yS"] = map_callback(function()
-			return et("<Plug>(nvim-surround-visual-line")
-		end)
-		:with_expr()
-		:with_desc("edit: Add a surrounding pair around a visual selection, on new lines"),
-	["n|ds"] = map_callback(function()
-			return et("<Plug>(nvim-surround-delete")
-		end)
-		:with_expr()
-		:with_desc("edit: Delete a surrounding pair"),
-	["n|cs"] = map_callback(function()
-			return et("<Plug>(nvim-surround-change")
-		end)
-		:with_expr()
-		:with_desc("edit: Change a surrounding pair"),
+	--- Plugin: mini-surround
+	-- see `:help mini-surround`
 
 	-- Plugin: smart-splits.nvim
 	["n|<A-h>"] = map_cu("SmartResizeLeft"):with_silent():with_noremap():with_desc("window: Resize -3 horizontally"),
