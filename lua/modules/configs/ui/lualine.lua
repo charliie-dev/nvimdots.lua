@@ -328,6 +328,7 @@ return function()
 			lualine_x = {
 				{
 					"encoding",
+					show_bomb = true,
 					fmt = string.upper,
 					padding = { left = 1 },
 					cond = conditionals.has_enough_room,
