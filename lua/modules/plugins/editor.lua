@@ -110,15 +110,15 @@ editor["mrjones2014/smart-splits.nvim"] = {
 	event = { "CursorHoldI", "CursorHold" },
 	config = require("editor.splits"),
 }
-editor["joshuadanpeterson/typewriter.nvim"] = {
-	lazy = true,
-	event = "BufReadPre",
-	dependencies = "nvim-treesitter/nvim-treesitter",
-	config = require("editor.typewriter"),
-	init = function()
-		require("typewriter.commands").enable_typewriter_mode()
-	end,
-}
+-- editor["joshuadanpeterson/typewriter.nvim"] = {
+-- 	lazy = true,
+-- 	event = "BufReadPre",
+-- 	dependencies = "nvim-treesitter/nvim-treesitter",
+-- 	config = require("editor.typewriter"),
+-- 	init = function()
+-- 		require("typewriter.commands").enable_typewriter_mode()
+-- 	end,
+-- }
 
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
