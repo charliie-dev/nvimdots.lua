@@ -8,16 +8,18 @@ lang["kevinhwang91/nvim-bqf"] = {
 		{ "junegunn/fzf", build = ":call fzf#install()" },
 	},
 }
-lang["lukas-reineke/headlines.nvim"] = {
-	lazy = true,
-	ft = "markdown",
-	config = require("lang.headlines"),
-}
 lang["bullets-vim/bullets.vim"] = {
 	lazy = true,
 	ft = { "markdown", "text", "gitcommit" },
 }
-
+lang["MeanderingProgrammer/render-markdown.nvim"] = {
+	lazy = true,
+	ft = "markdown",
+	config = require("lang.render-markdown"),
+	dependencies = {
+		"nvim-treesitter/nvim-treesitter",
+	},
+}
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
 	ft = "markdown",
