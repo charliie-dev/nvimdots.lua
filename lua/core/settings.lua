@@ -133,7 +133,6 @@ settings["null_ls_deps"] = {
 	"stylua",
 	"shellharden",
 	"markdownlint_cli2",
-	"nixpkgs_fmt",
 }
 
 -- Set the Debug Adapter Protocol (DAP) clients that will be installed and configured during bootstrap here.

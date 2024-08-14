@@ -39,6 +39,10 @@ return function()
 		-- 	extra_args = { "--disable MD033" },
 		-- }),
 		btns.diagnostics.zsh,
+		btns.diagnostics.deadnix,
+		btns.diagnostics.statix,
+		btns.code_actions.statix,
+		btns.formatting.nixfmt,
 		-- example for changing diagnostics_format
 		-- btns.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{s} #{c}]" }),
 	}
