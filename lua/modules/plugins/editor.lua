@@ -97,10 +97,6 @@ editor["brenoprata10/nvim-highlight-colors"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.highlight-colors"),
 }
-editor["tpope/vim-sleuth"] = {
-	lazy = true,
-	event = { "BufNewFile", "BufReadPost", "BufFilePost" },
-}
 editor["nvim-pack/nvim-spectre"] = {
 	lazy = true,
 	cmd = "Spectre",
