@@ -92,8 +92,6 @@ return function()
 		},
 		callback = function()
 			vim.api.nvim_command([[LspStop bashls]])
-			vim.api.nvim_command([[NullLsToggle shellcheck]])
-			vim.api.nvim_command([[NullLsToggle shfmt]])
 		end,
 	})
 
