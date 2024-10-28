@@ -37,11 +37,6 @@ ui["hoob3rt/lualine.nvim"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.lualine"),
 }
-ui["zbirenbaum/neodim"] = {
-	lazy = true,
-	event = "LspAttach",
-	config = require("ui.neodim"),
-}
 ui["karb94/neoscroll.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
