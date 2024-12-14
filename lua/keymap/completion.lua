@@ -4,7 +4,8 @@ local map_cmd = bind.map_cmd
 local map_callback = bind.map_callback
 
 local plug_map = {
-	["n|<A-f>"] = map_cmd("<Cmd>FormatToggle<CR>"):with_noremap():with_desc("Formater: Toggle format on save"),
+	["n|<A-f>"] = map_cmd("<Cmd>FormatToggle<CR>"):with_noremap():with_desc("formater: Toggle format on save"),
+	["n|<A-S-f>"] = map_cmd("<Cmd>Format<CR>"):with_noremap():with_desc("formatter: Format buffer manually"),
 }
 bind.nvim_load_mapping(plug_map)
 
