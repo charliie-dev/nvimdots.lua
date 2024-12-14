@@ -36,14 +36,19 @@ M.setup = function()
 	---@param lsp_name string
 	local function mason_lsp_handler(lsp_name)
 		local ok, custom_handler = pcall(require, "user.configs.lsp-servers." .. lsp_name)
+		local predefined_ok, predefined = pcall(require, "completion.servers." .. lsp_name)
 		-- Use preset if there is no user definition
 		if not ok then
-			ok, custom_handler = pcall(require, "completion.servers." .. lsp_name)
+			ok, custom_handler = predefined_ok, predefined
+		else
+			if type(custom_handler) == "table" and type(predefined) == "table" then
+				custom_handler = vim.tbl_deep_extend("force", predefined, custom_handler)
+			end
 		end
+
 		if not ok then
 			-- Default to use factory config for server(s) that doesn't include a spec
 			nvim_lsp[lsp_name].setup(opts)
-			return
 		elseif type(custom_handler) == "function" then
 			--- Case where language server requires its own setup
 			--- Make sure to call require("lspconfig")[lsp_name].setup() in the function
