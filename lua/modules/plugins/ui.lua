@@ -57,6 +57,11 @@ ui["petertriho/nvim-scrollbar"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.scrollbar"),
 }
+ui["mrjones2014/smart-splits.nvim"] = {
+	lazy = true,
+	event = { "CursorHoldI", "CursorHold" },
+	config = require("ui.splits"),
+}
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },

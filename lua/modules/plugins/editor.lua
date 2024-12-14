@@ -101,11 +101,6 @@ editor["nvim-pack/nvim-spectre"] = {
 	lazy = true,
 	cmd = "Spectre",
 }
-editor["mrjones2014/smart-splits.nvim"] = {
-	lazy = true,
-	event = { "CursorHoldI", "CursorHold" },
-	config = require("editor.splits"),
-}
 -- editor["joshuadanpeterson/typewriter.nvim"] = {
 -- 	lazy = true,
 -- 	event = "BufReadPre",
