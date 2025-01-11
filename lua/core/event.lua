@@ -98,11 +98,11 @@ function autocmd.load_autocmds()
 			{ "BufWritePre", "*.tmp", "setlocal noundofile" },
 			{ "BufWritePre", "*.bak", "setlocal noundofile" },
 			-- auto place to last edit
-			{
-				"BufReadPost",
-				"*",
-				[[if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif]],
-			},
+			--			{
+			--				"BufReadPost",
+			--				"*",
+			--				[[if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif]],
+			--			},
 			-- auto change directory
 			-- { "BufEnter", "*", "silent! lcd %:p:h" },
 		},
