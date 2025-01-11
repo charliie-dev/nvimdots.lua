@@ -100,10 +100,19 @@ end
 
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get
 -- hover docs and function signatures, but it takes too much time to load all dirs, use it if needed.
-completion["folke/neodev.nvim"] = {
+completion["folke/lazydev.nvim"] = {
 	lazy = true,
-	event = "LspAttach",
 	ft = "lua",
+	dependencies = {
+		{ "gonstoll/wezterm-types", lazy = true },
+		{ "Bilal2453/luvit-meta", lazy = true },
+	},
+	opt = {
+		library = {
+			{ path = "luvit-meta/library", words = { "vim%.uv" } },
+			{ path = "wezterm-types", mods = { "wezterm" } },
+		},
+	},
 }
 
 return completion
