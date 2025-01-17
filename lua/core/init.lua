@@ -50,7 +50,7 @@ local clipboard_config = function()
 			},
 			cache_enabled = 0,
 		}
-	elseif global.is_linux then
+	elseif os.getenv("SSH_TTY") then
 		vim.g.clipboard = {
 			name = "OSC 52",
 			copy = {
