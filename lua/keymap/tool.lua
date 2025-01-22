@@ -1,9 +1,9 @@
+local vim_path = require("core.global").vim_path
 local bind = require("keymap.bind")
 local map_cr = bind.map_cr
 local map_cu = bind.map_cu
 local map_cmd = bind.map_cmd
 local map_callback = bind.map_callback
-local vim_path = require("core.global").vim_path
 local et = bind.escape_termcode
 require("keymap.helpers")
 
@@ -146,15 +146,8 @@ local mappings = {
 			:with_noremap()
 			:with_silent()
 			:with_desc("tool: Find patterns"),
-		--	["v|<leader>fs"] = map_cu("Telescope grep_string")
-		--	:with_noremap()
-		--	:with_silent()
-		--	:with_desc("tool: Find word under cursor"),
 		["v|<leader>fs"] = map_callback(function()
-				local opts = {}
-				if vim.fn.getcwd() == vim_path then
-					opts["additional_args"] = { "--no-ignore" }
-				end
+				local opts = vim.fn.getcwd() == vim_path and { additional_args = { "--no-ignore" } } or {}
 				require("telescope-live-grep-args.shortcuts").grep_visual_selection(opts)
 			end)
 			:with_noremap()
