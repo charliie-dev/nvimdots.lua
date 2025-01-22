@@ -68,5 +68,9 @@ ui["folke/todo-comments.nvim"] = {
 	config = require("ui.todo"),
 	dependencies = "nvim-lua/plenary.nvim",
 }
+ui["folke/edgy.nvim"] = {
+	event = "VeryLazy",
+	config = require("ui.edgy"),
+}
 
 return ui
