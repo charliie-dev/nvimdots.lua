@@ -2,10 +2,9 @@ local bind = require("keymap.bind")
 local map_cr = bind.map_cr
 local map_cu = bind.map_cu
 local map_cmd = bind.map_cmd
--- local map_callback = bind.map_callback
 
 local mappings = {
-	builtin_map = {
+	builtins = {
 		-- Builtins: Buffer
 		["n|<leader>bn"] = map_cu("enew"):with_noremap():with_silent():with_desc("buffer: New"),
 
