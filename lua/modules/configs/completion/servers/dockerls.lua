@@ -1,2 +1,2 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/dockerls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/dockerls.lua
 return {}

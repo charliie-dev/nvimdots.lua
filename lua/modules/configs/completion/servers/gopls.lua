@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/gopls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/gopls.lua
 return {
 	flags = { debounce_text_changes = 500 },
 	cmd = { "gopls", "-remote=auto" },

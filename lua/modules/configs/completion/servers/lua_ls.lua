@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/lua_ls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/lua_ls.lua
 require("neodev").setup({
 	library = {
 		enabled = true, -- when not enabled, neodev will not change any settings to the LSP server

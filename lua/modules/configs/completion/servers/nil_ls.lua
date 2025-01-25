@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/nil_ls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/nil_ls.lua
 return {
 	cmd = { "nil" },
 	filetypes = { "nix" },

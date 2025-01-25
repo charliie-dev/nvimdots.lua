@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/server_configurations/emmet_ls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/emmet_ls.lua
 -- https://github.com/pedro757/emmet
 -- npm i -g ls_emmet
 return {
