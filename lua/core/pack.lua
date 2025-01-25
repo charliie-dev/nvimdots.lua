@@ -73,7 +73,7 @@ function Lazy:load_lazy()
 	local lazy_settings = {
 		root = data_dir .. "lazy", -- directory where plugins will be installed
 		rocks = {
-			enabled = false,
+			enabled = true,
 			hererocks = false,
 		},
 		git = {
