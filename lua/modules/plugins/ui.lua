@@ -52,11 +52,6 @@ ui["folke/paint.nvim"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("ui.paint"),
 }
-ui["petertriho/nvim-scrollbar"] = {
-	lazy = true,
-	event = { "BufReadPost", "BufAdd", "BufNewFile" },
-	config = require("ui.scrollbar"),
-}
 ui["mrjones2014/smart-splits.nvim"] = {
 	lazy = true,
 	event = { "CursorHoldI", "CursorHold" },
@@ -67,6 +62,11 @@ ui["folke/todo-comments.nvim"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("ui.todo"),
 	dependencies = "nvim-lua/plenary.nvim",
+}
+ui["dstein64/nvim-scrollview"] = {
+	lazy = true,
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
+	config = require("ui.scrollview"),
 }
 ui["folke/edgy.nvim"] = {
 	event = "VeryLazy",
