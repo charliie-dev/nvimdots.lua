@@ -22,7 +22,7 @@ editor["ojroques/nvim-bufdel"] = {
 -- }
 editor["numToStr/Comment.nvim"] = {
 	lazy = true,
-	event = { "BufNewFile", "BufReadPre" },
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.comment"),
 	dependencies = "nvim-treesitter/nvim-treesitter",
 }
@@ -38,7 +38,7 @@ editor["echasnovski/mini.align"] = {
 }
 editor["echasnovski/mini.surround"] = {
 	lazy = true,
-	event = { "BufNewFile", "BufReadPre" },
+	event = { "CursorHold", "CursorHoldI" },
 	version = false,
 	config = require("editor.surround"),
 }

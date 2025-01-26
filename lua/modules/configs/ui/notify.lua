@@ -18,7 +18,7 @@ return function()
 		---@usage timeout for notifications in ms, default 5000
 		timeout = 2000,
 		-- @usage User render fps value
-		fps = 20,
+		fps = 120,
 		-- Render function for notifications. See notify-render()
 		render = "default",
 		---@usage highlight behind the window for stages that change opacity
@@ -26,7 +26,7 @@ return function()
 		---@usage minimum width for notification windows
 		minimum_width = 50,
 		---@usage notifications with level lower than this would be ignored. [ERROR > WARN > INFO > DEBUG > TRACE]
-		level = "TRACE",
+		level = "INFO",
 		---@usage Icons for the different levels
 		icons = {
 			ERROR = icons.diagnostics.Error,

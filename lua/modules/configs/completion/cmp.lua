@@ -32,8 +32,8 @@ return function()
 	local use_copilot = require("core.settings").use_copilot
 	local comparators = use_copilot == true
 			and {
-				-- require("copilot_cmp.comparators").prioritize,
-				-- require("copilot_cmp.comparators").score,
+				require("copilot_cmp.comparators").prioritize,
+				require("copilot_cmp.comparators").score,
 				-- require("cmp_tabnine.compare"),
 				compare.offset, -- Items closer to cursor will have lower priority
 				compare.exact,
@@ -92,19 +92,19 @@ return function()
 
 				-- set up labels for completion entries
 				vim_item.menu = setmetatable({
-					nvim_lsp = "[LSP]",
-					nvim_lua = "[LUA]",
-					luasnip = "[SNIP]",
-					path = "[PATH]",
-					treesitter = "[TS]",
-					spell = "[SPELL]",
-					tmux = "[TMUX]",
-					orgmode = "[ORG]",
-					buffer = "[BUF]",
-					latex_symbols = "[LATEX]",
-					copilot = "[CPLT]",
 					cmp_tabnine = "[TN]",
 					codeium = "[CODEIUM]",
+					copilot = "[CPLT]",
+					buffer = "[BUF]",
+					orgmode = "[ORG]",
+					nvim_lsp = "[LSP]",
+					nvim_lua = "[LUA]",
+					path = "[PATH]",
+					tmux = "[TMUX]",
+					treesitter = "[TS]",
+					latex_symbols = "[LTEX]",
+					luasnip = "[SNIP]",
+					spell = "[SPELL]",
 				}, {
 					__index = function()
 						return "[BTN]" -- builtin/unknown source names
@@ -190,8 +190,8 @@ return function()
 					end,
 				},
 			},
-			-- { name = "latex_symbols" },
-			-- { name = "copilot" },
+			{ name = "latex_symbols" },
+			{ name = "copilot" },
 			-- { name = "codeium" },
 			-- { name = "cmp_tabnine" },
 		},
