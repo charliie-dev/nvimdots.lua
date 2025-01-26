@@ -18,6 +18,7 @@ return function()
 			if errors < 0 then
 				return nil
 			end
+
 			return line_count > threshold and require("rainbow-delimiters").strategy["global"]
 				or require("rainbow-delimiters").strategy["local"]
 		end

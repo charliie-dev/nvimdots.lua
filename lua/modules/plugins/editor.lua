@@ -14,12 +14,12 @@ editor["ojroques/nvim-bufdel"] = {
 	lazy = true,
 	cmd = { "BufDel", "BufDelAll", "BufDelOthers" },
 }
-editor["s1n7ax/nvim-comment-frame"] = {
-	lazy = true,
-	event = { "BufNewFile", "BufReadPre" },
-	config = require("editor.comment-frame"),
-	dependencies = "nvim-treesitter/nvim-treesitter",
-}
+-- editor["s1n7ax/nvim-comment-frame"] = {
+-- 	lazy = true,
+-- 	event = { "CursorHold", "CursorHoldI" },
+-- 	config = require("editor.comment-frame"),
+-- 	dependencies = "nvim-treesitter/nvim-treesitter",
+-- }
 editor["numToStr/Comment.nvim"] = {
 	lazy = true,
 	event = { "BufNewFile", "BufReadPre" },
@@ -53,10 +53,6 @@ editor["folke/flash.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.flash"),
-}
-editor["junegunn/vim-easy-align"] = {
-	lazy = true,
-	cmd = "EasyAlign",
 }
 editor["danymat/neogen"] = {
 	lazy = true,

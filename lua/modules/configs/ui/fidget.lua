@@ -12,7 +12,6 @@ return function()
 				render_limit = 5, -- How many LSP messages to show at once
 				done_ttl = 2, -- How long a message should persist after completion
 				done_icon = icons.ui.Accepted, -- Icon shown when all LSP progress tasks are complete
-				done_style = "Constant", -- Highlight group for completed LSP tasks
 			},
 		},
 		-- Options related to notification subsystem

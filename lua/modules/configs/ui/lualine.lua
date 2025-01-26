@@ -54,23 +54,6 @@ return function()
 		end
 	end
 
-	-- local mini_sections = {
-	-- 	lualine_a = { "filetype" },
-	-- 	lualine_b = {},
-	-- 	lualine_c = {},
-	-- 	lualine_x = {},
-	-- 	lualine_y = {},
-	-- 	lualine_z = {},
-	-- }
-	-- local outline = {
-	-- 	sections = mini_sections,
-	-- 	filetypes = { "Outline" },
-	-- }
-	-- local diffview = {
-	-- 	sections = mini_sections,
-	-- 	filetypes = { "DiffviewFiles" },
-	-- }
-
 	local conditionals = {
 		has_enough_room = function()
 			return vim.o.columns > 100
@@ -360,14 +343,6 @@ return function()
 			lualine_z = {},
 		},
 		tabline = {},
-		extensions = {
-			-- "quickfix",
-			-- "nvim-tree",
-			-- "nvim-dap-ui",
-			-- "toggleterm",
-			-- "fugitive",
-			-- outline,
-			-- diffview,
-		},
+		extensions = {},
 	})
 end
