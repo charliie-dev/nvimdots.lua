@@ -107,20 +107,33 @@ settings["external_browser"] = "chrome-cli open"
 -- https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations
 ---@type string[]
 settings["lsp_deps"] = {
+	"ansiblels",
+	"awk_ls",
+	"azure_pipelines_ls",
 	"bashls",
-	-- "clangd",
+	"clangd",
 	"docker_compose_language_service",
 	"dockerls",
+	-- NOTE: not-yet registered in mason.nvim, install it via `npm i -g gh-actions-language-server`
+	-- "gh_actions_ls",
+	"gitlab_ci_ls",
+	"html",
+	"htmx",
 	"jsonls",
 	"lua_ls",
+	"markdown_oxide",
 	"marksman",
+	"neocmake",
+	"nil_ls",
 	"pylsp",
+	"snyk_ls",
+	"taplo",
+	"terraformls",
+	"yamlls",
 	-- "emmet_ls",
 	-- "ltex",
-	"taplo",
+	-- "nginx_language_server",
 	-- "vimls",
-	"yamlls",
-	"nil_ls",
 }
 
 -- Set the general-purpose servers that will be installed during bootstrap here.
@@ -129,14 +142,16 @@ settings["lsp_deps"] = {
 -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
 ---@type string[]
 settings["null_ls_deps"] = {
-	-- "clang_format",
-	"cmake_lint",
+	"clang_format",
+	"cmakelang",
 	"eslint_d",
 	"jq",
 	"prettier",
 	"stylua",
 	"shellharden",
 	"markdownlint_cli2",
+	"mdformat",
+	"nixpkgs-fmt",
 }
 
 -- Set the Debug Adapter Protocol (DAP) clients that will be installed and configured during bootstrap here.
@@ -154,10 +169,12 @@ settings["dap_deps"] = {
 -- https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
 ---@type string[]
 settings["treesitter_deps"] = {
+	"awk",
 	"bash",
 	"c",
 	"cpp",
 	"css",
+	"cmake",
 	"gitignore",
 	"html",
 	"javascript",

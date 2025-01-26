@@ -1,28 +1,4 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/lua_ls.lua
-require("neodev").setup({
-	library = {
-		enabled = true, -- when not enabled, neodev will not change any settings to the LSP server
-		-- these settings will be used for your Neovim config directory
-		runtime = true, -- runtime path
-		types = true, -- full signature, docs and completion of vim.api, vim.treesitter, vim.lsp and others
-		plugins = true, -- installed opt or start plugins in packpath
-		-- you can also specify the list of plugins to make available as a workspace library
-		-- plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim" },
-	},
-	setup_jsonls = true, -- configures jsonls to provide completion for project specific .luarc.json files
-	-- for your Neovim config directory, the config.library settings will be used as is
-	-- for plugin directories (root_dirs having a /lua directory), config.library.plugins will be disabled
-	-- for any other directory, config.library.enabled will be set to false
-	-- -- override = function(root_dir, options) end,
-	-- With lspconfig, Neodev will automatically setup your lua-language-server
-	-- If you disable this, then you have to set {before_init=require("neodev.lsp").before_init}
-	-- in your lsp start options
-	lspconfig = true,
-	-- much faster, but needs a recent built of lua-language-server
-	-- needs lua-language-server >= 3.6.0
-	pathStrict = true,
-})
-
 return {
 	settings = {
 		Lua = {
@@ -47,3 +23,39 @@ return {
 		},
 	},
 }
+
+--[[
+  require'lspconfig'.lua_ls.setup {
+    on_init = function(client)
+      if client.workspace_folders then
+        local path = client.workspace_folders[1].name
+        if vim.loop.fs_stat(path..'/.luarc.json') or vim.loop.fs_stat(path..'/.luarc.jsonc') then
+          return
+        end
+      end
+  
+      client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+        runtime = {
+          -- Tell the language server which version of Lua you're using
+          -- (most likely LuaJIT in the case of Neovim)
+          version = 'LuaJIT'
+        },
+        -- Make the server aware of Neovim runtime files
+        workspace = {
+          checkThirdParty = false,
+          library = {
+            vim.env.VIMRUNTIME
+            -- Depending on the usage, you might want to add additional paths here.
+            -- "${3rd}/luv/library"
+            -- "${3rd}/busted/library",
+          }
+          -- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
+          -- library = vim.api.nvim_get_runtime_file("", true)
+        }
+      })
+    end,
+    settings = {
+      Lua = {}
+    }
+  }
+--	]]

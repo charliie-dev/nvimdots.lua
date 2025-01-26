@@ -35,14 +35,23 @@ return function()
 				"markdown",
 			},
 		}),
-		-- btns.diagnostics.markdownlint.with({
-		-- 	extra_args = { "--disable MD033" },
-		-- }),
+		btns.diagnostics.markdownlint_cli2.with({
+			extra_args = { "--disable MD033" },
+		}),
+		btns.formatting.mdformat,
 		btns.diagnostics.zsh,
+		btns.formatting.alejandra,
 		btns.diagnostics.deadnix,
 		btns.diagnostics.statix,
 		btns.code_actions.statix,
 		btns.formatting.nixfmt,
+		btns.formatting.nix_flake_fmt.with({
+			filetypes = { "nix" },
+		}),
+		btns.formatting.nixpkgs_fmt.with({
+			filetypes = { "nix" },
+		}),
+		btns.formatting.shellharden,
 		-- example for changing diagnostics_format
 		-- btns.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{s} #{c}]" }),
 	}

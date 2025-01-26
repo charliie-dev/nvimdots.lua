@@ -5,6 +5,11 @@ return {
 	settings = {
 		pylsp = {
 			plugins = {
+				-- Completion
+				jedi_completion = {
+					include_params = false,
+				},
+
 				-- Lint
 				ruff = {
 					enabled = true,
@@ -27,7 +32,6 @@ return {
 						E501 = "I",
 					},
 				},
-
 				flake8 = { enabled = false },
 				pyflakes = { enabled = false },
 				pycodestyle = { enabled = false },
