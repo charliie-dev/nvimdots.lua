@@ -101,12 +101,7 @@ completion["folke/lazydev.nvim"] = {
 		{ "gonstoll/wezterm-types", lazy = true },
 		{ "Bilal2453/luvit-meta", lazy = true },
 	},
-	opt = {
-		library = {
-			{ path = "luvit-meta/library", words = { "vim%.uv" } },
-			{ path = "wezterm-types", mods = { "wezterm" } },
-		},
-	},
+	config = require("completion.lazydev"),
 }
 
 return completion
