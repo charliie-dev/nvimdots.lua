@@ -140,12 +140,5 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 		},
 	},
 }
-editor["nvim-treesitter/playground"] = {
-	lazy = true,
-	cmd = {
-		"TSHighlightCapturesUnderCursor",
-		"TSPlaygroundToggle",
-	},
-}
 
 return editor
