@@ -124,7 +124,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 		{ "nvim-treesitter/nvim-treesitter-textobjects" },
 		{
 			"windwp/nvim-ts-autotag",
-			config = require("editor.autotag"),
+			config = require("editor.ts-autotag"),
 		},
 		{
 			"hiphish/rainbow-delimiters.nvim",
