@@ -126,13 +126,13 @@ settings["lsp_deps"] = {
 	"neocmake",
 	"nil_ls",
 	"pylsp",
-	"snyk_ls",
 	"taplo",
 	"terraformls",
 	"yamlls",
 	-- "emmet_ls",
 	-- "ltex",
 	-- "nginx_language_server",
+	-- "snyk_ls",
 	-- "vimls",
 }
 
