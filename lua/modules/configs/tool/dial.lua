@@ -7,7 +7,7 @@ return function()
 			augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
 			augend.date.new({
 				pattern = "%Y-%m-%d", -- date (2022-02-19, etc.)
-				default_kind = "date",
+				default_kind = "day",
 				only_valid = true,
 				word = false,
 			}),
@@ -30,7 +30,7 @@ return function()
 			augend.integer.alias.hex,
 			augend.date.new({
 				pattern = "%Y-%m-%d", -- date (2022-02-19, etc.)
-				default_kind = "date",
+				default_kind = "day",
 				only_valid = true,
 				word = false,
 			}),
