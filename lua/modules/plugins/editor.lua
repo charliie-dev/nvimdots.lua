@@ -138,6 +138,11 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			"JoosepAlviste/nvim-ts-context-commentstring",
 			config = require("editor.ts-context-commentstring"),
 		},
+		{
+			"echasnovski/mini.ai",
+			version = "*",
+			config = require("editor.ai_textobj"),
+		},
 	},
 }
 

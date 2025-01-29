@@ -150,8 +150,12 @@ local mappings = {
 		-- 	:with_noremap()
 		-- 	:with_desc("editi: Flash Telescope"),
 
-		--- Plugin: mini-surround
-		-- see `:help mini-surround`
+		--- Plugin: mini.surround
+		-- see `:help MiniSurround`
+
+		--- Plugin: mini.ai
+		-- see `:help MiniAI`
+		-- see: https://youtu.be/6V8jdqdygB4
 
 		-- Plugin: nvim-spectre
 		["n|<leader>Ss"] = map_callback(function()
