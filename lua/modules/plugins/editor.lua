@@ -93,9 +93,10 @@ editor["brenoprata10/nvim-highlight-colors"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.highlight-colors"),
 }
-editor["nvim-pack/nvim-spectre"] = {
+editor["MagicDuck/grug-far.nvim"] = {
 	lazy = true,
-	cmd = "Spectre",
+	cmd = "GrugFar",
+	config = require("editor.grug-far"),
 }
 -- editor["joshuadanpeterson/typewriter.nvim"] = {
 -- 	lazy = true,
