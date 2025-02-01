@@ -46,6 +46,7 @@ completion["Saghen/blink.cmp"] = {
 			version = "v2.*",
 			build = "make install_jsregexp",
 			config = require("completion.luasnip"),
+			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		"mikavilpas/blink-ripgrep.nvim",
 	},
