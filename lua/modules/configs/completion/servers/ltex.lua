@@ -4,17 +4,6 @@
 return function(options)
 	require("lspconfig").ltex.setup({
 		on_attach = function()
-			require("lsp_signature").on_attach({
-				bind = true,
-				use_lspsaga = false,
-				floating_window = true,
-				fix_pos = true,
-				hint_enable = true,
-				hi_parameter = "Search",
-				handler_opts = {
-					border = "rounded",
-				},
-			})
 			require("ltex_extra").setup({
 				load_langs = { "en-US" },
 				init_check = true,

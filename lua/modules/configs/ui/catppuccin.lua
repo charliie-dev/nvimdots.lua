@@ -30,8 +30,7 @@ return function()
 			properties = {},
 		},
 		integrations = {
-			blink_cmp = false,
-			cmp = true,
+			blink_cmp = true,
 			dap = true,
 			dap_ui = true,
 			diffview = true,
