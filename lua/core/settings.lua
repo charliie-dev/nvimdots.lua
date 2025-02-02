@@ -112,7 +112,7 @@ settings["lsp_deps"] = {
 	-- "azure_pipelines_ls",
 	"bashls",
 	"clangd",
-	-- "docker_compose_language_service",
+	"docker_compose_language_service",
 	"dockerls",
 	-- NOTE: not-yet registered in mason.nvim, install it via `npm i -g gh-actions-language-server`
 	-- "gh_actions_ls",
