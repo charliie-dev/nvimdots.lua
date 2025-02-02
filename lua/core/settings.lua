@@ -142,16 +142,19 @@ settings["lsp_deps"] = {
 -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
 ---@type string[]
 settings["null_ls_deps"] = {
+	"actionlint",
+	"ansiblelint",
 	"clang_format",
 	"cmakelang",
 	"eslint_d",
 	"jq",
-	"prettier",
-	"stylua",
-	"shellharden",
 	"markdownlint_cli2",
 	"mdformat",
 	"nixpkgs-fmt",
+	"prettier",
+	"shellharden",
+	"stylua",
+	"editorconfig_checker",
 }
 
 -- Set the Debug Adapter Protocol (DAP) clients that will be installed and configured during bootstrap here.

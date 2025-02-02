@@ -16,6 +16,7 @@ return function()
 	-- Please set additional flags for the supported servers here
 	-- Don't specify any config here if you are using the default one.
 	local sources = {
+		-- Formatters
 		btns.formatting.clang_format.with({
 			filetypes = { "c", "cpp", "objc", "objcpp", "cs", "cuda", "proto" },
 			extra_args = formatter_args("clang_format"),
@@ -35,15 +36,9 @@ return function()
 				"markdown",
 			},
 		}),
-		btns.diagnostics.markdownlint_cli2.with({
-			extra_args = { "--disable MD033" },
-		}),
 		btns.formatting.mdformat,
-		btns.diagnostics.zsh,
+		btns.formatting.shellharden,
 		btns.formatting.alejandra,
-		btns.diagnostics.deadnix,
-		btns.diagnostics.statix,
-		btns.code_actions.statix,
 		btns.formatting.nixfmt,
 		btns.formatting.nix_flake_fmt.with({
 			filetypes = { "nix" },
@@ -51,9 +46,19 @@ return function()
 		btns.formatting.nixpkgs_fmt.with({
 			filetypes = { "nix" },
 		}),
-		btns.formatting.shellharden,
-		-- example for changing diagnostics_format
-		-- btns.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{s} #{c}]" }),
+
+		-- Linters
+		btns.diagnostics.markdownlint_cli2.with({
+			extra_args = { "--disable MD033" },
+		}),
+		btns.diagnostics.zsh,
+		btns.diagnostics.deadnix,
+		btns.diagnostics.statix,
+		btns.diagnostics.actionlint,
+		btns.diagnostics.ansiblelint,
+
+		-- Code Actions
+		btns.code_actions.statix,
 	}
 
 	require("modules.utils").load_plugin("null-ls", {
