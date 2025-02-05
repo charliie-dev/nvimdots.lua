@@ -143,27 +143,27 @@ local mappings = {
 		-- see `:help MiniAI`
 		-- see: https://youtu.be/6V8jdqdygB4
 
-		-- Plugin: nvim-spectre
+		-- Plugin: grug-far
 		["n|<leader>Ss"] = map_callback(function()
-				require("spectre").toggle()
+				require("grug-far").open()
 			end)
 			:with_silent()
 			:with_noremap()
 			:with_desc("editn: Toggle search & replace panel"),
 		["n|<leader>Sp"] = map_callback(function()
-				require("spectre").open_visual({ select_word = true })
+				require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
 			end)
 			:with_silent()
 			:with_noremap()
 			:with_desc("editn: search&replace current word (project)"),
 		["v|<leader>Sp"] = map_callback(function()
-				require("spectre").open_visual()
+				require("grug-far").with_visual_selection()
 			end)
 			:with_silent()
 			:with_noremap()
 			:with_desc("edit: search & replace current word (project)"),
 		["n|<leader>Sf"] = map_callback(function()
-				require("spectre").open_file_search({ select_word = true })
+				require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } })
 			end)
 			:with_silent()
 			:with_noremap()
