@@ -30,6 +30,12 @@ return {
 						fileMatch = { "docker-compose*.{yml,yaml}", "compose*.{yml,yaml}" },
 						url = "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json",
 					},
+					{
+						name = "gh-dash config",
+						description = "gh-dash config YAML schema",
+						fileMatch = "*/gh-dash/config.yml",
+						url = "https://dlvdhr.github.io/gh-dash/configuration/gh-dash/schema.json",
+					},
 				},
 			}),
 			-- trace = { server = "debug" },
