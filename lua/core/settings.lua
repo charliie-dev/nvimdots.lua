@@ -192,6 +192,7 @@ settings["treesitter_deps"] = {
 	"regex",
 	"rust",
 	"ssh_config",
+	"tmux",
 	"toml",
 	"tsx",
 	"typescript",
