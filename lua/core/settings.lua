@@ -175,9 +175,9 @@ settings["treesitter_deps"] = {
 	"awk",
 	"bash",
 	"c",
+	"cmake",
 	"cpp",
 	"css",
-	"cmake",
 	"gitignore",
 	"html",
 	"javascript",
@@ -191,12 +191,13 @@ settings["treesitter_deps"] = {
 	"python",
 	"regex",
 	"rust",
+	"ssh_config",
 	"toml",
 	"tsx",
 	"typescript",
-	"yaml",
 	"vim",
 	"vimdoc",
+	"yaml",
 }
 
 -- Set the dashboard startup image here
