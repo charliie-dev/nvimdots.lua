@@ -11,7 +11,7 @@ local opts = {
 		["<C-p>"] = { "select_prev", "fallback" },
 		["<CR>"] = { "accept", "fallback" },
 		["<Tab>"] = { "snippet_forward", "fallback" },
-		["<S-tab>"] = { "snippet_backward", "fallback" },
+		["<S-Tab>"] = { "snippet_backward", "fallback" },
 		["<C-c>"] = { "cancel", "hide", "fallback" },
 
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -20,8 +20,8 @@ local opts = {
 		["<S-s>"] = { "show_signature", "hide_signature", "fallback" },
 		cmdline = {
 			preset = "enter",
-			["<C-n>"] = { "select_next", "fallback" },
-			["<C-p>"] = { "select_prev", "fallback" },
+			["<Tab>"] = { "select_next", "fallback" },
+			["<S-Tab>"] = { "select_prev", "fallback" },
 			["<CR>"] = { "accept", "fallback" },
 			["<C-c>"] = { "cancel", "hide", "fallback" },
 		},
