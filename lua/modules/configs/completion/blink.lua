@@ -53,7 +53,7 @@ local opts = {
 	},
 	--- @type blink.cmp.TermConfig
 	term = {
-		enabled = true,
+		enabled = false,
 		sources = {},
 		completion = {
 			menu = {
