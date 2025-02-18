@@ -18,12 +18,53 @@ local opts = {
 		["<S-k>"] = { "scroll_documentation_up", "fallback" },
 		["<S-j>"] = { "scroll_documentation_down", "fallback" },
 		["<S-s>"] = { "show_signature", "hide_signature", "fallback" },
-		cmdline = {
+	},
+	--- @type blink.cmp.CmdlineConfig
+	cmdline = {
+		enabled = true,
+		sources = function()
+			local type = vim.fn.getcmdtype()
+			if type == "/" or type == "?" then
+				return { "buffer" }
+			end
+			if type == ":" or type == "@" then
+				return { "cmdline", "path" }
+			end
+			return {}
+		end,
+		keymap = {
 			preset = "enter",
 			["<Tab>"] = { "select_next", "fallback" },
 			["<S-Tab>"] = { "select_prev", "fallback" },
 			["<CR>"] = { "accept", "fallback" },
 			["<C-c>"] = { "cancel", "hide", "fallback" },
+		},
+		completion = {
+			menu = {
+				draw = {
+					columns = {
+						{ "label", "label_description", gap = 1 },
+						{ "kind_icon", "kind", gap = 1 },
+						{ "source_name" },
+					},
+				},
+			},
+		},
+	},
+	--- @type blink.cmp.TermConfig
+	term = {
+		enabled = true,
+		sources = {},
+		completion = {
+			menu = {
+				draw = {
+					columns = {
+						{ "label", "label_description", gap = 1 },
+						{ "kind_icon", "kind", gap = 1 },
+						{ "source_name" },
+					},
+				},
+			},
 		},
 	},
 
@@ -73,16 +114,6 @@ local opts = {
 
 	sources = {
 		default = { "lazydev", "lsp", "path", "snippets", "buffer", "ripgrep" },
-		cmdline = function()
-			local type = vim.fn.getcmdtype()
-			if type == "/" or type == "?" then
-				return { "buffer" }
-			end
-			if type == ":" or type == "@" then
-				return { "cmdline", "path" }
-			end
-			return {}
-		end,
 		providers = {
 			lazydev = {
 				module = "lazydev.integrations.blink",
