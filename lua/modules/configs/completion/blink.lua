@@ -40,7 +40,9 @@ local opts = {
 			["<C-c>"] = { "cancel", "hide", "fallback" },
 		},
 		completion = {
+			list = { selection = { preselect = true, auto_insert = true } },
 			menu = {
+				auto_show = true,
 				draw = {
 					columns = {
 						{ "label", "label_description", gap = 1 },
@@ -49,6 +51,7 @@ local opts = {
 					},
 				},
 			},
+			ghost_text = { enabled = true },
 		},
 	},
 	--- @type blink.cmp.TermConfig
