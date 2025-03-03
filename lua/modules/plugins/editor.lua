@@ -36,6 +36,11 @@ editor["echasnovski/mini.align"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.align"),
 }
+editor["echasnovski/mini.cursorword"] = {
+	lazy = true,
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
+	config = require("editor.cursorword"),
+}
 editor["echasnovski/mini.surround"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
@@ -82,11 +87,6 @@ editor["lambdalisue/suda.vim"] = {
 editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
-}
-editor["tzachar/local-highlight.nvim"] = {
-	lazy = true,
-	event = { "BufReadPost", "BufAdd", "BufNewFile" },
-	config = require("editor.local-highlight"),
 }
 editor["brenoprata10/nvim-highlight-colors"] = {
 	lazy = true,
