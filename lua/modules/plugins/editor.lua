@@ -5,9 +5,8 @@ local editor = {}
 -- 	event = "InsertEnter",
 -- 	config = require("editor.autoclose"),
 -- }
-editor["LunarVim/bigfile.nvim"] = {
+editor["pteroctopus/faster.nvim"] = {
 	lazy = false,
-	config = require("editor.bigfile"),
 	cond = require("core.settings").load_big_files_faster,
 }
 editor["ojroques/nvim-bufdel"] = {
