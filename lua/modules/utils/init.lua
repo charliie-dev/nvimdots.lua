@@ -121,7 +121,6 @@ end
 ---@param background string @The background color to blend with
 ---@param alpha number|string @Number between 0 and 1 for blending amount.
 function M.blend(foreground, background, alpha)
-	---@diagnostic disable-next-line: cast-local-type
 	alpha = type(alpha) == "string" and (tonumber(alpha, 16) / 0xff) or alpha
 	local bg = hex_to_rgb(background)
 	local fg = hex_to_rgb(foreground)
@@ -162,7 +161,10 @@ function M.hl_to_rgb(hl_group, use_bg, fallback_hl)
 	local hlexists = pcall(vim.api.nvim_get_hl, 0, { name = hl_group, link = false })
 
 	if hlexists then
-		local result = vim.api.nvim_get_hl(0, { name = hl_group, link = false })
+		-- FIXME: Investigate why hl-StatusLine is undefined in toggleterm and remove this workaround
+		-- (@Jint-lzxy)
+		local link = vim.bo.filetype == "toggleterm"
+		local result = vim.api.nvim_get_hl(0, { name = hl_group, link = link })
 		if use_bg then
 			hex = result.bg and string.format("#%06x", result.bg) or "NONE"
 		else
@@ -318,8 +320,7 @@ end
 ---@param opts nil|table @The default config to be merged with
 ---@param vim_plugin? boolean @If this plugin is written in vimscript or not
 ---@param setup_callback? function @Add new callback if the plugin needs unusual setup function
----@param overwrite? boolean @If load user table-type config by overwriting
-function M.load_plugin(plugin_name, opts, vim_plugin, setup_callback, overwrite)
+function M.load_plugin(plugin_name, opts, vim_plugin, setup_callback)
 	vim_plugin = vim_plugin or false
 
 	-- Get the file name of the default config
@@ -352,11 +353,7 @@ function M.load_plugin(plugin_name, opts, vim_plugin, setup_callback, overwrite)
 			if ok then
 				-- Extend base config if the returned user config is a table
 				if type(user_config) == "table" then
-					if overwrite == true then
-						opts = vim.tbl_deep_extend("force", opts, user_config)
-					else
-						opts = tbl_recursive_merge(opts, user_config)
-					end
+					opts = tbl_recursive_merge(opts, user_config)
 					setup_callback(opts)
 				-- Replace base config if the returned user config is a function
 				elseif type(user_config) == "function" then
