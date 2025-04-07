@@ -51,7 +51,11 @@ function M.lsp(buf)
 		["n|gT"] = map_callback(function()
 			vim.lsp.buf.type_definition()
 		end):with_desc("lsp: Goto type_definition"),
-		["n|gr"] = map_cr("Lspsaga rename"):with_silent():with_buffer(buf):with_desc("lsp: Rename in file range"),
+		["n|gr"] = map_cr("Lspsaga rename")
+			:with_silent()
+			:with_nowait()
+			:with_buffer(buf)
+			:with_desc("lsp: Rename in file range"),
 		["n|gR"] = map_cr("Lspsaga rename ++project")
 			:with_silent()
 			:with_buffer(buf)
