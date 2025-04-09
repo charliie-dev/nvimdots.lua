@@ -75,8 +75,8 @@ end
 
 local toggleterm_cache = {
 	lazygit = nil,
-	lf = nil,
-	htop = nil,
+	yazi = nil,
+	btop = nil,
 	python = nil,
 	nvsmi = nil,
 }
@@ -97,35 +97,35 @@ _G._toggle_lazygit = function()
 	end
 end
 
-function _G.toggle_lf()
-	if toggleterm_cache.lf then
+function _G._toggle_yazi()
+	if toggleterm_cache.yazi then
 		toggleterm_cache.lf:toggle()
 	else
-		if vim.fn.executable("lf") then
-			toggleterm_cache.lf =
-				require("toggleterm.terminal").Terminal:new({ cmd = "lf", hidden = true, direction = "float" })
-			toggleterm_cache.lf:toggle()
+		if vim.fn.executable("yazi") then
+			toggleterm_cache.yazi =
+				require("toggleterm.terminal").Terminal:new({ cmd = "yazi", hidden = true, direction = "float" })
+			toggleterm_cache.yazi:toggle()
 		else
-			not_found_notify("Lf")
+			not_found_notify("yazi")
 		end
 	end
 end
 
-function _G.toggle_htop()
-	if toggleterm_cache.htop then
-		toggleterm_cache.htop:toggle()
+function _G._toggle_btop()
+	if toggleterm_cache.btop then
+		toggleterm_cache.btop:toggle()
 	else
-		if vim.fn.executable("htop") then
-			toggleterm_cache.htop =
-				require("toggleterm.terminal").Terminal:new({ cmd = "htop", hidden = true, direction = "float" })
-			toggleterm_cache.htop:toggle()
+		if vim.fn.executable("btop") then
+			toggleterm_cache.btop =
+				require("toggleterm.terminal").Terminal:new({ cmd = "btop", hidden = true, direction = "float" })
+			toggleterm_cache.btop:toggle()
 		else
-			not_found_notify("Htop")
+			not_found_notify("btop")
 		end
 	end
 end
 
-function _G.toggle_py()
+function _G._toggle_py()
 	if toggleterm_cache.python then
 		toggleterm_cache.python:toggle()
 	else
@@ -138,12 +138,12 @@ function _G.toggle_py()
 				require("toggleterm.terminal").Terminal:new({ cmd = "python", hidden = true, direction = "float" })
 			toggleterm_cache.python:toggle()
 		else
-			not_found_notify("Python")
+			not_found_notify("python")
 		end
 	end
 end
 
-function _G.toggle_nvsmi()
+function _G._toggle_nvsmi()
 	if toggleterm_cache.nvsmi then
 		toggleterm_cache.nvsmi:toggle()
 	else
