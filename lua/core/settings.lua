@@ -58,12 +58,12 @@ settings["lsp_inlayhints"] = false
 -- Set it to false if diagnostics virtual text is annoying.
 -- If disabled, you may browse lsp diagnostics using trouble.nvim (press `gt` to toggle it).
 ---@type boolean
-settings["diagnostics_virtual_text"] = false
+settings["diagnostics_virtual_text"] = true
 
 -- Set it to false if diagnostics virtual lines is annoying.
 -- NOTE: This entry is an alternative form to `diagnostics_virtual_text`.
 ---@type boolean
-settings["diagnostics_virtual_lines"] = true
+settings["diagnostics_virtual_lines"] = false
 
 -- Set it to one of the values below if you want to change the visible severity level of lsp diagnostics.
 -- Priority: `Error` > `Warning` > `Information` > `Hint`.
