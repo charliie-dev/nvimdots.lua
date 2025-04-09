@@ -108,65 +108,73 @@ _G._toggle_lazygit = function()
 	end
 end
 
-function _G._toggle_yazi()
-	if toggleterm_cache.yazi then
-		toggleterm_cache.lf:toggle()
-	else
-		if vim.fn.executable("yazi") then
-			toggleterm_cache.yazi =
-				require("toggleterm.terminal").Terminal:new({ cmd = "yazi", hidden = true, direction = "float" })
-			toggleterm_cache.yazi:toggle()
-		else
-			not_found_notify("yazi")
+_G._toggle_yazi = function()
+	if vim.fn.executable("yazi") == 1 then
+		if not toggleterm_cache.yazi then
+			toggleterm_cache.yazi = require("toggleterm.terminal").Terminal:new({
+				cmd = "yazi",
+				direction = "float",
+				close_on_exit = true,
+				hidden = true,
+			})
 		end
+		toggleterm_cache.yazi:toggle()
+	else
+		not_found_notify("yazi")
 	end
 end
 
-function _G._toggle_btop()
-	if toggleterm_cache.btop then
+_G._toggle_btop = function()
+	if vim.fn.executable("btop") == 1 then
+		if not toggleterm_cache.btop then
+			toggleterm_cache.btop = require("toggleterm.terminal").Terminal:new({
+				cmd = "btop",
+				direction = "float",
+				close_on_exit = true,
+				hidden = true,
+			})
+		end
 		toggleterm_cache.btop:toggle()
 	else
-		if vim.fn.executable("btop") then
-			toggleterm_cache.btop =
-				require("toggleterm.terminal").Terminal:new({ cmd = "btop", hidden = true, direction = "float" })
-			toggleterm_cache.btop:toggle()
-		else
-			not_found_notify("btop")
-		end
+		not_found_notify("btop")
 	end
 end
 
-function _G._toggle_py()
-	if toggleterm_cache.python then
-		toggleterm_cache.python:toggle()
-	else
-		if vim.fn.executable("python3") then
-			toggleterm_cache.python =
-				require("toggleterm.terminal").Terminal:new({ cmd = "python3", hidden = true, direction = "float" })
-			toggleterm_cache.python:toggle()
-		elseif vim.fn.executable("python") then
-			toggleterm_cache.python =
-				require("toggleterm.terminal").Terminal:new({ cmd = "python", hidden = true, direction = "float" })
-			toggleterm_cache.python:toggle()
-		else
-			not_found_notify("python")
+_G._toggle_python = function()
+	if vim.fn.executable("python3") == 1 then
+		if not toggleterm_cache.python then
+			toggleterm_cache.python = require("toggleterm.terminal").Terminal:new({
+				cmd = "python3",
+				direction = "float",
+				close_on_exit = true,
+				hidden = true,
+			})
+		elseif vim.fn.executable("python") == 1 then
+			toggleterm_cache.python = require("toggleterm.terminal").Terminal:new({
+				cmd = "python",
+				direction = "float",
+				close_on_exit = true,
+				hidden = true,
+			})
 		end
+		toggleterm_cache:python()
+	else
+		not_found_notify("python3 or python")
 	end
 end
 
-function _G._toggle_nvsmi()
-	if toggleterm_cache.nvsmi then
-		toggleterm_cache.nvsmi:toggle()
-	else
-		if vim.fn.executable("nvidia-smi") then
+_G._toggle_nvsmi = function()
+	if vim.fn.executable("nvidia-smi") == 1 then
+		if not toggleterm_cache.nvsmi then
 			toggleterm_cache.nvsmi = require("toggleterm.terminal").Terminal:new({
 				cmd = "watch -n 1 nvidia-smi",
-				hidden = true,
 				direction = "float",
+				close_on_exit = true,
+				hidden = true,
 			})
-			toggleterm_cache.nvsmi:toggle()
-		else
-			not_found_notify("nvidia-smi")
 		end
+		toggleterm_cache.nvsmi()
+	else
+		not_found_notify("nvidia-smi")
 	end
 end
