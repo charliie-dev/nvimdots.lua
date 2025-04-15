@@ -50,6 +50,7 @@ completion["Saghen/blink.cmp"] = {
 			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		"mikavilpas/blink-ripgrep.nvim",
+		"xzbdmw/colorful-menu.nvim",
 	},
 	opts_extend = { "sources.default" },
 }

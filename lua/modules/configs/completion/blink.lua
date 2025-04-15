@@ -15,11 +15,11 @@ local opts = {
 		["<C-c>"] = { "cancel", "hide", "fallback" },
 
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-		["<S-k>"] = { "scroll_documentation_up", "fallback" },
-		["<S-j>"] = { "scroll_documentation_down", "fallback" },
-		["<S-s>"] = { "show_signature", "hide_signature", "fallback" },
+		["<C-h>"] = { "scroll_documentation_up", "fallback" },
+		["<C-l>"] = { "scroll_documentation_down", "fallback" },
+		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 	},
-	--- @type blink.cmp.CmdlineConfig
+	---@type blink.cmp.CmdlineConfig
 	cmdline = {
 		enabled = true,
 		sources = function()
@@ -33,10 +33,10 @@ local opts = {
 			return {}
 		end,
 		keymap = {
-			preset = "enter",
+			preset = "cmdline",
 			["<Tab>"] = { "select_next", "fallback" },
 			["<S-Tab>"] = { "select_prev", "fallback" },
-			["<CR>"] = { "accept", "fallback" },
+			["<CR>"] = { "accept_and_enter", "fallback" },
 			["<C-c>"] = { "cancel", "hide", "fallback" },
 		},
 		completion = {
@@ -54,21 +54,8 @@ local opts = {
 			ghost_text = { enabled = true },
 		},
 	},
-	--- @type blink.cmp.TermConfig
 	term = {
 		enabled = false,
-		sources = {},
-		completion = {
-			menu = {
-				draw = {
-					columns = {
-						{ "label", "label_description", gap = 1 },
-						{ "kind_icon", "kind", gap = 1 },
-						{ "source_name" },
-					},
-				},
-			},
-		},
 	},
 
 	appearance = {
@@ -82,11 +69,18 @@ local opts = {
 		accept = {
 			auto_brackets = {
 				enabled = true,
+				kind_resolution = {
+					enabled = true,
+				},
+				semantic_token_resolution = {
+					enabled = true,
+					blocked_filetypes = { "java" },
+				},
 			},
 		},
 		list = {
 			selection = {
-				preselect = false,
+				preselect = true,
 				auto_insert = false,
 			},
 		},
@@ -100,6 +94,16 @@ local opts = {
 					{ "kind_icon", "kind", gap = 1 },
 					{ "source_name" },
 				},
+				components = {
+					label = {
+						text = function(ctx)
+							return require("colorful-menu").blink_components_text(ctx)
+						end,
+						highlight = function(ctx)
+							return require("colorful-menu").blink_components_highlight(ctx)
+						end,
+					},
+				},
 			},
 		},
 		documentation = {
@@ -112,6 +116,8 @@ local opts = {
 		},
 		ghost_text = {
 			enabled = true,
+			show_with_selection = true,
+			show_with_menu = true,
 		},
 	},
 
@@ -177,6 +183,23 @@ local opts = {
 			show_documentation = true,
 		},
 	},
+	-- fuzzy = {
+	-- 	implementation = "prefer_rust_with_warning",
+	-- 	-- Set this to 0 to match the behavior of fzf
+	-- 	max_typos = function(keyword)
+	-- 		return math.floor(#keyword / 4)
+	-- 	end,
+	-- 	use_frecency = true,
+	-- 	use_proximity = true,
+	-- 	sorts = {
+	-- 		"score",
+	-- 		"sort_text",
+	-- 	},
+	-- 	prebuilt_binaries = {
+	-- 		download = true,
+	-- 		ignore_version_mismatch = false,
+	-- 	},
+	-- },
 }
 
 return function()
