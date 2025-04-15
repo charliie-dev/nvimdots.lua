@@ -126,7 +126,6 @@ settings["lsp_deps"] = {
 	"htmx",
 	"jsonls",
 	"lua_ls",
-	"markdown_oxide",
 	"marksman",
 	"neocmake",
 	"nil_ls",
