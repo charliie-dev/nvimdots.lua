@@ -153,7 +153,6 @@ settings["null_ls_deps"] = {
 	"eslint_d",
 	"jq",
 	"markdownlint_cli2",
-	"mdformat",
 	"nixpkgs-fmt",
 	"prettier",
 	"shellharden",

@@ -36,7 +36,6 @@ return function()
 				"markdown",
 			},
 		}),
-		btns.formatting.mdformat,
 		btns.formatting.shellharden,
 		btns.formatting.alejandra,
 		btns.formatting.nixfmt,
