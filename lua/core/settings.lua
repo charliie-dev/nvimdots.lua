@@ -157,7 +157,6 @@ settings["null_ls_deps"] = {
 	"prettier",
 	"shellharden",
 	"stylua",
-	"editorconfig_checker",
 }
 
 -- Set the Debug Adapter Protocol (DAP) clients that will be installed and configured during bootstrap here.
