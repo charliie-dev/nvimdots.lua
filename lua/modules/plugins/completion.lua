@@ -35,6 +35,12 @@ completion["nvimtools/none-ls.nvim"] = {
 		"jay-babu/mason-null-ls.nvim",
 	},
 }
+completion["rachartier/tiny-inline-diagnostic.nvim"] = {
+	lazy = true,
+	event = "VeryLazy",
+	priority = 1000, -- needs to be loaded in first
+	config = require("completion.tiny-inline-diagnostic"),
+}
 
 completion["Saghen/blink.cmp"] = {
 	lazy = true,
