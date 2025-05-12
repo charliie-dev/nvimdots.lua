@@ -45,7 +45,6 @@ local mappings = {
 			:with_desc("filetree: Toggle"),
 
 		-- Plugin: nvim-tree
-		["n|<C-n>"] = map_cu("NvimTreeToggle"):with_noremap():with_silent():with_desc("filetree: Toggle"),
 		["n|<leader>nf"] = map_cr("NvimTreeFindFile"):with_noremap():with_silent():with_desc("filetree: Find file"),
 		["n|<leader>nr"] = map_cr("NvimTreeRefresh"):with_noremap():with_silent():with_desc("filetree: Refresh"),
 
