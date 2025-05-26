@@ -3,11 +3,11 @@ local use_copilot = require("core.settings").use_copilot
 
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = { "BufReadPre", "BufNewFile" },
 	config = require("completion.lsp"),
 	dependencies = {
-		{ "williamboman/mason.nvim", version = "1.11.0" },
-		{ "williamboman/mason-lspconfig.nvim", version = "1.32.0" },
+		{ "mason-org/mason.nvim" },
+		{ "mason-org/mason-lspconfig.nvim" },
 		{ "b0o/schemastore.nvim" },
 	},
 }

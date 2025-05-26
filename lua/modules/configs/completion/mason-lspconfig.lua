@@ -3,13 +3,11 @@ local M = {}
 M.setup = function()
 	local diagnostics_virtual_lines = require("core.settings").diagnostics_virtual_lines
 	local diagnostics_level = require("core.settings").diagnostics_level
+	local lsp_deps = require("core.settings").lsp_deps
 
-	local nvim_lsp = require("lspconfig")
-	local mason_lspconfig = require("mason-lspconfig")
 	require("lspconfig.ui.windows").default_options.border = "rounded"
-
 	require("modules.utils").load_plugin("mason-lspconfig", {
-		ensure_installed = require("core.settings").lsp_deps,
+		ensure_installed = lsp_deps,
 	})
 
 	vim.diagnostic.config({
@@ -25,8 +23,9 @@ M.setup = function()
 		update_in_insert = false,
 	})
 
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	local opts = {
-		capabilities = require("blink.cmp").get_lsp_capabilities(),
+		capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false)),
 	}
 	---A handler to setup all servers defined under `completion/servers/*.lua`
 	---@param lsp_name string
@@ -57,15 +56,17 @@ please REMOVE your LSP configuration (rust_analyzer.lua) from the `servers` dire
 
 		if not ok then
 			-- Default to use factory config for server(s) that doesn't include a spec
-			nvim_lsp[lsp_name].setup(opts)
-			return
+			vim.lsp.config(lsp_name, opts)
+			vim.lsp.enable(lsp_name)
 		elseif type(custom_handler) == "function" then
 			--- Case where language server requires its own setup
 			--- Make sure to call require("lspconfig")[lsp_name].setup() in the function
 			--- See `clangd.lua` for example.
 			custom_handler(opts)
+			vim.lsp.enable(lsp_name)
 		elseif type(custom_handler) == "table" then
-			nvim_lsp[lsp_name].setup(
+			vim.lsp.config(
+				lsp_name,
 				vim.tbl_deep_extend(
 					"force",
 					opts,
@@ -73,6 +74,7 @@ please REMOVE your LSP configuration (rust_analyzer.lua) from the `servers` dire
 					custom_handler
 				)
 			)
+			vim.lsp.enable(lsp_name)
 		else
 			vim.notify(
 				string.format(
@@ -86,7 +88,9 @@ please REMOVE your LSP configuration (rust_analyzer.lua) from the `servers` dire
 		end
 	end
 
-	mason_lspconfig.setup_handlers({ mason_lsp_handler })
+	for _, lsp in ipairs(lsp_deps) do
+		mason_lsp_handler(lsp)
+	end
 end
 
 return M
