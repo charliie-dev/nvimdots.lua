@@ -113,8 +113,7 @@ settings["lsp_deps"] = {
 	"clangd",
 	-- "docker_compose_language_service",
 	"dockerls",
-	-- NOTE: not-yet registered in mason.nvim, install it via `npm i -g gh-actions-language-server`
-	-- "gh_actions_ls",
+	"gh_actions_ls",
 	"gitlab_ci_ls",
 	"html",
 	"htmx",

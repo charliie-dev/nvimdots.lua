@@ -2,9 +2,7 @@
 return {
 	cmd = { "yaml-language-server", "--stdio" },
 	filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
-	root_dir = function(fname)
-		return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-	end,
+	root_markers = { ".git" },
 	single_file_support = true,
 	debounce_text_changes = 150,
 	settings = {
@@ -24,6 +22,12 @@ return {
 			},
 			schemas = require("schemastore").yaml.schemas({
 				extra = {
+					{
+						name = "github-action",
+						description = "github-action YAML schema",
+						fileMatch = { "*/.github/workflows/*.{yml,yaml}" },
+						url = "https://json.schemastore.org/github-workflow.json",
+					},
 					{
 						name = "docker-compose",
 						description = "docker-compose YAML schema",
