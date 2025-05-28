@@ -1,8 +1,5 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/yamlls.lua
 return {
-	cmd = { "yaml-language-server", "--stdio" },
-	filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
-	root_markers = { ".git" },
 	single_file_support = true,
 	debounce_text_changes = 150,
 	settings = {
@@ -23,16 +20,22 @@ return {
 			schemas = require("schemastore").yaml.schemas({
 				extra = {
 					{
-						name = "github-action",
-						description = "github-action YAML schema",
-						fileMatch = { "*/.github/workflows/*.{yml,yaml}" },
-						url = "https://json.schemastore.org/github-workflow.json",
+						name = "azure-piplines",
+						description = "azure-piplines YAML schema",
+						fileMatch = { "azure-pipelines.{yml,yaml}" },
+						url = "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json",
 					},
 					{
 						name = "docker-compose",
 						description = "docker-compose YAML schema",
 						fileMatch = { "docker-compose*.{yml,yaml}", "compose*.{yml,yaml}" },
 						url = "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json",
+					},
+					{
+						name = "github-action",
+						description = "github-action YAML schema",
+						fileMatch = { "*/.github/workflows/*.{yml,yaml}" },
+						url = "https://json.schemastore.org/github-workflow.json",
 					},
 					{
 						name = "gh-dash config",

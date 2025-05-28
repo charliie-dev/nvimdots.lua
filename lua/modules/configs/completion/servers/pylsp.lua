@@ -1,7 +1,5 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/pylsp.lua
 return {
-	cmd = { "pylsp" },
-	filetypes = { "python" },
 	settings = {
 		pylsp = {
 			plugins = {
