@@ -21,21 +21,7 @@ return function()
 			filetypes = { "c", "cpp", "objc", "objcpp", "cs", "cuda", "proto" },
 			extra_args = formatter_args("clang_format"),
 		}),
-		btns.formatting.prettier.with({
-			filetypes = {
-				"vue",
-				"typescript",
-				"javascript",
-				"typescriptreact",
-				"javascriptreact",
-				"yaml",
-				"html",
-				"css",
-				"scss",
-				"sh",
-				"markdown",
-			},
-		}),
+		btns.formatting.prettierd,
 		btns.formatting.shellharden,
 		btns.formatting.alejandra,
 		btns.formatting.nixfmt,
@@ -47,9 +33,6 @@ return function()
 		}),
 
 		-- Linters
-		btns.diagnostics.markdownlint_cli2.with({
-			extra_args = { "--disable MD033" },
-		}),
 		btns.diagnostics.zsh,
 		btns.diagnostics.deadnix,
 		btns.diagnostics.statix,

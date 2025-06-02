@@ -108,10 +108,8 @@ settings["external_browser"] = "chrome-cli open"
 settings["lsp_deps"] = {
 	"ansiblels",
 	"awk_ls",
-	-- "azure_pipelines_ls",
 	"bashls",
 	"clangd",
-	-- "docker_compose_language_service",
 	"dockerls",
 	"gh_actions_ls",
 	"gitlab_ci_ls",
@@ -121,16 +119,13 @@ settings["lsp_deps"] = {
 	"lua_ls",
 	"marksman",
 	"neocmake",
+	"nginx_language_server",
 	"nil_ls",
 	"pylsp",
+	"systemd_ls",
 	"taplo",
 	"terraformls",
 	"yamlls",
-	-- "emmet_ls",
-	-- "ltex",
-	-- "nginx_language_server",
-	-- "snyk_ls",
-	-- "vimls",
 }
 
 -- Set the general-purpose servers that will be installed during bootstrap here.
@@ -140,16 +135,17 @@ settings["lsp_deps"] = {
 ---@type string[]
 settings["null_ls_deps"] = {
 	"actionlint",
+	"alex", -- write hint
 	"ansiblelint",
 	"clang_format",
 	"cmakelang",
 	"eslint_d",
 	"jq",
-	"markdownlint_cli2",
 	"nixpkgs-fmt",
-	"prettier",
+	"prettierd",
 	"shellharden",
 	"stylua",
+	"systemdlint",
 }
 
 -- Set the Debug Adapter Protocol (DAP) clients that will be installed and configured during bootstrap here.
