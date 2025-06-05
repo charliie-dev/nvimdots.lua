@@ -49,6 +49,14 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 
+-- create custom filetype for gitlab_ci_ls
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = "*.gitlab-ci*.{yml,yaml}",
+	callback = function()
+		vim.bo.filetype = "yaml.gitlab"
+	end,
+})
+
 -- auto close some filetype with <q>
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {
