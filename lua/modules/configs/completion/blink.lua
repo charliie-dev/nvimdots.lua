@@ -183,23 +183,6 @@ local opts = {
 			show_documentation = true,
 		},
 	},
-	-- fuzzy = {
-	-- 	implementation = "prefer_rust_with_warning",
-	-- 	-- Set this to 0 to match the behavior of fzf
-	-- 	max_typos = function(keyword)
-	-- 		return math.floor(#keyword / 4)
-	-- 	end,
-	-- 	use_frecency = true,
-	-- 	use_proximity = true,
-	-- 	sorts = {
-	-- 		"score",
-	-- 		"sort_text",
-	-- 	},
-	-- 	prebuilt_binaries = {
-	-- 		download = true,
-	-- 		ignore_version_mismatch = false,
-	-- 	},
-	-- },
 }
 
 return function()
