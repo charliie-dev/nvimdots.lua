@@ -8,6 +8,13 @@ lang["kevinhwang91/nvim-bqf"] = {
 		{ "junegunn/fzf", build = ":call fzf#install()" },
 	},
 }
+lang["ray-x/go.nvim"] = {
+	lazy = true,
+	ft = { "go", "gomod", "gosum" },
+	build = ":GoInstallBinaries",
+	config = require("lang.go"),
+	dependencies = "ray-x/guihua.lua",
+}
 lang["bullets-vim/bullets.vim"] = {
 	lazy = true,
 	ft = { "markdown", "text", "gitcommit" },

@@ -73,7 +73,7 @@ ui["dstein64/nvim-scrollview"] = {
 }
 ui["folke/edgy.nvim"] = {
 	lazy = true,
-	event = { "VeryLazy" },
+	event = "VeryLazy",
 	config = require("ui.edgy"),
 }
 

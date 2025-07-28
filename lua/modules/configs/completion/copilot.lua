@@ -25,7 +25,6 @@ return function()
 				svn = false,
 				cvs = false,
 				["."] = false,
-				["bigfile"] = false,
 				["dap-repl"] = false,
 				["fugitive"] = false,
 				["fugitiveblame"] = false,

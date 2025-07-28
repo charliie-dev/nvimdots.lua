@@ -28,7 +28,7 @@ return function()
 	})
 
 	local popupmenu_renderer = wilder.popupmenu_renderer(wilder.popupmenu_border_theme({
-		max_height = "25%",
+		max_height = "30%",
 		border = "rounded",
 		highlights = {
 			default = "Pmenu",

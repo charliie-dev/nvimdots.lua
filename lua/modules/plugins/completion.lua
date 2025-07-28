@@ -15,7 +15,7 @@ completion["nvimdev/lspsaga.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
 	config = require("completion.lspsaga"),
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = "nvim-tree/nvim-web-devicons",
 }
 completion["dnlhc/glance.nvim"] = {
 	lazy = true,
@@ -53,7 +53,7 @@ completion["Saghen/blink.cmp"] = {
 			version = "v2.*",
 			build = "make install_jsregexp",
 			config = require("completion.luasnip"),
-			dependencies = { "rafamadriz/friendly-snippets" },
+			dependencies = "rafamadriz/friendly-snippets",
 		},
 		"mikavilpas/blink-ripgrep.nvim",
 		"xzbdmw/colorful-menu.nvim",
