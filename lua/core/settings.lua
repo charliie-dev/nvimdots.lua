@@ -41,6 +41,7 @@ settings["server_formatting_block_list"] = {
 	clangd = true,
 	lua_ls = true,
 	ts_ls = true,
+	nil_ls = true,
 }
 
 -- Directories where formatting on save is disabled.
