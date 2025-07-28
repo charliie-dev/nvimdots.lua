@@ -65,6 +65,16 @@ tool["folke/which-key.nvim"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("tool.which-key"),
 }
+if settings.use_chat then
+	tool["olimorris/codecompanion.nvim"] = {
+		lazy = true,
+		event = "VeryLazy",
+		config = require("tool.codecompanion"),
+		dependencies = {
+			{ "ravitemer/codecompanion-history.nvim" },
+		},
+	}
+end
 if settings.search_backend == "fzf" then
 	--- requires the fzf binary to be installed
 	tool["ibhagwan/fzf-lua"] = {
