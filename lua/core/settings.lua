@@ -233,7 +233,7 @@ settings["dashboard_image"] = {
 
 -- Set it to false if you don't use AI chat functionality.
 ---@type boolean
-settings["use_chat"] = true
+settings["use_chat"] = false
 
 -- Set the language to use for AI chat response here.
 --- @type string
