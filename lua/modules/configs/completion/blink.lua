@@ -161,8 +161,13 @@ local opts = {
 				---@type blink-ripgrep.Options
 				opts = {
 					prefix_min_len = 2,
-					context_size = 5,
-					max_filesize = "100K",
+					backend = {
+						use = "ripgrep",
+						ripgrep = {
+							context_size = 5,
+							max_filesize = "1M",
+						},
+					},
 				},
 				score_offset = -15,
 				max_items = 3,
