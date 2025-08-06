@@ -1,5 +1,4 @@
 local completion = {}
-local use_copilot = require("core.settings").use_copilot
 
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
@@ -59,20 +58,19 @@ completion["Saghen/blink.cmp"] = {
 	opts_extend = { "sources.default" },
 }
 
-if use_copilot then
-	completion["zbirenbaum/copilot.lua"] = {
-		lazy = true,
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = require("completion.copilot"),
-		dependencies = {
-			{
-				"zbirenbaum/copilot-cmp",
-				config = require("completion.copilot-cmp"),
-			},
+completion["zbirenbaum/copilot.lua"] = {
+	lazy = true,
+	cond = require("core.settings").use_copilot,
+	cmd = "Copilot",
+	event = "InsertEnter",
+	config = require("completion.copilot"),
+	dependencies = {
+		{
+			"zbirenbaum/copilot-cmp",
+			config = require("completion.copilot-cmp"),
 		},
-	}
-end
+	},
+}
 
 -- completion["barreiroleo/ltex_extra.nvim"] = {
 -- 	lazy = true,
