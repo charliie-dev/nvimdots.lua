@@ -102,10 +102,11 @@ settings["background"] = "dark"
 settings["external_browser"] = "chrome-cli open"
 
 -- Set the search backend here.
--- `telescope` is sufficient for most use cases.
--- `fzf` is faster for large repositories but requires the fzf binary.
+-- `telescope` is fine for most use cases.
+-- `fzf` is faster for large repos but needs the `fzf` binary in $PATH.
+-- If missing, errors are expected until the binary is installed.
 ---@type "telescope"|"fzf"
-settings["search_backend"] = "telescope"
+settings["search_backend"] = "fzf"
 
 -- Set to false to disable LSP inlay hints.
 ---@type boolean
