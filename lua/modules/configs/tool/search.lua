@@ -94,7 +94,6 @@ return function()
 					extensions.projects.projects()
 				end,
 			},
-			{ "Zoxide", extensions.zoxide.list },
 		},
 		misc = {
 			{
