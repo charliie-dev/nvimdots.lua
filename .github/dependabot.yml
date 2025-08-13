@@ -10,8 +10,6 @@ updates:
       interval: "weekly"
       time: "07:00"
       timezone: Asia/Taipei
-    reviewers:
-      - "CharlesChiuGit"
     target-branch: "main"
     commit-message:
       prefix: "chore(ci.deps)"
@@ -19,8 +17,5 @@ updates:
       actions-dependencies:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
     labels:
       - "ci"
