@@ -23,7 +23,7 @@ jobs:
         if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
         with:
           neovim: true
-          version: nightly
+          # version: nightly
       - name: Run lockfile-autoupdate
         if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
         timeout-minutes: 5
