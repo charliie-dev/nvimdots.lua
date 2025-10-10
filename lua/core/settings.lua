@@ -143,7 +143,6 @@ settings["lsp_deps"] = {
 ---@type string[]
 settings["null_ls_deps"] = {
 	"actionlint",
-	"alex", -- write hint
 	"ansiblelint",
 	"clang_format",
 	"cmakelang",
