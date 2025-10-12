@@ -20,7 +20,7 @@ jobs:
       - name: Run flake-update
         run: |
           nix flake update
-      - uses: stefanzweifel/git-auto-commit-action@v6
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore(lockfile): auto update flake.lock"
           commit_user_name: "github-actions[bot]"

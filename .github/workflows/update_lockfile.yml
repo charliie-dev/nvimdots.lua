@@ -31,7 +31,7 @@ jobs:
           ./scripts/update_lockfile.sh
           nvim --headless "+Lazy! update" +qa
           cp -pv "${HOME}/.config/nvim/lazy-lock.json" .
-      - uses: stefanzweifel/git-auto-commit-action@v6
+      - uses: stefanzweifel/git-auto-commit-action@v7
         if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
         with:
           commit_message: "chore(lockfile): auto update lazy-lock.json"
