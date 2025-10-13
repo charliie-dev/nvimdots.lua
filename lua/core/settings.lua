@@ -14,7 +14,7 @@ settings["format_on_save"] = true
 
 -- Format timeout in milliseconds.
 ---@type number
-settings["format_timeout"] = 1000
+settings["format_timeout"] = 3000
 
 -- Set to false to disable format notification.
 ---@type boolean
