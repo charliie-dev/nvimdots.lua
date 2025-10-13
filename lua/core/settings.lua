@@ -148,7 +148,6 @@ settings["null_ls_deps"] = {
 	"cmakelang",
 	"eslint_d",
 	"jq",
-	"nixpkgs-fmt",
 	"prettierd",
 	"shellharden",
 	"stylua",

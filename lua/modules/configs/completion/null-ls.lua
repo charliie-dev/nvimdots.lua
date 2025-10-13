@@ -23,12 +23,8 @@ return function()
 		}),
 		btns.formatting.prettierd,
 		btns.formatting.shellharden,
-		btns.formatting.alejandra,
 		btns.formatting.nixfmt,
 		btns.formatting.nix_flake_fmt.with({
-			filetypes = { "nix" },
-		}),
-		btns.formatting.nixpkgs_fmt.with({
 			filetypes = { "nix" },
 		}),
 
