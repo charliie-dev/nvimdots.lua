@@ -12,7 +12,7 @@ env:
 
 jobs:
   update-lockfile:
-    if: github.repository_owner == 'CharlesChiuGit'
+    if: github.repository_owner == 'charliie-dev'
     permissions:
       contents: write
       id-token: write
