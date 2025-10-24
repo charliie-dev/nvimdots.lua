@@ -8,7 +8,7 @@ on:
 
 env:
   BRANCH: "main"
-  COMMIT_MESSAGE: "chore(lockfile): auto update flake.lock"
+  COMMIT_MESSAGE: "chore(lockfile): auto update lazy-lock.json"
 
 jobs:
   update-lockfile:
