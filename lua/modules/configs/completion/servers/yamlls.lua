@@ -7,6 +7,7 @@ return {
 		redhat = { telemetry = { enabled = false } },
 		yaml = {
 			validate = true,
+			completion = true,
 			format = { enable = false },
 			hover = true,
 			schemaDownload = { enable = true },
@@ -20,8 +21,8 @@ return {
 			schemas = require("schemastore").yaml.schemas({
 				extra = {
 					{
-						name = "azure-piplines",
-						description = "azure-piplines YAML schema",
+						name = "azure-pipelines",
+						description = "azure-pipelines YAML schema",
 						fileMatch = { "azure-pipelines.{yml,yaml}" },
 						url = "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json",
 					},
@@ -34,7 +35,7 @@ return {
 					{
 						name = "github-action",
 						description = "github-action YAML schema",
-						fileMatch = { "*/.github/workflows/*.{yml,yaml}" },
+						fileMatch = { ".github/workflows/*.{yml,yaml}" },
 						url = "https://json.schemastore.org/github-workflow.json",
 					},
 					{
