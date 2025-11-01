@@ -37,14 +37,14 @@ ui["karb94/neoscroll.nvim"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("ui.neoscroll"),
 }
-ui["sphamba/smear-cursor.nvim"] = {
-	lazy = true,
-	event = {
-		"CursorMoved", --[[CursorMovedC,]]
-		"CursorMovedI",
-	},
-	config = require("ui.cursor"),
-}
+-- ui["sphamba/smear-cursor.nvim"] = {
+-- 	lazy = true,
+-- 	event = {
+-- 		"CursorMoved", --[[CursorMovedC,]]
+-- 		"CursorMovedI",
+-- 	},
+-- 	config = require("ui.cursor"),
+-- }
 ui["rcarriga/nvim-notify"] = {
 	lazy = true,
 	event = "VeryLazy",
