@@ -8,6 +8,7 @@ return {
 				disable = { "different-requires", "undefined-field" },
 			},
 			workspace = {
+				checkThirdParty = false,
 				library = {
 					vim.fn.expand("$VIMRUNTIME/lua"),
 					vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
