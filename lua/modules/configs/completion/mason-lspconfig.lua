@@ -71,7 +71,6 @@ please REMOVE your LSP configuration (rust_analyzer.lua) from the `servers` dire
 					custom_handler
 				)
 			)
-			vim.lsp.enable(lsp_name)
 		else
 			vim.notify(
 				string.format(
