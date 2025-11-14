@@ -183,6 +183,7 @@ settings["treesitter_deps"] = {
 	"make",
 	"markdown",
 	"markdown_inline",
+	"nix",
 	"python",
 	"regex",
 	"rust",
