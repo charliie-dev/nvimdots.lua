@@ -39,10 +39,11 @@ settings["formatter_block_list"] = {
 ---@type table<string, boolean>
 settings["server_formatting_block_list"] = {
 	clangd = true,
-	lua_ls = true,
-	ts_ls = true,
 	jsonls = true,
+	lua_ls = true,
 	nil_ls = true,
+	ruff = false, -- set to false to enable ruff formatting
+	ts_ls = true,
 }
 
 -- Directories where formatting on save is disabled.
@@ -131,11 +132,12 @@ settings["lsp_deps"] = {
 	"neocmake",
 	"nginx_language_server",
 	"nil_ls",
-	"pylsp",
+	"ruff",
 	"systemd_ls",
 	"taplo",
 	"terraformls",
 	"yamlls",
+	"zuban",
 }
 
 -- General-purpose sources for none-ls to install during bootstrap.
