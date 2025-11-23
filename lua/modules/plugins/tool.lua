@@ -19,17 +19,17 @@ tool["Bekaboo/dropbar.nvim"] = {
 		"nvim-telescope/telescope-fzf-native.nvim",
 	},
 }
-tool["nvim-tree/nvim-tree.lua"] = {
-	lazy = true,
-	cmd = {
-		"NvimTreeToggle",
-		"NvimTreeOpen",
-		"NvimTreeFindFile",
-		"NvimTreeFindFileToggle",
-		"NvimTreeRefresh",
-	},
-	config = require("tool.nvim-tree"),
-}
+-- tool["nvim-tree/nvim-tree.lua"] = {
+-- 	lazy = true,
+-- 	cmd = {
+-- 		"NvimTreeToggle",
+-- 		"NvimTreeOpen",
+-- 		"NvimTreeFindFile",
+-- 		"NvimTreeFindFileToggle",
+-- 		"NvimTreeRefresh",
+-- 	},
+-- 	config = require("tool.nvim-tree"),
+-- }
 tool["ibhagwan/smartyank.nvim"] = {
 	lazy = true,
 	event = "TextYankPost",
@@ -82,6 +82,24 @@ tool["ibhagwan/fzf-lua"] = {
 	cmd = "FzfLua",
 	config = require("tool.fzf-lua"),
 	dependencies = { "nvim-tree/nvim-web-devicons" },
+}
+tool["mikavilpas/yazi.nvim"] = {
+	version = "*",
+	lazy = true,
+	cmd = {
+		"Yazi",
+	},
+	-- if you use `open_for_directories=true`, this is recommended
+	init = function()
+		-- mark netrw as loaded so it's not loaded at all.
+		--
+		-- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
+		vim.g.loaded_netrwPlugin = 1
+	end,
+	-- config = require("tool.yazi"),
+	dependencies = {
+		{ "nvim-lua/plenary.nvim", lazy = true },
+	},
 }
 
 ----------------------------------------------------------------------
