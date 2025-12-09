@@ -5,7 +5,7 @@ return vim.schedule_wrap(function()
 	-- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 	vim.api.nvim_set_option_value("indentexpr", "v:lua.require'nvim-treesitter'.indentexpr()", {})
 
-	require("modules.utils").load_plugin("nvim-treesitter")
+	require("modules.utils").load_plugin("nvim-treesitter", {})
 	-- require("modules.utils").load_plugin("nvim-treesitter", {
 	-- 	ensure_installed = require("core.settings").treesitter_deps,
 	-- 	playground = {
