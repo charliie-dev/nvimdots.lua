@@ -1,5 +1,3 @@
-[tools]
-python = "3.13"
 
 [env]
 # set for awk_ls not setting explicit compile standerd
