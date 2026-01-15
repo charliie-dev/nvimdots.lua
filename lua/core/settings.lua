@@ -133,7 +133,7 @@ settings["lsp_deps"] = {
 	"nginx_language_server",
 	"nil_ls",
 	"ruff",
-	"systemd_ls",
+	"systemd_lsp",
 	"taplo",
 	"terraformls",
 	"yamlls",
