@@ -23,6 +23,7 @@ return {
 					-- the same line length as black
 					lineLength = 88,
 				},
+				configurationPreference = "filesystemFirst",
 			},
 		},
 	},
