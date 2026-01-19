@@ -41,7 +41,7 @@ return function()
 				openrouter = function()
 					return require("codecompanion.adapters").extend("openai_compatible", {
 						env = {
-							url = "https://openrouter.ai/api%22,
+							url = "https://openrouter.ai/api",
 							api_key = secret_key,
 							chat_url = "/v1/chat/completions",
 						},
