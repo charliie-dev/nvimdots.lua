@@ -1,5 +1,19 @@
+[tools]
+# ------------------------------------------------------------------------------
 
+# ref: https://mise.jdx.dev/environments/
 [env]
 # set for awk_ls not setting explicit compile standerd
 # CXXFLAGS = "-std=c++20"
 npm_config_cxxflags = "--std=c++20"
+
+# ------------------------------------------------------------------------------
+
+# ref: https://mise.jdx.dev/tasks/
+
+# ==============================================================================
+#  Compile Ruler
+# ==============================================================================
+[tasks.ruler]  # command: mise run ruler
+description = "Compile ruler to AGENTS.md"
+run = "bunx @intellectronica/ruler apply"

@@ -135,7 +135,7 @@ settings["lsp_deps"] = {
 	"nil_ls",
 	"ruff",
 	"systemd_lsp",
-	"taplo",
+	"tombi",
 	"terraformls",
 	"yamlls",
 	"zuban",
