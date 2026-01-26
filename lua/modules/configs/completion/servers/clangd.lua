@@ -65,6 +65,11 @@ return function(defaults)
 	vim.lsp.config("clangd", {
 		capabilities = vim.tbl_deep_extend("keep", { offsetEncoding = { "utf-16", "utf-8" } }, defaults.capabilities),
 		single_file_support = true,
+		on_init = function(client, _)
+			if client.server_capabilities then
+				client.server_capabilities.semanticTokensProvider = nil
+			end
+		end,
 		cmd = {
 			"clangd",
 			"-j=9",

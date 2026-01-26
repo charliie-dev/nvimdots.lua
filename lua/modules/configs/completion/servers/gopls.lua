@@ -16,6 +16,11 @@ end
 return {
 	cmd = { "gopls" },
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
+	on_init = function(client, _)
+		if client.server_capabilities then
+			client.server_capabilities.semanticTokensProvider = nil
+		end
+	end,
 	root_dir = function(bufnr, on_dir)
 		local fname = vim.api.nvim_buf_get_name(bufnr)
 		-- see: https://github.com/neovim/nvim-lspconfig/issues/804
