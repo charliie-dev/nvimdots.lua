@@ -96,24 +96,21 @@ local mappings = {
 			:with_silent()
 			:with_desc("terminal: Toggle float"),
 		["t|<A-d>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
-		["n|<leader>lg"] = map_callback(function()
+		["n|lg"] = map_callback(function()
 				_toggle_lazygit()
 			end)
 			:with_noremap()
 			:with_silent()
-			:with_desc("git: Toggle lazygit"),
-		["n|<leader>yz"] = map_callback(function()
-				_toggle_yazi()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("git: Toggle yazi"),
-		["n|<leader>bt"] = map_callback(function()
+			:with_desc("terminal: Toggle lazygit"),
+		["n|bt"] = map_callback(function()
 				_toggle_btop()
 			end)
 			:with_noremap()
 			:with_silent()
-			:with_desc("git: Toggle btop"),
+			:with_desc("terminal: Toggle btop"),
+
+		-- Plugin: yazi.nvim
+		["n|yz"] = map_cmd("<Cmd>Yazi<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle yazi"),
 
 		-- Plugin: trouble
 		["n|gt"] = map_cr("Trouble diagnostics toggle")
