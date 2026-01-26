@@ -24,9 +24,6 @@ return function()
 		btns.formatting.prettierd,
 		btns.formatting.shellharden,
 		btns.formatting.nixfmt,
-		btns.formatting.nix_flake_fmt.with({
-			filetypes = { "nix" },
-		}),
 
 		-- Linters
 		btns.diagnostics.zsh,
