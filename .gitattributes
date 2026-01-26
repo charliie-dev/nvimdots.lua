@@ -1,0 +1,3 @@
+* text=auto eol=lf
+flake.lock merge=theirs
+lazy-lcok.json merge=theirs
