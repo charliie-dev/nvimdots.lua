@@ -1,0 +1,3 @@
+[[schemas]]
+path = "https://mise.jdx.dev/schema/mise.json"
+include = ["mise.toml", ".mise.toml", ".mise/*.toml"]
