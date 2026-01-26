@@ -2,3 +2,6 @@ lua/modules/plugins/custom.lua
 lua/modules/configs/custom
 lua/user
 result
+
+# home-manager generated file
+lua/home-manager.lua
