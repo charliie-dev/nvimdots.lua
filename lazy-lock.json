@@ -16,7 +16,7 @@
   "faster.nvim": { "branch": "main", "commit": "2e7a50f659711854b9a7fdc76d943b59b30d7852" },
   "flash.nvim": { "branch": "main", "commit": "fcea7ff883235d9024dc41e638f164a450c14ca2" },
   "friendly-snippets": { "branch": "main", "commit": "6cd7280adead7f586db6fccbd15d2cac7e2188b9" },
-  "fzf": { "branch": "master", "commit": "9725eac314551072538c06ef914a0e7bedf19018" },
+  "fzf": { "branch": "master", "commit": "7d9724157cf5ae43a24640c01ff176f39ab9b7b4" },
   "fzf-lua": { "branch": "main", "commit": "b4b1f05957a77f7662de834328827890c1a8c02b" },
   "gitsigns.nvim": { "branch": "main", "commit": "abf82a65f185bd54adc0679f74b7d6e1ada690c9" },
   "glance.nvim": { "branch": "master", "commit": "bf86d8b79dce808e65fdb6e9269d0b4ed6d2eefc" },
@@ -60,7 +60,7 @@
   "paint.nvim": { "branch": "main", "commit": "07ffa7e0e41f8d5b4ee7aa1531a33812db7595ac" },
   "persisted.nvim": { "branch": "main", "commit": "4c34da1781e6e2cb52d22d322bc3600070f253e8" },
   "plenary.nvim": { "branch": "master", "commit": "b9fd5226c2f76c951fc8ed5923d85e4de065e509" },
-  "project.nvim": { "branch": "main", "commit": "322a4deeda8e06be342181692fe16b5c96e57159" },
+  "project.nvim": { "branch": "main", "commit": "b4e186ec2e1fd176d209163891fb441bab9dce01" },
   "python-copy-reference.vim": { "branch": "main", "commit": "8172d0ce83d730820d9497fd2e988046022d0b99" },
   "rainbow-delimiters.nvim": { "branch": "master", "commit": "d6b802552cbe7d643a3b6b31f419c248d1f1e220" },
   "render-markdown.nvim": { "branch": "main", "commit": "48934b49a2363b49ae1d698ed4cb30fb79d7efe8" },
@@ -88,5 +88,5 @@
   "vimtex": { "branch": "master", "commit": "f707368022cdb851716be0d2970b90599c84a6a6" },
   "wezterm-types": { "branch": "main", "commit": "bba4eacfdce545a9d5c29c69d20bbb9c90189224" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" },
-  "yazi.nvim": { "branch": "main", "commit": "4a8bd3284708e11e48bcd865892902a46abdcce0" }
+  "yazi.nvim": { "branch": "main", "commit": "1874d812de12881d1da8c19c8ce2f94f36d00a6b" }
 }
