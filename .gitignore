@@ -4,4 +4,4 @@ lua/user
 result
 
 # home-manager generated file
-lua/nix-generated.lua
+lua/hm-generated.lua
