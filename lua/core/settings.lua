@@ -113,6 +113,16 @@ settings["search_backend"] = "fzf"
 ---@type boolean
 settings["lsp_inlayhints"] = false
 
+-- LSPs installed outside Mason (e.g. via system package manager).
+-- These will be configured but not installed by Mason.
+-- Key: lspconfig server name, Value: executable name to check availability.
+---@type table<string, string>
+settings["external_lsp_deps"] = {
+	nixd = "nixd",
+	nil_ls = "nil",
+	-- dartls = "dart",
+}
+
 -- LSPs to install during bootstrap.
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/configs
 ---@type string[]
@@ -132,7 +142,6 @@ settings["lsp_deps"] = {
 	"marksman",
 	"neocmake",
 	"nginx_language_server",
-	"nil_ls",
 	"ruff",
 	"systemd_lsp",
 	"tombi",
