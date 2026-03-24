@@ -124,10 +124,9 @@ local function replace(mode, lhs, rhs, opts, buf)
 
 	local options = vim.deepcopy(opts) or {}
 	if buf and type(buf) == "number" then
-		vim.api.nvim_buf_set_keymap(buf, mode, lhs, rhs, options)
-	else
-		vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+		options.buffer = buf
 	end
+	vim.keymap.set(mode, lhs, rhs, options)
 end
 
 ---Amend the existing keymap.

@@ -152,16 +152,16 @@ function bind.nvim_load_mapping(mapping)
 	for key, value in pairs(mapping) do
 		local modes, keymap = key:match("([^|]*)|?(.*)")
 		if type(value) == "table" then
-			for _, mode in ipairs(vim.split(modes, "")) do
-				local rhs = value.cmd
-				local options = value.options
-				local buf = value.buffer
-				if buf and type(buf) == "number" then
-					vim.api.nvim_buf_set_keymap(buf, mode, keymap, rhs, options)
-				else
-					vim.api.nvim_set_keymap(mode, keymap, rhs, options)
-				end
+			local rhs = value.options.callback or value.cmd
+			local options = vim.deepcopy(value.options)
+			options.callback = nil
+			-- vim.keymap.set defaults to noremap=true; convert explicitly
+			options.remap = not options.noremap
+			options.noremap = nil
+			if value.buffer and type(value.buffer) == "number" then
+				options.buffer = value.buffer
 			end
+			vim.keymap.set(vim.split(modes, ""), keymap, rhs, options)
 		end
 	end
 end
