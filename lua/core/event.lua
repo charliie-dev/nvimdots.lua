@@ -1,21 +1,5 @@
 local autocmd = {}
 
--- Autoclose NvimTree
-vim.api.nvim_create_autocmd("BufEnter", {
-	group = vim.api.nvim_create_augroup("NvimTreeAutoClose", { clear = true }),
-	pattern = "NvimTree_*",
-	callback = function()
-		local layout = vim.fn.winlayout()
-		if
-			layout[1] == "leaf"
-			and vim.bo[vim.api.nvim_win_get_buf(--[[---@cast]] layout[2] --[[@as integer]])].filetype == "NvimTree"
-			and layout[3] == nil
-		then
-			vim.cmd({ cmd = "quit", mods = { confirm = true } })
-		end
-	end,
-})
-
 -- Autoclose some filetype with <q>
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {
@@ -44,6 +28,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		if not _G._debugging then
 			-- LSP Keymaps
 			mapping.lsp(event.buf)
+
+			-- Remove Neovim 0.11 default LSP keymaps that conflict with our setup
+			-- grn/gra: we override with Lspsaga rename / tiny-code-action
+			-- <C-s> (insert): we use it for saving files
+			pcall(vim.keymap.del, "n", "grn", { buffer = event.buf })
+			pcall(vim.keymap.del, { "n", "v" }, "gra", { buffer = event.buf })
+			pcall(vim.keymap.del, { "i", "s" }, "<C-s>", { buffer = event.buf })
 
 			-- LSP Inlay Hints
 			local inlayhints_enabled = require("core.settings").lsp_inlayhints

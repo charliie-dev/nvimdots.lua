@@ -70,7 +70,7 @@ return function()
 			{ "<leader>p", group = icons.ui.Package .. " Package" },
 			{ "<leader>l", group = icons.misc.LspAvailable .. " Lsp" },
 			{ "<leader>f", group = icons.ui.Telescope .. " Fuzzy Find" },
-			{ "<leader>n", group = icons.ui.FolderOpen .. " Nvim Tree" },
+			{ "<leader>n", group = icons.ui.FolderOpen .. " File Explorer" },
 			{ "<leader>c", group = icons.aichat.Chat .. " Chat" },
 		},
 	})

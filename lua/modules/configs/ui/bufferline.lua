@@ -24,12 +24,6 @@ return function()
 			modified_icon = icons.ui.Modified_alt,
 			offsets = {
 				{
-					filetype = "NvimTree",
-					text = "File Explorer",
-					text_align = "center",
-					padding = 0,
-				},
-				{
 					filetype = "trouble",
 					text = "LSP Outline",
 					text_align = "center",
