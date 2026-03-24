@@ -20,12 +20,6 @@ editor["ojroques/nvim-bufdel"] = {
 -- 	config = require("editor.comment-frame"),
 -- 	dependencies = "nvim-treesitter/nvim-treesitter",
 -- }
-editor["numToStr/Comment.nvim"] = {
-	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
-	config = require("editor.comment"),
-	dependencies = "nvim-treesitter/nvim-treesitter",
-}
 editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
@@ -84,10 +78,6 @@ editor["lambdalisue/suda.vim"] = {
 	cmd = { "SudaRead", "SudaWrite" },
 	init = require("editor.suda"),
 }
-editor["romainl/vim-cool"] = {
-	lazy = true,
-	event = { "CursorMoved", "InsertEnter" },
-}
 editor["brenoprata10/nvim-highlight-colors"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
@@ -143,10 +133,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 		{
 			"nvim-treesitter/nvim-treesitter-context",
 			config = require("editor.ts-context"),
-		},
-		{
-			"JoosepAlviste/nvim-ts-context-commentstring",
-			config = require("editor.ts-context-commentstring"),
 		},
 		{
 			"echasnovski/mini.ai",
