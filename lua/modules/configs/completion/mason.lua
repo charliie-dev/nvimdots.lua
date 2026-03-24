@@ -27,18 +27,21 @@ M.setup = function()
 		},
 	})
 
-	-- Ensure formatters and linters are installed
-	local settings = require("core.settings")
-	local registry = require("mason-registry")
+	-- Ensure formatters and linters are installed (only if mason loaded)
+	local ok, registry = pcall(require, "mason-registry")
+	if not ok then
+		return
+	end
 
+	local settings = require("core.settings")
 	local ensure_installed = vim.list_extend(
 		vim.deepcopy(settings.formatter_deps),
 		settings.linter_deps
 	)
 
 	for _, pkg_name in ipairs(ensure_installed) do
-		local ok, pkg = pcall(registry.get_package, pkg_name)
-		if ok and not pkg:is_installed() then
+		local pkg_ok, pkg = pcall(registry.get_package, pkg_name)
+		if pkg_ok and not pkg:is_installed() then
 			pkg:install()
 		end
 	end
