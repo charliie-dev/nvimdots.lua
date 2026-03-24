@@ -53,7 +53,7 @@
 - Easy to customize.
 - Automized [installation scripts](https://github.com/CharlesChiuGit/nvimdots.lua/blob/main/scripts/setup_config.sh), written in `bash`.
 - Use [lazy.nvim](https://github.com/folke/lazy.nvim) as plugin manager.
-- Use [delaytrain.nvim](https://github.com/ja-ford/delaytrain.nvim) to train yourself into a better vimer, disable it if you want.
+- Use [blink.cmp](https://github.com/Saghen/blink.cmp) as primary completion engine.
 - Aligned icons across every plugin!
 
 ## 🧱 Structure
@@ -61,46 +61,75 @@
 `${HOME}/.config/nvim`
 
 ```txt
+├── Applications/                  macOS application shortcuts
 ├── after/
-│   └── ftplugin/                  filetype-based rules
+│   ├── ftplugin/                  filetype-based rules (c, cpp, dockerfile, go, json,
+│   │                              jsonc, make, markdown, nix, python, rust)
+│   ├── plugin/
+│   │   └── mise.lua               mise integration (after plugin)
+│   └── queries/                   custom treesitter queries
+│       ├── bash/injections.scm    bash injection queries
+│       └── toml/injections.scm    toml injection queries
 ├── fonts/                         nerdfonts
-├── ftdetect/                      filetype detection
-├── scripts
+├── nixos/                         NixOS/home-manager integration
+├── scripts/
 │   ├── nvim_up.sh                 script for upgrade to neovim nightly
 │   ├── setup_config.sh            script for installing dependencies for plugins
-│   └── update_config.sh           script for fetch new commits of this repo
-├── init.lua
-├── lua/
-│   ├── core/
-│   │   ├── event.lua              event-based autocommands
-│   │   ├── global.lua             global variables
-│   │   ├── init.lua
-│   │   ├── mapping.lua            basic keymaps
-│   │   ├── options.lua            neovim options
-│   │   └── pack.lua               custom packer wrapper
-│   ├── keymap/                    plugin-related keymaps
-│   ├── modules/                   plugin-configs
-│   │   ├── completion/            nvim-cmp + LSP
-│   │   │   ├── plugins.lua
-│   │   │   └── server-settings/   settings for each LSP
-│   │   ├── editor/
-│   │   │   └── plugins.lua
-│   │   ├── lang
-│   │   │   └── plugins.lua
-│   │   ├── tools/
-│   │   │   ├── dap/               DAP settings for each language
-│   │   │   └── plugins.lua
-│   │   └── ui/
-│   │       └── plugins.lua
-│   └── utils                      utility functions
-│       └── init.lua
-├── snippets/
-│   └── package.json               how `LuaSnip` reads snippets, vscode-style
+│   ├── update_config.sh           script for fetch new commits of this repo
+│   └── update_lockfile.sh         script for updating lazy-lock.json
+├── snips/
+│   ├── package.json               how LuaSnip reads snippets, vscode-style
+│   └── snippets/                  snippet definitions (c, cpp, global, go, lua,
+│                                  markdown, python/, rust)
 ├── spell/                         custom spelling correction
-└── stylua.toml                    stylua settings
+├── flake.nix                      Nix flake for reproducible environment
+├── flake.lock                     Nix flake lock file
+├── lazy-lock.json                 lazy.nvim plugin lock file
+├── mise.toml                      mise task runner config
+├── stylua.toml                    stylua settings
+├── tombi.toml                     TOML LSP settings
+├── init.lua
+└── lua/
+    ├── core/
+    │   ├── event.lua              event-based autocommands
+    │   ├── global.lua             global/platform variables
+    │   ├── init.lua               bootstrap sequence
+    │   ├── options.lua            neovim options
+    │   ├── pack.lua               lazy.nvim bootstrap & plugin loader
+    │   └── settings.lua           user-customizable settings
+    ├── hm-generated.lua           home-manager generated config (NixOS)
+    ├── keymap/                    keymaps organized by category
+    │   ├── init.lua               basic keymaps
+    │   ├── completion.lua         LSP keymaps
+    │   ├── editor.lua             editor plugin keymaps
+    │   ├── lang.lua               language-specific keymaps
+    │   ├── tool.lua               tool plugin keymaps
+    │   ├── ui.lua                 UI plugin keymaps
+    │   └── helpers.lua            keymap helper functions
+    └── modules/
+        ├── plugins/               lazy.nvim plugin specs
+        │   ├── completion.lua     LSP, completion, formatting, linting
+        │   ├── editor.lua         editing enhancements
+        │   ├── lang.lua           language-specific plugins
+        │   ├── tool.lua           tools (DAP, search, file explorer, etc.)
+        │   └── ui.lua             UI & appearance
+        ├── configs/               plugin configurations
+        │   ├── completion/        LSP, blink.cmp, conform, nvim-lint configs
+        │   │   ├── formatters/    per-formatter configurations
+        │   │   └── servers/       per-LSP server configurations
+        │   ├── editor/            editor plugin configs
+        │   ├── lang/              language plugin configs
+        │   ├── tool/              tool configs
+        │   │   └── dap/           DAP settings & per-language debug clients
+        │   └── ui/                UI plugin configs
+        └── utils/                 utility functions
+            ├── init.lua           general utilities
+            ├── icons.lua          icon definitions
+            ├── keymap.lua         keymap utilities (amend/replace)
+            └── dap.lua            DAP utilities
 ```
 
-NOTE: You can rename/create folders inside `modules`, but **ALWAYS** remember to add a `plugins.lua` in it to register your plugins.
+NOTE: You can rename/create folders inside `modules/plugins`, but **ALWAYS** remember to add a `plugins.lua` in it to register your plugins.
 
 ## ⚙️ Configuration & Usage
 
