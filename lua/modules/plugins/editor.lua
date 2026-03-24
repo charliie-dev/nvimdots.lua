@@ -92,6 +92,12 @@ editor["MagicDuck/grug-far.nvim"] = {
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
 ----------------------------------------------------------------------
+editor["nemanjamalesija/smart-paste.nvim"] = {
+	lazy = true,
+	event = { "CursorHold", "CursorHoldI" },
+	config = require("editor.smart-paste"),
+}
+
 editor["nvim-treesitter/nvim-treesitter"] = {
 	-- lazy = true,
 	lazy = false,
