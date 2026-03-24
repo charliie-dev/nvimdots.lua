@@ -83,7 +83,7 @@ return function()
 			chunk = { enabled = false },
 			---@param buf number
 			---@param win number
-			filter = function(buf, win)
+			filter = function(buf, _)
 				local excluded_ft = {
 					[""] = true,
 					checkhealth = true,
