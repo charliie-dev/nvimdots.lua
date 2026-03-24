@@ -8,6 +8,8 @@ tree-sitter = "latest"
 
 # ref: https://mise.jdx.dev/environments/
 [env]
+# Add mise-managed tools to PATH so Neovim can find them (e.g., tree-sitter, stylua)
+_.path = ["~/.local/share/mise/shims"]
 # set for awk_ls not setting explicit compile standerd
 # CXXFLAGS = "-std=c++20"
 npm_config_cxxflags = "--std=c++20"
