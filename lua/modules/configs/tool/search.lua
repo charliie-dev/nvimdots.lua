@@ -3,9 +3,23 @@ return function()
 	local search_backend = require("core.settings").search_backend
 	local use_fzf = search_backend == "fzf"
 	local fzf = use_fzf and require("fzf-lua")
-	local extensions = require("telescope").extensions
-	local builtins = require("telescope.builtin")
-	local prompt_pos = require("telescope.config").values.layout_config.horizontal.prompt_position
+
+	-- Lazy-require telescope modules so they're only loaded when actually needed
+	local extensions = setmetatable({}, {
+		__index = function(_, k)
+			return require("telescope").extensions[k]
+		end,
+	})
+	local builtins = setmetatable({}, {
+		__index = function(_, k)
+			return require("telescope.builtin")[k]
+		end,
+	})
+	local prompt_pos
+	do
+		local ok, tconf = pcall(require, "telescope.config")
+		prompt_pos = ok and tconf.values.layout_config.horizontal.prompt_position or "top"
+	end
 
 	local base_opts = use_fzf and { fzf_opts = { ["--layout"] = (prompt_pos == "top" and "reverse" or "default") } }
 		or {}

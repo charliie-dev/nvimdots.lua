@@ -113,7 +113,16 @@ set("n", "<C-p>", function()
 	end
 end, { silent = true, desc = "tool: Toggle command panel" })
 set("n", "<leader>fc", function()
-	helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
+	if require("core.settings").search_backend == "fzf" then
+		local ok, themes = pcall(require, "telescope.themes")
+		if ok then
+			helpers.telescope_collections(themes.get_dropdown({}))
+		else
+			helpers.telescope_collections({})
+		end
+	else
+		helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
+	end
 end, { silent = true, desc = "tool: Open Telescope (collections)" })
 set("n", "<leader>ff", function()
 	require("search").open({ collection = "file" })

@@ -49,9 +49,8 @@ local function init_palette()
 				palette = nil
 				init_palette()
 				-- Also refresh hard-coded hl groups
-				M.gen_alpha_hl()
+				M.gen_dashboard_hl()
 				M.gen_lspkind_hl()
-				pcall(vim.cmd.AlphaRedraw)
 			end,
 		})
 	end
@@ -244,14 +243,11 @@ function M.gen_lspkind_hl()
 	end
 end
 
--- Generate highlight groups for alpha. Existing attributes will NOT be overwritten
-function M.gen_alpha_hl()
+-- Generate highlight groups for dashboard. Existing attributes will NOT be overwritten
+function M.gen_dashboard_hl()
 	local colors = M.get_palette()
 
-	set_global_hl("AlphaHeader", colors.blue)
-	set_global_hl("AlphaButtons", colors.green)
-	set_global_hl("AlphaShortcut", colors.pink, nil, true)
-	set_global_hl("AlphaFooter", colors.yellow)
+	set_global_hl("SnacksDashboardHeader", colors.blue)
 end
 
 -- Generate highlight groups for cursorword. Existing attributes will NOT be overwritten
