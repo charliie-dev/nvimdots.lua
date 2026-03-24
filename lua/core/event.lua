@@ -137,8 +137,7 @@ function autocmd.load_autocmds()
 			{
 				"VimLeave",
 				"*",
-				-- `:wviminfo` will be deprecated in v0.11
-				[[if has('nvim') | wshada | else | wviminfo! | endif]],
+				"wshada",
 			},
 			-- Check if a file has changed when its window is in focus, being more proactive than 'autoread'
 			{ "FocusGained", "*", "checktime" },
@@ -159,7 +158,7 @@ function autocmd.load_autocmds()
 			{
 				"TextYankPost",
 				"*",
-				[[silent! lua vim.highlight.on_yank({ higroup = "IncSearch", timeout = 300 })]],
+				[[silent! lua vim.hl.on_yank({ higroup = "IncSearch", timeout = 300 })]],
 			},
 		},
 	}
