@@ -150,19 +150,25 @@ settings["lsp_deps"] = {
 	"zuban",
 }
 
--- General-purpose sources for none-ls to install during bootstrap.
--- Supported sources: https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins
+-- Formatters to install during bootstrap (Mason package names).
+-- These are managed by Mason and used by conform.nvim.
 ---@type string[]
-settings["null_ls_deps"] = {
-	"actionlint",
-	"ansiblelint",
-	"clang_format",
+settings["formatter_deps"] = {
+	"clang-format",
 	"cmakelang",
 	"eslint_d",
 	"jq",
 	"prettierd",
 	"shellharden",
 	"stylua",
+}
+
+-- Linters to install during bootstrap (Mason package names).
+-- These are managed by Mason and used by nvim-lint.
+---@type string[]
+settings["linter_deps"] = {
+	"actionlint",
+	"ansiblelint",
 	"systemdlint",
 }
 
