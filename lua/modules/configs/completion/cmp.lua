@@ -29,10 +29,7 @@ return function()
 		return (diff < 0)
 	end
 
-	local comparators = vim.list_extend(require("core.settings").use_copilot and {
-		require("copilot_cmp.comparators").prioritize,
-		require("copilot_cmp.comparators").score,
-	} or {}, {
+	local comparators = {
 		compare.offset, -- Items closer to cursor will have lower priority
 		compare.exact,
 		-- compare.scopes,
@@ -45,7 +42,7 @@ return function()
 		compare.kind,
 		compare.length,
 		compare.order,
-	})
+	}
 
 	local cmp = require("cmp")
 	require("modules.utils").load_plugin("cmp", {
@@ -75,7 +72,6 @@ return function()
 
 				-- set up labels for completion entries
 				vim_item.menu = setmetatable({
-					copilot = "[CPLT]",
 					buffer = "[BUF]",
 					orgmode = "[ORG]",
 					nvim_lsp = "[LSP]",
@@ -170,7 +166,6 @@ return function()
 				},
 			},
 			{ name = "latex_symbols" },
-			{ name = "copilot" },
 		},
 		-- experimental = {
 		-- 	ghost_text = {

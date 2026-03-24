@@ -65,20 +65,6 @@ completion["Saghen/blink.cmp"] = {
 	opts_extend = { "sources.default" },
 }
 
-completion["zbirenbaum/copilot.lua"] = {
-	lazy = true,
-	cond = require("core.settings").use_copilot,
-	cmd = "Copilot",
-	event = "InsertEnter",
-	config = require("completion.copilot"),
-	dependencies = {
-		{
-			"zbirenbaum/copilot-cmp",
-			config = require("completion.copilot-cmp"),
-		},
-	},
-}
-
 -- completion["barreiroleo/ltex_extra.nvim"] = {
 -- 	lazy = true,
 -- 	ft = "tex",

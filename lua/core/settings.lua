@@ -4,10 +4,6 @@ local settings = {}
 ---@type boolean
 settings["use_ssh"] = false
 
--- Set to false if you don't use Copilot.
----@type boolean
-settings["use_copilot"] = false
-
 -- Set to false if you don't want to format on save.
 ---@type boolean
 settings["format_on_save"] = true
