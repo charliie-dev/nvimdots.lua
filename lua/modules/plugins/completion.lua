@@ -26,17 +26,23 @@ completion["rachartier/tiny-inline-diagnostic.nvim"] = {
 	lazy = false,
 	config = require("completion.tiny-inline-diagnostic"),
 }
-completion["joechrisellis/lsp-format-modifications.nvim"] = {
+completion["stevearc/conform.nvim"] = {
+	lazy = true,
+	event = "BufWritePre",
+	cmd = { "ConformInfo", "Format", "FormatToggle", "FormatterToggleFt" },
+	config = require("completion.conform"),
+}
+completion["mfussenegger/nvim-lint"] = {
+	lazy = true,
+	event = { "BufWritePost", "BufReadPost" },
+	config = require("completion.nvim-lint"),
+}
+completion["rachartier/tiny-code-action.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
-}
-completion["nvimtools/none-ls.nvim"] = {
-	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
-	config = require("completion.null-ls"),
+	config = require("completion.tiny-code-action"),
 	dependencies = {
-		"nvim-lua/plenary.nvim",
-		"jay-babu/mason-null-ls.nvim",
+		{ "nvim-lua/plenary.nvim" },
 	},
 }
 
