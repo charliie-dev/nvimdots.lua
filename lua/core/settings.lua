@@ -35,7 +35,8 @@ settings["formatter_block_list"] = {
 	lua = false,
 }
 
--- Servers in this list will skip formatting capabilities if the value is true.
+-- Deprecated: conform.nvim uses `lsp_format = "fallback"` which makes this unnecessary.
+-- Kept for backward compatibility with user overrides.
 ---@type table<string, boolean>
 settings["server_formatting_block_list"] = {
 	clangd = true,
@@ -146,6 +147,7 @@ settings["lsp_deps"] = {
 	"systemd_lsp",
 	"tombi",
 	"terraformls",
+	"tflint",
 	"yamlls",
 	"zuban",
 }
@@ -169,6 +171,8 @@ settings["formatter_deps"] = {
 settings["linter_deps"] = {
 	"actionlint",
 	"ansiblelint",
+	"hadolint",
+	"shellcheck",
 	"systemdlint",
 }
 
@@ -204,7 +208,9 @@ settings["treesitter_deps"] = {
 	"python",
 	"regex",
 	"rust",
+	"hcl",
 	"ssh_config",
+	"terraform",
 	"tmux",
 	"toml",
 	"tsx",

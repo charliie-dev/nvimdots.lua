@@ -1,6 +1,7 @@
 return function()
 	local settings = require("core.settings")
 	local disabled_workspaces = settings.format_disabled_dirs
+	local format_on_save_enabled = settings.format_on_save
 	local format_notify = settings.format_notify
 	local format_modifications_only = settings.format_modifications_only
 	local format_timeout = settings.format_timeout
@@ -19,7 +20,7 @@ return function()
 	---@param bufnr integer
 	---@return boolean
 	local function is_disabled_workspace(bufnr)
-		local filedir = vim.fn.expand("%:p:h")
+		local filedir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
 		for _, dir in ipairs(disabled_workspaces) do
 			if vim.regex(vim.fs.normalize(dir)):match_str(filedir) ~= nil then
 				if format_notify then
@@ -116,8 +117,7 @@ return function()
 				stdin = true,
 			},
 		},
-		-- format_on_save is handled below via the function form
-		format_on_save = function(bufnr)
+		format_on_save = format_on_save_enabled and function(bufnr)
 			-- Check disabled filetypes
 			if block_list[vim.bo[bufnr].filetype] == true then
 				return
@@ -145,11 +145,7 @@ return function()
 				timeout_ms = format_timeout,
 				lsp_format = "fallback",
 			}
-		end,
-		-- Notify on format success
-		format_after_save = format_notify and function(bufnr)
-			-- Notification is only needed for manual format; format_on_save logs via the function above
-		end or nil,
+		end or false,
 	})
 
 	-- User commands

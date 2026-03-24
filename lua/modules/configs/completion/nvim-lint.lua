@@ -10,6 +10,7 @@ return function()
 		typescript = { "eslint_d" },
 		typescriptreact = { "eslint_d" },
 		yaml = { "ansiblelint" },
+		systemd = { "systemdlint" },
 		["yaml.github"] = { "actionlint" },
 		zsh = { "zsh" },
 	}
