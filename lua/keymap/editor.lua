@@ -1,10 +1,11 @@
 local set = vim.keymap.set
 local helpers = require("keymap.helpers")
 
-local ts_to_select = require("nvim-treesitter-textobjects.select")
-local ts_to_swap = require("nvim-treesitter-textobjects.swap")
-local ts_to_move = require("nvim-treesitter-textobjects.move")
-local ts_to_repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
+-- Lazy-require treesitter-textobjects to avoid loading before the plugin is available
+local ts_to_select = function() return require("nvim-treesitter-textobjects.select") end
+local ts_to_swap = function() return require("nvim-treesitter-textobjects.swap") end
+local ts_to_move = function() return require("nvim-treesitter-textobjects.move") end
+local ts_to_repeat_move = function() return require("nvim-treesitter-textobjects.repeatable_move") end
 
 --
 -- Builtins: Save & Quit
@@ -135,53 +136,53 @@ set("n", "<A-s>", "<Cmd>SudaWrite<CR>", { silent = true, desc = "editn: Save fil
 
 -- Text objects: select
 set({ "x", "o" }, "af", function()
-	ts_to_select.select_textobject("@function.outer", "textobjects")
+	ts_to_select().select_textobject("@function.outer", "textobjects")
 end, { silent = true, desc = "editxo: Select function.outer" })
 set({ "x", "o" }, "if", function()
-	ts_to_select.select_textobject("@function.inner", "textobjects")
+	ts_to_select().select_textobject("@function.inner", "textobjects")
 end, { silent = true, desc = "editxo: Select function.inner" })
 set({ "x", "o" }, "ac", function()
-	ts_to_select.select_textobject("@class.outer", "textobjects")
+	ts_to_select().select_textobject("@class.outer", "textobjects")
 end, { silent = true, desc = "editxo: Select class.outer" })
 set({ "x", "o" }, "ic", function()
-	ts_to_select.select_textobject("@class.inner", "textobjects")
+	ts_to_select().select_textobject("@class.inner", "textobjects")
 end, { silent = true, desc = "editoxo: Select class.inner" })
 
 -- Text objects: swap
 set("n", "<leader>a", function()
-	ts_to_swap.swap_next("@parameter.inner")
+	ts_to_swap().swap_next("@parameter.inner")
 end, { silent = true, desc = "editn: Swap parameter.inner" })
 set("n", "<leader>A", function()
-	ts_to_swap.swap_next("@parameter.outer")
+	ts_to_swap().swap_next("@parameter.outer")
 end, { silent = true, desc = "editn: Swap parameter.outer" })
 
 -- Text objects: move
 set({ "n", "x", "o" }, "][", function()
-	ts_to_move.goto_next_start("@function.outer", "textobjects")
+	ts_to_move().goto_next_start("@function.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to next function.outer start" })
 set({ "n", "x", "o" }, "]m", function()
-	ts_to_move.goto_next_start("@class.outer", "textobjects")
+	ts_to_move().goto_next_start("@class.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to next class.outer start" })
 set({ "n", "x", "o" }, "]]", function()
-	ts_to_move.goto_next_end("@function.outer", "textobjects")
+	ts_to_move().goto_next_end("@function.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to next function.outer end" })
 set({ "n", "x", "o" }, "]M", function()
-	ts_to_move.goto_next_end("@class.outer", "textobjects")
+	ts_to_move().goto_next_end("@class.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to next class.outer end" })
 set({ "n", "x", "o" }, "[[", function()
-	ts_to_move.goto_previous_start("@function.outer", "textobjects")
+	ts_to_move().goto_previous_start("@function.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to previous function.outer start" })
 set({ "n", "x", "o" }, "[m", function()
-	ts_to_move.goto_previous_start("@class.outer", "textobjects")
+	ts_to_move().goto_previous_start("@class.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to previous class.outer start" })
 set({ "n", "x", "o" }, "[]", function()
-	ts_to_move.goto_previous_end("@function.outer", "textobjects")
+	ts_to_move().goto_previous_end("@function.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to previous function.outer end" })
 set({ "n", "x", "o" }, "[M", function()
-	ts_to_move.goto_previous_end("@class.outer", "textobjects")
+	ts_to_move().goto_previous_end("@class.outer", "textobjects")
 end, { silent = true, desc = "editnxo: Move to previous class.outer end" })
 
 -- movements repeat
 set({ "n", "x", "o" }, ";", function()
-	ts_to_repeat_move.repeat_last_move_next()
+	ts_to_repeat_move().repeat_last_move_next()
 end, { silent = true, desc = "editnxo: Repeat last move" })
