@@ -110,6 +110,11 @@ return function()
 			["clang-format"] = {
 				prepend_args = clang_format_args(),
 			},
+			statix = {
+				command = "statix",
+				args = { "fix", "--stdin" },
+				stdin = true,
+			},
 		},
 		-- format_on_save is handled below via the function form
 		format_on_save = function(bufnr)
