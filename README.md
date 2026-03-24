@@ -48,7 +48,7 @@
 
 ## 🎐 Intro
 
-- **⚡BLAZINGLY FAST** startup time in ~20ms, with over 100 plugins. (Tested on Micron Crucial MX500)
+- **⚡BLAZINGLY FAST** startup time in ~60ms. (Tested on M3 Pro MacBooks)
 - Well structured in `Lua`.
 - Easy to customize.
 - Automized [installation scripts](https://github.com/CharlesChiuGit/nvimdots.lua/blob/main/scripts/setup_config.sh), written in `bash`.
