@@ -219,9 +219,11 @@ return function()
 
 	-- Auto stop bashls for .env files (migrated from null-ls config)
 	vim.api.nvim_create_autocmd("LspAttach", {
-		pattern = { ".env" },
-		callback = function()
-			vim.cmd.LspStop("bashls")
+		callback = function(event)
+			local bufname = vim.api.nvim_buf_get_name(event.buf)
+			if bufname:match("%.env$") or bufname:match("%.env%.") then
+				vim.cmd.LspStop("bashls")
+			end
 		end,
 	})
 end

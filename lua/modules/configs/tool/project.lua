@@ -3,7 +3,7 @@ return function()
 		manual_mode = false,
 		lsp = {
 			enabled = true,
-			ignore = { "copilot" },
+			ignore = {},
 			use_pattern_matching = false,
 			no_fallback = false,
 		},

@@ -28,9 +28,14 @@ return function()
 						icon = icons.git.Repo,
 						key = "p",
 						desc = "Find project",
-						action = use_fzf and ":FzfLua projects" or ":Telescope projects",
+						action = ":Telescope projects",
 					},
-					{ icon = icons.ui.Sort, key = "y", desc = "File frecency", action = ":Telescope frecency" },
+					{
+						icon = icons.ui.Sort,
+						key = "y",
+						desc = "File frecency",
+						action = ":Telescope frecency",
+					},
 					{
 						icon = icons.ui.History,
 						key = "r",

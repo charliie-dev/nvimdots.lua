@@ -185,8 +185,6 @@ local data = {
 	},
 	cmp = {
 		buffer = "󰉿",
-		copilot = "",
-		copilot_alt = "",
 		latex_symbols = "",
 		luasnip = "󰃐",
 		nvim_lsp = "",
@@ -213,7 +211,6 @@ local data = {
 	},
 	aichat = {
 		Chat = "󱜸",
-		Copilot = "",
 		Me = "",
 	},
 	ts = { -- Treesitter

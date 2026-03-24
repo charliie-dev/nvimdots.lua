@@ -1,11 +1,17 @@
 local M = {}
 
 M.command_panel = function()
-	require("telescope.builtin").keymaps({
-		lhs_filter = function(lhs)
-			return not string.find(lhs, "Þ")
-		end,
-	})
+	if require("core.settings").search_backend == "fzf" then
+		require("fzf-lua").keymaps({
+			fzf_opts = { ["--layout"] = "reverse" },
+		})
+	else
+		require("telescope.builtin").keymaps({
+			lhs_filter = function(lhs)
+				return not string.find(lhs, "Þ")
+			end,
+		})
+	end
 end
 
 M.flash_esc_or_noh = function()
@@ -21,30 +27,43 @@ end
 
 M.telescope_collections = function(opts)
 	local tabs = require("search.tabs")
-	local actions = require("telescope.actions")
-	local state = require("telescope.actions.state")
-	local pickers = require("telescope.pickers")
-	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
 	local collections = vim.tbl_keys(tabs.collections)
 
-	-- build and launch picker
-	opts = opts or {}
-	pickers
-		.new(opts, {
-			prompt_title = "Telescope Collections",
-			finder = finders.new_table({ results = collections }),
-			sorter = conf.generic_sorter(opts),
-			attach_mappings = function(bufnr)
-				actions.select_default:replace(function()
-					actions.close(bufnr)
-					local selection = state.get_selected_entry()
-					require("search").open({ collection = selection[1] })
-				end)
-				return true
-			end,
+	if require("core.settings").search_backend == "fzf" then
+		require("fzf-lua").fzf_exec(collections, {
+			prompt = "Collections> ",
+			actions = {
+				["default"] = function(selected)
+					if selected and selected[1] then
+						require("search").open({ collection = selected[1] })
+					end
+				end,
+			},
 		})
-		:find()
+	else
+		local actions = require("telescope.actions")
+		local state = require("telescope.actions.state")
+		local pickers = require("telescope.pickers")
+		local finders = require("telescope.finders")
+		local conf = require("telescope.config").values
+
+		opts = opts or {}
+		pickers
+			.new(opts, {
+				prompt_title = "Telescope Collections",
+				finder = finders.new_table({ results = collections }),
+				sorter = conf.generic_sorter(opts),
+				attach_mappings = function(bufnr)
+					actions.select_default:replace(function()
+						actions.close(bufnr)
+						local selection = state.get_selected_entry()
+						require("search").open({ collection = selection[1] })
+					end)
+					return true
+				end,
+			})
+			:find()
+	end
 end
 
 M.toggle_inlayhint = function()

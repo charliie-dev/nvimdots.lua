@@ -102,28 +102,15 @@ set(
 
 -- Plugin: telescope
 set("n", "<C-p>", function()
-	if require("core.settings").search_backend == "fzf" then
-		local ok, tconf = pcall(require, "telescope.config")
-		local prompt_position = ok and tconf.values.layout_config.horizontal.prompt_position or "top"
-		require("fzf-lua").keymaps({
-			fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
-		})
-	else
-		helpers.command_panel()
-	end
+	helpers.command_panel()
 end, { silent = true, desc = "tool: Toggle command panel" })
 set("n", "<leader>fc", function()
 	if require("core.settings").search_backend == "fzf" then
-		local ok, themes = pcall(require, "telescope.themes")
-		if ok then
-			helpers.telescope_collections(themes.get_dropdown({}))
-		else
-			helpers.telescope_collections({})
-		end
+		helpers.telescope_collections()
 	else
 		helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
 	end
-end, { silent = true, desc = "tool: Open Telescope (collections)" })
+end, { silent = true, desc = "tool: Open search collections" })
 set("n", "<leader>ff", function()
 	require("search").open({ collection = "file" })
 end, { silent = true, desc = "tool: Find files" })
