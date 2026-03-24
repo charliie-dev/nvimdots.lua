@@ -27,15 +27,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)
 		if not _G._debugging then
-			-- LSP Keymaps
-			mapping.lsp(event.buf)
-
 			-- Remove Neovim 0.11 default LSP keymaps that conflict with our setup
 			-- grn/gra: we override with Lspsaga rename / tiny-code-action
 			-- <C-s> (insert): we use it for saving files
 			pcall(vim.keymap.del, "n", "grn", { buffer = event.buf })
 			pcall(vim.keymap.del, { "n", "v" }, "gra", { buffer = event.buf })
 			pcall(vim.keymap.del, { "i", "s" }, "<C-s>", { buffer = event.buf })
+
+			-- LSP Keymaps (after clearing defaults so our mappings aren't deleted)
+			mapping.lsp(event.buf)
 
 			-- LSP Inlay Hints
 			local inlayhints_enabled = require("core.settings").lsp_inlayhints

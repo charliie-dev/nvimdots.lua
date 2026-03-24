@@ -23,7 +23,8 @@ function M.lsp(buf)
 	)
 	set("n", "gto", function()
 		if require("core.settings").search_backend == "fzf" then
-			local prompt_position = require("telescope.config").values.layout_config.horizontal.prompt_position
+			local ok, tconf = pcall(require, "telescope.config")
+			local prompt_position = ok and tconf.values.layout_config.horizontal.prompt_position or "top"
 			require("fzf-lua").lsp_document_symbols({
 				fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
 			})
