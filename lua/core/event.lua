@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd("FileType", {
 		"nofile",
 		"terminal",
 		"prompt",
-		"toggleterm",
+		"snacks_terminal",
 		"startuptime",
 		"tsplayground",
 	},
