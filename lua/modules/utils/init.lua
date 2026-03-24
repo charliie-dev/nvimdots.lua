@@ -112,7 +112,7 @@ local function set_global_hl(name, foreground, background, italic)
 		fg = foreground,
 		bg = background,
 		italic = italic == true,
-		default = not vim.g.colors_name:find("catppuccin"),
+		default = not (vim.g.colors_name or ""):find("catppuccin"),
 	})
 end
 

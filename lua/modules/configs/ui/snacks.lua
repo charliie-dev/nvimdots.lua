@@ -7,8 +7,6 @@ return function()
 		misc = require("modules.utils.icons").get("misc", true),
 	}
 
-	require("modules.utils").gen_alpha_hl()
-
 	require("modules.utils").load_plugin("snacks", {
 		bigfile = { enabled = true },
 		bufdelete = { enabled = true },
