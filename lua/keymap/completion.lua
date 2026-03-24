@@ -72,7 +72,9 @@ function M.lsp(buf)
 			:with_buffer(buf)
 			:with_desc("lsp: Rename in project range"),
 		["n|K"] = map_cr("Lspsaga hover_doc"):with_silent():with_buffer(buf):with_desc("lsp: Show doc"),
-		["nv|ga"] = map_cr("Lspsaga code_action")
+		["nv|ga"] = map_callback(function()
+				require("tiny-code-action").code_action()
+			end)
 			:with_silent()
 			:with_buffer(buf)
 			:with_desc("lsp: Code action for cursor"),
