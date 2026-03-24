@@ -235,7 +235,6 @@ return function()
 			cond = conditionals.has_enough_room,
 		},
 
-
 		python_venv = {
 			function()
 				local function env_cleanup(venv)

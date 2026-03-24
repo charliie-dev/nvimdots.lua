@@ -2,10 +2,18 @@ local set = vim.keymap.set
 local helpers = require("keymap.helpers")
 
 -- Lazy-require treesitter-textobjects to avoid loading before the plugin is available
-local ts_to_select = function() return require("nvim-treesitter-textobjects.select") end
-local ts_to_swap = function() return require("nvim-treesitter-textobjects.swap") end
-local ts_to_move = function() return require("nvim-treesitter-textobjects.move") end
-local ts_to_repeat_move = function() return require("nvim-treesitter-textobjects.repeatable_move") end
+local ts_to_select = function()
+	return require("nvim-treesitter-textobjects.select")
+end
+local ts_to_swap = function()
+	return require("nvim-treesitter-textobjects.swap")
+end
+local ts_to_move = function()
+	return require("nvim-treesitter-textobjects.move")
+end
+local ts_to_repeat_move = function()
+	return require("nvim-treesitter-textobjects.repeatable_move")
+end
 
 --
 -- Builtins: Save & Quit
