@@ -11,11 +11,10 @@ local createdir = function()
 		global.cache_dir .. "/undo",
 	}
 	-- Only check whether cache_dir exists, this would be enough.
-	if vim.fn.isdirectory(global.cache_dir) == 0 then
-		---@diagnostic disable-next-line: param-type-mismatch
+	if not vim.uv.fs_stat(global.cache_dir) then
 		vim.fn.mkdir(global.cache_dir, "p")
 		for _, dir in pairs(data_dirs) do
-			if vim.fn.isdirectory(dir) == 0 then
+			if not vim.uv.fs_stat(dir) then
 				vim.fn.mkdir(dir, "p")
 			end
 		end

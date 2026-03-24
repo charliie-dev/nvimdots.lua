@@ -61,7 +61,7 @@ return function()
 				end
 
 				-- Otherwise, fall back to check if there are any local venvs available.
-				venv = vim.fn.isdirectory(cwd .. "/venv") == 1 and cwd .. "/venv" or cwd .. "/.venv"
+				venv = vim.uv.fs_stat(cwd .. "/venv") and cwd .. "/venv" or cwd .. "/.venv"
 				python = is_windows and venv .. "/Scripts/pythonw.exe" or venv .. "/bin/python"
 				if vim.fn.executable(python) == 1 then
 					return python

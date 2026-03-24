@@ -109,7 +109,7 @@ return function()
 				limit = 1,
 				upward = true,
 				type = "directory",
-				path = vim.fn.expand("%:p:h"),
+				path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
 			})
 			return #gitdir > 0
 		end,
@@ -179,8 +179,8 @@ return function()
 		file_status = {
 			function()
 				local function is_new_file()
-					local filename = vim.fn.expand("%")
-					return filename ~= "" and vim.bo.buftype == "" and vim.fn.filereadable(filename) == 0
+					local filename = vim.api.nvim_buf_get_name(0)
+					return filename ~= "" and vim.bo.buftype == "" and not vim.uv.fs_stat(filename)
 				end
 
 				local symbols = {}
@@ -298,7 +298,7 @@ return function()
 
 		cwd = {
 			function()
-				return icons.ui.FolderWithHeart .. utils.abbreviate_path(vim.fs.normalize(vim.uv.cwd()))
+				return icons.ui.FolderWithHeart .. utils.abbreviate_path(vim.fs.normalize(vim.uv.cwd() or "."))
 			end,
 			color = utils.gen_hl("subtext0", true, true, nil, "bold"),
 		},
