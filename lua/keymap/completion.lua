@@ -1,6 +1,7 @@
 local bind = require("keymap.bind")
 local map_cr = bind.map_cr
 local map_callback = bind.map_callback
+local helpers = require("keymap.helpers")
 
 local mappings = {
 	fmt = {
@@ -73,7 +74,7 @@ function M.lsp(buf)
 			:with_desc("lsp: Rename in project range"),
 		["n|K"] = map_cr("Lspsaga hover_doc"):with_silent():with_buffer(buf):with_desc("lsp: Show doc"),
 		["nv|ga"] = map_callback(function()
-			require("tiny-code-action").code_action()
+			require("tiny-code-action").code_action({})
 		end):with_silent():with_buffer(buf):with_desc("lsp: Code action for cursor"),
 		["n|gd"] = map_cr("Glance definitions"):with_silent():with_buffer(buf):with_desc("lsp: Preview definition"),
 		["n|gD"] = map_cr("Lspsaga goto_definition"):with_silent():with_buffer(buf):with_desc("lsp: Goto definition"),
@@ -87,13 +88,13 @@ function M.lsp(buf)
 			:with_buffer(buf)
 			:with_desc("lsp: Show outgoing calls"),
 		["n|<leader>lv"] = map_callback(function()
-				_toggle_virtuallines()
+				helpers.toggle_virtuallines()
 			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("lsp: Toggle virtual lines"),
 		["n|<leader>lh"] = map_callback(function()
-				_toggle_inlayhint()
+				helpers.toggle_inlayhint()
 			end)
 			:with_noremap()
 			:with_silent()

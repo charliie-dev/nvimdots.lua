@@ -1,4 +1,6 @@
-_G._command_panel = function()
+local M = {}
+
+M.command_panel = function()
 	require("telescope.builtin").keymaps({
 		lhs_filter = function(lhs)
 			return not string.find(lhs, "Þ")
@@ -6,7 +8,7 @@ _G._command_panel = function()
 	})
 end
 
-_G._flash_esc_or_noh = function()
+M.flash_esc_or_noh = function()
 	local flash_active, state = pcall(function()
 		return require("flash.plugins.char").state
 	end)
@@ -17,7 +19,7 @@ _G._flash_esc_or_noh = function()
 	end
 end
 
-_G._telescope_collections = function(opts)
+M.telescope_collections = function(opts)
 	local tabs = require("search.tabs")
 	local actions = require("telescope.actions")
 	local state = require("telescope.actions.state")
@@ -45,7 +47,7 @@ _G._telescope_collections = function(opts)
 		:find()
 end
 
-_G._toggle_inlayhint = function()
+M.toggle_inlayhint = function()
 	local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
 
 	vim.lsp.inlay_hint.enable(not is_enabled)
@@ -56,7 +58,7 @@ _G._toggle_inlayhint = function()
 	)
 end
 
-_G._toggle_virtuallines = function()
+M.toggle_virtuallines = function()
 	require("tiny-inline-diagnostic").toggle()
 	vim.notify(
 		"Virtual lines are now "
@@ -66,7 +68,7 @@ _G._toggle_virtuallines = function()
 	)
 end
 
-_G._select_chat_model = function()
+M.select_chat_model = function()
 	local actions = require("telescope.actions")
 	local action_state = require("telescope.actions.state")
 	local finder = require("telescope.finders")
@@ -108,7 +110,7 @@ local toggleterm_cache = {
 	nvsmi = nil,
 }
 
-_G._toggle_lazygit = function()
+M.toggle_lazygit = function()
 	if vim.fn.executable("lazygit") == 1 then
 		if not toggleterm_cache.lazygit then
 			toggleterm_cache.lazygit = require("toggleterm.terminal").Terminal:new({
@@ -124,7 +126,7 @@ _G._toggle_lazygit = function()
 	end
 end
 
-_G._toggle_yazi = function()
+M.toggle_yazi = function()
 	if vim.fn.executable("yazi") == 1 then
 		if not toggleterm_cache.yazi then
 			toggleterm_cache.yazi = require("toggleterm.terminal").Terminal:new({
@@ -140,7 +142,7 @@ _G._toggle_yazi = function()
 	end
 end
 
-_G._toggle_btop = function()
+M.toggle_btop = function()
 	if vim.fn.executable("btop") == 1 then
 		if not toggleterm_cache.btop then
 			toggleterm_cache.btop = require("toggleterm.terminal").Terminal:new({
@@ -156,7 +158,7 @@ _G._toggle_btop = function()
 	end
 end
 
-_G._toggle_python = function()
+M.toggle_python = function()
 	if not toggleterm_cache.python then
 		local cmd
 		if vim.fn.executable("python3") == 1 then
@@ -178,7 +180,7 @@ _G._toggle_python = function()
 	toggleterm_cache.python:toggle()
 end
 
-_G._toggle_nvsmi = function()
+M.toggle_nvsmi = function()
 	if vim.fn.executable("nvidia-smi") == 1 then
 		if not toggleterm_cache.nvsmi then
 			toggleterm_cache.nvsmi = require("toggleterm.terminal").Terminal:new({
@@ -193,3 +195,5 @@ _G._toggle_nvsmi = function()
 		not_found_notify("nvidia-smi")
 	end
 end
+
+return M

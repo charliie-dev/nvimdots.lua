@@ -5,7 +5,7 @@ local map_cu = bind.map_cu
 local map_cmd = bind.map_cmd
 local map_callback = bind.map_callback
 local et = bind.escape_termcode
-require("keymap.helpers")
+local helpers = require("keymap.helpers")
 
 local mappings = {
 	plugins = {
@@ -97,13 +97,13 @@ local mappings = {
 			:with_desc("terminal: Toggle float"),
 		["t|<A-d>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
 		["n|lg"] = map_callback(function()
-				_toggle_lazygit()
+				helpers.toggle_lazygit()
 			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle lazygit"),
 		["n|bt"] = map_callback(function()
-				_toggle_btop()
+				helpers.toggle_btop()
 			end)
 			:with_noremap()
 			:with_silent()
@@ -138,14 +138,14 @@ local mappings = {
 						fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
 					})
 				else
-					_command_panel()
+					helpers.command_panel()
 				end
 			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("tool: Toggle command panel"),
 		["n|<leader>fc"] = map_callback(function()
-				_telescope_collections(require("telescope.themes").get_dropdown({}))
+				helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
 			end)
 			:with_noremap()
 			:with_silent()
@@ -274,7 +274,7 @@ local mappings = {
 
 		--- Plugin: CodeCompanion and edgy
 		["n|<leader>cs"] = map_callback(function()
-				_select_chat_model()
+				helpers.select_chat_model()
 			end)
 			:with_noremap()
 			:with_silent()
