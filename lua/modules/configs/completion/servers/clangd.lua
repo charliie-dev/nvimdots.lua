@@ -19,7 +19,7 @@ local function switch_source_header_splitcmd(bufnr, splitcmd, client)
 			vim.notify("corresponding file cannot be determined")
 			return
 		end
-		vim.api.nvim_command(splitcmd .. " " .. vim.uri_to_fname(result))
+		vim.cmd({ cmd = splitcmd, args = { vim.uri_to_fname(result) } })
 	end, bufnr)
 end
 

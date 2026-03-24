@@ -211,7 +211,7 @@ return function()
 	vim.api.nvim_create_autocmd("LspAttach", {
 		pattern = { ".env" },
 		callback = function()
-			vim.api.nvim_command([[LspStop bashls]])
+			vim.cmd.LspStop("bashls")
 		end,
 	})
 end

@@ -6,7 +6,7 @@ return function()
 			local bufname = vim.api.nvim_buf_get_name(0)
 			if bufname and bufname ~= "" then
 				vim.defer_fn(function()
-					vim.cmd("edit")
+					vim.cmd.edit()
 				end, 1)
 			end
 		end,

@@ -1,18 +1,17 @@
 local autocmd = {}
-local cmd = vim.api.nvim_command
 
 -- Autoclose NvimTree
 vim.api.nvim_create_autocmd("BufEnter", {
 	group = vim.api.nvim_create_augroup("NvimTreeAutoClose", { clear = true }),
 	pattern = "NvimTree_*",
 	callback = function()
-		local layout = vim.api.nvim_call_function("winlayout", {})
+		local layout = vim.fn.winlayout()
 		if
 			layout[1] == "leaf"
 			and vim.bo[vim.api.nvim_win_get_buf(layout[2])].filetype == "NvimTree"
 			and layout[3] == nil
 		then
-			vim.api.nvim_command([[confirm quit]])
+			vim.cmd({ cmd = "quit", mods = { confirm = true } })
 		end
 	end,
 })
@@ -34,7 +33,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
-		vim.api.nvim_buf_set_keymap(event.buf, "n", "q", "<Cmd>close<CR>", { silent = true })
+		vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = event.buf, silent = true })
 	end,
 })
 
@@ -84,30 +83,51 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
+--- Process autocmd definitions using nvim_create_autocmd.
+--- Each definition entry: { event(s), pattern, command_or_callback }
+---   - event(s): string (comma-separated) or table of strings
+---   - pattern: string or table of strings
+---   - command_or_callback: string (vimscript) or function (lua callback)
+---     Prefix command with "nested " to set nested = true.
 function autocmd.nvim_create_augroups(definitions)
 	for group_name, definition in pairs(definitions) do
-		-- Prepend an underscore to avoid name clashes
-		vim.api.nvim_command("augroup _" .. group_name)
-		cmd("autocmd!")
+		local group = vim.api.nvim_create_augroup("_" .. group_name, { clear = true })
 		for _, def in ipairs(definition) do
-			local command = table.concat(vim.iter({ "autocmd", def }):flatten(), " ")
-			cmd(command)
+			local events = type(def[1]) == "table" and def[1] or vim.split(def[1], ",", { plain = true })
+			local pattern = def[2]
+			local action = def[3]
+
+			local opts = { group = group, pattern = pattern }
+
+			if type(action) == "function" then
+				opts.callback = action
+			elseif type(action) == "string" then
+				if action:match("^nested ") then
+					opts.nested = true
+					action = action:sub(8)
+				end
+				opts.command = action
+			end
+
+			vim.api.nvim_create_autocmd(events, opts)
 		end
-		cmd("augroup END")
 	end
 end
 
 function autocmd.load_autocmds()
+	local vim_path = require("core.global").vim_path
+
 	local definitions = {
 		bufs = {
 			-- Reload vim config automatically
 			{
 				"BufWritePost",
-				[[$VIM_PATH/{*.vim,*.yaml,vimrc} nested source $MYVIMRC | redraw]],
+				{ vim_path .. "/*.vim", vim_path .. "/*.yaml", vim_path .. "/vimrc" },
+				"nested source $MYVIMRC | redraw",
 			},
 			-- Reload Vim script automatically if setlocal autoread
 			{
-				"BufWritePost,FileWritePost",
+				{ "BufWritePost", "FileWritePost" },
 				"*.vim",
 				[[nested if &l:autoread > 0 | source <afile> | echo 'source ' . bufname('%') | endif]],
 			},
@@ -118,27 +138,21 @@ function autocmd.load_autocmds()
 			{ "BufWritePre", "MERGE_MSG", "setlocal noundofile" },
 			{ "BufWritePre", "description", "setlocal noundofile" },
 			{ "BufWritePre", "COMMIT_EDITMSG", "setlocal noundofile" },
-			-- Auto change directory
-			-- { "BufEnter", "*", "silent! lcd %:p:h" },
 		},
 		wins = {
 			-- Highlight current line only in focused window
 			{
-				"WinEnter,BufEnter,InsertLeave",
+				{ "WinEnter", "BufEnter", "InsertLeave" },
 				"*",
 				[[if ! &cursorline && &filetype !~# '^\(dashboard\|clap_\)' && ! &pvw | setlocal cursorline | endif]],
 			},
 			{
-				"WinLeave,BufLeave,InsertEnter",
+				{ "WinLeave", "BufLeave", "InsertEnter" },
 				"*",
 				[[if &cursorline && &filetype !~# '^\(dashboard\|clap_\)' && ! &pvw | setlocal nocursorline | endif]],
 			},
 			-- Attempt to write shada when leaving nvim
-			{
-				"VimLeave",
-				"*",
-				"wshada",
-			},
+			{ "VimLeave", "*", "wshada" },
 			-- Check if a file has changed when its window is in focus, being more proactive than 'autoread'
 			{ "FocusGained", "*", "checktime" },
 			-- Maintain uniform window dimensions when resizing Vim windows
@@ -150,7 +164,7 @@ function autocmd.load_autocmds()
 			{ "FileType", "dap-repl", "lua require('dap.ext.autocompl').attach()" },
 			{
 				"FileType",
-				"c,cpp",
+				{ "c", "cpp" },
 				"nnoremap <silent> <buffer> <leader>h <Cmd>ClangdSwitchSourceHeader<CR>",
 			},
 		},
