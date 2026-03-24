@@ -65,8 +65,15 @@ end
 
 function Lazy:load_lazy()
 	if not vim.uv.fs_stat(lazy_path) then
-		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git " or "https://github.com/folke/lazy.nvim.git "
-		api.nvim_command("!git clone --filter=blob:none --branch=stable " .. lazy_repo .. lazy_path)
+		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git" or "https://github.com/folke/lazy.nvim.git"
+		local result = vim.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazy_repo, lazy_path })
+			:wait()
+		if result.code ~= 0 then
+			vim.api.nvim_echo({
+				{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+				{ result.stderr or "", "WarningMsg" },
+			}, true, {})
+		end
 	end
 	self:load_plugins()
 
@@ -156,7 +163,6 @@ function Lazy:load_lazy()
 		lazy_settings.concurrency = 20
 	end
 
-	print(vim.fn.stdpath("config"))
 	vim.opt.rtp:prepend(lazy_path)
 	require("lazy").setup(self.modules, lazy_settings)
 end
