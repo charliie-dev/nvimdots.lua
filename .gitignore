@@ -8,3 +8,9 @@ lua/hm-generated.lua
 
 # git worktrees
 .worktrees/
+
+# agent files
+AGENTS.md
+CLAUDE.md
+docs/superpowers
+
