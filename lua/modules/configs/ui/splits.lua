@@ -7,6 +7,6 @@ return function()
 			"quickfix",
 			"prompt",
 		},
-		ignored_filetypes = { "NvimTree" },
+		ignored_filetypes = { "oil" },
 	})
 end

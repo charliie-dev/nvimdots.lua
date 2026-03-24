@@ -115,10 +115,6 @@ return function()
 					FidgetTask = { bg = cp.none, fg = cp.surface2 },
 					FidgetTitle = { fg = cp.blue, style = { "bold" } },
 
-					-- For nvim-tree
-					NvimTreeRootFolder = { fg = cp.pink },
-					NvimTreeIndentMarker = { fg = cp.surface2 },
-
 					-- For trouble.nvim
 					TroubleNormal = { bg = transparent_background and cp.none or cp.base },
 					TroubleNormalNC = { bg = transparent_background and cp.none or cp.base },

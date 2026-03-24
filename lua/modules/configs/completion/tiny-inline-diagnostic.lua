@@ -32,7 +32,7 @@ return function()
 			"help",
 			"log",
 			"notify",
-			"NvimTree",
+			"oil",
 			"Outline",
 			"qf",
 			"TelescopePrompt",

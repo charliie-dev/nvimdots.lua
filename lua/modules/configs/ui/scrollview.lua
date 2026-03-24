@@ -14,7 +14,7 @@ return function()
 			"fugitive",
 			"git",
 			"notify",
-			"NvimTree",
+			"oil",
 			"TelescopePrompt",
 			"toggleterm",
 			"undotree",
