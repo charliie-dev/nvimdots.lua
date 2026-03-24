@@ -92,6 +92,20 @@ editor["MagicDuck/grug-far.nvim"] = {
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
 ----------------------------------------------------------------------
+editor["jmbuhr/otter.nvim"] = {
+	lazy = true,
+	dependencies = "nvim-treesitter/nvim-treesitter",
+	config = function()
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "toml",
+			group = vim.api.nvim_create_augroup("EmbedToml", {}),
+			callback = function()
+				require("otter").activate()
+			end,
+		})
+	end,
+}
+
 editor["nemanjamalesija/smart-paste.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },

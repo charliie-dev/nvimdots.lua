@@ -175,6 +175,7 @@ settings["treesitter_deps"] = {
 	"html",
 	"javascript",
 	"json",
+	"kdl",
 	-- "latex",
 	"lua",
 	"make",
