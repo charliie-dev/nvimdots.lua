@@ -62,7 +62,7 @@ return function()
 					information = { "underline" },
 				},
 			},
-			notify = true,
+			snacks = true,
 			nvimtree = true,
 			rainbow_delimiters = true,
 			render_markdown = true,
@@ -114,9 +114,6 @@ return function()
 					-- For fidget
 					FidgetTask = { bg = cp.none, fg = cp.surface2 },
 					FidgetTitle = { fg = cp.blue, style = { "bold" } },
-
-					-- For nvim-notify
-					NotifyBackground = { bg = cp.base },
 
 					-- For nvim-tree
 					NvimTreeRootFolder = { fg = cp.pink },

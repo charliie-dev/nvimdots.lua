@@ -1,5 +1,10 @@
 local ui = {}
 
+ui["folke/snacks.nvim"] = {
+	lazy = false,
+	priority = 1000,
+	config = require("ui.snacks"),
+}
 ui["goolord/alpha-nvim"] = {
 	lazy = true,
 	event = "BufWinEnter",
@@ -32,11 +37,6 @@ ui["nvim-lualine/lualine.nvim"] = {
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.lualine"),
 }
-ui["karb94/neoscroll.nvim"] = {
-	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
-	config = require("ui.neoscroll"),
-}
 -- ui["sphamba/smear-cursor.nvim"] = {
 -- 	lazy = true,
 -- 	event = {
@@ -45,11 +45,6 @@ ui["karb94/neoscroll.nvim"] = {
 -- 	},
 -- 	config = require("ui.cursor"),
 -- }
-ui["rcarriga/nvim-notify"] = {
-	lazy = true,
-	event = "VeryLazy",
-	config = require("ui.notify"),
-}
 ui["folke/paint.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },

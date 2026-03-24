@@ -22,8 +22,13 @@ local mappings = {
 		["n|to"] = map_cr("tabonly"):with_noremap():with_silent():with_desc("tab: Only keep current tab"),
 	},
 	plugins = {
-		-- Plugin: nvim-bufdel
-		["n|<A-q>"] = map_cr("BufDel"):with_noremap():with_silent():with_desc("buffer: Close current"),
+		-- Snacks: bufdelete
+		["n|<A-q>"] = map_callback(function()
+				Snacks.bufdelete()
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("buffer: Close current"),
 
 		-- Plugin: bufferline.nvim
 		["n|<A-i>"] = map_cr("BufferLineCycleNext"):with_noremap():with_silent():with_desc("buffer: Switch to next"),

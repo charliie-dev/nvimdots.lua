@@ -102,7 +102,6 @@ return function()
 					builtins.colorscheme({ enable_preview = true })
 				end,
 			},
-			{ "Notify", extensions.notify.notify },
 			{ "Undo History", extensions.undo.undo },
 		},
 	}
