@@ -63,17 +63,17 @@ function M.lsp(buf)
 		["n|gT"] = map_callback(function()
 			vim.lsp.buf.type_definition()
 		end):with_desc("lsp: Goto type_definition"),
-		["n|gr"] = map_cr("Lspsaga rename")
+		["n|grn"] = map_cr("Lspsaga rename")
 			:with_silent()
 			:with_nowait()
 			:with_buffer(buf)
 			:with_desc("lsp: Rename in file range"),
-		["n|gR"] = map_cr("Lspsaga rename ++project")
+		["n|grN"] = map_cr("Lspsaga rename ++project")
 			:with_silent()
 			:with_buffer(buf)
 			:with_desc("lsp: Rename in project range"),
 		["n|K"] = map_cr("Lspsaga hover_doc"):with_silent():with_buffer(buf):with_desc("lsp: Show doc"),
-		["nv|ga"] = map_callback(function()
+		["nv|gra"] = map_callback(function()
 			require("tiny-code-action").code_action({})
 		end):with_silent():with_buffer(buf):with_desc("lsp: Code action for cursor"),
 		["n|gd"] = map_cr("Glance definitions"):with_silent():with_buffer(buf):with_desc("lsp: Preview definition"),
