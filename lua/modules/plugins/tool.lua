@@ -19,17 +19,12 @@ tool["Bekaboo/dropbar.nvim"] = {
 		"nvim-telescope/telescope-fzf-native.nvim",
 	},
 }
--- tool["nvim-tree/nvim-tree.lua"] = {
--- 	lazy = true,
--- 	cmd = {
--- 		"NvimTreeToggle",
--- 		"NvimTreeOpen",
--- 		"NvimTreeFindFile",
--- 		"NvimTreeFindFileToggle",
--- 		"NvimTreeRefresh",
--- 	},
--- 	config = require("tool.nvim-tree"),
--- }
+tool["stevearc/oil.nvim"] = {
+	lazy = true,
+	cmd = "Oil",
+	config = require("tool.oil"),
+	dependencies = { "nvim-tree/nvim-web-devicons" },
+}
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	-- If you see an error about a missing SnipRun executable,
@@ -69,17 +64,7 @@ tool["ibhagwan/fzf-lua"] = {
 tool["mikavilpas/yazi.nvim"] = {
 	version = "*",
 	lazy = true,
-	cmd = {
-		"Yazi",
-	},
-	-- if you use `open_for_directories=true`, this is recommended
-	init = function()
-		-- mark netrw as loaded so it's not loaded at all.
-		--
-		-- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
-		vim.g.loaded_netrwPlugin = 1
-	end,
-	-- config = require("tool.yazi"),
+	cmd = { "Yazi" },
 	dependencies = {
 		{ "nvim-lua/plenary.nvim", lazy = true },
 	},

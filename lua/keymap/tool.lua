@@ -28,7 +28,7 @@ set("n", "<leader>gG", "<Cmd>Git<CR>", { silent = true, desc = "git: Open git-fu
 -- Plugin: edgy
 set("n", "<C-n>", function()
 	require("edgy").toggle("left")
-end, { silent = true, desc = "filetree: Toggle" })
+end, { silent = true, desc = "explorer: Toggle sidebar" })
 
 -- Plugin: sniprun
 set("v", "<leader>r", "<Cmd>SnipRun<CR>", { silent = true, desc = "tool: Run code by range" })

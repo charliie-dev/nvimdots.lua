@@ -34,10 +34,17 @@ return function()
 		},
 		left = {
 			{
+				ft = "oil",
+				pinned = true,
+				collapsed = false,
+				size = { height = 0.6, width = 0.20 },
+				open = "Oil",
+			},
+			{
 				ft = "trouble",
 				pinned = true,
 				collapsed = false,
-				size = { height = 0.4, width = 0.15 },
+				size = { height = 0.4, width = 0.20 },
 				open = function()
 					return vim.b.buftype == "" and "Trouble symbols toggle win.position=right"
 				end,
