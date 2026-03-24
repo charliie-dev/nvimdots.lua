@@ -5,3 +5,6 @@ result
 
 # home-manager generated file
 lua/hm-generated.lua
+
+# git worktrees
+.worktrees/
