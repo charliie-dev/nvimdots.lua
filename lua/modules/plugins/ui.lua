@@ -5,11 +5,6 @@ ui["folke/snacks.nvim"] = {
 	priority = 1000,
 	config = require("ui.snacks"),
 }
-ui["goolord/alpha-nvim"] = {
-	lazy = true,
-	event = "BufWinEnter",
-	config = require("ui.alpha"),
-}
 ui["akinsho/bufferline.nvim"] = {
 	lazy = true,
 	event = { "BufReadPre", "BufAdd", "BufNewFile" },
@@ -25,12 +20,6 @@ ui["lewis6991/gitsigns.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("ui.gitsigns"),
-}
-ui["lukas-reineke/indent-blankline.nvim"] = {
-	main = "ibl",
-	lazy = true,
-	event = "BufReadPost",
-	config = require("ui.indent-blankline"),
 }
 ui["nvim-lualine/lualine.nvim"] = {
 	lazy = true,
