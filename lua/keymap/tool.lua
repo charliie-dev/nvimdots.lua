@@ -144,10 +144,11 @@ end, { silent = true, desc = "tool: Retrieve dossiers" })
 set("n", "<leader>fm", function()
 	require("search").open({ collection = "misc" })
 end, { silent = true, desc = "tool: Miscellaneous" })
-set("n", "<leader>fr", "<Cmd>Telescope resume<CR>", { silent = true, desc = "tool: Resume last search" })
-set("n", "<leader>fR", function()
+set("n", "<leader>fr", function()
 	if require("core.settings").search_backend == "fzf" then
 		require("fzf-lua").resume()
+	else
+		require("telescope.builtin").resume()
 	end
 end, { silent = true, desc = "tool: Resume last search" })
 
