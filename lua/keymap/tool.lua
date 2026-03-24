@@ -78,9 +78,24 @@ set("n", "yz", "<Cmd>Yazi<CR>", { silent = true, desc = "terminal: Toggle yazi" 
 
 -- Plugin: trouble
 set("n", "gt", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Toggle trouble list" })
-set("n", "<leader>lw", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Show workspace diagnostics" })
-set("n", "<leader>lp", "<Cmd>Trouble project_diagnostics toggle<CR>", { silent = true, desc = "lsp: Show project diagnostics" })
-set("n", "<leader>ld", "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", { silent = true, desc = "lsp: Show document diagnostics" })
+set(
+	"n",
+	"<leader>lw",
+	"<Cmd>Trouble diagnostics toggle<CR>",
+	{ silent = true, desc = "lsp: Show workspace diagnostics" }
+)
+set(
+	"n",
+	"<leader>lp",
+	"<Cmd>Trouble project_diagnostics toggle<CR>",
+	{ silent = true, desc = "lsp: Show project diagnostics" }
+)
+set(
+	"n",
+	"<leader>ld",
+	"<Cmd>Trouble diagnostics toggle filter.buf=0<CR>",
+	{ silent = true, desc = "lsp: Show document diagnostics" }
+)
 
 -- Plugin: telescope
 set("n", "<C-p>", function()
@@ -171,5 +186,15 @@ end, { silent = true, desc = "tool: Select Chat Model" })
 set({ "n", "v" }, "<leader>cc", function()
 	require("edgy").toggle("right")
 end, { silent = true, desc = "tool: Toggle CodeCompanion" })
-set({ "n", "v" }, "<leader>ck", "<Cmd>CodeCompanionActions<CR>", { silent = true, desc = "tool: CodeCompanion Actions" })
-set("v", "<leader>ca", "<Cmd>CodeCompanionChat Add<CR>", { silent = true, desc = "tool: Add selection to CodeCompanion Chat" })
+set(
+	{ "n", "v" },
+	"<leader>ck",
+	"<Cmd>CodeCompanionActions<CR>",
+	{ silent = true, desc = "tool: CodeCompanion Actions" }
+)
+set(
+	"v",
+	"<leader>ca",
+	"<Cmd>CodeCompanionChat Add<CR>",
+	{ silent = true, desc = "tool: Add selection to CodeCompanion Chat" }
+)

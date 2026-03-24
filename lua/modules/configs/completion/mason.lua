@@ -34,10 +34,7 @@ M.setup = function()
 	end
 
 	local settings = require("core.settings")
-	local ensure_installed = vim.list_extend(
-		vim.deepcopy(settings.formatter_deps),
-		settings.linter_deps
-	)
+	local ensure_installed = vim.list_extend(vim.deepcopy(settings.formatter_deps), settings.linter_deps)
 
 	for _, pkg_name in ipairs(ensure_installed) do
 		local pkg_ok, pkg = pcall(registry.get_package, pkg_name)

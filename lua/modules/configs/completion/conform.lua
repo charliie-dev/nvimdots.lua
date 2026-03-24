@@ -70,11 +70,7 @@ return function()
 		end
 
 		if format_notify then
-			vim.notify(
-				"[Conform] Formatted changed lines successfully!",
-				vim.log.levels.INFO,
-				{ title = "Conform" }
-			)
+			vim.notify("[Conform] Formatted changed lines successfully!", vim.log.levels.INFO, { title = "Conform" })
 		end
 		return true
 	end
