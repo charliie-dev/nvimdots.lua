@@ -18,9 +18,8 @@ M.setup = function()
 		update_in_insert = false,
 	})
 
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	local opts = {
-		capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false)),
+		capabilities = require("modules.utils").get_lsp_capabilities(),
 	}
 	---A handler to setup all servers defined under `completion/servers/*.lua`
 	---@param lsp_name string

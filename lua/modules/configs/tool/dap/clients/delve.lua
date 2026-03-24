@@ -26,7 +26,7 @@ return function()
 		type = "executable",
 		command = "node",
 		args = {
-			vim.fn.expand("$MASON") .. "/packages/go-debug-adapter" .. "/extension/dist/debugAdapter.js",
+			vim.env.MASON .. "/packages/go-debug-adapter" .. "/extension/dist/debugAdapter.js",
 		},
 	}
 	dap.configurations.go = {

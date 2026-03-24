@@ -2,9 +2,8 @@ return function()
 	require("completion.mason").setup()
 	require("completion.mason-lspconfig").setup()
 
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	local opts = {
-		capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false)),
+		capabilities = require("modules.utils").get_lsp_capabilities(),
 	}
 	-- Configure LSPs that are not managed by Mason but are available in `nvim-lspconfig`.
 	-- Servers are defined in `settings.external_lsp_deps` as { server_name = "executable" }.
