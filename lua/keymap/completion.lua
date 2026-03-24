@@ -73,11 +73,8 @@ function M.lsp(buf)
 			:with_desc("lsp: Rename in project range"),
 		["n|K"] = map_cr("Lspsaga hover_doc"):with_silent():with_buffer(buf):with_desc("lsp: Show doc"),
 		["nv|ga"] = map_callback(function()
-				require("tiny-code-action").code_action()
-			end)
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Code action for cursor"),
+			require("tiny-code-action").code_action()
+		end):with_silent():with_buffer(buf):with_desc("lsp: Code action for cursor"),
 		["n|gd"] = map_cr("Glance definitions"):with_silent():with_buffer(buf):with_desc("lsp: Preview definition"),
 		["n|gD"] = map_cr("Lspsaga goto_definition"):with_silent():with_buffer(buf):with_desc("lsp: Goto definition"),
 		["n|gh"] = map_cr("Glance references"):with_silent():with_buffer(buf):with_desc("lsp: Show reference"),

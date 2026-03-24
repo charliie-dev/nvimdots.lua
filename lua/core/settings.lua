@@ -20,11 +20,8 @@ settings["format_timeout"] = 500
 ---@type boolean
 settings["format_notify"] = true
 
--- Set to true if you want to format ONLY the *changed lines* as defined by your version control system.
--- NOTE: This will only be respected if:
---  > The buffer is under version control (Git or Mercurial);
---  > Any server attached to the buffer supports the |DocumentRangeFormattingProvider| capability.
--- Otherwise, Neovim will fall back to formatting the whole buffer and issue a warning.
+-- Set to true if you want to format ONLY the *changed lines* (git hunks via gitsigns).
+-- Falls back to formatting the whole buffer if no hunks are found.
 ---@type boolean
 settings["format_modifications_only"] = false
 
@@ -170,7 +167,7 @@ settings["formatter_deps"] = {
 ---@type string[]
 settings["linter_deps"] = {
 	"actionlint",
-	"ansiblelint",
+	"ansible-lint",
 	"hadolint",
 	"shellcheck",
 	"systemdlint",
