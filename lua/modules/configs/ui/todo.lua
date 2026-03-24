@@ -42,7 +42,7 @@ return function()
 				"Outline",
 				"qf",
 				"TelescopePrompt",
-				"toggleterm",
+				"snacks_terminal",
 				"undotree",
 			},
 		},

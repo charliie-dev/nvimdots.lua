@@ -16,7 +16,7 @@ return function()
 			"notify",
 			"oil",
 			"TelescopePrompt",
-			"toggleterm",
+			"snacks_terminal",
 			"undotree",
 		},
 	})

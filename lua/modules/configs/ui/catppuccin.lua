@@ -41,7 +41,7 @@ return function()
 			gitsigns = true,
 			grug_far = true,
 			hop = false,
-			indent_blankline = { enabled = true, colored_indent_levels = true },
+			indent_blankline = { enabled = false },
 			lsp_saga = true,
 			lsp_trouble = true,
 			markdown = true,
@@ -95,9 +95,9 @@ return function()
 					-- For mason.nvim
 					MasonNormal = { link = "NormalFloat" },
 
-					-- For indent-blankline
-					IblIndent = { fg = cp.surface0 },
-					IblScope = { fg = cp.surface2, style = { "bold" } },
+					-- For snacks.indent
+					SnacksIndent = { fg = cp.surface0 },
+					SnacksIndentScope = { fg = cp.surface2, style = { "bold" } },
 
 					-- For nvim-cmp and wilder.nvim
 					Pmenu = { fg = cp.overlay2, bg = transparent_background and cp.none or cp.base },

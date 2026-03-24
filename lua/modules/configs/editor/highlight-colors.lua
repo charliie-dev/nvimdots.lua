@@ -18,7 +18,7 @@ return function()
 			"oil",
 			"Outline",
 			"TelescopePrompt",
-			"toggleterm",
+			"snacks_terminal",
 			"undotree",
 		},
 		exclude_buftypes = {
