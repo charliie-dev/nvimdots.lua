@@ -118,7 +118,6 @@ settings["lsp_deps"] = {
 	"lua_ls",
 	"marksman",
 	"neocmake",
-	"nginx_language_server",
 	"ruff",
 	"systemd_lsp",
 	"tombi",
