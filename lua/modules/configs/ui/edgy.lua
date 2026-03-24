@@ -13,7 +13,7 @@ return function()
 	require("modules.utils").load_plugin("edgy", {
 		animate = { enabled = false },
 		close_when_all_hidden = true,
-		exit_when_last = true,
+		exit_when_last = false,
 		wo = { winbar = false },
 		keys = {
 			q = false,
@@ -34,20 +34,11 @@ return function()
 		},
 		left = {
 			{
-				ft = "oil",
-				pinned = true,
-				collapsed = false,
-				size = { height = 0.6, width = 0.20 },
-				open = "Oil",
-			},
-			{
 				ft = "trouble",
 				pinned = true,
 				collapsed = false,
-				size = { height = 0.4, width = 0.20 },
-				open = function()
-					return vim.b.buftype == "" and "Trouble symbols toggle win.position=right"
-				end,
+				size = { width = 0.20 },
+				open = "Trouble symbols win.position=right",
 				filter = trouble_filter("right"),
 			},
 		},
@@ -68,14 +59,6 @@ return function()
 				end,
 			},
 		},
-		right = {
-			{
-				ft = "codecompanion",
-				pinned = true,
-				collapsed = false,
-				size = { width = 0.25 },
-				open = "CodeCompanionChat Toggle",
-			},
-		},
+		right = {},
 	})
 end

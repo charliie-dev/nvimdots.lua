@@ -235,30 +235,6 @@ return function()
 			cond = conditionals.has_enough_room,
 		},
 
-		chat_progress = {
-			(function()
-				local processing = false
-				local animate_chars = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-				local animation_idx = 1
-				vim.api.nvim_create_autocmd("User", {
-					pattern = { "CodeCompanionRequestStarted", "CodeCompanionRequestFinished" },
-					group = vim.api.nvim_create_augroup("CodeCompanionHooks", { clear = true }),
-					callback = function(args)
-						processing = (args.match == "CodeCompanionRequestStarted")
-					end,
-				})
-
-				return function()
-					if not processing then
-						return ""
-					end
-					animation_idx = animation_idx % #animate_chars + 1
-					return string.format("%s %s", icons.aichat.Copilot, animate_chars[animation_idx])
-				end
-			end)(),
-			color = utils.gen_hl("yellow", true, true),
-			cond = conditionals.has_enough_room,
-		},
 
 		python_venv = {
 			function()
@@ -381,7 +357,6 @@ return function()
 				components.lsp,
 			},
 			lualine_x = {
-				components.chat_progress,
 				{
 					"encoding",
 					show_bomb = true,

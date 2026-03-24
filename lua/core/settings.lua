@@ -231,40 +231,5 @@ settings["dashboard_image"] = {
 	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⠿⢿⠿⠷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
 }
 
--- Set it to false if you don't use AI chat functionality.
----@type boolean
-settings["use_chat"] = false
-
--- Set the language to use for AI chat response here.
---- @type string
-settings["chat_lang"] = "English"
-
--- Set environment variable here to read API key for AI chat.
--- or you can set it to a command that reads the API key from your password manager.
--- e.g. "cmd:op read op://personal/OpenAI/credential --no-new
---- @type string
-settings["chat_api_key"] = "CODE_COMPANION_KEY"
-
--- Set the chat models here and use the first entry as default model.
--- We use `openrouter` as the chat model provider by default (No vested interest).
--- You need to register an account on openrouter and generate an api key.
--- We read the api key by reading the env variable: `CODE_COMPANION_KEY`.
--- All available models can be found here: https://openrouter.ai/models.
---- @type string[]
-settings["chat_models"] = {
-	-- free models
-	"moonshotai/kimi-k2:free", -- default
-	-- "qwen/qwen3-coder:free",
-	-- "deepseek/deepseek-chat-v3-0324:free",
-	-- "deepseek/deepseek-r1:free",
-	"google/gemma-3-27b-it:free",
-	-- paid models
-	"openai/codex-mini",
-	"openai/gpt-4.1-mini",
-	"google/gemini-2.5-flash-lite",
-	"google/gemini-2.5-flash",
-	"anthropic/claude-3.7-sonnet",
-	"anthropic/claude-sonnet-4",
-}
 
 return require("modules.utils").extend_config(settings, "user.settings")

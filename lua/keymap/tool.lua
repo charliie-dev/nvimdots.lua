@@ -27,7 +27,24 @@ set("n", "<leader>gG", "<Cmd>Git<CR>", { silent = true, desc = "git: Open git-fu
 
 -- Plugin: edgy
 set("n", "<C-n>", function()
-	require("edgy").toggle("left")
+	local edgy_config = require("edgy.config")
+	local edgebar = edgy_config.layout and edgy_config.layout.left
+	if edgebar then
+		local has_visible = false
+		for _, win in ipairs(edgebar.wins) do
+			if vim.api.nvim_win_is_valid(win.win) then
+				has_visible = true
+				break
+			end
+		end
+		if has_visible then
+			require("edgy").close("left")
+		else
+			require("edgy").open("left")
+		end
+	else
+		require("edgy").open("left")
+	end
 end, { silent = true, desc = "explorer: Toggle sidebar" })
 
 -- Plugin: sniprun
@@ -178,23 +195,3 @@ end, { silent = true, desc = "debug: Run last" })
 set("n", "<leader>do", function()
 	require("dap").repl.open()
 end, { silent = true, desc = "debug: Open REPL" })
-
---- Plugin: CodeCompanion and edgy
-set("n", "<leader>cs", function()
-	helpers.select_chat_model()
-end, { silent = true, desc = "tool: Select Chat Model" })
-set({ "n", "v" }, "<leader>cc", function()
-	require("edgy").toggle("right")
-end, { silent = true, desc = "tool: Toggle CodeCompanion" })
-set(
-	{ "n", "v" },
-	"<leader>ck",
-	"<Cmd>CodeCompanionActions<CR>",
-	{ silent = true, desc = "tool: CodeCompanion Actions" }
-)
-set(
-	"v",
-	"<leader>ca",
-	"<Cmd>CodeCompanionChat Add<CR>",
-	{ silent = true, desc = "tool: Add selection to CodeCompanion Chat" }
-)

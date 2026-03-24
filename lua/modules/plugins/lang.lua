@@ -30,7 +30,7 @@ lang["MeanderingProgrammer/render-markdown.nvim"] = {
 }
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
-	ft = { "markdown", "codecompanion" },
+	ft = { "markdown" },
 	build = ":call mkdp#util#install()",
 	config = require("lang.markdown-preview"),
 }
