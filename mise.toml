@@ -10,9 +10,6 @@ tree-sitter = "latest"
 [env]
 # Add mise-managed tools to PATH so Neovim can find them (e.g., tree-sitter, stylua)
 _.path = ["~/.local/share/mise/shims"]
-# set for awk_ls not setting explicit compile standerd
-# CXXFLAGS = "-std=c++20"
-npm_config_cxxflags = "--std=c++20"
 
 # ------------------------------------------------------------------------------
 
@@ -24,3 +21,4 @@ npm_config_cxxflags = "--std=c++20"
 [tasks.ruler]  # command: mise run ruler
 description = "Compile ruler to AGENTS.md"
 run = "bunx @intellectronica/ruler apply"
+

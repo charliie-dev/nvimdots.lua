@@ -105,7 +105,6 @@ settings["external_lsp_deps"] = {
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/configs
 ---@type string[]
 settings["lsp_deps"] = {
-	"awk_ls",
 	"bashls",
 	"clangd",
 	"dockerls",
