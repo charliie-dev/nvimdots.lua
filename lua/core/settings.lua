@@ -53,10 +53,6 @@ settings["diagnostics_level"] = "HINT"
 ---@type string[]
 settings["disabled_plugins"] = {}
 
--- Set to false if you don't use Neovim to open large files.
----@type boolean
-settings["load_big_files_faster"] = true
-
 -- Customize the global color palette here.
 -- These settings will override the defaults during initialization.
 -- Parameters will auto-complete as you type.

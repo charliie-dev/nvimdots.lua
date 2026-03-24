@@ -34,13 +34,6 @@ return function()
 		},
 		left = {
 			{
-				ft = "NvimTree",
-				pinned = true,
-				collapsed = false,
-				size = { height = 0.6, width = 0.15 },
-				open = "NvimTreeOpen",
-			},
-			{
 				ft = "trouble",
 				pinned = true,
 				collapsed = false,
@@ -54,12 +47,10 @@ return function()
 		bottom = {
 			{ ft = "qf", size = { height = 0.3 } },
 			{
-				ft = "toggleterm",
+				ft = "snacks_terminal",
 				size = { height = 0.3 },
 				filter = function(_, win)
-					local cfg = vim.api.nvim_win_get_config(win)
-					local term = require("toggleterm.terminal").get(1)
-					return cfg.relative == "" and term and term.direction == "horizontal"
+					return vim.api.nvim_win_get_config(win).relative == ""
 				end,
 			},
 			{

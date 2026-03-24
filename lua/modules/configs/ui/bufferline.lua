@@ -4,8 +4,12 @@ return function()
 	local opts = {
 		options = {
 			always_show_bufferline = true,
-			close_command = "BufDel! %d",
-			right_mouse_command = "BufDel! %d",
+			close_command = function(n)
+				Snacks.bufdelete(n)
+			end,
+			right_mouse_command = function(n)
+				Snacks.bufdelete(n)
+			end,
 			tab_size = 20,
 			separator_style = "thin",
 			show_buffer_icons = true,

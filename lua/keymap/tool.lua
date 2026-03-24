@@ -44,70 +44,78 @@ local mappings = {
 			:with_silent()
 			:with_desc("filetree: Toggle"),
 
-		-- Plugin: nvim-tree
-		["n|<leader>nf"] = map_cr("NvimTreeFindFile"):with_noremap():with_silent():with_desc("filetree: Find file"),
-		["n|<leader>nr"] = map_cr("NvimTreeRefresh"):with_noremap():with_silent():with_desc("filetree: Refresh"),
-
 		-- Plugin: sniprun
 		["v|<leader>r"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
 		["n|<leader>r"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
 
-		-- Plugin: toggleterm
+		-- Snacks: terminal
 		["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
-		["n|<C-\\>"] = map_cr("ToggleTerm direction=horizontal")
+		["n|<C-\\>"] = map_callback(function()
+				Snacks.terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
+			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle horizontal"),
-		["i|<C-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=horizontal<CR>")
+		["i|<C-\\>"] = map_callback(function()
+				vim.cmd("stopinsert")
+				Snacks.terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
+			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle horizontal"),
-		["t|<C-\\>"] = map_cmd("<Cmd>ToggleTerm<CR>")
+		["t|<C-\\>"] = map_callback(function()
+				Snacks.terminal.toggle()
+			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle horizontal"),
-		["n|<A-\\>"] = map_cr("ToggleTerm direction=vertical")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["i|<A-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["t|<A-\\>"] = map_cmd("<Cmd>ToggleTerm<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["n|<F5>"] = map_cr("ToggleTerm direction=vertical")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["i|<F5>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["t|<F5>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle vertical"),
-		["n|<A-d>"] = map_cr("ToggleTerm direction=float")
+		["n|<A-d>"] = map_callback(function()
+				Snacks.terminal.toggle(nil, { win = { style = "float" } })
+			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle float"),
-		["i|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=float<CR>")
+		["i|<A-d>"] = map_callback(function()
+				vim.cmd("stopinsert")
+				Snacks.terminal.toggle(nil, { win = { style = "float" } })
+			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle float"),
-		["t|<A-d>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
+		["t|<A-d>"] = map_callback(function()
+				Snacks.terminal.toggle()
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("terminal: Toggle float"),
+
+		-- Snacks: lazygit
 		["n|lg"] = map_callback(function()
-				helpers.toggle_lazygit()
+				Snacks.lazygit()
 			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle lazygit"),
+
+		-- Snacks: custom terminal helpers
 		["n|bt"] = map_callback(function()
-				helpers.toggle_btop()
+				helpers.toggle_float_term("btop", "btop")
 			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("terminal: Toggle btop"),
+		["n|lzd"] = map_callback(function()
+				helpers.toggle_float_term("lazydocker", "lazydocker")
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("terminal: Toggle lazydocker"),
+		["n|nvsmi"] = map_callback(function()
+				helpers.toggle_float_term("watch -n 1 nvidia-smi", "nvidia-smi")
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("terminal: Toggle nvidia-smi"),
 
 		-- Plugin: yazi.nvim
 		["n|yz"] = map_cmd("<Cmd>Yazi<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle yazi"),

@@ -99,100 +99,17 @@ end
 
 ---@param program string
 local function not_found_notify(program)
-	vim.notify(string.format("[%s] not found!", program), vim.log.levels.ERROR, { title = "toggleterm.nvim" })
+	vim.notify(string.format("[%s] not found!", program), vim.log.levels.ERROR, { title = "Terminal" })
 end
 
-local toggleterm_cache = {
-	lazygit = nil,
-	yazi = nil,
-	btop = nil,
-	python = nil,
-	nvsmi = nil,
-}
-
-M.toggle_lazygit = function()
-	if vim.fn.executable("lazygit") == 1 then
-		if not toggleterm_cache.lazygit then
-			toggleterm_cache.lazygit = require("toggleterm.terminal").Terminal:new({
-				cmd = "lazygit",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
-		end
-		toggleterm_cache.lazygit:toggle()
+---Toggle a floating terminal running `cmd`.
+---@param cmd string
+---@param program string
+M.toggle_float_term = function(cmd, program)
+	if vim.fn.executable(program) == 1 then
+		Snacks.terminal.toggle(cmd, { win = { style = "float" } })
 	else
-		not_found_notify("lazygit")
-	end
-end
-
-M.toggle_yazi = function()
-	if vim.fn.executable("yazi") == 1 then
-		if not toggleterm_cache.yazi then
-			toggleterm_cache.yazi = require("toggleterm.terminal").Terminal:new({
-				cmd = "yazi",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
-		end
-		toggleterm_cache.yazi:toggle()
-	else
-		not_found_notify("yazi")
-	end
-end
-
-M.toggle_btop = function()
-	if vim.fn.executable("btop") == 1 then
-		if not toggleterm_cache.btop then
-			toggleterm_cache.btop = require("toggleterm.terminal").Terminal:new({
-				cmd = "btop",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
-		end
-		toggleterm_cache.btop:toggle()
-	else
-		not_found_notify("btop")
-	end
-end
-
-M.toggle_python = function()
-	if not toggleterm_cache.python then
-		local cmd
-		if vim.fn.executable("python3") == 1 then
-			cmd = "python3"
-		elseif vim.fn.executable("python") == 1 then
-			cmd = "python"
-		end
-		if not cmd then
-			not_found_notify("python3 or python")
-			return
-		end
-		toggleterm_cache.python = require("toggleterm.terminal").Terminal:new({
-			cmd = cmd,
-			direction = "float",
-			close_on_exit = true,
-			hidden = true,
-		})
-	end
-	toggleterm_cache.python:toggle()
-end
-
-M.toggle_nvsmi = function()
-	if vim.fn.executable("nvidia-smi") == 1 then
-		if not toggleterm_cache.nvsmi then
-			toggleterm_cache.nvsmi = require("toggleterm.terminal").Terminal:new({
-				cmd = "watch -n 1 nvidia-smi",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
-		end
-		toggleterm_cache.nvsmi:toggle()
-	else
-		not_found_notify("nvidia-smi")
+		not_found_notify(program)
 	end
 end
 
