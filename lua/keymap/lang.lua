@@ -1,10 +1,10 @@
 local set = vim.keymap.set
 
--- Plugin: render-markdown.nvim
+-- Plugin: markview.nvim
 set(
 	"n",
 	"<F1>",
-	"<Cmd>RenderMarkdown toggle<CR>",
+	"<Cmd>Markview toggle<CR>",
 	{ silent = true, desc = "tool: toggle markdown preview within nvim" }
 )
 
