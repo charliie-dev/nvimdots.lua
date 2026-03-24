@@ -1,307 +1,175 @@
 local vim_path = require("core.global").vim_path
-local bind = require("keymap.bind")
-local map_cr = bind.map_cr
-local map_cu = bind.map_cu
-local map_cmd = bind.map_cmd
-local map_callback = bind.map_callback
-local et = bind.escape_termcode
 local helpers = require("keymap.helpers")
+local set = vim.keymap.set
 
-local mappings = {
-	plugins = {
-		-- Plugin: dial
-		["n|<leader>="] = map_callback(function()
-				return et("<Plug>(dial-increment)")
-			end)
-			:with_noremap()
-			:with_expr(),
-		["v|<leader>="] = map_callback(function()
-				return et("<Plug>(dial-increment)")
-			end)
-			:with_noremap()
-			:with_expr(),
-		["n|<leader>-"] = map_callback(function()
-				return et("<Plug>(dial-decrement)")
-			end)
-			:with_noremap()
-			:with_expr(),
-		["v|<leader>-"] = map_callback(function()
-				return et("<Plug>(dial-decrement)")
-			end)
-			:with_noremap()
-			:with_expr(),
+local function et(keys)
+	return vim.api.nvim_replace_termcodes(keys, true, true, true)
+end
 
-		-- Plugin: vim-fugitive
-		["n|gps"] = map_cr("G push"):with_noremap():with_silent():with_desc("git: Push"),
-		["n|gpl"] = map_cr("G pull"):with_noremap():with_silent():with_desc("git: Pull"),
-		["n|<leader>gG"] = map_cu("Git"):with_noremap():with_silent():with_desc("git: Open git-fugitive"),
+-- Plugin: dial
+set("n", "<leader>=", function()
+	return et("<Plug>(dial-increment)")
+end, { expr = true })
+set("v", "<leader>=", function()
+	return et("<Plug>(dial-increment)")
+end, { expr = true })
+set("n", "<leader>-", function()
+	return et("<Plug>(dial-decrement)")
+end, { expr = true })
+set("v", "<leader>-", function()
+	return et("<Plug>(dial-decrement)")
+end, { expr = true })
 
-		-- Plugin: edgy
-		["n|<C-n>"] = map_callback(function()
-				require("edgy").toggle("left")
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("filetree: Toggle"),
+-- Plugin: vim-fugitive
+set("n", "gps", "<Cmd>G push<CR>", { silent = true, desc = "git: Push" })
+set("n", "gpl", "<Cmd>G pull<CR>", { silent = true, desc = "git: Pull" })
+set("n", "<leader>gG", "<Cmd>Git<CR>", { silent = true, desc = "git: Open git-fugitive" })
 
-		-- Plugin: sniprun
-		["v|<leader>r"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
-		["n|<leader>r"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
+-- Plugin: edgy
+set("n", "<C-n>", function()
+	require("edgy").toggle("left")
+end, { silent = true, desc = "filetree: Toggle" })
 
-		-- Snacks: terminal
-		["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
-		["n|<C-\\>"] = map_callback(function()
-				Snacks.terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle horizontal"),
-		["i|<C-\\>"] = map_callback(function()
-				vim.cmd("stopinsert")
-				Snacks.terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle horizontal"),
-		["t|<C-\\>"] = map_callback(function()
-				Snacks.terminal.toggle()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle horizontal"),
-		["n|<A-d>"] = map_callback(function()
-				Snacks.terminal.toggle(nil, { win = { style = "float" } })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle float"),
-		["i|<A-d>"] = map_callback(function()
-				vim.cmd("stopinsert")
-				Snacks.terminal.toggle(nil, { win = { style = "float" } })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle float"),
-		["t|<A-d>"] = map_callback(function()
-				Snacks.terminal.toggle()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle float"),
+-- Plugin: sniprun
+set("v", "<leader>r", "<Cmd>SnipRun<CR>", { silent = true, desc = "tool: Run code by range" })
+set("n", "<leader>r", "<Cmd>%SnipRun<CR>", { silent = true, desc = "tool: Run code by file" })
 
-		-- Snacks: lazygit
-		["n|lg"] = map_callback(function()
-				Snacks.lazygit()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle lazygit"),
+-- Snacks: terminal
+set("t", "<Esc><Esc>", [[<C-\><C-n>]], { silent = true })
+set("n", "<C-\\>", function()
+	Snacks.terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
+end, { silent = true, desc = "terminal: Toggle horizontal" })
+set("i", "<C-\\>", function()
+	vim.cmd("stopinsert")
+	Snacks.terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
+end, { silent = true, desc = "terminal: Toggle horizontal" })
+set("t", "<C-\\>", function()
+	Snacks.terminal.toggle()
+end, { silent = true, desc = "terminal: Toggle horizontal" })
+set("n", "<A-d>", function()
+	Snacks.terminal.toggle(nil, { win = { style = "float" } })
+end, { silent = true, desc = "terminal: Toggle float" })
+set("i", "<A-d>", function()
+	vim.cmd("stopinsert")
+	Snacks.terminal.toggle(nil, { win = { style = "float" } })
+end, { silent = true, desc = "terminal: Toggle float" })
+set("t", "<A-d>", function()
+	Snacks.terminal.toggle()
+end, { silent = true, desc = "terminal: Toggle float" })
 
-		-- Snacks: custom terminal helpers
-		["n|bt"] = map_callback(function()
-				helpers.toggle_float_term("btop", "btop")
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle btop"),
-		["n|lzd"] = map_callback(function()
-				helpers.toggle_float_term("lazydocker", "lazydocker")
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle lazydocker"),
-		["n|nvsmi"] = map_callback(function()
-				helpers.toggle_float_term("watch -n 1 nvidia-smi", "nvidia-smi")
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle nvidia-smi"),
+-- Snacks: lazygit
+set("n", "lg", function()
+	Snacks.lazygit()
+end, { silent = true, desc = "terminal: Toggle lazygit" })
 
-		-- Plugin: yazi.nvim
-		["n|yz"] = map_cmd("<Cmd>Yazi<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle yazi"),
+-- Snacks: custom terminal helpers
+set("n", "bt", function()
+	helpers.toggle_float_term("btop", "btop")
+end, { silent = true, desc = "terminal: Toggle btop" })
+set("n", "lzd", function()
+	helpers.toggle_float_term("lazydocker", "lazydocker")
+end, { silent = true, desc = "terminal: Toggle lazydocker" })
+set("n", "nvsmi", function()
+	helpers.toggle_float_term("watch -n 1 nvidia-smi", "nvidia-smi")
+end, { silent = true, desc = "terminal: Toggle nvidia-smi" })
 
-		-- Plugin: trouble
-		["n|gt"] = map_cr("Trouble diagnostics toggle")
-			:with_noremap()
-			:with_silent()
-			:with_desc("lsp: Toggle trouble list"),
-		["n|<leader>lw"] = map_cr("Trouble diagnostics toggle")
-			:with_noremap()
-			:with_silent()
-			:with_desc("lsp: Show workspace diagnostics"),
-		["n|<leader>lp"] = map_cr("Trouble project_diagnostics toggle")
-			:with_noremap()
-			:with_silent()
-			:with_desc("lsp: Show project diagnostics"),
-		["n|<leader>ld"] = map_cr("Trouble diagnostics toggle filter.buf=0")
-			:with_noremap()
-			:with_silent()
-			:with_desc("lsp: Show document diagnostics"),
+-- Plugin: yazi.nvim
+set("n", "yz", "<Cmd>Yazi<CR>", { silent = true, desc = "terminal: Toggle yazi" })
 
-		-- Plugin: telescope
-		["n|<C-p>"] = map_callback(function()
-				if require("core.settings").search_backend == "fzf" then
-					local prompt_position = require("telescope.config").values.layout_config.horizontal.prompt_position
-					require("fzf-lua").keymaps({
-						fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
-					})
-				else
-					helpers.command_panel()
-				end
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Toggle command panel"),
-		["n|<leader>fc"] = map_callback(function()
-				helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Open Telescope (collections)"),
-		["n|<leader>ff"] = map_callback(function()
-				require("search").open({ collection = "file" })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Find files"),
-		["n|<leader>fp"] = map_callback(function()
-				require("search").open({ collection = "pattern" })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Find patterns"),
-		["v|<leader>fs"] = map_callback(function()
-				local is_config = vim.uv.cwd() == vim_path
-				if require("core.settings").search_backend == "fzf" then
-					require("fzf-lua").grep_project({
-						search = require("fzf-lua.utils").get_visual_selection(),
-						rg_opts = "--column --line-number --no-heading --color=always --smart-case"
-							.. (is_config and " --no-ignore --hidden --glob '!.git/*'" or ""),
-					})
-				else
-					require("telescope-live-grep-args.shortcuts").grep_visual_selection(
-						is_config and { additional_args = { "--no-ignore" } } or {}
-					)
-				end
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Find word under cursor"),
-		["n|<leader>fg"] = map_callback(function()
-				require("search").open({ collection = "git" })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Locate Git objects"),
-		["n|<leader>fd"] = map_callback(function()
-				require("search").open({ collection = "dossier" })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Retrieve dossiers"),
-		["n|<leader>fm"] = map_callback(function()
-				require("search").open({ collection = "misc" })
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Miscellaneous"),
-		["n|<leader>fr"] = map_cr("Telescope resume")
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Resume last search"),
-		["n|<leader>fR"] = map_callback(function()
-				if require("core.settings").search_backend == "fzf" then
-					require("fzf-lua").resume()
-				end
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Resume last search"),
+-- Plugin: trouble
+set("n", "gt", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Toggle trouble list" })
+set("n", "<leader>lw", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Show workspace diagnostics" })
+set("n", "<leader>lp", "<Cmd>Trouble project_diagnostics toggle<CR>", { silent = true, desc = "lsp: Show project diagnostics" })
+set("n", "<leader>ld", "<Cmd>Trouble diagnostics toggle filter.buf=0<CR>", { silent = true, desc = "lsp: Show document diagnostics" })
 
-		-- Plugin: dap
-		["n|<F6>"] = map_callback(function()
-				require("dap").continue()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Run/Continue"),
-		["n|<F7>"] = map_callback(function()
-				require("dap").terminate()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Stop"),
-		["n|<F8>"] = map_callback(function()
-				require("dap").toggle_breakpoint()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Toggle breakpoint"),
-		["n|<F9>"] = map_callback(function()
-				require("dap").step_into()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Step into"),
-		["n|<F10>"] = map_callback(function()
-				require("dap").step_out()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Step out"),
-		["n|<F11>"] = map_callback(function()
-				require("dap").step_over()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Step over"),
-		["n|<leader>db"] = map_callback(function()
-				require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Set breakpoint with condition"),
-		["n|<leader>dc"] = map_callback(function()
-				require("dap").run_to_cursor()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Run to cursor"),
-		["n|<leader>dl"] = map_callback(function()
-				require("dap").run_last()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Run last"),
-		["n|<leader>do"] = map_callback(function()
-				require("dap").repl.open()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("debug: Open REPL"),
+-- Plugin: telescope
+set("n", "<C-p>", function()
+	if require("core.settings").search_backend == "fzf" then
+		local prompt_position = require("telescope.config").values.layout_config.horizontal.prompt_position
+		require("fzf-lua").keymaps({
+			fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
+		})
+	else
+		helpers.command_panel()
+	end
+end, { silent = true, desc = "tool: Toggle command panel" })
+set("n", "<leader>fc", function()
+	helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
+end, { silent = true, desc = "tool: Open Telescope (collections)" })
+set("n", "<leader>ff", function()
+	require("search").open({ collection = "file" })
+end, { silent = true, desc = "tool: Find files" })
+set("n", "<leader>fp", function()
+	require("search").open({ collection = "pattern" })
+end, { silent = true, desc = "tool: Find patterns" })
+set("v", "<leader>fs", function()
+	local is_config = vim.uv.cwd() == vim_path
+	if require("core.settings").search_backend == "fzf" then
+		require("fzf-lua").grep_project({
+			search = require("fzf-lua.utils").get_visual_selection(),
+			rg_opts = "--column --line-number --no-heading --color=always --smart-case"
+				.. (is_config and " --no-ignore --hidden --glob '!.git/*'" or ""),
+		})
+	else
+		require("telescope-live-grep-args.shortcuts").grep_visual_selection(
+			is_config and { additional_args = { "--no-ignore" } } or {}
+		)
+	end
+end, { silent = true, desc = "tool: Find word under cursor" })
+set("n", "<leader>fg", function()
+	require("search").open({ collection = "git" })
+end, { silent = true, desc = "tool: Locate Git objects" })
+set("n", "<leader>fd", function()
+	require("search").open({ collection = "dossier" })
+end, { silent = true, desc = "tool: Retrieve dossiers" })
+set("n", "<leader>fm", function()
+	require("search").open({ collection = "misc" })
+end, { silent = true, desc = "tool: Miscellaneous" })
+set("n", "<leader>fr", "<Cmd>Telescope resume<CR>", { silent = true, desc = "tool: Resume last search" })
+set("n", "<leader>fR", function()
+	if require("core.settings").search_backend == "fzf" then
+		require("fzf-lua").resume()
+	end
+end, { silent = true, desc = "tool: Resume last search" })
 
-		--- Plugin: CodeCompanion and edgy
-		["n|<leader>cs"] = map_callback(function()
-				helpers.select_chat_model()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Select Chat Model"),
-		["nv|<leader>cc"] = map_callback(function()
-				require("edgy").toggle("right")
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Toggle CodeCompanion"),
-		["nv|<leader>ck"] = map_cr("CodeCompanionActions")
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: CodeCompanion Actions"),
-		["v|<leader>ca"] = map_cr("CodeCompanionChat Add")
-			:with_noremap()
-			:with_silent()
-			:with_desc("tool: Add selection to CodeCompanion Chat"),
-	},
-}
+-- Plugin: dap
+set("n", "<F6>", function()
+	require("dap").continue()
+end, { silent = true, desc = "debug: Run/Continue" })
+set("n", "<F7>", function()
+	require("dap").terminate()
+end, { silent = true, desc = "debug: Stop" })
+set("n", "<F8>", function()
+	require("dap").toggle_breakpoint()
+end, { silent = true, desc = "debug: Toggle breakpoint" })
+set("n", "<F9>", function()
+	require("dap").step_into()
+end, { silent = true, desc = "debug: Step into" })
+set("n", "<F10>", function()
+	require("dap").step_out()
+end, { silent = true, desc = "debug: Step out" })
+set("n", "<F11>", function()
+	require("dap").step_over()
+end, { silent = true, desc = "debug: Step over" })
+set("n", "<leader>db", function()
+	require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end, { silent = true, desc = "debug: Set breakpoint with condition" })
+set("n", "<leader>dc", function()
+	require("dap").run_to_cursor()
+end, { silent = true, desc = "debug: Run to cursor" })
+set("n", "<leader>dl", function()
+	require("dap").run_last()
+end, { silent = true, desc = "debug: Run last" })
+set("n", "<leader>do", function()
+	require("dap").repl.open()
+end, { silent = true, desc = "debug: Open REPL" })
 
-bind.nvim_load_mapping(mappings.plugins)
+--- Plugin: CodeCompanion and edgy
+set("n", "<leader>cs", function()
+	helpers.select_chat_model()
+end, { silent = true, desc = "tool: Select Chat Model" })
+set({ "n", "v" }, "<leader>cc", function()
+	require("edgy").toggle("right")
+end, { silent = true, desc = "tool: Toggle CodeCompanion" })
+set({ "n", "v" }, "<leader>ck", "<Cmd>CodeCompanionActions<CR>", { silent = true, desc = "tool: CodeCompanion Actions" })
+set("v", "<leader>ca", "<Cmd>CodeCompanionChat Add<CR>", { silent = true, desc = "tool: Add selection to CodeCompanion Chat" })
