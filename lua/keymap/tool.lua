@@ -37,6 +37,12 @@ end, { silent = true, desc = "explorer: Toggle sidebar" })
 set("v", "<leader>r", "<Cmd>SnipRun<CR>", { silent = true, desc = "tool: Run code by range" })
 set("n", "<leader>r", "<Cmd>%SnipRun<CR>", { silent = true, desc = "tool: Run code by file" })
 
+-- Plugin: overseer
+set("n", "<leader>or", "<Cmd>OverseerRun<CR>", { silent = true, desc = "overseer: Run task" })
+set("n", "<leader>ot", "<Cmd>OverseerToggle<CR>", { silent = true, desc = "overseer: Toggle task list" })
+set("n", "<leader>oa", "<Cmd>OverseerQuickAction<CR>", { silent = true, desc = "overseer: Quick action" })
+set("n", "<leader>oi", "<Cmd>OverseerInfo<CR>", { silent = true, desc = "overseer: Info" })
+
 -- Snacks: terminal
 set("t", "<Esc><Esc>", [[<C-\><C-n>]], { silent = true })
 set("n", "<C-\\>", function()

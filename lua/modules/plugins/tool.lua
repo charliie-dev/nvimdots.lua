@@ -33,6 +33,20 @@ tool["michaelb/sniprun"] = {
 	cmd = { "SnipRun", "SnipReset", "SnipInfo" },
 	config = require("tool.sniprun"),
 }
+tool["stevearc/overseer.nvim"] = {
+	lazy = true,
+	cmd = {
+		"OverseerRun",
+		"OverseerToggle",
+		"OverseerOpen",
+		"OverseerClose",
+		"OverseerInfo",
+		"OverseerBuild",
+		"OverseerQuickAction",
+		"OverseerTaskAction",
+	},
+	config = require("tool.overseer"),
+}
 tool["folke/trouble.nvim"] = {
 	lazy = true,
 	cmd = { "Trouble" },
