@@ -105,7 +105,6 @@ settings["external_lsp_deps"] = {
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/configs
 ---@type string[]
 settings["lsp_deps"] = {
-	"ansiblels",
 	"awk_ls",
 	"bashls",
 	"clangd",
@@ -147,7 +146,6 @@ settings["formatter_deps"] = {
 ---@type string[]
 settings["linter_deps"] = {
 	"actionlint",
-	"ansible-lint",
 	"hadolint",
 	"shellcheck",
 	"systemdlint",
