@@ -54,10 +54,11 @@ return function()
 				underline = false,
 			},
 			chunk = { enabled = false },
-			filter = function(buf)
+			---@param buf number
+			---@param win number
+			filter = function(buf, win)
 				local excluded_ft = {
 					[""] = true,
-					alpha = true,
 					checkhealth = true,
 					["dap-repl"] = true,
 					diff = true,
@@ -68,13 +69,11 @@ return function()
 					help = true,
 					log = true,
 					markdown = true,
-					NvimTree = true,
 					Outline = true,
 					qf = true,
 					snacks_dashboard = true,
 					TelescopePrompt = true,
 					text = true,
-					toggleterm = true,
 					undotree = true,
 					vimwiki = true,
 				}
