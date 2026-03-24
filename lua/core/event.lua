@@ -6,6 +6,7 @@ vim.api.nvim_create_autocmd("FileType", {
 		"qf",
 		"help",
 		"man",
+		"notify",
 		"snacks_notif",
 		"nofile",
 		"terminal",

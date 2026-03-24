@@ -17,7 +17,7 @@ set("n", "to", "<Cmd>tabonly<CR>", { silent = true, desc = "tab: Only keep curre
 
 -- Snacks: bufdelete
 set("n", "<A-q>", function()
-	Snacks.bufdelete()
+	require("snacks").bufdelete()
 end, { silent = true, desc = "buffer: Close current" })
 
 -- Plugin: bufferline.nvim

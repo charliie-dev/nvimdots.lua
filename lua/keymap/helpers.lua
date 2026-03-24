@@ -107,7 +107,7 @@ end
 ---@param program string
 M.toggle_float_term = function(cmd, program)
 	if vim.fn.executable(program) == 1 then
-		Snacks.terminal.toggle(cmd, { win = { style = "float" } })
+		require("snacks").terminal.toggle(cmd, { win = { style = "float" } })
 	else
 		not_found_notify(program)
 	end

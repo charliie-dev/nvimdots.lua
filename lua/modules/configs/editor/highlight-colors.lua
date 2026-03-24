@@ -14,6 +14,7 @@ return function()
 			"dap-repl",
 			"fugitive",
 			"git",
+			"notify",
 			"snacks_notif",
 			"oil",
 			"Outline",
