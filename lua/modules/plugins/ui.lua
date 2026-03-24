@@ -34,11 +34,6 @@ ui["nvim-lualine/lualine.nvim"] = {
 -- 	},
 -- 	config = require("ui.cursor"),
 -- }
-ui["folke/paint.nvim"] = {
-	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
-	config = require("ui.paint"),
-}
 ui["mrjones2014/smart-splits.nvim"] = {
 	lazy = true,
 	event = { "CursorHoldI", "CursorHold" },
