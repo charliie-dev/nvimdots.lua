@@ -15,7 +15,7 @@ local function keymap_equals(a, b)
 	return termcodes(a) == termcodes(b)
 end
 
----Get map
+---Get and remove an existing mapping, returning its properties.
 ---@param mode string
 ---@param lhs string
 ---@return table
@@ -67,8 +67,7 @@ local function get_map(mode, lhs)
 	}
 end
 
----Returns the function constructed from the passed keymap object on call of
----which the original keymapping will be executed.
+---Returns a function that executes the original keymapping as a fallback.
 ---@param map table keymap object
 ---@return function
 local function get_fallback(map)
@@ -92,110 +91,54 @@ local function get_fallback(map)
 	end
 end
 
--- Amends a mapping (i.e., allows fallback when certain conditions are met)
----@param cond string
----@param mode string
----@param lhs string
----@param rhs function
----@param opts? table
-local function amend(cond, mode, lhs, rhs, opts)
-	local map = get_map(mode, lhs)
-	local fallback = get_fallback(map)
-	local options = vim.deepcopy(opts) or {}
-	options.desc = table.concat({
-		"[" .. cond,
-		(options.desc and ": " .. options.desc or ""),
-		"]",
-		(map.desc and " / " .. map.desc or ""),
-	})
-	vim.keymap.set(mode, lhs, function()
-		rhs(fallback)
-	end, options)
-end
-
--- Completely replace a mapping
----@param mode string
----@param lhs string
----@param rhs string
----@param opts? table
----@param buf? boolean|number
-local function replace(mode, lhs, rhs, opts, buf)
-	get_map(mode, lhs)
-
-	local options = vim.deepcopy(opts) or {}
-	if buf and type(buf) == "number" then
-		options.buffer = buf
-	end
-	vim.keymap.set(mode, lhs, rhs, options)
-end
-
----Amend the existing keymap.
----@param cond string
----@param mode string | string[]
----@param lhs string
----@param rhs function
----@param opts? table
-local function modes_amend(cond, mode, lhs, rhs, opts)
-	if type(mode) == "table" then
-		for _, m in ipairs(mode) do
-			amend(cond, m, lhs, rhs, opts)
-		end
-	else
-		amend(cond, mode, lhs, rhs, opts)
-	end
-end
-
----Replace the existing keymap.
----@param mode string | string[]
----@param lhs string
----@param rhs string
----@param opts? table
----@param buf? boolean|number
-local function modes_replace(mode, lhs, rhs, opts, buf)
-	if type(mode) == "table" then
-		for _, m in ipairs(mode) do
-			replace(m, lhs, rhs, opts, buf)
-		end
-	else
-		replace(mode, lhs, rhs, opts, buf)
-	end
-end
-
----Amend the existing keymap.
----@param cond string
----@param global_flag string
----@param mapping table<string, map_rhs>
-function M.amend(cond, global_flag, mapping)
-	for key, value in pairs(mapping) do
-		local modes, keymap = key:match("([^|]*)|?(.*)")
-		if type(value) == "table" then
-			local rhs = value.cmd
-			local options = value.options
-			modes_amend(cond, vim.split(modes, ""), keymap, function(fallback)
-				if _G[global_flag] then
-					local fmode = options.noremap and "in" or "im"
-					vim.api.nvim_feedkeys(termcodes(rhs), fmode, false)
+---Amend an existing keymap with conditional behavior.
+---When `_G[global_flag]` is true, execute `rhs`; otherwise fall back to the original mapping.
+---@param cond string @Condition label for the description
+---@param global_flag string @Global variable name to check
+---@param mode string|string[] @Mode(s) for the keymap
+---@param lhs string @Left-hand side key sequence
+---@param rhs string|function @Right-hand side to execute when condition is met
+---@param opts? table @Additional keymap options
+function M.amend(cond, global_flag, mode, lhs, rhs, opts)
+	local modes = type(mode) == "table" and mode or { mode }
+	for _, m in ipairs(modes) do
+		local map = get_map(m, lhs)
+		local fallback = get_fallback(map)
+		local options = vim.deepcopy(opts) or {}
+		options.desc = table.concat({
+			"[" .. cond,
+			(options.desc and ": " .. options.desc or ""),
+			"]",
+			(map.desc and " / " .. map.desc or ""),
+		})
+		vim.keymap.set(m, lhs, function()
+			if _G[global_flag] then
+				if type(rhs) == "function" then
+					rhs()
 				else
-					fallback()
+					vim.api.nvim_feedkeys(termcodes(rhs), "in", false)
 				end
-			end, options)
-		end
+			else
+				fallback()
+			end
+		end, options)
 	end
 end
 
----Replace the existing keymap.
----@param mapping table<string, map_rhs>
-function M.replace(mapping)
-	for key, value in pairs(mapping) do
-		local modes, keymap = key:match("([^|]*)|?(.*)")
-		if type(value) == "table" then
-			local rhs = value.cmd
-			local options = value.options
-			local buffer = value.buffer
-			modes_replace(vim.split(modes, ""), keymap, rhs, options, buffer)
-		elseif value == "" or value == false then
-			for _, m in ipairs(vim.split(modes, "")) do
-				get_map(m, keymap)
+---Replace existing keymaps.
+---Each entry is a tuple: { mode, lhs, rhs, opts? }
+---Pass `false` as an entry to delete a mapping.
+---@param mappings table[] @List of { mode, lhs, rhs, opts? } tuples
+function M.replace(mappings)
+	for _, entry in ipairs(mappings) do
+		if type(entry) == "table" then
+			local mode, lhs, rhs, opts = entry[1], entry[2], entry[3], entry[4]
+			local modes = type(mode) == "table" and mode or { mode }
+			for _, m in ipairs(modes) do
+				get_map(m, lhs) -- remove existing mapping first
+			end
+			if rhs then
+				vim.keymap.set(mode, lhs, rhs, opts or {})
 			end
 		end
 	end
