@@ -71,16 +71,16 @@ _G._select_chat_model = function()
 	local action_state = require("telescope.actions.state")
 	local finder = require("telescope.finders")
 	local pickers = require("telescope.pickers")
-	local type = require("telescope.themes").get_dropdown()
+	local theme = require("telescope.themes").get_dropdown()
 	local conf = require("telescope.config").values
 	local models = require("core.settings").chat_models
 	local current_model = models[1]
 
 	pickers
-		.new(type, {
+		.new(theme, {
 			prompt_title = "(CodeCompanion) Select Model",
 			finder = finder.new_table({ results = models }),
-			sorter = conf.generic_sorter(type),
+			sorter = conf.generic_sorter(theme),
 			attach_mappings = function(bufnr)
 				actions.select_default:replace(function()
 					actions.close(bufnr)
@@ -157,26 +157,25 @@ _G._toggle_btop = function()
 end
 
 _G._toggle_python = function()
-	if vim.fn.executable("python3") == 1 then
-		if not toggleterm_cache.python then
-			toggleterm_cache.python = require("toggleterm.terminal").Terminal:new({
-				cmd = "python3",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
+	if not toggleterm_cache.python then
+		local cmd
+		if vim.fn.executable("python3") == 1 then
+			cmd = "python3"
 		elseif vim.fn.executable("python") == 1 then
-			toggleterm_cache.python = require("toggleterm.terminal").Terminal:new({
-				cmd = "python",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
+			cmd = "python"
 		end
-		toggleterm_cache:python()
-	else
-		not_found_notify("python3 or python")
+		if not cmd then
+			not_found_notify("python3 or python")
+			return
+		end
+		toggleterm_cache.python = require("toggleterm.terminal").Terminal:new({
+			cmd = cmd,
+			direction = "float",
+			close_on_exit = true,
+			hidden = true,
+		})
 	end
+	toggleterm_cache.python:toggle()
 end
 
 _G._toggle_nvsmi = function()
@@ -189,7 +188,7 @@ _G._toggle_nvsmi = function()
 				hidden = true,
 			})
 		end
-		toggleterm_cache.nvsmi()
+		toggleterm_cache.nvsmi:toggle()
 	else
 		not_found_notify("nvidia-smi")
 	end
