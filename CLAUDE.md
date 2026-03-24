@@ -30,26 +30,26 @@ mise run ruler
 ```
 lua/
 ├── core/                 # Core config (init, options, events, settings, pack)
-├── keymap/               # Keymaps organized by category (bind.lua = keymap DSL)
+├── keymap/               # Keymaps organized by category (native vim.keymap.set)
 └── modules/
     ├── plugins/          # lazy.nvim plugin specs (completion, editor, tool, ui, lang)
     ├── configs/          # Plugin configurations matching plugins/ structure
     │   └── completion/servers/  # Per-LSP server configurations
-    └── utils/            # Utilities (icons, color palette, config extension)
+    └── utils/            # Utilities (icons, color palette, config extension, keymap helpers)
 ```
 
 ### Plugin Organization
 
 - **Plugin specs**: `lua/modules/plugins/{category}.lua` - lazy.nvim format specs
 - **Plugin configs**: `lua/modules/configs/{category}/{plugin}.lua` - configuration functions
-- **Keymaps**: `lua/keymap/{category}.lua` - plugin keymaps using bind.lua DSL
+- **Keymaps**: `lua/keymap/{category}.lua` - plugin keymaps using native `vim.keymap.set`
 
 ### Key Files
 
 - `lua/core/settings.lua` - User-customizable settings (LSPs, formatters, DAPs, treesitter parsers, theme, etc.)
 - `lua/core/options.lua` - Neovim editor options
 - `lua/core/event.lua` - Autocommands
-- `lua/keymap/bind.lua` - Keymap helper class with chainable methods
+- `lua/modules/utils/keymap.lua` - Keymap utilities (amend/replace for conditional and user-override keymaps)
 
 ### User Customization
 
@@ -58,12 +58,20 @@ Optional `lua/user/` directory for personal overrides:
 - `lua/user/settings.lua` - Override settings
 - `lua/user/plugins/*.lua` - Additional plugin specs (merged automatically)
 - `lua/user/configs/*.lua` - Override plugin configs
+- `lua/user/keymap/init.lua` - Override keymaps (returns list of `{ mode, lhs, rhs, opts }` tuples)
+- `lua/user/keymap/completion.lua` - Override LSP keymaps (exports `M.lsp(buf)` function)
 
-### Keymap DSL (lua/keymap/bind.lua)
+### Keymaps (lua/keymap/)
+
+Uses native `vim.keymap.set` directly:
 
 ```lua
-["n|<leader>ps"] = map_cr("Lazy sync"):with_silent():with_noremap():with_desc("package: Sync")
--- map_cr(cmd) = command mode, map_cmd(cmd) = direct keys, map_callback(fn) = lua function
+local set = vim.keymap.set
+set("n", "<leader>ps", "<Cmd>Lazy sync<CR>", { silent = true, desc = "package: Sync" })
+set("n", "K", "<Cmd>Lspsaga hover_doc<CR>", { silent = true, buffer = buf, desc = "lsp: Show doc" })
+set({ "n", "v" }, "gra", function()
+    require("tiny-code-action").code_action({})
+end, { silent = true, buffer = buf, desc = "lsp: Code action" })
 ```
 
 ## Code Style
@@ -82,6 +90,7 @@ Optional `lua/user/` directory for personal overrides:
 
 ## Key Design Decisions
 
+- **snacks.nvim** as unified UI layer (notifier, bufdelete, scroll, bigfile, dashboard, indent, terminal, lazygit, quickfile)
 - **blink.cmp** as primary completion engine (over nvim-cmp)
 - **catppuccin** theme with custom fork for syntax highlighting
 - **Conditional search backend**: `settings.search_backend` = "telescope" or "fzf"

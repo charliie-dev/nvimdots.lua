@@ -116,7 +116,8 @@ function M.amend(cond, global_flag, mode, lhs, rhs, opts)
 				if type(rhs) == "function" then
 					rhs()
 				else
-					vim.api.nvim_feedkeys(termcodes(rhs), "in", false)
+					-- NOTE: "in" = noremap insert mode; assumes all amended rhs should be noremap
+				vim.api.nvim_feedkeys(termcodes(rhs), "in", false)
 				end
 			else
 				fallback()
