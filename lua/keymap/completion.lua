@@ -1,15 +1,9 @@
-local bind = require("keymap.bind")
-local map_cr = bind.map_cr
-local map_callback = bind.map_callback
+local set = vim.keymap.set
 local helpers = require("keymap.helpers")
 
-local mappings = {
-	fmt = {
-		["n|<A-f>"] = map_cr("FormatToggle"):with_noremap():with_silent():with_desc("formatter: Toggle format on save"),
-		["n|<A-S-f>"] = map_cr("Format"):with_noremap():with_silent():with_desc("formatter: Format buffer manually"),
-	},
-}
-bind.nvim_load_mapping(mappings.fmt)
+-- Formatter keymaps
+set("n", "<A-f>", "<Cmd>FormatToggle<CR>", { silent = true, desc = "formatter: Toggle format on save" })
+set("n", "<A-S-f>", "<Cmd>Format<CR>", { silent = true, desc = "formatter: Format buffer manually" })
 
 --- The following code allows this file to be exported ---
 ---    for use with LSP lazy-loaded keymap bindings    ---
@@ -18,89 +12,92 @@ local M = {}
 
 ---@param buf integer
 function M.lsp(buf)
-	local map = {
-		-- LSP-related keymaps, ONLY effective in buffers with LSP(s) attached
-		["n|<leader>li"] = map_cr("LspInfo"):with_silent():with_buffer(buf):with_desc("lsp: Info"),
-		["n|<leader>lr"] = map_cr("LspRestart"):with_silent():with_buffer(buf):with_nowait():with_desc("lsp: Restart"),
-		["n|go"] = map_cr("Trouble symbols toggle win.position=right")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Toggle outline"),
-		["n|gto"] = map_callback(function()
-				if require("core.settings").search_backend == "fzf" then
-					local prompt_position = require("telescope.config").values.layout_config.horizontal.prompt_position
-					require("fzf-lua").lsp_document_symbols({
-						fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
-					})
-				else
-					require("telescope.builtin").lsp_document_symbols()
-				end
-			end)
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Toggle outline in Telescope"),
-		["n|g["] = map_cr("Lspsaga diagnostic_jump_prev")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Prev diagnostic"),
-		["n|g]"] = map_cr("Lspsaga diagnostic_jump_next")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Next diagnostic"),
-		["n|<leader>lx"] = map_cr("Lspsaga show_line_diagnostics ++unfocus")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Line diagnostic"),
-		["n|gs"] = map_callback(function()
-			vim.lsp.buf.signature_help()
-		end):with_desc("lsp: Signature help"),
-		["n|gDC"] = map_callback(function()
-			vim.lsp.buf.declaration()
-		end):with_desc("lsp: Goto declaration"),
-		["n|gI"] = map_callback(function()
-			vim.lsp.buf.implementation()
-		end):with_desc("lsp: Goto implementation"),
-		["n|gT"] = map_callback(function()
-			vim.lsp.buf.type_definition()
-		end):with_desc("lsp: Goto type_definition"),
-		["n|grn"] = map_cr("Lspsaga rename")
-			:with_silent()
-			:with_nowait()
-			:with_buffer(buf)
-			:with_desc("lsp: Rename in file range"),
-		["n|grN"] = map_cr("Lspsaga rename ++project")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Rename in project range"),
-		["n|K"] = map_cr("Lspsaga hover_doc"):with_silent():with_buffer(buf):with_desc("lsp: Show doc"),
-		["nv|gra"] = map_callback(function()
-			require("tiny-code-action").code_action({})
-		end):with_silent():with_buffer(buf):with_desc("lsp: Code action for cursor"),
-		["n|gd"] = map_cr("Glance definitions"):with_silent():with_buffer(buf):with_desc("lsp: Preview definition"),
-		["n|gD"] = map_cr("Lspsaga goto_definition"):with_silent():with_buffer(buf):with_desc("lsp: Goto definition"),
-		["n|gh"] = map_cr("Glance references"):with_silent():with_buffer(buf):with_desc("lsp: Show reference"),
-		["n|gci"] = map_cr("Lspsaga incoming_calls")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Show incoming calls"),
-		["n|gco"] = map_cr("Lspsaga outgoing_calls")
-			:with_silent()
-			:with_buffer(buf)
-			:with_desc("lsp: Show outgoing calls"),
-		["n|<leader>lv"] = map_callback(function()
-				helpers.toggle_virtuallines()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("lsp: Toggle virtual lines"),
-		["n|<leader>lh"] = map_callback(function()
-				helpers.toggle_inlayhint()
-			end)
-			:with_noremap()
-			:with_silent()
-			:with_desc("lsp: Toggle inlay hints"),
-	}
-	bind.nvim_load_mapping(map)
+	-- LSP-related keymaps, ONLY effective in buffers with LSP(s) attached
+	set("n", "<leader>li", "<Cmd>LspInfo<CR>", { silent = true, buffer = buf, desc = "lsp: Info" })
+	set("n", "<leader>lr", "<Cmd>LspRestart<CR>", { silent = true, nowait = true, buffer = buf, desc = "lsp: Restart" })
+	set(
+		"n",
+		"go",
+		"<Cmd>Trouble symbols toggle win.position=right<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Toggle outline" }
+	)
+	set("n", "gto", function()
+		if require("core.settings").search_backend == "fzf" then
+			local prompt_position = require("telescope.config").values.layout_config.horizontal.prompt_position
+			require("fzf-lua").lsp_document_symbols({
+				fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
+			})
+		else
+			require("telescope.builtin").lsp_document_symbols()
+		end
+	end, { silent = true, buffer = buf, desc = "lsp: Toggle outline in Telescope" })
+	set(
+		"n",
+		"g[",
+		"<Cmd>Lspsaga diagnostic_jump_prev<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Prev diagnostic" }
+	)
+	set(
+		"n",
+		"g]",
+		"<Cmd>Lspsaga diagnostic_jump_next<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Next diagnostic" }
+	)
+	set(
+		"n",
+		"<leader>lx",
+		"<Cmd>Lspsaga show_line_diagnostics ++unfocus<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Line diagnostic" }
+	)
+	set("n", "gs", function()
+		vim.lsp.buf.signature_help()
+	end, { desc = "lsp: Signature help" })
+	set("n", "gDC", function()
+		vim.lsp.buf.declaration()
+	end, { desc = "lsp: Goto declaration" })
+	set("n", "gI", function()
+		vim.lsp.buf.implementation()
+	end, { desc = "lsp: Goto implementation" })
+	set("n", "gT", function()
+		vim.lsp.buf.type_definition()
+	end, { desc = "lsp: Goto type_definition" })
+	set(
+		"n",
+		"grn",
+		"<Cmd>Lspsaga rename<CR>",
+		{ silent = true, nowait = true, buffer = buf, desc = "lsp: Rename in file range" }
+	)
+	set(
+		"n",
+		"grN",
+		"<Cmd>Lspsaga rename ++project<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Rename in project range" }
+	)
+	set("n", "K", "<Cmd>Lspsaga hover_doc<CR>", { silent = true, buffer = buf, desc = "lsp: Show doc" })
+	set({ "n", "v" }, "gra", function()
+		require("tiny-code-action").code_action({})
+	end, { silent = true, buffer = buf, desc = "lsp: Code action for cursor" })
+	set("n", "gd", "<Cmd>Glance definitions<CR>", { silent = true, buffer = buf, desc = "lsp: Preview definition" })
+	set("n", "gD", "<Cmd>Lspsaga goto_definition<CR>", { silent = true, buffer = buf, desc = "lsp: Goto definition" })
+	set("n", "gh", "<Cmd>Glance references<CR>", { silent = true, buffer = buf, desc = "lsp: Show reference" })
+	set(
+		"n",
+		"gci",
+		"<Cmd>Lspsaga incoming_calls<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Show incoming calls" }
+	)
+	set(
+		"n",
+		"gco",
+		"<Cmd>Lspsaga outgoing_calls<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Show outgoing calls" }
+	)
+	set("n", "<leader>lv", function()
+		helpers.toggle_virtuallines()
+	end, { silent = true, desc = "lsp: Toggle virtual lines" })
+	set("n", "<leader>lh", function()
+		helpers.toggle_inlayhint()
+	end, { silent = true, desc = "lsp: Toggle inlay hints" })
 
 	local ok, user_mappings = pcall(require, "user.keymap.completion")
 	if ok and type(user_mappings.lsp) == "function" then
