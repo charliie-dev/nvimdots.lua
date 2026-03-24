@@ -11,6 +11,10 @@ return function()
 	local function clang_format_args()
 		local ok, args = pcall(require, "user.configs.formatters.clang_format")
 		if not ok then
+			-- Distinguish "not found" from "has errors"
+			if type(args) == "string" and not args:find("module .* not found") then
+				vim.notify("[Conform] Error loading user clang_format config: " .. args, vim.log.levels.ERROR)
+			end
 			args = require("completion.formatters.clang_format")
 		end
 		return args
@@ -42,6 +46,7 @@ return function()
 	local function format_modifications(bufnr)
 		local ok, gitsigns = pcall(require, "gitsigns")
 		if not ok then
+			vim.notify("[Conform] gitsigns unavailable, falling back to full-buffer format", vim.log.levels.WARN)
 			return false
 		end
 
@@ -51,12 +56,13 @@ return function()
 		end
 
 		-- Format hunks in reverse to avoid line offset issues
+		local has_error = false
 		for i = #hunks, 1, -1 do
 			local hunk = hunks[i]
 			if hunk.added and hunk.added.count > 0 then
 				local start_line = hunk.added.start
 				local end_line = start_line + hunk.added.count - 1
-				require("conform").format({
+				local ok_fmt, err = pcall(require("conform").format, {
 					bufnr = bufnr,
 					range = {
 						start = { start_line, 0 },
@@ -66,10 +72,18 @@ return function()
 					lsp_format = "fallback",
 					quiet = true,
 				})
+				if not ok_fmt then
+					has_error = true
+					vim.notify(
+						string.format("[Conform] Failed to format hunk at line %d: %s", start_line, err),
+						vim.log.levels.WARN,
+						{ title = "Conform" }
+					)
+				end
 			end
 		end
 
-		if format_notify then
+		if format_notify and not has_error then
 			vim.notify("[Conform] Formatted changed lines successfully!", vim.log.levels.INFO, { title = "Conform" })
 		end
 		return true

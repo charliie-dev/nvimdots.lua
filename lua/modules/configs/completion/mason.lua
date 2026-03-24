@@ -38,8 +38,22 @@ M.setup = function()
 
 	for _, pkg_name in ipairs(ensure_installed) do
 		local pkg_ok, pkg = pcall(registry.get_package, pkg_name)
-		if pkg_ok and not pkg:is_installed() then
-			pkg:install()
+		if not pkg_ok then
+			vim.notify(
+				string.format("[Mason] Package '%s' not found in registry", pkg_name),
+				vim.log.levels.WARN,
+				{ title = "Mason" }
+			)
+		elseif not pkg:is_installed() then
+			pkg:install():once("closed", function()
+				if not pkg:is_installed() then
+					vim.notify(
+						string.format("[Mason] Failed to install '%s'", pkg_name),
+						vim.log.levels.WARN,
+						{ title = "Mason" }
+					)
+				end
+			end)
 		end
 	end
 end

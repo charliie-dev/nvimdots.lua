@@ -112,7 +112,7 @@ function autocmd.load_autocmds()
 		vim.bo[event.buf].undofile = false
 	end
 
-	local ignored_fts = { dashboard = true, clap_ = true }
+	local ignored_fts = { snacks_dashboard = true, clap_ = true }
 	local function is_ignored_ft()
 		local ft = vim.bo.filetype
 		for ft_pattern in pairs(ignored_fts) do

@@ -2,23 +2,9 @@ local vim_path = require("core.global").vim_path
 local helpers = require("keymap.helpers")
 local set = vim.keymap.set
 
-local function et(keys)
-	return vim.api.nvim_replace_termcodes(keys, true, true, true)
-end
-
 -- Plugin: dial
-set("n", "<leader>=", function()
-	return et("<Plug>(dial-increment)")
-end, { expr = true })
-set("v", "<leader>=", function()
-	return et("<Plug>(dial-increment)")
-end, { expr = true })
-set("n", "<leader>-", function()
-	return et("<Plug>(dial-decrement)")
-end, { expr = true })
-set("v", "<leader>-", function()
-	return et("<Plug>(dial-decrement)")
-end, { expr = true })
+set({ "n", "v" }, "<leader>=", "<Plug>(dial-increment)", { desc = "edit: Increment" })
+set({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { desc = "edit: Decrement" })
 
 -- Plugin: vim-fugitive
 set("n", "gps", "<Cmd>G push<CR>", { silent = true, desc = "git: Push" })
