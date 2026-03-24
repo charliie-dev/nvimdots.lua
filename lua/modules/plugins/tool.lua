@@ -30,11 +30,6 @@ tool["Bekaboo/dropbar.nvim"] = {
 -- 	},
 -- 	config = require("tool.nvim-tree"),
 -- }
-tool["ibhagwan/smartyank.nvim"] = {
-	lazy = true,
-	event = "TextYankPost",
-	config = require("tool.smartyank"),
-}
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	-- If you see an error about a missing SnipRun executable,
