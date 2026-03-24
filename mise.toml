@@ -24,10 +24,3 @@ npm_config_cxxflags = "--std=c++20"
 [tasks.ruler]  # command: mise run ruler
 description = "Compile ruler to AGENTS.md"
 run = "bunx @intellectronica/ruler apply"
-
-# ==============================================================================
-#  Mermaid CLI (for snacks.image mermaid diagram rendering)
-# ==============================================================================
-[tasks.mmdc] # command: mise run mmdc -- <args>
-description = "Run mermaid-cli (mmdc) via bunx"
-run = "bunx @mermaid-js/mermaid-cli {{arg(name=\"args\", var=true)}}"
