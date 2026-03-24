@@ -10,9 +10,8 @@ ui["akinsho/bufferline.nvim"] = {
 	event = { "BufReadPre", "BufAdd", "BufNewFile" },
 	config = require("ui.bufferline"),
 }
-ui["Jint-lzxy/nvim"] = {
+ui["catppuccin/nvim"] = {
 	lazy = false,
-	branch = "refactor/syntax-highlighting",
 	name = "catppuccin",
 	config = require("ui.catppuccin"),
 }

@@ -12,7 +12,6 @@ return function()
 			percentage = 0.15,
 		},
 		transparent_background = transparent_background,
-		show_end_of_buffer = false, -- show the '~' characters after the end of buffers
 		term_colors = true,
 		compile_path = vim.fn.stdpath("cache") .. "/catppuccin",
 		styles = {
@@ -63,7 +62,7 @@ return function()
 				},
 			},
 			snacks = true,
-			nvimtree = true,
+			nvimtree = false,
 			rainbow_delimiters = true,
 			render_markdown = true,
 			semantic_tokens = true,
