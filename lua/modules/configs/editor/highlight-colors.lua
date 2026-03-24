@@ -10,11 +10,11 @@ return function()
 		enable_tailwind = false,
 		-- Exclude filetypes or buftypes from highlighting
 		exclude_filetypes = {
-			"alpha",
+			"snacks_dashboard",
 			"dap-repl",
 			"fugitive",
 			"git",
-			"notify",
+			"snacks_notif",
 			"oil",
 			"Outline",
 			"TelescopePrompt",

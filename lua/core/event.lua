@@ -6,7 +6,7 @@ vim.api.nvim_create_autocmd("FileType", {
 		"qf",
 		"help",
 		"man",
-		"notify",
+		"snacks_notif",
 		"nofile",
 		"terminal",
 		"prompt",
@@ -204,7 +204,7 @@ function autocmd.load_autocmds()
 			},
 			{
 				"FileType",
-				"alpha",
+				"snacks_dashboard",
 				function()
 					vim.wo.showtabline = 0
 				end,

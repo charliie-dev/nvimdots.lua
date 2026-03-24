@@ -19,7 +19,7 @@ return function()
 		follow_cwd = true,
 		use_git_branch = true,
 		should_save = function()
-			return vim.bo.filetype == "alpha" and false or true
+			return vim.bo.filetype == "snacks_dashboard" and false or true
 		end,
 	})
 end
