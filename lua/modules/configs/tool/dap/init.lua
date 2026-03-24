@@ -33,6 +33,8 @@ return function()
 	-- We need to override nvim-dap's default highlight groups, AFTER requiring nvim-dap for catppuccin.
 	vim.api.nvim_set_hl(0, "DapStopped", { fg = colors.green })
 
+	-- TODO: nvim-dap still uses vim.fn.sign_define (no new API yet).
+	-- Revisit when nvim-dap adopts vim.diagnostic.config-style signs.
 	vim.fn.sign_define(
 		"DapBreakpoint",
 		{ text = icons.dap.Breakpoint, texthl = "DapBreakpoint", linehl = "", numhl = "" }

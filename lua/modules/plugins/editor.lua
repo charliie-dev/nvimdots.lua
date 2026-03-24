@@ -5,14 +5,14 @@ local editor = {}
 -- 	event = "InsertEnter",
 -- 	config = require("editor.autoclose"),
 -- }
+editor["ojroques/nvim-bufdel"] = {
+	lazy = true,
+	cmd = { "BufDel", "BufDelAll", "BufDelOthers" },
+}
 editor["pteroctopus/faster.nvim"] = {
 	lazy = false,
 	cond = require("core.settings").load_big_files_faster,
 	config = require("editor.faster"),
-}
-editor["ojroques/nvim-bufdel"] = {
-	lazy = true,
-	cmd = { "BufDel", "BufDelAll", "BufDelOthers" },
 }
 -- editor["s1n7ax/nvim-comment-frame"] = {
 -- 	lazy = true,

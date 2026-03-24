@@ -28,18 +28,6 @@ settings["formatter_block_list"] = {
 	lua = false,
 }
 
--- Deprecated: conform.nvim uses `lsp_format = "fallback"` which makes this unnecessary.
--- Kept for backward compatibility with user overrides.
----@type table<string, boolean>
-settings["server_formatting_block_list"] = {
-	clangd = true,
-	jsonls = true,
-	lua_ls = true,
-	nil_ls = true,
-	ruff = false, -- set to false to enable ruff formatting
-	ts_ls = true,
-}
-
 -- Directories where formatting on save is disabled.
 -- NOTE: Strings may contain regular expressions (vim regex). |regexp|
 -- NOTE: Directories are automatically normalized using |vim.fs.normalize()|.

@@ -4,14 +4,6 @@ return function()
 
 	require("modules.utils").load_plugin("telescope", {
 		defaults = {
-			vimgrep_arguments = {
-				"rg",
-				"--no-heading",
-				"--with-filename",
-				"--line-number",
-				"--column",
-				"--smart-case",
-			},
 			initial_mode = "insert",
 			prompt_prefix = " " .. icons.ui.Telescope .. " ",
 			selection_caret = icons.ui.ChevronRight,
@@ -19,10 +11,8 @@ return function()
 			scroll_strategy = "limit",
 			results_title = false,
 			layout_strategy = "flex",
-			path_display = { "smart" }, -- absolute
+			path_display = { "smart" },
 			dynamic_preview_title = true,
-			selection_strategy = "reset",
-			color_devicons = true,
 			file_ignore_patterns = { ".git/", ".cache", "build/", "%.class", "%.pdf", "%.mkv", "%.mp4", "%.zip" },
 			layout_config = {
 				horizontal = {
@@ -35,12 +25,6 @@ return function()
 				height = 0.92,
 				preview_cutoff = 120,
 			},
-			file_previewer = require("telescope.previewers").vim_buffer_cat.new,
-			grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
-			qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-			file_sorter = require("telescope.sorters").get_fuzzy_file,
-			generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
-			buffer_previewer_maker = require("telescope.previewers").buffer_previewer_maker,
 		},
 		extensions = {
 			fzf = {
@@ -50,17 +34,8 @@ return function()
 				case_mode = "smart_case",
 			},
 			frecency = {
-				use_sqlite = false,
 				show_scores = true,
-				show_unindexed = true,
 				ignore_patterns = { "*.git/*", "*/tmp/*" },
-				disable_devicons = false,
-				workspaces = {
-					-- ["conf"] = "/home/my_username/.config",
-					-- ["data"] = "/home/my_username/.local/share",
-					-- ["project"] = "/home/my_username/projects",
-					-- ["wiki"] = "/home/my_username/wiki"
-				},
 			},
 			live_grep_args = {
 				auto_quoting = true, -- enable/disable auto-quoting
