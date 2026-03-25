@@ -53,13 +53,10 @@ lang["ranelpadon/python-copy-reference.vim"] = {
 	ft = "python",
 	cmd = { "PythonCopyReferenceDotted", "PythonCopyReferencePytest" },
 }
-lang["mtdl9/vim-log-highlighting"] = {
+lang["fei6409/log-highlight.nvim"] = {
 	lazy = true,
-	ft = {
-		"text",
-		"txt",
-		"log",
-	},
+	ft = "log",
+	opts = {},
 }
 
 return lang
