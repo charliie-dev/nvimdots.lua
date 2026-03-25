@@ -78,6 +78,18 @@ tool["aaronhallaert/advanced-git-search.nvim"] = {
 	},
 }
 
+-- tool["amitds1997/remote-nvim.nvim"] = {
+-- 	lazy = true,
+-- 	version = "*",
+-- 	cmd = { "RemoteStart", "RemoteStop", "RemoteInfo", "RemoteCleanup", "RemoteConfigDel", "RemoteLog" },
+-- 	dependencies = {
+-- 		"nvim-lua/plenary.nvim",
+-- 		"MunifTanjim/nui.nvim",
+-- 		"nvim-telescope/telescope.nvim",
+-- 	},
+-- 	config = true,
+-- }
+
 ----------------------------------------------------------------------
 --                           DAP Plugins                            --
 ----------------------------------------------------------------------
