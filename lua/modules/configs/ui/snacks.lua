@@ -150,8 +150,7 @@ return function()
 							mode = "search",
 							exclude = {
 								function(win)
-									return vim.bo[vim.api.nvim_win_get_buf(win)].filetype
-										~= "snacks_picker_list"
+									return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
 								end,
 							},
 						},
