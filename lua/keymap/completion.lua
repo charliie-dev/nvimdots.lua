@@ -65,7 +65,12 @@ function M.lsp(buf)
 	)
 	set("n", "K", "<Cmd>Lspsaga hover_doc<CR>", { silent = true, buffer = buf, desc = "lsp: Show doc" })
 	set({ "n", "v" }, "gra", "<Cmd>Lspsaga code_action<CR>", { silent = true, buffer = buf, desc = "lsp: Code action" })
-	set("n", "gd", "<Cmd>Lspsaga peek_definition<CR>", { silent = true, buffer = buf, desc = "lsp: Preview definition" })
+	set(
+		"n",
+		"gd",
+		"<Cmd>Lspsaga peek_definition<CR>",
+		{ silent = true, buffer = buf, desc = "lsp: Preview definition" }
+	)
 	set("n", "gD", "<Cmd>Lspsaga goto_definition<CR>", { silent = true, buffer = buf, desc = "lsp: Goto definition" })
 	set("n", "gh", function()
 		require("snacks").picker.lsp_references()
