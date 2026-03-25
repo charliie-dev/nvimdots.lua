@@ -27,22 +27,25 @@ return {
 						url = "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json",
 					},
 					{
-						name = "docker-compose",
-						description = "docker-compose YAML schema",
-						fileMatch = { "docker-compose*.{yml,yaml}", "compose*.{yml,yaml}" },
-						url = "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json",
-					},
-					{
-						name = "github-action",
-						description = "github-action YAML schema",
-						fileMatch = { ".github/workflows/*.{yml,yaml}" },
-						url = "https://json.schemastore.org/github-workflow.json",
-					},
-					{
 						name = "gh-dash config",
 						description = "gh-dash config YAML schema",
 						fileMatch = "*/gh-dash/config.yml",
 						url = "https://dlvdhr.github.io/gh-dash/configuration/gh-dash/schema.json",
+					},
+					{
+						name = "Traefik v3",
+						description = "Traefik v3 static configuration",
+						fileMatch = { "traefik.yml", "traefik.yaml" },
+						url = "https://www.schemastore.org/traefik-v3.json",
+					},
+				},
+				-- Override built-in Traefik v2 with v3
+				replace = {
+					["Traefik v2"] = {
+						name = "Traefik v3",
+						description = "Traefik v3 static configuration",
+						fileMatch = { "traefik.yml", "traefik.yaml" },
+						url = "https://www.schemastore.org/traefik-v3.json",
 					},
 				},
 			}),

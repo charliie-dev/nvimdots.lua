@@ -26,7 +26,7 @@ return function()
 		modes = {
 			search = { enabled = false },
 			-- options used when flash is activated through
-			-- `f`, `F`, `t`, `T`, `;` and `,` motions
+			-- `f`, `F`, `t`, `T` motions
 			char = {
 				enabled = true,
 				-- hide after jump when not using jump labels
@@ -38,6 +38,8 @@ return function()
 				-- When using jump labels, don't use these keys
 				-- This allows using those keys directly after the motion
 				label = { exclude = "hjkliardc" },
+				-- Remove `;` and `,` to let treesitter-textobjects handle repeat
+				keys = { "f", "F", "t", "T" },
 			},
 		},
 	})
