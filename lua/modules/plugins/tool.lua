@@ -1,5 +1,4 @@
 local tool = {}
-local settings = require("core.settings")
 
 tool["monaqa/dial.nvim"] = {
 	lazy = true,

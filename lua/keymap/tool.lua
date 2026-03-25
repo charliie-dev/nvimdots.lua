@@ -1,4 +1,3 @@
-local vim_path = require("core.global").vim_path
 local helpers = require("keymap.helpers")
 local set = vim.keymap.set
 
