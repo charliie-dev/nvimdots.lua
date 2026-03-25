@@ -129,10 +129,10 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			branch = "main",
 			config = require("editor.ts-textobjects"),
 		},
-		{
-			"andymass/vim-matchup",
-			init = require("editor.matchup"),
-		},
+		-- {
+		-- 	"andymass/vim-matchup",
+		-- 	init = require("editor.matchup"),
+		-- },
 		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.ts-autotag"),
