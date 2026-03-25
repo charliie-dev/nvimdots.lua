@@ -18,42 +18,28 @@ end
 M.telescope_collections = function(opts)
 	local tabs = require("search.tabs")
 	local collections = vim.tbl_keys(tabs.collections)
+	local actions = require("telescope.actions")
+	local state = require("telescope.actions.state")
+	local pickers = require("telescope.pickers")
+	local finders = require("telescope.finders")
+	local conf = require("telescope.config").values
 
-	if require("core.settings").search_backend == "fzf" then
-		require("fzf-lua").fzf_exec(collections, {
-			prompt = "Collections> ",
-			actions = {
-				["default"] = function(selected)
-					if selected and selected[1] then
-						require("search").open({ collection = selected[1] })
-					end
-				end,
-			},
+	opts = opts or {}
+	pickers
+		.new(opts, {
+			prompt_title = "Telescope Collections",
+			finder = finders.new_table({ results = collections }),
+			sorter = conf.generic_sorter(opts),
+			attach_mappings = function(bufnr)
+				actions.select_default:replace(function()
+					actions.close(bufnr)
+					local selection = state.get_selected_entry()
+					require("search").open({ collection = selection[1] })
+				end)
+				return true
+			end,
 		})
-	else
-		local actions = require("telescope.actions")
-		local state = require("telescope.actions.state")
-		local pickers = require("telescope.pickers")
-		local finders = require("telescope.finders")
-		local conf = require("telescope.config").values
-
-		opts = opts or {}
-		pickers
-			.new(opts, {
-				prompt_title = "Telescope Collections",
-				finder = finders.new_table({ results = collections }),
-				sorter = conf.generic_sorter(opts),
-				attach_mappings = function(bufnr)
-					actions.select_default:replace(function()
-						actions.close(bufnr)
-						local selection = state.get_selected_entry()
-						require("search").open({ collection = selection[1] })
-					end)
-					return true
-				end,
-			})
-			:find()
-	end
+		:find()
 end
 
 M.toggle_inlayhint = function()

@@ -111,11 +111,7 @@ set("n", "<C-p>", function()
 	helpers.command_panel()
 end, { silent = true, desc = "tool: Toggle command panel" })
 set("n", "<leader>fc", function()
-	if require("core.settings").search_backend == "fzf" then
-		helpers.telescope_collections()
-	else
-		helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
-	end
+	helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
 end, { silent = true, desc = "tool: Open search collections" })
 set("n", "<leader>ff", function()
 	require("search").open({ collection = "file" })
