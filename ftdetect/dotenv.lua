@@ -5,7 +5,8 @@ vim.filetype.add({
 	pattern = {
 		[".*"] = {
 			function(path)
-				if vim.fn.fnamemodify(path, ":t"):match("^%.env%.") then
+				local tail = path:match("[/\\]([^/\\]+)$") or path
+				if tail:match("^%.env%.") then
 					return "dotenv"
 				end
 			end,
