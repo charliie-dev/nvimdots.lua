@@ -1,17 +1,7 @@
 local M = {}
 
 M.command_panel = function()
-	if require("core.settings").search_backend == "fzf" then
-		require("fzf-lua").keymaps({
-			fzf_opts = { ["--layout"] = "reverse" },
-		})
-	else
-		require("telescope.builtin").keymaps({
-			lhs_filter = function(lhs)
-				return not string.find(lhs, "Þ")
-			end,
-		})
-	end
+	require("snacks").picker.keymaps()
 end
 
 M.flash_esc_or_noh = function()
