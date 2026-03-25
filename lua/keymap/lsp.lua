@@ -96,8 +96,8 @@ function M.lsp(buf)
 		helpers.toggle_inlayhint()
 	end, { silent = true, buffer = buf, desc = "lsp: Toggle inlay hints" })
 
-	-- User overrides (kept as "user.keymap.completion" for backward compatibility)
-	local ok, user_mappings = pcall(require, "user.keymap.completion")
+	-- User overrides
+	local ok, user_mappings = pcall(require, "user.keymap.lsp")
 	if ok and type(user_mappings.lsp) == "function" then
 		require("modules.utils.keymap").replace(user_mappings.lsp(buf))
 	end
