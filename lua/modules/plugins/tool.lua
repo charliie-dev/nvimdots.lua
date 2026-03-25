@@ -66,39 +66,19 @@ tool["mikavilpas/yazi.nvim"] = {
 	},
 }
 
-----------------------------------------------------------------------
---                        Telescope Plugins                         --
-----------------------------------------------------------------------
-tool["nvim-telescope/telescope.nvim"] = {
+tool["aaronhallaert/advanced-git-search.nvim"] = {
 	lazy = true,
-	cmd = "Telescope",
-	config = require("tool.telescope"),
+	cmd = { "AdvancedGitSearch" },
+	config = function()
+		require("advanced_git_search.snacks").setup({
+			diff_plugin = "diffview",
+			git_flags = { "-c", "delta.side-by-side=true" },
+			entry_default_author_or_date = "author",
+		})
+	end,
 	dependencies = {
-		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-tree/nvim-web-devicons" },
-		{ "LinArcX/telescope-env.nvim" },
-		{ "debugloop/telescope-undo.nvim" },
-		{ "nvim-telescope/telescope-frecency.nvim" },
-		{ "nvim-telescope/telescope-live-grep-args.nvim" },
-		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-		{
-			"ayamir/search.nvim",
-			config = require("tool.search"),
-		},
-		{
-			"DrKJeff16/project.nvim",
-			event = { "CursorHold", "CursorHoldI" },
-			config = require("tool.project"),
-		},
-		{
-			"aaronhallaert/advanced-git-search.nvim",
-			cmd = { "AdvancedGitSearch" },
-			dependencies = {
-				"tpope/vim-rhubarb",
-				"tpope/vim-fugitive",
-				"sindrets/diffview.nvim",
-			},
-		},
+		"tpope/vim-fugitive",
+		"sindrets/diffview.nvim",
 	},
 }
 

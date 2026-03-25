@@ -116,12 +116,6 @@ return function()
 					TroubleNormal = { bg = transparent_background and cp.none or cp.base },
 					TroubleNormalNC = { bg = transparent_background and cp.none or cp.base },
 
-					-- For telescope.nvim
-					TelescopeMatching = { fg = cp.lavender },
-					TelescopeResultsDiffAdd = { fg = cp.green },
-					TelescopeResultsDiffChange = { fg = cp.yellow },
-					TelescopeResultsDiffDelete = { fg = cp.red },
-
 					-- For treesitter
 					["@keyword.return"] = { fg = cp.pink, style = clear },
 					["@error.c"] = { fg = cp.none, style = clear },
