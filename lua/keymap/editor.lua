@@ -81,7 +81,6 @@ set("n", "<leader>ss", "<Cmd>SessionSave<CR>", { silent = true, desc = "session:
 set("n", "<leader>sl", "<Cmd>SessionLoad<CR>", { silent = true, desc = "session: Load current" })
 set("n", "<leader>sd", "<Cmd>SessionDelete<CR>", { silent = true, desc = "session: Delete" })
 
-
 --
 -- Plugin: diffview.nvim
 --
