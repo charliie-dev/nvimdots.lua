@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(event)
 		if not _G._debugging then
 			-- Remove Neovim 0.11 default LSP keymaps that conflict with our setup
-			-- grn/gra: we override with Lspsaga rename / tiny-code-action
+			-- grn/gra: we override with Lspsaga rename / Lspsaga code_action
 			-- <C-s> (insert): we use it for saving files
 			pcall(vim.keymap.del, "n", "grn", { buffer = event.buf })
 			pcall(vim.keymap.del, { "n", "v" }, "gra", { buffer = event.buf })
