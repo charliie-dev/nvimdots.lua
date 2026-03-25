@@ -134,9 +134,11 @@ function Lazy:load_lazy()
 				disabled_plugins = {
 					-- Do not load spell files
 					"spellfile",
-					-- Do not use builtin matchit.vim and matchparen.vim because we're using vim-matchup
 					"matchit",
 					"matchparen",
+					-- Do not load netrw (using oil.nvim instead)
+					"netrw",
+					"netrwPlugin",
 					-- Do not load tohtml.vim
 					"tohtml",
 					-- Do not load zipPlugin.vim, gzip.vim and tarPlugin.vim (all of these plugins are
