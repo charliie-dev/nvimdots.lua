@@ -15,6 +15,8 @@ set("n", "<leader>px", "<Cmd>Lazy clean<CR>", { silent = true, nowait = true, de
 -- Category-based keymaps
 require("keymap.viewport")
 require("keymap.edit")
+require("keymap.lsp")
+require("keymap.git")
 require("keymap.fuzzy")
 require("keymap.terminal")
 require("keymap.tool")
