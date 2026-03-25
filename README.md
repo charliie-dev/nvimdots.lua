@@ -93,12 +93,15 @@
     │   └── settings.lua           user-customizable settings
     ├── hm-generated.lua           home-manager generated config (NixOS)
     ├── keymap/                    keymaps organized by category
-    │   ├── init.lua               basic keymaps
-    │   ├── completion.lua         LSP keymaps
-    │   ├── editor.lua             editor plugin keymaps
-    │   ├── lang.lua               language-specific keymaps
-    │   ├── tool.lua               tool plugin keymaps
-    │   ├── ui.lua                 UI plugin keymaps
+    │   ├── init.lua               package keymaps + requires all categories
+    │   ├── viewport.lua           buffer, window, tab keymaps
+    │   ├── edit.lua               editing, motion, text objects, session
+    │   ├── lsp.lua                LSP, trouble, formatter keymaps
+    │   ├── git.lua                gitsigns, diffview, git picker
+    │   ├── fuzzy.lua              snacks.nvim picker keymaps
+    │   ├── debug.lua              DAP keymaps
+    │   ├── terminal.lua           terminal, TUI tools (lazygit, btop, yazi)
+    │   ├── tool.lua               overseer, sniprun, sidebar, markview
     │   └── helpers.lua            keymap helper functions
     └── modules/
         ├── plugins/               lazy.nvim plugin specs
