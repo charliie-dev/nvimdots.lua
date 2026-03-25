@@ -1,5 +1,6 @@
 local set = vim.keymap.set
 
+-- Plugin: nvim-dap
 set("n", "<F6>", function()
 	require("dap").continue()
 end, { silent = true, desc = "debug: Run/Continue" })

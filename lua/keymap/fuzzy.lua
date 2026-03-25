@@ -1,5 +1,6 @@
 local set = vim.keymap.set
 
+-- Plugin: snacks.nvim
 set("n", "<leader>ff", function()
 	require("snacks").picker.smart()
 end, { silent = true, desc = "find: Files" })

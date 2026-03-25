@@ -1,12 +1,12 @@
 local helpers = require("keymap.helpers")
 local set = vim.keymap.set
 
--- Command panel
+-- Plugin: snacks.nvim
 set("n", "<C-p>", function()
 	helpers.command_panel()
 end, { silent = true, desc = "tool: Command panel" })
 
--- Sidebar (edgy)
+-- Plugin: edgy.nvim
 set("n", "<C-n>", function()
 	local edgy_config = require("edgy.config")
 	local edgebar = edgy_config.layout and edgy_config.layout.left
@@ -28,17 +28,17 @@ set("n", "<C-n>", function()
 	end
 end, { silent = true, desc = "tool: Toggle sidebar" })
 
--- SnipRun
+-- Plugin: sniprun
 set("v", "<leader>r", "<Cmd>SnipRun<CR>", { silent = true, desc = "tool: Run code by range" })
 set("n", "<leader>r", "<Cmd>%SnipRun<CR>", { silent = true, desc = "tool: Run code by file" })
 
--- Overseer
+-- Plugin: overseer.nvim
 set("n", "<leader>or", "<Cmd>OverseerRun<CR>", { silent = true, desc = "tool: Overseer run" })
 set("n", "<leader>ot", "<Cmd>OverseerToggle<CR>", { silent = true, desc = "tool: Overseer toggle" })
 set("n", "<leader>oa", "<Cmd>OverseerQuickAction<CR>", { silent = true, desc = "tool: Overseer quick action" })
 set("n", "<leader>oi", "<Cmd>OverseerInfo<CR>", { silent = true, desc = "tool: Overseer info" })
 
--- Trouble (diagnostics quick access)
+-- Plugin: trouble.nvim
 set("n", "gt", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Toggle trouble list" })
 set("n", "<leader>lw", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Workspace diagnostics" })
 set(
@@ -54,8 +54,8 @@ set(
 	{ silent = true, desc = "lsp: Document diagnostics" }
 )
 
--- Markview
+-- Plugin: markview.nvim
 set("n", "<F1>", "<Cmd>Markview toggle<CR>", { silent = true, desc = "tool: Toggle markdown preview within nvim" })
 
--- MarkdownPreview
+-- Plugin: markdown-preview.nvim
 set("n", "<F12>", "<Cmd>MarkdownPreviewToggle<CR>", { silent = true, desc = "tool: Preview markdown" })

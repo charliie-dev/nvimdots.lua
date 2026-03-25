@@ -1,10 +1,10 @@
 local set = vim.keymap.set
 
--- Diffview
+-- Plugin: diffview.nvim
 set("n", "<leader>gd", "<Cmd>DiffviewOpen<CR>", { silent = true, desc = "git: Open diff" })
 set("n", "<leader>gD", "<Cmd>DiffviewClose<CR>", { silent = true, desc = "git: Close diff" })
 
--- Git picker (snacks)
+-- Plugin: snacks.nvim
 set("n", "<leader>gB", function()
 	require("snacks").picker.git_branches()
 end, { silent = true, desc = "git: Branches" })
@@ -14,6 +14,7 @@ end, { silent = true, desc = "git: Commits" })
 set("n", "<leader>gS", function()
 	require("snacks").picker.git_status()
 end, { silent = true, desc = "git: Status" })
+-- Plugin: advanced-git-search.nvim
 set("n", "<leader>gl", function()
 	require("advanced_git_search.snacks.pickers").search_log_content()
 end, { silent = true, desc = "git: Search log content" })

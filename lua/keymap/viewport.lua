@@ -1,10 +1,14 @@
 local set = vim.keymap.set
 
--- Buffer
+-- Builtin: Buffer
 set("n", "<leader>bn", "<Cmd>enew<CR>", { silent = true, desc = "buffer: New" })
+
+-- Plugin: snacks.nvim
 set("n", "<A-q>", function()
 	require("snacks").bufdelete()
 end, { silent = true, desc = "buffer: Close current" })
+
+-- Plugin: bufferline.nvim
 set("n", "<A-i>", "<Cmd>BufferLineCycleNext<CR>", { silent = true, desc = "buffer: Switch to next" })
 set("n", "<A-o>", "<Cmd>BufferLineCyclePrev<CR>", { silent = true, desc = "buffer: Switch to prev" })
 set("n", "<A-S-i>", "<Cmd>BufferLineMoveNext<CR>", { silent = true, desc = "buffer: Move current to next" })
@@ -21,29 +25,27 @@ set("n", "<A-7>", "<Cmd>BufferLineGoToBuffer 7<CR>", { silent = true, desc = "bu
 set("n", "<A-8>", "<Cmd>BufferLineGoToBuffer 8<CR>", { silent = true, desc = "buffer: Goto 8" })
 set("n", "<A-9>", "<Cmd>BufferLineGoToBuffer 9<CR>", { silent = true, desc = "buffer: Goto 9" })
 
--- Tab
+-- Builtin: Tab
 set("n", "tn", "<Cmd>tabnew<CR>", { silent = true, desc = "tab: New" })
 set("n", "tk", "<Cmd>tabnext<CR>", { silent = true, desc = "tab: Next" })
 set("n", "tj", "<Cmd>tabprevious<CR>", { silent = true, desc = "tab: Prev" })
 set("n", "to", "<Cmd>tabonly<CR>", { silent = true, desc = "tab: Only keep current" })
 
--- Window: focus (smart-splits)
-set("n", "<C-h>", "<Cmd>SmartCursorMoveLeft<CR>", { silent = true, desc = "window: Focus left" })
-set("n", "<C-j>", "<Cmd>SmartCursorMoveDown<CR>", { silent = true, desc = "window: Focus down" })
-set("n", "<C-k>", "<Cmd>SmartCursorMoveUp<CR>", { silent = true, desc = "window: Focus up" })
-set("n", "<C-l>", "<Cmd>SmartCursorMoveRight<CR>", { silent = true, desc = "window: Focus right" })
+-- Builtin: Window focus (terminal mode)
 set("t", "<C-w>h", "<Cmd>wincmd h<CR>", { silent = true, desc = "window: Focus left" })
 set("t", "<C-w>l", "<Cmd>wincmd l<CR>", { silent = true, desc = "window: Focus right" })
 set("t", "<C-w>j", "<Cmd>wincmd j<CR>", { silent = true, desc = "window: Focus down" })
 set("t", "<C-w>k", "<Cmd>wincmd k<CR>", { silent = true, desc = "window: Focus up" })
 
--- Window: resize (smart-splits)
+-- Plugin: smart-splits.nvim
+set("n", "<C-h>", "<Cmd>SmartCursorMoveLeft<CR>", { silent = true, desc = "window: Focus left" })
+set("n", "<C-j>", "<Cmd>SmartCursorMoveDown<CR>", { silent = true, desc = "window: Focus down" })
+set("n", "<C-k>", "<Cmd>SmartCursorMoveUp<CR>", { silent = true, desc = "window: Focus up" })
+set("n", "<C-l>", "<Cmd>SmartCursorMoveRight<CR>", { silent = true, desc = "window: Focus right" })
 set("n", "<A-h>", "<Cmd>SmartResizeLeft<CR>", { silent = true, desc = "window: Resize left" })
 set("n", "<A-j>", "<Cmd>SmartResizeDown<CR>", { silent = true, desc = "window: Resize down" })
 set("n", "<A-k>", "<Cmd>SmartResizeUp<CR>", { silent = true, desc = "window: Resize up" })
 set("n", "<A-l>", "<Cmd>SmartResizeRight<CR>", { silent = true, desc = "window: Resize right" })
-
--- Window: swap (smart-splits)
 set("n", "<leader>Wh", "<Cmd>SmartSwapLeft<CR>", { silent = true, desc = "window: Swap left" })
 set("n", "<leader>Wj", "<Cmd>SmartSwapDown<CR>", { silent = true, desc = "window: Swap down" })
 set("n", "<leader>Wk", "<Cmd>SmartSwapUp<CR>", { silent = true, desc = "window: Swap up" })

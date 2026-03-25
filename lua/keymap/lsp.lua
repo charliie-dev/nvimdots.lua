@@ -1,7 +1,7 @@
 local set = vim.keymap.set
 local helpers = require("keymap.helpers")
 
--- Formatter
+-- Plugin: conform.nvim
 set("n", "<A-f>", "<Cmd>FormatToggle<CR>", { silent = true, desc = "formatter: Toggle format on save" })
 set("n", "<A-S-f>", "<Cmd>Format<CR>", { silent = true, desc = "formatter: Format buffer manually" })
 

@@ -15,19 +15,19 @@ local ts_to_repeat_move = function()
 	return require("nvim-treesitter-textobjects.repeatable_move")
 end
 
--- Save & Quit
+-- Builtin: Save & Quit
 set("n", "<C-s>", "<Cmd>write<CR>", { silent = true, desc = "edit: Save file" })
 set("n", "<C-q>", "<Cmd>wq<CR>", { desc = "edit: Save file and quit" })
 set("n", "<A-S-q>", "<Cmd>q!<CR>", { desc = "edit: Force quit" })
 
--- Insert mode
+-- Builtin: Insert mode
 set("i", "<C-u>", "<C-G>u<C-U>", { desc = "edit: Delete previous block" })
 set("i", "<C-b>", "<Left>", { desc = "edit: Move cursor to left" })
 set("i", "<C-a>", "<ESC>^i", { desc = "edit: Move cursor to line start" })
 set("i", "<C-s>", "<Esc>:w<CR>", { desc = "edit: Save file" })
 set("i", "<C-q>", "<Esc>:wq<CR>", { desc = "edit: Save file and quit" })
 
--- Command mode
+-- Builtin: Command mode
 set("c", "<C-b>", "<Left>", { desc = "edit: Left" })
 set("c", "<C-f>", "<Right>", { desc = "edit: Right" })
 set("c", "<C-a>", "<Home>", { desc = "edit: Home" })
@@ -36,13 +36,13 @@ set("c", "<C-d>", "<Del>", { desc = "edit: Delete" })
 set("c", "<C-h>", "<BS>", { desc = "edit: Backspace" })
 set("c", "<C-t>", [[<C-R>=expand("%:p:h") . "/" <CR>]], { desc = "edit: Complete path of current file" })
 
--- Visual mode
+-- Builtin: Visual mode
 set("v", "J", ":m '>+1<CR>gv=gv", { desc = "edit: Move this line down" })
 set("v", "K", ":m '<-2<CR>gv=gv", { desc = "edit: Move this line up" })
 set("v", "<", "<gv", { desc = "edit: Decrease indent" })
 set("v", ">", ">gv", { desc = "edit: Increase indent" })
 
--- Suckless
+-- Builtin: Suckless
 set("n", "Y", "y$", { desc = "edit: Yank text to EOL" })
 set("n", "D", "d$", { desc = "edit: Delete text to EOL" })
 set("n", "n", "nzzzv", { desc = "edit: Next search result" })
