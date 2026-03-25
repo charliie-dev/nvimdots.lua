@@ -7,8 +7,6 @@ return function()
 		misc = require("modules.utils.icons").get("misc", true),
 	}
 
-	local use_fzf = require("core.settings").search_backend == "fzf"
-
 	require("modules.utils").load_plugin("snacks", {
 		bigfile = { enabled = true },
 		bufdelete = { enabled = true },
@@ -21,32 +19,32 @@ return function()
 						icon = icons.documents.Files,
 						key = "f",
 						desc = "Find file",
-						action = use_fzf and ":FzfLua files" or ":Telescope find_files",
+						action = ":lua require('snacks').picker.files()",
 					},
 					{ icon = icons.ui.NewFile, key = "e", desc = "New file", action = ":ene" },
 					{
 						icon = icons.git.Repo,
 						key = "p",
 						desc = "Find project",
-						action = ":Telescope projects",
+						action = ":lua require('snacks').picker.projects()",
 					},
 					{
 						icon = icons.ui.Sort,
 						key = "y",
 						desc = "File frecency",
-						action = ":Telescope frecency",
+						action = ":lua require('snacks').picker.smart()",
 					},
 					{
 						icon = icons.ui.History,
 						key = "r",
 						desc = "Recent files",
-						action = use_fzf and ":FzfLua oldfiles" or ":Telescope oldfiles",
+						action = ":lua require('snacks').picker.recent()",
 					},
 					{
 						icon = icons.ui.List,
 						key = "t",
 						desc = "Find text",
-						action = use_fzf and ":FzfLua live_grep" or ":Telescope live_grep",
+						action = ":lua require('snacks').picker.grep()",
 					},
 					{
 						icon = icons.ui.CloudDownload,
