@@ -100,15 +100,21 @@ set("n", "<leader>gD", "<Cmd>DiffviewClose<CR>", { silent = true, desc = "git: C
 --
 -- Plugin: flash
 --
--- set({"n","x","o"}, "s", function()
--- 	require("flash").jump()
--- end, { silent = true, desc = "edit: Flash search" })
--- set({"n","x","o"}, "S", function()
--- 	require("flash").treesitter()
--- end, { silent = true, desc = "edit: Flash Treesitter" })
--- set("c", "<C-s>", function()
--- 	require("flash").toggle()
--- end, { silent = true, desc = "editi: Flash Telescope" })
+set({ "n", "x", "o" }, "s", function()
+	require("flash").jump()
+end, { silent = true, desc = "edit: Flash jump" })
+set({ "n", "x", "o" }, "S", function()
+	require("flash").treesitter()
+end, { silent = true, desc = "edit: Flash Treesitter" })
+set("o", "r", function()
+	require("flash").remote()
+end, { silent = true, desc = "edit: Flash remote" })
+set({ "o", "x" }, "R", function()
+	require("flash").treesitter_search()
+end, { silent = true, desc = "edit: Flash Treesitter search" })
+set("c", "<C-s>", function()
+	require("flash").toggle()
+end, { silent = true, desc = "edit: Toggle Flash in search" })
 
 --- Plugin: mini.surround
 -- see `:help MiniSurround`
