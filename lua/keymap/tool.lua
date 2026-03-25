@@ -38,22 +38,6 @@ set("n", "<leader>ot", "<Cmd>OverseerToggle<CR>", { silent = true, desc = "tool:
 set("n", "<leader>oa", "<Cmd>OverseerQuickAction<CR>", { silent = true, desc = "tool: Overseer quick action" })
 set("n", "<leader>oi", "<Cmd>OverseerInfo<CR>", { silent = true, desc = "tool: Overseer info" })
 
--- Plugin: trouble.nvim
-set("n", "gt", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Toggle trouble list" })
-set("n", "<leader>lw", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Workspace diagnostics" })
-set(
-	"n",
-	"<leader>lp",
-	"<Cmd>Trouble project_diagnostics toggle<CR>",
-	{ silent = true, desc = "lsp: Project diagnostics" }
-)
-set(
-	"n",
-	"<leader>ld",
-	"<Cmd>Trouble diagnostics toggle filter.buf=0<CR>",
-	{ silent = true, desc = "lsp: Document diagnostics" }
-)
-
 -- Plugin: markview.nvim
 set("n", "<F1>", "<Cmd>Markview toggle<CR>", { silent = true, desc = "tool: Toggle markdown preview within nvim" })
 

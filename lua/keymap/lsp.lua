@@ -1,6 +1,22 @@
 local set = vim.keymap.set
 local helpers = require("keymap.helpers")
 
+-- Plugin: trouble.nvim
+set("n", "gt", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Toggle trouble list" })
+set("n", "<leader>lw", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Workspace diagnostics" })
+set(
+	"n",
+	"<leader>lp",
+	"<Cmd>Trouble project_diagnostics toggle<CR>",
+	{ silent = true, desc = "lsp: Project diagnostics" }
+)
+set(
+	"n",
+	"<leader>ld",
+	"<Cmd>Trouble diagnostics toggle filter.buf=0<CR>",
+	{ silent = true, desc = "lsp: Document diagnostics" }
+)
+
 -- Plugin: conform.nvim
 set("n", "<A-f>", "<Cmd>FormatToggle<CR>", { silent = true, desc = "formatter: Toggle format on save" })
 set("n", "<A-S-f>", "<Cmd>Format<CR>", { silent = true, desc = "formatter: Format buffer manually" })
@@ -80,7 +96,7 @@ function M.lsp(buf)
 		helpers.toggle_inlayhint()
 	end, { silent = true, buffer = buf, desc = "lsp: Toggle inlay hints" })
 
-	-- User overrides
+	-- User overrides (kept as "user.keymap.completion" for backward compatibility)
 	local ok, user_mappings = pcall(require, "user.keymap.completion")
 	if ok and type(user_mappings.lsp) == "function" then
 		require("modules.utils.keymap").replace(user_mappings.lsp(buf))
