@@ -55,14 +55,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	end,
 })
 
--- Create custom filetype for gitlab_ci_ls
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-	pattern = "*.gitlab-ci*.{yml,yaml}",
-	callback = function()
-		vim.bo.filetype = "yaml.gitlab"
-	end,
-})
-
 -- Start treesitter for installed parsers
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = require("core.settings").treesitter_deps,
