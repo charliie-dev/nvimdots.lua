@@ -64,7 +64,6 @@ return function()
 			markview = true,
 			overseer = true,
 			semantic_tokens = true,
-			telescope = { enabled = true, style = "nvchad" },
 			treesitter = true,
 			treesitter_context = true,
 			which_key = true,

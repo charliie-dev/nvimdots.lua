@@ -7,7 +7,6 @@ return function()
 		multiline_threshold = 20,
 		trim_scope = "outer",
 		mode = "cursor",
-		-- Ensure compatibility with Glance's preview window
 		zindex = 50,
 	})
 end

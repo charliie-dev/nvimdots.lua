@@ -148,9 +148,6 @@ function Lazy:load_lazy()
 					"tutor",
 					"zipPlugin",
 					-- Disable remote plugins
-					-- NOTE:
-					--  > Disabling rplugin.vim will make `wilder.nvim` complain about missing rplugins during :checkhealth,
-					--  > but since its config doesn't require python rtp (strictly), it's fine to ignore that for now.
 					"rplugin",
 				},
 			},
