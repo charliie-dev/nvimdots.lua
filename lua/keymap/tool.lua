@@ -41,5 +41,19 @@ set("n", "<leader>oi", "<Cmd>OverseerInfo<CR>", { silent = true, desc = "tool: O
 -- Plugin: markview.nvim
 set("n", "<F1>", "<Cmd>Markview toggle<CR>", { silent = true, desc = "tool: Toggle markdown preview within nvim" })
 
+-- Plugin: quicker.nvim
+set("n", "<leader>q", function()
+	require("quicker").toggle()
+end, { silent = true, desc = "tool: Toggle quickfix" })
+set("n", "<leader>Q", function()
+	require("quicker").toggle({ loclist = true })
+end, { silent = true, desc = "tool: Toggle loclist" })
+set("n", "<leader>qe", function()
+	require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+end, { silent = true, desc = "tool: Expand quickfix context" })
+set("n", "<leader>qc", function()
+	require("quicker").collapse()
+end, { silent = true, desc = "tool: Collapse quickfix context" })
+
 -- Plugin: markdown-preview.nvim
 set("n", "<F12>", "<Cmd>MarkdownPreviewToggle<CR>", { silent = true, desc = "tool: Preview markdown" })
