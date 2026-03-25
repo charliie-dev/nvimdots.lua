@@ -125,6 +125,12 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	config = require("editor.treesitter"),
 	dependencies = {
 		{
+			"Hdoc1509/gh-actions.nvim",
+			config = function()
+				require("gh-actions.tree-sitter").setup()
+			end,
+		},
+		{
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			branch = "main",
 			config = require("editor.ts-textobjects"),
