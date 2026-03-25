@@ -10,6 +10,7 @@ lua/hm-generated.lua
 .worktrees/
 
 # agent files
+.claude/
 AGENTS.md
 CLAUDE.md
 docs/superpowers
