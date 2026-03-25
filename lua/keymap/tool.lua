@@ -124,18 +124,7 @@ set("n", "<leader>fp", function()
 	require("search").open({ collection = "pattern" })
 end, { silent = true, desc = "tool: Find patterns" })
 set("v", "<leader>fs", function()
-	local is_config = vim.uv.cwd() == vim_path
-	if require("core.settings").search_backend == "fzf" then
-		require("fzf-lua").grep_project({
-			search = require("fzf-lua.utils").get_visual_selection(),
-			rg_opts = "--column --line-number --no-heading --color=always --smart-case"
-				.. (is_config and " --no-ignore --hidden --glob '!.git/*'" or ""),
-		})
-	else
-		require("telescope-live-grep-args.shortcuts").grep_visual_selection(
-			is_config and { additional_args = { "--no-ignore" } } or {}
-		)
-	end
+	require("snacks").picker.grep_word()
 end, { silent = true, desc = "tool: Find word under cursor" })
 set("n", "<leader>fg", function()
 	require("search").open({ collection = "git" })
@@ -147,11 +136,7 @@ set("n", "<leader>fm", function()
 	require("search").open({ collection = "misc" })
 end, { silent = true, desc = "tool: Miscellaneous" })
 set("n", "<leader>fr", function()
-	if require("core.settings").search_backend == "fzf" then
-		require("fzf-lua").resume()
-	else
-		require("telescope.builtin").resume()
-	end
+	require("snacks").picker.resume()
 end, { silent = true, desc = "tool: Resume last search" })
 
 -- Plugin: dap
