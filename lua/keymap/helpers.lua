@@ -15,35 +15,6 @@ M.flash_esc_or_noh = function()
 	end
 end
 
-M.persisted_sessions = function()
-	local config = require("persisted.config")
-	local sessions = require("persisted").list()
-	local items = {}
-	for _, session in ipairs(sessions) do
-		local file = session:sub(#config.save_dir + 1, -5)
-		local dir, branch = unpack(vim.split(file, "@@", { plain = true }))
-		dir = dir:gsub("%%", "/")
-		local name = vim.fn.fnamemodify(dir, ":p:~")
-		if branch then
-			name = name .. " (" .. branch .. ")"
-		end
-		items[#items + 1] = { text = name, file = session }
-	end
-	require("snacks").picker.pick({
-		title = "Sessions",
-		items = items,
-		format = function(item)
-			return { { item.text } }
-		end,
-		confirm = function(picker, item)
-			picker:close()
-			if item then
-				require("persisted").load({ session = item.file })
-			end
-		end,
-	})
-end
-
 M.toggle_inlayhint = function()
 	local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
 
