@@ -106,31 +106,60 @@ set(
 	{ silent = true, desc = "lsp: Show document diagnostics" }
 )
 
--- Plugin: telescope
+-- Plugin: snacks.picker
 set("n", "<C-p>", function()
 	helpers.command_panel()
 end, { silent = true, desc = "tool: Toggle command panel" })
-set("n", "<leader>fc", function()
-	helpers.telescope_collections(require("telescope.themes").get_dropdown({}))
-end, { silent = true, desc = "tool: Open search collections" })
+
+-- File
 set("n", "<leader>ff", function()
-	require("search").open({ collection = "file" })
-end, { silent = true, desc = "tool: Find files" })
+	require("snacks").picker.smart()
+end, { silent = true, desc = "tool: Find files (smart)" })
+set("n", "<leader>fb", function()
+	require("snacks").picker.buffers()
+end, { silent = true, desc = "tool: Find buffers" })
+
+-- Pattern
 set("n", "<leader>fp", function()
-	require("search").open({ collection = "pattern" })
-end, { silent = true, desc = "tool: Find patterns" })
+	require("snacks").picker.grep()
+end, { silent = true, desc = "tool: Live grep" })
 set("v", "<leader>fs", function()
 	require("snacks").picker.grep_word()
-end, { silent = true, desc = "tool: Find word under cursor" })
-set("n", "<leader>fg", function()
-	require("search").open({ collection = "git" })
-end, { silent = true, desc = "tool: Locate Git objects" })
-set("n", "<leader>fd", function()
-	require("search").open({ collection = "dossier" })
-end, { silent = true, desc = "tool: Retrieve dossiers" })
-set("n", "<leader>fm", function()
-	require("search").open({ collection = "misc" })
-end, { silent = true, desc = "tool: Miscellaneous" })
+end, { silent = true, desc = "tool: Grep visual selection" })
+
+-- Git
+set("n", "<leader>fgb", function()
+	require("snacks").picker.git_branches()
+end, { silent = true, desc = "tool: Git branches" })
+set("n", "<leader>fgc", function()
+	require("snacks").picker.git_log()
+end, { silent = true, desc = "tool: Git commits" })
+set("n", "<leader>fgs", function()
+	require("snacks").picker.git_status()
+end, { silent = true, desc = "tool: Git status" })
+set("n", "<leader>fgS", function()
+	require("advanced_git_search.snacks.pickers").search_log_content()
+end, { silent = true, desc = "tool: Git search log content" })
+set("n", "<leader>fgd", function()
+	require("advanced_git_search.snacks.pickers").diff_commit_file()
+end, { silent = true, desc = "tool: Git diff current file" })
+
+-- Dossier
+set("n", "<leader>fds", function()
+	helpers.persisted_sessions()
+end, { silent = true, desc = "tool: Find sessions" })
+set("n", "<leader>fdp", function()
+	require("snacks").picker.projects()
+end, { silent = true, desc = "tool: Find projects" })
+
+-- Misc
+set("n", "<leader>fmc", function()
+	require("snacks").picker.colorschemes()
+end, { silent = true, desc = "tool: Colorschemes" })
+set("n", "<leader>fmu", function()
+	require("snacks").picker.undo()
+end, { silent = true, desc = "tool: Undo history" })
+
 set("n", "<leader>fr", function()
 	require("snacks").picker.resume()
 end, { silent = true, desc = "tool: Resume last search" })
