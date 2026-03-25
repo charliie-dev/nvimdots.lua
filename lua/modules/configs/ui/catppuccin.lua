@@ -122,16 +122,6 @@ return function()
 					TelescopeResultsDiffChange = { fg = cp.yellow },
 					TelescopeResultsDiffDelete = { fg = cp.red },
 
-					-- For glance.nvim
-					GlanceWinBarFilename = { fg = cp.subtext1, style = { "bold" } },
-					GlanceWinBarFilepath = { fg = cp.subtext0, style = { "italic" } },
-					GlanceWinBarTitle = { fg = cp.teal, style = { "bold" } },
-					GlanceListCount = { fg = cp.lavender },
-					GlanceListFilepath = { link = "Comment" },
-					GlanceListFilename = { fg = cp.blue },
-					GlanceListMatch = { fg = cp.lavender, style = { "bold" } },
-					GlanceFoldIcon = { fg = cp.green },
-
 					-- For treesitter
 					["@keyword.return"] = { fg = cp.pink, style = clear },
 					["@error.c"] = { fg = cp.none, style = clear },
