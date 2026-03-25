@@ -122,7 +122,7 @@ local opts = {
 	},
 
 	sources = {
-		default = { "lazydev", "lsp", "path", "snippets", "buffer", "ripgrep" },
+		default = { "lazydev", "lsp", "path", "snippets", "buffer", "ripgrep", "env", "conventional_commits" },
 		providers = {
 			lazydev = {
 				module = "lazydev.integrations.blink",
@@ -153,6 +153,19 @@ local opts = {
 					end,
 					show_hidden_files_by_default = true,
 				},
+			},
+			conventional_commits = {
+				module = "blink-cmp-conventional-commits",
+				name = "Commits",
+				enabled = function()
+					return vim.bo.filetype == "gitcommit"
+				end,
+			},
+			env = {
+				module = "blink-cmp-env",
+				name = "Env",
+				score_offset = -5,
+				max_items = 5,
 			},
 			ripgrep = {
 				module = "blink-ripgrep",
