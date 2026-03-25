@@ -40,12 +40,7 @@ set("n", "<leader>oi", "<Cmd>OverseerInfo<CR>", { silent = true, desc = "tool: O
 
 -- Trouble (diagnostics quick access)
 set("n", "gt", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Toggle trouble list" })
-set(
-	"n",
-	"<leader>lw",
-	"<Cmd>Trouble diagnostics toggle<CR>",
-	{ silent = true, desc = "lsp: Workspace diagnostics" }
-)
+set("n", "<leader>lw", "<Cmd>Trouble diagnostics toggle<CR>", { silent = true, desc = "lsp: Workspace diagnostics" })
 set(
 	"n",
 	"<leader>lp",

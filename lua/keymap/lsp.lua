@@ -61,18 +61,8 @@ function M.lsp(buf)
 		"<Cmd>Lspsaga rename ++project<CR>",
 		{ silent = true, buffer = buf, desc = "lsp: Rename in project range" }
 	)
-	set(
-		"n",
-		"gci",
-		"<Cmd>Lspsaga incoming_calls<CR>",
-		{ silent = true, buffer = buf, desc = "lsp: Incoming calls" }
-	)
-	set(
-		"n",
-		"gco",
-		"<Cmd>Lspsaga outgoing_calls<CR>",
-		{ silent = true, buffer = buf, desc = "lsp: Outgoing calls" }
-	)
+	set("n", "gci", "<Cmd>Lspsaga incoming_calls<CR>", { silent = true, buffer = buf, desc = "lsp: Incoming calls" })
+	set("n", "gco", "<Cmd>Lspsaga outgoing_calls<CR>", { silent = true, buffer = buf, desc = "lsp: Outgoing calls" })
 
 	-- LSP settings
 	set("n", "<leader>li", "<Cmd>LspInfo<CR>", { silent = true, buffer = buf, desc = "lsp: Info" })
