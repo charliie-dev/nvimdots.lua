@@ -81,15 +81,6 @@ set("n", "<leader>ss", "<Cmd>SessionSave<CR>", { silent = true, desc = "session:
 set("n", "<leader>sl", "<Cmd>SessionLoad<CR>", { silent = true, desc = "session: Load current" })
 set("n", "<leader>sd", "<Cmd>SessionDelete<CR>", { silent = true, desc = "session: Delete" })
 
---
--- Plugin: comment-frame
---
-set("n", "<leader>cf", function()
-	require("nvim-comment-frame").add_comment()
-end, { desc = "edit: Add comment box around the texts" })
-set("n", "<leader>cF", function()
-	require("nvim-comment-frame").add_multiline_comment()
-end, { desc = "edit: Add comment box around multi lines of texts" })
 
 --
 -- Plugin: diffview.nvim

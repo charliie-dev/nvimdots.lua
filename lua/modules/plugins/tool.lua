@@ -24,7 +24,7 @@ tool["stevearc/oil.nvim"] = {
 tool["michaelb/sniprun"] = {
 	lazy = true,
 	-- If you see an error about a missing SnipRun executable,
-	-- run `bash ./install.sh` inside `~/.local/share/nvim/site/lazy/sniprun/`.
+	-- run `bash ./install.sh` inside `~/.local/share/nvim/lazy/sniprun/`.
 	build = "bash ./install.sh",
 	cmd = { "SnipRun", "SnipReset", "SnipInfo" },
 	config = require("tool.sniprun"),

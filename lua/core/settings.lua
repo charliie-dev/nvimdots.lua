@@ -80,8 +80,6 @@ settings["background"] = "dark"
 ---@type string
 settings["external_browser"] = "chrome-cli open"
 
--- Set the search backend here.
--- `telescope` is fine for most use cases.
 -- Set to false to disable LSP inlay hints.
 ---@type boolean
 settings["lsp_inlayhints"] = false
