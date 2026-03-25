@@ -22,7 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # Required to count the commits
+          fetch-depth: 1
 
       - name: Check if lockfile existed
         uses: andstor/file-existence-action@v3
@@ -61,7 +61,6 @@ jobs:
           fi
 
           # Join into a comma-separated string for downstream steps.
-          IFS=',' read -r -a _ <<< ""
           changed_csv="$(printf "%s," "${changed[@]}")"
           changed_csv="${changed_csv%,}"
 

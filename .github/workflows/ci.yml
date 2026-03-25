@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    paths:
+      - "lua/**"
+      - "stylua.toml"
+      - ".luacheckrc"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "lua/**"
+      - "stylua.toml"
+      - ".luacheckrc"
+      - ".github/workflows/ci.yml"
+
+jobs:
+  stylua:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check --config-path=stylua.toml .
+
+  luacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: lunarmodules/luacheck@v1
+        with:
+          args: .

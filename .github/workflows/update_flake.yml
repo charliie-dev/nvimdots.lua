@@ -51,7 +51,6 @@ jobs:
           fi
 
           # Join into a comma-separated string for downstream steps.
-          IFS=',' read -r -a _ <<< ""
           changed_csv="$(printf "%s," "${changed[@]}")"
           changed_csv="${changed_csv%,}"
 
