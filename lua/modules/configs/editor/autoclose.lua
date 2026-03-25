@@ -29,7 +29,6 @@ return function()
 				"qf",
 				"snacks_dashboard",
 				"snacks_terminal",
-				"TelescopePrompt",
 				"undotree",
 				"vimwiki",
 			},

@@ -97,7 +97,6 @@ return function()
 					Outline = true,
 					qf = true,
 					snacks_dashboard = true,
-					TelescopePrompt = true,
 					text = true,
 					undotree = true,
 					vimwiki = true,

@@ -42,7 +42,6 @@ return function()
 				"oil",
 				"Outline",
 				"qf",
-				"TelescopePrompt",
 				"terminal",
 				"snacks_terminal",
 				"undotree",

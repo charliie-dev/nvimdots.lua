@@ -16,7 +16,6 @@ return function()
 			"notify",
 			"snacks_notif",
 			"oil",
-			"TelescopePrompt",
 			"terminal",
 			"snacks_terminal",
 			"undotree",

@@ -18,7 +18,6 @@ return function()
 			"snacks_notif",
 			"oil",
 			"Outline",
-			"TelescopePrompt",
 			"snacks_terminal",
 			"undotree",
 		},
