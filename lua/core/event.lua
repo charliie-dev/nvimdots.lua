@@ -47,6 +47,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+-- Force dotenv filetype for .env.* files (overrides legacy filetypedetect)
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = ".env.*",
+	callback = function()
+		vim.bo.filetype = "dotenv"
+	end,
+})
+
 -- Create custom filetype for gitlab_ci_ls
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = "*.gitlab-ci*.{yml,yaml}",
