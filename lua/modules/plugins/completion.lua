@@ -17,11 +17,6 @@ completion["nvimdev/lspsaga.nvim"] = {
 	config = require("completion.lspsaga"),
 	dependencies = "nvim-tree/nvim-web-devicons",
 }
-completion["dnlhc/glance.nvim"] = {
-	lazy = true,
-	event = "LspAttach",
-	config = require("completion.glance"),
-}
 completion["rachartier/tiny-inline-diagnostic.nvim"] = {
 	lazy = false,
 	config = require("completion.tiny-inline-diagnostic"),
@@ -36,14 +31,6 @@ completion["mfussenegger/nvim-lint"] = {
 	lazy = true,
 	event = { "BufWritePost", "BufReadPost" },
 	config = require("completion.nvim-lint"),
-}
-completion["rachartier/tiny-code-action.nvim"] = {
-	lazy = true,
-	event = "LspAttach",
-	config = require("completion.tiny-code-action"),
-	dependencies = {
-		{ "nvim-lua/plenary.nvim" },
-	},
 }
 
 completion["Saghen/blink.cmp"] = {

@@ -136,7 +136,7 @@ return function()
 		dim = { enabled = false },
 		explorer = { enabled = false },
 		input = { enabled = false },
-		picker = { enabled = false },
+		picker = { enabled = true },
 		scope = { enabled = false },
 		statuscolumn = { enabled = false },
 		toggle = { enabled = false },

@@ -22,16 +22,8 @@ function M.lsp(buf)
 		{ silent = true, buffer = buf, desc = "lsp: Toggle outline" }
 	)
 	set("n", "gto", function()
-		if require("core.settings").search_backend == "fzf" then
-			local ok, tconf = pcall(require, "telescope.config")
-			local prompt_position = ok and tconf.values.layout_config.horizontal.prompt_position or "top"
-			require("fzf-lua").lsp_document_symbols({
-				fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
-			})
-		else
-			require("telescope.builtin").lsp_document_symbols()
-		end
-	end, { silent = true, buffer = buf, desc = "lsp: Toggle outline in Telescope" })
+		require("snacks").picker.lsp_symbols()
+	end, { silent = true, buffer = buf, desc = "lsp: Document symbols" })
 	set(
 		"n",
 		"g[",
@@ -75,12 +67,15 @@ function M.lsp(buf)
 		{ silent = true, buffer = buf, desc = "lsp: Rename in project range" }
 	)
 	set("n", "K", "<Cmd>Lspsaga hover_doc<CR>", { silent = true, buffer = buf, desc = "lsp: Show doc" })
-	set({ "n", "v" }, "gra", function()
-		require("tiny-code-action").code_action({})
-	end, { silent = true, buffer = buf, desc = "lsp: Code action for cursor" })
-	set("n", "gd", "<Cmd>Glance definitions<CR>", { silent = true, buffer = buf, desc = "lsp: Preview definition" })
+	set({ "n", "v" }, "gra", "<Cmd>Lspsaga code_action<CR>", { silent = true, buffer = buf, desc = "lsp: Code action" })
+	set("n", "gd", "<Cmd>Lspsaga peek_definition<CR>", { silent = true, buffer = buf, desc = "lsp: Preview definition" })
 	set("n", "gD", "<Cmd>Lspsaga goto_definition<CR>", { silent = true, buffer = buf, desc = "lsp: Goto definition" })
-	set("n", "gh", "<Cmd>Glance references<CR>", { silent = true, buffer = buf, desc = "lsp: Show reference" })
+	set("n", "gh", function()
+		require("snacks").picker.lsp_references()
+	end, { silent = true, buffer = buf, desc = "lsp: Show reference" })
+	set("n", "gm", function()
+		require("snacks").picker.lsp_implementations()
+	end, { silent = true, buffer = buf, desc = "lsp: Show implementation" })
 	set(
 		"n",
 		"gci",
