@@ -12,12 +12,13 @@ set("n", "<leader>pp", "<Cmd>Lazy profile<CR>", { silent = true, nowait = true, 
 set("n", "<leader>pr", "<Cmd>Lazy restore<CR>", { silent = true, nowait = true, desc = "package: Restore" })
 set("n", "<leader>px", "<Cmd>Lazy clean<CR>", { silent = true, nowait = true, desc = "package: Clean" })
 
--- Builtin & Plugin keymaps
-require("keymap.completion")
-require("keymap.editor")
-require("keymap.lang")
+-- Category-based keymaps
+require("keymap.viewport")
+require("keymap.edit")
+require("keymap.fuzzy")
+require("keymap.terminal")
 require("keymap.tool")
-require("keymap.ui")
+require("keymap.debug")
 
 -- User keymaps
 local ok, def = pcall(require, "user.keymap.init")
