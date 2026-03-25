@@ -57,14 +57,6 @@ tool["folke/which-key.nvim"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("tool.which-key"),
 }
--- Needs `fzf` installed and in $PATH
-tool["ibhagwan/fzf-lua"] = {
-	lazy = true,
-	cond = (settings.search_backend == "fzf"),
-	cmd = "FzfLua",
-	config = require("tool.fzf-lua"),
-	dependencies = { "nvim-tree/nvim-web-devicons" },
-}
 tool["mikavilpas/yazi.nvim"] = {
 	version = "*",
 	lazy = true,
