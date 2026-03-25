@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Hold off on configuring anything related to the LSP until LspAttach
-local mapping = require("keymap.completion")
+local mapping = require("keymap.lsp")
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)

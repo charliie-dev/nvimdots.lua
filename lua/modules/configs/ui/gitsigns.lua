@@ -1,5 +1,5 @@
 return function()
-	local mapping = require("keymap.ui")
+	local mapping = require("keymap.git")
 	require("modules.utils").load_plugin("gitsigns", {
 		signs = {
 			add = { text = "┃" },
