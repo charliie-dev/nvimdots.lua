@@ -35,7 +35,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/179f9fe1-0db6-4b2c-8f21-c54766f6499b"
+  <img src="https://github.com/user-attachments/assets/51954da1-150d-46d2-8552-406a1bd555ff"
   width = "90%"
   />
 </p>
@@ -48,12 +48,10 @@
 
 ## 🎐 Intro
 
-- **⚡BLAZINGLY FAST** startup time in ~60ms. (Tested on M3 Pro MacBooks)
+- **⚡BLAZINGLY FAST** startup time in ~40ms. (Tested on M3 Pro MacBooks)
 - Well structured in `Lua`.
 - Easy to customize.
-- Automized [installation scripts](https://github.com/CharlesChiuGit/nvimdots.lua/blob/main/scripts/setup_config.sh), written in `bash`.
 - Use [lazy.nvim](https://github.com/folke/lazy.nvim) as plugin manager.
-- Use [blink.cmp](https://github.com/Saghen/blink.cmp) as primary completion engine.
 - Aligned icons across every plugin!
 
 ## 🧱 Structure
@@ -70,12 +68,8 @@
 │   └── queries/                   custom treesitter queries
 │       ├── bash/injections.scm    bash injection queries
 │       └── toml/injections.scm    toml injection queries
-├── fonts/                         nerdfonts
 ├── nixos/                         NixOS/home-manager integration
 ├── scripts/
-│   ├── nvim_up.sh                 script for upgrade to neovim nightly
-│   ├── setup_config.sh            script for installing dependencies for plugins
-│   ├── update_config.sh           script for fetch new commits of this repo
 │   └── update_lockfile.sh         script for updating lazy-lock.json
 ├── snips/
 │   ├── package.json               how LuaSnip reads snippets, vscode-style
@@ -129,71 +123,47 @@
             └── dap.lua            DAP utilities
 ```
 
-NOTE: You can rename/create folders inside `modules/plugins`, but **ALWAYS** remember to add a `plugins.lua` in it to register your plugins.
+## ⚙️ Installation
+
+### Native (git clone)
+
+```bash
+# Back up existing config (if any)
+mv ~/.config/nvim ~/.config/nvim.backup
+
+# Clone the repository
+git clone https://github.com/CharlesChiuGit/nvimdots.git ~/.config/nvim
+
+# Launch Neovim — plugins will be installed automatically on first run
+nvim
+```
+
+For prerequisites and dependencies, see [Wiki: Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite).
+
+### Nix (via home-manager)
+
+This config ships with a `flake.nix` for reproducible setup. Add it to your home-manager configuration:
+
+```nix
+{
+  inputs.nvimdots.url = "github:CharlesChiuGit/nvimdots";
+
+  # In your home-manager module:
+  programs.neovim = {
+    enable = true;
+    package = inputs.nvimdots.packages.${system}.default;
+  };
+}
+```
+
+See `nixos/` and `flake.nix` for details.
 
 ## ⚙️ Configuration & Usage
 
-<h3 align="center">
-    🎩 Suit up
-</h3>
-
-<p align="center">
-<p align="center">Follow <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite" rel="nofollow">Wiki: Prerequisite</a> and get yourself a cup of coffee ☕</p>
-<br>
-
-<h3 align="center">
-    🧑‍🍳 Cook it
-</h3>
-<p align="center">Follow <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/Usage" rel="nofollow">Wiki: Usage</a> to spice it into your own flavor (WIP)</p>
-<br>
-
-<h3 align="center">
-    🛠️ Toolbox
-</h3>
-<p align="center">Lists of <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins" rel="nofollow">Wiki: Installed Plugins (WIP)</a></p>
-<br>
-
-<h3 align="center">
-    🤔 FAQ
-</h3>
-<p align="center">Refer to <a href="https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ" rel="nofollow">Wiki: FAQ (WIP)</a></p>
-<br>
-
-<h3 align="center">
-    ⏱️ Startup Time
-</h3>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/startuptime.png"
-  width = "70%"
-  />
-</p>
-
-Tested with [dstein64/vim-startuptime](https://github.com/dstein64/vim-startuptime) plugin.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/CharlesChiuGit/nvimdots/main/.github/images/vim-startup.png"
-  width = "60%"
-  />
-</p>
-
-Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a CLI tool written in `Go`.
-
-<h3 align="center">
-    📸 Script Screenshots
-</h3>
-
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/32497323/203708095-30ac0243-dcdb-432a-8aff-4d10091422d2.png"
-  width = "85%"
-  />
-</p>
-
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/32497323/203711193-e6bf484c-ba25-4ed7-8e31-afe55442a6ac.png"
-  width = "85%"
-  />
-</p>
+- [Wiki: Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) — dependencies and setup
+- [Wiki: Usage](https://github.com/CharlesChiuGit/nvimdots/wiki/Usage) — customization guide
+- [Wiki: Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins) — full plugin list
+- [Wiki: FAQ](https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ) — frequently asked questions
 
 ## 🪨 Materials
 
@@ -232,11 +202,10 @@ Tested with [rhysd/vim-startuptime](https://github.com/rhysd/vim-startuptime), a
 
 ### Trendy neovim news
 
-- [This Week In Neovim, aka TWiN](https://this-week-in-neovim.org/), ~~highly recommended~~, Archived
-- [This Week In Neovim, hosted by dotfly.com](https://dotfyle.com/this-week-in-neovim)
+- [This Week In Neovim, hosted by dotfyle.com](https://dotfyle.com/this-week-in-neovim)
 - [Reddit/neovim](https://www.reddit.com/r/neovim/)
-- [Twitter/neovim](https://twitter.com/Neovim)
-- [Neovim Official News](https://neovim.io/news/), not so up-to-date
+- [X/neovim](https://x.com/Neovim)
+- [Neovim Official News](https://neovim.io/news/)
 
 # 🎉 Acknowledgment
 
