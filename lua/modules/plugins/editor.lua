@@ -124,7 +124,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	-- event = "BufReadPre",
 	config = require("editor.treesitter"),
 	dependencies = {
-		{ "calops/hmts.nvim", version = "*", ft = "nix" },
+		{ "charliie-dev/hmts.nvim", branch = "combined-fixes", ft = "nix" },
 		{
 			"Hdoc1509/gh-actions.nvim",
 			config = function()
