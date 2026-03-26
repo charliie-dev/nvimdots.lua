@@ -65,6 +65,7 @@
   "smart-splits.nvim": { "branch": "master", "commit": "96afd5d3b029ac354aaa369fb33b4613a0bbf2f0" },
   "snacks.nvim": { "branch": "main", "commit": "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e" },
   "sniprun": { "branch": "master", "commit": "973acfe83cff35d13b95369a5606c47565b824fb" },
+  "sops.nvim": { "branch": "main", "commit": "5946285744ffef26b792839d9130135365bfa8ea" },
   "suda.vim": { "branch": "master", "commit": "c492741b4679b3cdd4d9e34138209784e061d916" },
   "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "ba133b3e932416e4b9507095731a6d7276878fe8" },
   "todo-comments.nvim": { "branch": "main", "commit": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668" },
