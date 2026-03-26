@@ -117,4 +117,8 @@ tool["mfussenegger/nvim-dap"] = {
 	},
 }
 
+tool["trixnz/sops.nvim"] = {
+	lazy = false,
+}
+
 return tool
