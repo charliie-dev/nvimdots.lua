@@ -1,1 +1,5 @@
 std = "vim"
+
+[lints]
+global_usage = "allow"
+mixed_table = "allow"

@@ -1,24 +1,22 @@
 [tools]
 # Lua formatter
 stylua = "latest"
+
+# Lua linter
+"aqua:Kampfkarren/selene" = "latest"
+
 # Treesitter CLI (required by nvim-treesitter for parser compilation)
 tree-sitter = "latest"
 
 # ------------------------------------------------------------------------------
-
-# ref: https://mise.jdx.dev/environments/
 [env]
 # Add mise-managed tools to PATH so Neovim can find them (e.g., tree-sitter, stylua)
 _.path = ["~/.local/share/mise/shims"]
 
 # ------------------------------------------------------------------------------
-
-# ref: https://mise.jdx.dev/tasks/
-
 # ==============================================================================
 #  Compile Ruler
 # ==============================================================================
 [tasks.ruler]  # command: mise run ruler
 description = "Compile ruler to AGENTS.md"
 run = "bunx @intellectronica/ruler apply"
-
