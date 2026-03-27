@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/gopls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/gopls.lua
 local mod_cache = nil
 
 ---@param fname string

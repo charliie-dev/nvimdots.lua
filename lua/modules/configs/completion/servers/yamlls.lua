@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/yamlls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/yamlls.lua
 return {
 	single_file_support = true,
 	debounce_text_changes = 150,

@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/jsonls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/jsonls.lua
 return {
 	flags = { debounce_text_changes = 500 },
 	settings = {

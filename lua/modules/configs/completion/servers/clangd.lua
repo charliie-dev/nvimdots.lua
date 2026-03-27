@@ -60,7 +60,7 @@ local function get_binary_path_list(binaries)
 	return table.concat(path_list, ",")
 end
 
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/clangd.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/clangd.lua
 return function(defaults)
 	vim.lsp.config("clangd", {
 		capabilities = vim.tbl_deep_extend("keep", { offsetEncoding = { "utf-16", "utf-8" } }, defaults.capabilities),

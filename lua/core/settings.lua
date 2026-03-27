@@ -95,7 +95,7 @@ settings["external_lsp_deps"] = {
 }
 
 -- LSPs to install during bootstrap.
--- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/configs
+-- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lsp
 ---@type string[]
 settings["lsp_deps"] = {
 	"bashls",

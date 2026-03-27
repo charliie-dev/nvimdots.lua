@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/nixd.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/nixd.lua
 return {
 	cmd = {
 		"nixd",

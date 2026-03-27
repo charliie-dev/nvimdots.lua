@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/lua_ls.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/lua_ls.lua
 return {
 	settings = {
 		Lua = {

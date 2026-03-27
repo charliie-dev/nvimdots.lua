@@ -1,4 +1,4 @@
--- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/tflint.lua
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/tflint.lua
 return {
 	cmd = { "tflint", "--langserver" },
 	filetypes = { "terraform" },
