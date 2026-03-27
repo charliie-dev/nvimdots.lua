@@ -139,7 +139,9 @@ settings["formatter_deps"] = {
 settings["linter_deps"] = {
 	"actionlint",
 	"hadolint",
+	"markdownlint-cli2",
 	"oxlint",
+	-- "rumdl", -- markdownlint Rust rewrite; waiting for rule coverage to mature
 	"shellcheck",
 	"systemdlint",
 }

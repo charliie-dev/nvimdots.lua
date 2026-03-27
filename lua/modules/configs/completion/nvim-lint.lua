@@ -3,6 +3,7 @@ return function()
 
 	lint.linters_by_ft = {
 		dockerfile = { "hadolint" },
+		markdown = { "markdownlint-cli2" },
 		javascript = { "oxlint" },
 		javascriptreact = { "oxlint" },
 		nix = { "deadnix", "statix" },

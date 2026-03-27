@@ -1,0 +1,55 @@
+# https://github.com/DavidAnson/markdownlint/blob/main/schema/.markdownlint.yaml
+
+# MD003 - Heading style
+heading-style:
+  style: "atx"
+
+# MD004 - Unordered list style
+ul-style:
+  style: "dash"
+
+# MD007 - Unordered list indentation
+ul-indent:
+  indent: 2
+
+# MD010 - Hard tabs
+no-hard-tabs:
+  code_blocks: false # allow tabs in code blocks
+
+# MD013 - Line length
+line-length: false # handled by prettierd
+
+# MD024 - Multiple headings with the same content
+no-duplicate-heading:
+  siblings_only: true # allow same heading in different sections
+
+# MD033 - Inline HTML
+no-inline-html: false # allow HTML in markdown
+
+# MD034 - Bare URL
+no-bare-urls: false # common in technical docs
+
+# MD036 - Emphasis used instead of a heading
+no-emphasis-as-heading: false
+
+# MD041 - First line in a file should be a top-level heading
+first-line-heading: false # not all files start with headings
+
+# MD047 - Files should end with a single newline character
+single-trailing-newline: false # handled by editor settings
+
+# MD046 - Code block style
+code-block-style:
+  style: "fenced"
+
+# MD048 - Code fence style
+code-fence-style:
+  style: "backtick"
+
+# MD049 - Emphasis style
+emphasis-style:
+  style: "asterisk"
+
+# MD050 - Strong style
+strong-style:
+  style: "asterisk"
