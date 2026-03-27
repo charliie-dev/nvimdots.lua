@@ -123,6 +123,7 @@ settings["lsp_deps"] = {
 -- These are managed by Mason and used by conform.nvim.
 ---@type string[]
 settings["formatter_deps"] = {
+	"beautysh",
 	"clang-format",
 	"cmakelang",
 	"fixjson",

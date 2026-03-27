@@ -116,6 +116,7 @@ return function()
 			typescriptreact = { "prettierd" },
 			vue = { "prettierd" },
 			yaml = { "prettierd" },
+			zsh = { "beautysh" },
 		},
 		formatters = {
 			["clang-format"] = {
