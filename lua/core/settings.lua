@@ -125,7 +125,6 @@ settings["lsp_deps"] = {
 settings["formatter_deps"] = {
 	"clang-format",
 	"cmakelang",
-	"eslint_d",
 	"jq",
 	"prettierd",
 	"shellharden",
@@ -138,6 +137,7 @@ settings["formatter_deps"] = {
 settings["linter_deps"] = {
 	"actionlint",
 	"hadolint",
+	"oxlint",
 	"shellcheck",
 	"systemdlint",
 }

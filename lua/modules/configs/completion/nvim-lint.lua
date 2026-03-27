@@ -3,12 +3,12 @@ return function()
 
 	lint.linters_by_ft = {
 		dockerfile = { "hadolint" },
-		javascript = { "eslint_d" },
-		javascriptreact = { "eslint_d" },
+		javascript = { "oxlint" },
+		javascriptreact = { "oxlint" },
 		nix = { "deadnix", "statix" },
 		sh = { "shellcheck" },
-		typescript = { "eslint_d" },
-		typescriptreact = { "eslint_d" },
+		typescript = { "oxlint" },
+		typescriptreact = { "oxlint" },
 		systemd = { "systemdlint" },
 		["yaml.github"] = { "actionlint" },
 		zsh = { "zsh" },
