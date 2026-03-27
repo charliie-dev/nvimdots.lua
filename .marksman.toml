@@ -1,0 +1,7 @@
+[core]
+markdown.file_extensions = ["md", "mdx"]
+text_sync = "full"
+
+[code_action]
+toc.enable = true
+create_missing_file.enable = true
