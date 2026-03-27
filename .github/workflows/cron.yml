@@ -1,0 +1,145 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: "Cron: update lockfiles (Verified)"
+on:
+  workflow_dispatch: # allows manual triggering
+  schedule:
+    # Runs daily at UTC 23:30 (= next-day 07:30 UTC+8)
+    - cron: "30 23 * * *"
+
+# id-token: write omitted — not using FlakeHub cache
+permissions: {}
+
+concurrency:
+  group: cron-lockfile-update
+  cancel-in-progress: false # avoid aborting mid-commit
+
+env:
+  BRANCH: "main"
+
+jobs:
+  update-lazy-lock:
+    if: github.repository_owner == 'charliie-dev'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Check if lockfile existed
+        uses: andstor/file-existence-action@v3
+        id: check_lockfile
+        with:
+          files: "lazy-lock.json"
+
+      - name: Setup neovim
+        uses: rhysd/action-setup-vim@v1
+        if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
+        with:
+          neovim: true
+
+      - name: Run lazy update
+        if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          ./scripts/update_lockfile.sh
+          cp lazy-lock.json lazy-lock.json.before
+          nvim --headless "+Lazy! update" +qa
+
+      - name: Log lockfile changes
+        if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
+        run: |
+          set -euo pipefail
+          if ! diff -q lazy-lock.json.before lazy-lock.json >/dev/null 2>&1; then
+            updated=$(jq -n --slurpfile before lazy-lock.json.before --slurpfile after lazy-lock.json \
+              '[($after[0] | to_entries[]) as $e | select($before[0][$e.key] != $e.value)] | length')
+            echo "::notice::lazy-lock.json updated — ${updated} plugin(s) changed"
+            diff --unified=0 lazy-lock.json.before lazy-lock.json || true
+          else
+            echo "::notice::lazy-lock.json unchanged — all plugins up to date"
+          fi
+          rm -f lazy-lock.json.before
+
+      - name: Commit lazy-lock.json (server-signed Verified)
+        if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
+        uses: ./.github/actions/commit-file
+        with:
+          path: lazy-lock.json
+          message: "chore(lockfile): auto update lazy-lock.json"
+          branch: ${{ env.BRANCH }}
+
+  update-flake-lock:
+    needs: update-lazy-lock
+    if: (success() || skipped()) && github.repository_owner == 'charliie-dev'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check if should run (bi-monthly on 1st/15th, or manual dispatch)
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            day=$(TZ=Asia/Taipei date +%d)
+            if [[ "$day" == "01" || "$day" == "15" ]]; then
+              echo "run=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Skipping flake.lock update — only runs on 1st and 15th"
+            fi
+          fi
+
+      - name: Checkout repository
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.BRANCH }}
+          fetch-depth: 1
+
+      # Ensure we have the latest commit (e.g. lazy-lock.json update from previous job)
+      - name: Pull latest changes
+        if: steps.gate.outputs.run == 'true'
+        run: git pull --ff-only origin "$BRANCH"
+
+      - name: Install Nix
+        if: steps.gate.outputs.run == 'true'
+        uses: DeterminateSystems/determinate-nix-action@v3
+
+      - name: Update flake.lock
+        if: steps.gate.outputs.run == 'true'
+        run: nix flake update
+
+      - name: Check Nix flake inputs
+        if: steps.gate.outputs.run == 'true'
+        uses: DeterminateSystems/flake-checker-action@v12
+        with:
+          ignore-missing-flake-lock: false
+          fail-mode: true
+
+      - name: Validate updated flake
+        if: steps.gate.outputs.run == 'true'
+        run: nix flake check
+
+      - name: Commit flake.lock (server-signed Verified)
+        if: steps.gate.outputs.run == 'true'
+        uses: ./.github/actions/commit-file
+        with:
+          path: flake.lock
+          message: "chore(lockfile): auto update flake.lock"
+          branch: ${{ env.BRANCH }}

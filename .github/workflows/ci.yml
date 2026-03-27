@@ -1,24 +1,49 @@
-name: CI
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: "CI: Lint & Flake Check"
 on:
+  workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - "lua/**"
       - "stylua.toml"
       - ".luacheckrc"
+      - "flake.nix"
+      - "flake.lock"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "lua/**"
       - "stylua.toml"
       - ".luacheckrc"
+      - "flake.nix"
+      - "flake.lock"
       - ".github/workflows/ci.yml"
+
+# id-token: write omitted — not using FlakeHub cache
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   stylua:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v6
-      - uses: JohnnyMorganz/stylua-action@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run StyLua check
+        uses: JohnnyMorganz/stylua-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
@@ -26,8 +51,35 @@ jobs:
 
   luacheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v6
-      - uses: lunarmodules/luacheck@v1
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run Luacheck
+        uses: lunarmodules/luacheck@v1
         with:
           args: .
+
+  flake-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@v3
+
+      - name: Run flake checks
+        run: nix flake check

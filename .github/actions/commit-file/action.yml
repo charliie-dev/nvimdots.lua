@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+---
+name: Commit file via REST Contents API
+description: >-
+  Server-signed "Verified" commit for a single file using the GitHub
+  REST Contents API.  Author/committer are intentionally omitted so
+  the platform signs the commit.
+
+inputs:
+  path:
+    description: Repository-relative path of the file to commit
+    required: true
+  message:
+    description: Commit message
+    required: true
+  branch:
+    description: Target branch
+    required: true
+  token:
+    description: GitHub token with contents:write
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+  steps:
+    - name: Commit ${{ inputs.path }}
+      uses: actions/github-script@v8
+      env:
+        FILE_PATH: ${{ inputs.path }}
+        COMMIT_MSG: ${{ inputs.message }}
+        TARGET_BRANCH: ${{ inputs.branch }}
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const fs = require('fs');
+          const { execFileSync } = require('child_process');
+          const filePath = process.env.FILE_PATH;
+
+          // Skip if nothing changed (tracked file) and file is not untracked
+          let isTracked = true;
+          try {
+            execFileSync('git', ['ls-files', '--error-unmatch', '--', filePath], { stdio: 'pipe' });
+          } catch {
+            isTracked = false;
+          }
+
+          if (isTracked) {
+            try {
+              execFileSync('git', ['diff', '--quiet', '--', filePath]);
+              core.notice(`${filePath} is unchanged, nothing to commit`);
+              return;
+            } catch (err) {
+              if (err.status !== 1) {
+                throw new Error(`git diff failed unexpectedly (exit ${err.status}): ${err.stderr?.toString()}`);
+              }
+            }
+          }
+
+          const owner   = context.repo.owner;
+          const repo    = context.repo.repo;
+          const branch  = process.env.TARGET_BRANCH;
+          const message = process.env.COMMIT_MSG;
+          const content = fs.readFileSync(filePath, { encoding: 'base64' });
+
+          // Retry once on 409 Conflict (stale SHA from concurrent push)
+          for (let attempt = 1; attempt <= 2; attempt++) {
+            let sha;
+            try {
+              const { data: existing } = await github.rest.repos.getContent({ owner, repo, path: filePath, ref: branch });
+              sha = existing.sha;
+            } catch (err) {
+              if (err.status === 404) {
+                core.info(`${filePath} not found on remote — will create`);
+              } else {
+                core.setFailed(`Failed to fetch ${filePath} from ${owner}/${repo}@${branch}: ${err.message}`);
+                return;
+              }
+            }
+
+            try {
+              const r = await github.rest.repos.createOrUpdateFileContents({
+                owner, repo, path: filePath, branch,
+                message, content, sha
+              });
+              core.info(`Committed ${filePath}: ${r.data.commit.sha}`);
+              return;
+            } catch (err) {
+              if (err.status === 409 && attempt < 2) {
+                core.warning(`SHA conflict on ${filePath}, retrying (attempt ${attempt}/2)`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                continue;
+              }
+              core.setFailed(`Failed to commit ${filePath}: ${err.message}`);
+              return;
+            }
+          }
