@@ -125,6 +125,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	config = require("editor.treesitter"),
 	dependencies = {
 		{ "charliie-dev/hmts.nvim", branch = "combined-fixes", ft = "nix" },
+		{ "ravsii/tree-sitter-d2", ft = "d2", build = "make nvim-install" },
 		{
 			"Hdoc1509/gh-actions.nvim",
 			config = function()
