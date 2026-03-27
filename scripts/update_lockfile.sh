@@ -1,35 +1,21 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2059,SC2154
-set -e
-set -o pipefail
+# CI-only: symlinks the checked-out workspace to ~/.config/nvim so Neovim
+# finds its configuration (lazy.nvim, etc.) in the expected location.
+# WARNING: Do NOT run locally — it will remove ~/.config/nvim.
+set -euo pipefail
 
-abort() {
-    printf "%s\n" "$@" >&2
-    exit 1
-}
-
-# string formatters
-if [[ -t 1 ]]; then
-    tty_escape() { printf "\033[%sm" "$1"; }
-else
-    tty_escape() { :; }
+if [[ -z "${CI:-}" ]]; then
+	echo "ERROR: This script is intended for CI only." >&2
+	exit 1
 fi
 
-tty_mkbold() { tty_escape "1;$1"; }
-tty_yellow="$(tty_escape "0;33")"
-tty_bold="$(tty_mkbold 39)"
-tty_reset="$(tty_escape 0)"
+NVIM_CONFIG_DIR="$HOME/.config/nvim"
 
-printf "\n${tty_yellow}====================Script starts====================${tty_reset}\n\n"
+mkdir -p "$(dirname "$NVIM_CONFIG_DIR")"
 
-NVIM_CONFIG_DIR=$HOME/.config/nvim
-printf "${tty_bold}Setting up config and installing plugins${tty_reset}.\n"
-if [[ -d "$NVIM_CONFIG_DIR" ]]; then
-    mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
+if [[ -d "$NVIM_CONFIG_DIR" || -L "$NVIM_CONFIG_DIR" ]]; then
+	rm -rf "$NVIM_CONFIG_DIR"
 fi
 
-git clone https://github.com/CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
-
-printf "${tty_bold}Finished installing Nvim config!${tty_reset}\n\n"
-
-printf "${tty_yellow}====================Script ends====================${tty_reset}\n\n"
+ln -sfn "${GITHUB_WORKSPACE:-.}" "$NVIM_CONFIG_DIR"
+echo "Linked $NVIM_CONFIG_DIR -> $(readlink "$NVIM_CONFIG_DIR")"
