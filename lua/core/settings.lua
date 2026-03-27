@@ -127,6 +127,7 @@ settings["formatter_deps"] = {
 	"clang-format",
 	"cmakelang",
 	"fixjson",
+	"mdsf",
 	"prettierd",
 	"shellharden",
 	"stylua",

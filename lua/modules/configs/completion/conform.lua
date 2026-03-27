@@ -105,7 +105,7 @@ return function()
 			jsonc = { "fixjson", "prettierd" },
 			less = { "prettierd" },
 			lua = { "stylua" },
-			markdown = { "prettierd" },
+			markdown = { "mdsf", "prettierd" },
 			nix = { "nixfmt", "statix" },
 			objc = { "clang-format" },
 			objcpp = { "clang-format" },
