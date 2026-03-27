@@ -1,6 +1,8 @@
 <h1 align="center">
     Neovim Config
-    <br>
+</h1>
+
+<p align="center">
     <a href="https://www.lua.org/">
     <img
         alt="Lua"
@@ -11,27 +13,29 @@
         alt="Neovim"
         src="https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white">
     </a>
-</h1>
+</p>
 
 <p align="center">
-    <a href="https://github.com/CharlesChiuGit/nvimdots/stargazers">
+    <a href="https://github.com/charliie-dev/nvimdots.lua/stargazers">
     <img
         alt="Stars"
-        src="https://img.shields.io/github/stars/CharlesChiuGit/nvimdots?colorA=363A4F&colorB=B7BDF8&logo=adafruit&logoColor=D9E0EE&style=for-the-badge">
+        src="https://img.shields.io/github/stars/charliie-dev/nvimdots.lua?colorA=363A4F&colorB=B7BDF8&logo=adafruit&logoColor=D9E0EE&style=for-the-badge">
     </a>
-    <a href="https://github.com/CharlesChiuGit/nvimdots/issues">
+    <a href="https://github.com/charliie-dev/nvimdots.lua/issues">
     <img
         alt="Issues"
-        src="https://img.shields.io/github/issues-raw/CharlesChiuGit/nvimdots?colorA=363A4f&colorB=F5A97F&logo=github&logoColor=D9E0EE&style=for-the-badge">
+        src="https://img.shields.io/github/issues-raw/charliie-dev/nvimdots.lua?colorA=363A4f&colorB=F5A97F&logo=github&logoColor=D9E0EE&style=for-the-badge">
     </a>
-    <a href="https://github.com/CharlesChiuGit/nvimdots/contributors">
+    <a href="https://github.com/charliie-dev/nvimdots.lua/contributors">
     <img
         alt="Contributors"
-        src="https://img.shields.io/github/contributors/CharlesChiuGit/nvimdots?colorA=363A4F&colorB=B5E8E0&logo=git&logoColor=D9E0EE&style=for-the-badge">
+        src="https://img.shields.io/github/contributors/charliie-dev/nvimdots.lua?colorA=363A4F&colorB=B5E8E0&logo=git&logoColor=D9E0EE&style=for-the-badge">
     </a>
+    <a href="https://github.com/charliie-dev/nvimdots.lua">
     <img
         alt="Code size"
-        src="https://img.shields.io/github/languages/code-size/CharlesChiuGit/nvimdots?colorA=363A4F&colorB=DDB6F2&logo=gitlfs&logoColor=D9E0EE&style=for-the-badge">
+        src="https://img.shields.io/github/languages/code-size/charliie-dev/nvimdots.lua?colorA=363A4F&colorB=DDB6F2&logo=gitlfs&logoColor=D9E0EE&style=for-the-badge">
+    </a>
 </p>
 
 <p align="center">
@@ -135,13 +139,13 @@
 mv ~/.config/nvim ~/.config/nvim.backup
 
 # Clone the repository
-git clone https://github.com/CharlesChiuGit/nvimdots.git ~/.config/nvim
+git clone https://github.com/charliie-dev/nvimdots.lua.git ~/.config/nvim
 
 # Launch Neovim — plugins will be installed automatically on first run
 nvim
 ```
 
-For prerequisites and dependencies, see [Wiki: Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite).
+For prerequisites and dependencies, see [Wiki: Prerequisite](https://github.com/charliie-dev/nvimdots.lua/wiki/Prerequisite).
 
 ### Nix (via home-manager)
 
@@ -149,7 +153,7 @@ This config ships with a `flake.nix` for reproducible setup. Add it to your home
 
 ```nix
 {
-  inputs.nvimdots.url = "github:CharlesChiuGit/nvimdots";
+  inputs.nvimdots.url = "github:charliie-dev/nvimdots.lua";
 
   # In your home-manager module:
   programs.neovim = {
@@ -163,10 +167,10 @@ See `nixos/` and `flake.nix` for details.
 
 ## ⚙️ Configuration & Usage
 
-- [Wiki: Prerequisite](https://github.com/CharlesChiuGit/nvimdots/wiki/Prerequisite) — dependencies and setup
-- [Wiki: Usage](https://github.com/CharlesChiuGit/nvimdots/wiki/Usage) — customization guide
-- [Wiki: Installed Plugins](https://github.com/CharlesChiuGit/nvimdots/wiki/Plugins) — full plugin list
-- [Wiki: FAQ](https://github.com/CharlesChiuGit/nvimdots/wiki/FAQ) — frequently asked questions
+- [Wiki: Prerequisite](https://github.com/charliie-dev/nvimdots.lua/wiki/Prerequisite) — dependencies and setup
+- [Wiki: Usage](https://github.com/charliie-dev/nvimdots.lua/wiki/Usage) — customization guide
+- [Wiki: Installed Plugins](https://github.com/charliie-dev/nvimdots.lua/wiki/Plugins) — full plugin list
+- [Wiki: FAQ](https://github.com/charliie-dev/nvimdots.lua/wiki/FAQ) — frequently asked questions
 
 ## 🪨 Materials
 
@@ -210,7 +214,7 @@ See `nixos/` and `flake.nix` for details.
 - [X/neovim](https://x.com/Neovim)
 - [Neovim Official News](https://neovim.io/news/)
 
-# 🎉 Acknowledgment
+## 🎉 Acknowledgment
 
 - [ayamir/nvimdot](https://github.com/ayamir/nvimdots)
 - [glepnir/nvim](https://github.com/glepnir/nvim)
