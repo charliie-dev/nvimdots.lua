@@ -142,6 +142,7 @@ settings["linter_deps"] = {
 	"markdownlint-cli2",
 	"oxlint",
 	-- "rumdl", -- markdownlint Rust rewrite; waiting for rule coverage to mature
+	"selene",
 	"shellcheck",
 	"systemdlint",
 }

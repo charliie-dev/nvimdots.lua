@@ -1,0 +1,8 @@
+---
+base: lua51
+name: vim
+globals:
+  vim:
+    any: true
+  _debugging:
+    writable: full

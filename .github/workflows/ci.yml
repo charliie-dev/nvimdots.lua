@@ -8,7 +8,8 @@ on:
     paths:
       - "lua/**"
       - "stylua.toml"
-      - ".luacheckrc"
+      - "selene.toml"
+      - "vim.yml"
       - "flake.nix"
       - "flake.lock"
       - ".github/workflows/ci.yml"
@@ -16,7 +17,8 @@ on:
     paths:
       - "lua/**"
       - "stylua.toml"
-      - ".luacheckrc"
+      - "selene.toml"
+      - "vim.yml"
       - "flake.nix"
       - "flake.lock"
       - ".github/workflows/ci.yml"
@@ -49,7 +51,7 @@ jobs:
           version: latest
           args: --check --config-path=stylua.toml .
 
-  luacheck:
+  selene:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     defaults:
@@ -61,10 +63,11 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Run Luacheck
-        uses: lunarmodules/luacheck@v1
+      - name: Run Selene
+        uses: NTBBloodbath/selene-action@v1.0.0
         with:
-          args: .
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --display-style=quiet .
 
   flake-check:
     runs-on: ubuntu-latest
