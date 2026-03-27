@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 ---
-name: "Cron: update lockfiles (Verified)"
+name: "Cron: update lockfiles"
 on:
   workflow_dispatch: # allows manual triggering
   schedule:
