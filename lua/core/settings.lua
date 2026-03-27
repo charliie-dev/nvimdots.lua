@@ -125,7 +125,7 @@ settings["lsp_deps"] = {
 settings["formatter_deps"] = {
 	"clang-format",
 	"cmakelang",
-	"jq",
+	"fixjson",
 	"prettierd",
 	"shellharden",
 	"stylua",
