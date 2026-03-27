@@ -104,6 +104,7 @@ settings["lsp_deps"] = {
 	"gh_actions_ls",
 	"gitlab_ci_ls",
 	"gopls",
+	"harper_ls",
 	"html",
 	-- "htmx",
 	"jsonls",
