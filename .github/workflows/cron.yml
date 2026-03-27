@@ -78,7 +78,7 @@ jobs:
 
   update-flake-lock:
     needs: update-lazy-lock
-    if: (success() || skipped()) && github.repository_owner == 'charliie-dev'
+    if: ${{ !failure() && !cancelled() && github.repository_owner == 'charliie-dev' }}
     permissions:
       contents: write
     runs-on: ubuntu-latest
