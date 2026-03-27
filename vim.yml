@@ -5,4 +5,4 @@ globals:
   vim:
     any: true
   _debugging:
-    writable: full
+    any: true
