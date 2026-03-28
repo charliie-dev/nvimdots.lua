@@ -143,7 +143,6 @@ settings["linter_deps"] = {
 	"oxlint",
 	-- "rumdl", -- markdownlint Rust rewrite; waiting for rule coverage to mature
 	"golangci-lint",
-	"gosec",
 	"selene",
 	"shellcheck",
 	"systemdlint",
