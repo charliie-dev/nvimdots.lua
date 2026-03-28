@@ -3,6 +3,7 @@ return function()
 
 	lint.linters_by_ft = {
 		dockerfile = { "hadolint" },
+		go = { "golangcilint", "gosec" },
 		lua = { "selene" },
 		markdown = { "markdownlint-cli2" },
 		javascript = { "oxlint" },
