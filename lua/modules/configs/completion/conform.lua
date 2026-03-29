@@ -96,6 +96,7 @@ return function()
 			cpp = { "clang-format" },
 			cs = { "clang-format" },
 			css = { "prettierd" },
+			go = { "gofumpt" },
 			cuda = { "clang-format" },
 			graphql = { "prettierd" },
 			html = { "prettierd" },
