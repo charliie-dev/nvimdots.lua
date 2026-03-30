@@ -128,6 +128,7 @@ settings["formatter_deps"] = {
 	"cmakelang",
 	"fixjson",
 	"gofumpt",
+	"goimports",
 	"mdsf",
 	"prettierd",
 	"shellharden",
