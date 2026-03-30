@@ -130,7 +130,9 @@ settings["formatter_deps"] = {
 	"gofumpt",
 	"goimports",
 	"mdsf",
-	"prettierd",
+	"biome",
+	"superhtml",
+	"yamlfmt",
 	"shellharden",
 	"stylua",
 }
