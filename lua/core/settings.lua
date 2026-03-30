@@ -104,7 +104,7 @@ settings["lsp_deps"] = {
 	"gh_actions_ls",
 	"gitlab_ci_ls",
 	"gopls",
-	"harper_ls",
+	-- "harper_ls", # too noisy
 	"html",
 	"jsonls",
 	"lua_ls",
