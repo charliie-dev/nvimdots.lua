@@ -1,3 +1,4 @@
+---
 base: lua51
 name: vim
 globals:
