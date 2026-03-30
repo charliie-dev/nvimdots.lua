@@ -105,7 +105,7 @@ settings["lsp_deps"] = {
 	"gitlab_ci_ls",
 	"gopls",
 	-- "harper_ls", # too noisy
-	"html",
+	"superhtml",
 	"jsonls",
 	"lua_ls",
 	"marksman",
@@ -130,9 +130,8 @@ settings["formatter_deps"] = {
 	"gofumpt",
 	"goimports",
 	"mdsf",
-	"biome",
+	"prettierd",
 	"superhtml",
-	"yamlfmt",
 	"shellharden",
 	"stylua",
 }
