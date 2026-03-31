@@ -16,8 +16,7 @@ tool["Bekaboo/dropbar.nvim"] = {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 tool["stevearc/oil.nvim"] = {
-	lazy = true,
-	cmd = "Oil",
+	lazy = false,
 	config = require("tool.oil"),
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
