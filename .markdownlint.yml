@@ -17,7 +17,7 @@ no-hard-tabs:
   code_blocks: false # allow tabs in code blocks
 
 # MD013 - Line length
-line-length: false # handled by prettierd
+line-length: false
 
 # MD024 - Multiple headings with the same content
 no-duplicate-heading:

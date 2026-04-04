@@ -14,7 +14,10 @@ return function()
 	-- markdownlint-cli2: stdin broken under bun's node shim (for-await yields empty).
 	-- Override to file-based mode and update parser for "path:line:col severity message" format.
 	lint.linters["markdownlint-cli2"].stdin = false
-	lint.linters["markdownlint-cli2"].args = {}
+	lint.linters["markdownlint-cli2"].args = {
+		"--config",
+		vim.fn.stdpath("config") .. "/.markdownlint.yml",
+	}
 	lint.linters["markdownlint-cli2"].stream = "stderr"
 	lint.linters["markdownlint-cli2"].parser = require("lint.parser").from_pattern(
 		"[^:]+:(%d+):(%d+) (%a+) (.+)",
