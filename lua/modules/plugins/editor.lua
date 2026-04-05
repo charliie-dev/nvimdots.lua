@@ -147,7 +147,8 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			config = require("editor.ts-autotag"),
 		},
 		{
-			"hiphish/rainbow-delimiters.nvim",
+			"charliie-dev/rainbow-delimiters.nvim",
+			branch = "fix/nvim-0.12-local-strategy-crash",
 			config = require("editor.rainbow_delims"),
 		},
 		{
