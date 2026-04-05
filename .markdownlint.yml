@@ -53,3 +53,6 @@ emphasis-style:
 # MD050 - Strong style
 strong-style:
   style: "asterisk"
+
+# MD060 - Table column style
+table-column-style: false
