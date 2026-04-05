@@ -17,7 +17,7 @@ ui["catppuccin/nvim"] = {
 }
 ui["lewis6991/gitsigns.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = { "BufReadPost", "BufNewFile" },
 	config = require("ui.gitsigns"),
 }
 ui["nvim-lualine/lualine.nvim"] = {
