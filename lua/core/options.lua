@@ -144,4 +144,6 @@ end
 -- Newtrw liststyle: https://medium.com/usevim/the-netrw-style-options-3ebe91d42456
 vim.g.netrw_liststyle = 3
 
+require("vim._core.ui2").enable({})
+
 load_options()
