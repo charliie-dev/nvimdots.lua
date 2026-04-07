@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 1
 
       - name: Run StyLua check
-        uses: JohnnyMorganz/stylua-action@v4
+        uses: JohnnyMorganz/stylua-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
