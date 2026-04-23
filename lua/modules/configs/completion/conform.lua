@@ -103,7 +103,7 @@ return function()
 			javascript = { "prettier" },
 			javascriptreact = { "prettier" },
 			json = { "fixjson", "prettier" },
-			jsonc = { "fixjson", "prettier" },
+			jsonc = {}, -- fixjson/prettier strip comments; fallback to LSP (jsonls) for JSONC formatting
 			lua = { "stylua" },
 			markdown = { "mdsf" },
 			nix = { "nixfmt", "statix" },
