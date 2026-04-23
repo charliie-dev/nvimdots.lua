@@ -1,5 +1,13 @@
 local autocmd = {}
 
+-- jsonc uses the json treesitter parser (no separate jsonc parser exists)
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "jsonc",
+	callback = function(args)
+		vim.treesitter.start(args.buf, "json")
+	end,
+})
+
 -- Autoclose some filetype with <q>
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {
