@@ -79,6 +79,7 @@ local opts = {
 			},
 		},
 		list = {
+			max_items = 120,
 			selection = {
 				preselect = true,
 				auto_insert = false,
@@ -108,7 +109,7 @@ local opts = {
 		},
 		documentation = {
 			auto_show = true,
-			auto_show_delay_ms = 500,
+			auto_show_delay_ms = 200,
 			treesitter_highlighting = true,
 			window = {
 				border = "single",
@@ -124,6 +125,7 @@ local opts = {
 	sources = {
 		default = { "lazydev", "lsp", "path", "snippets", "buffer", "ripgrep", "env", "conventional_commits" },
 		providers = {
+			lsp = { max_items = 350 },
 			lazydev = {
 				module = "lazydev.integrations.blink",
 				name = "LazyDev",
@@ -134,9 +136,7 @@ local opts = {
 				max_items = 3,
 				opts = {
 					get_bufnrs = function()
-						return vim.tbl_filter(function(bufnr)
-							return vim.bo[bufnr].buftype == ""
-						end, vim.api.nvim_list_bufs())
+						return vim.api.nvim_buf_line_count(0) < 15000 and vim.api.nvim_list_bufs() or {}
 					end,
 				},
 			},

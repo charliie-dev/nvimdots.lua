@@ -33,15 +33,14 @@ completion["mfussenegger/nvim-lint"] = {
 	config = require("completion.nvim-lint"),
 }
 
-completion["Saghen/blink.cmp"] = {
+completion["saghen/blink.cmp"] = {
 	lazy = true,
-	event = "InsertEnter",
+	event = { "InsertEnter", "CmdlineEnter" },
 	config = require("completion.blink"),
 	version = "*",
 	dependencies = {
 		{
 			"L3MON4D3/LuaSnip",
-			version = "v2.*",
 			build = "make install_jsregexp",
 			config = require("completion.luasnip"),
 			dependencies = "rafamadriz/friendly-snippets",
