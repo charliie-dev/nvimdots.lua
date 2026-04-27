@@ -3,7 +3,7 @@
 stylua = "latest"
 
 # Lua linter
-"aqua:Kampfkarren/selene" = "latest"
+"aqua:Kampfkarren/selene" = { version = "latest", os = ["macos", "linux/x64"] }
 
 # Treesitter CLI (required by nvim-treesitter for parser compilation)
 tree-sitter = "latest"
