@@ -65,7 +65,6 @@ completion["folke/lazydev.nvim"] = {
 	lazy = true,
 	ft = "lua",
 	dependencies = {
-		{ "gonstoll/wezterm-types", lazy = true },
 		{ "Bilal2453/luvit-meta", lazy = true },
 	},
 	config = require("completion.lazydev"),

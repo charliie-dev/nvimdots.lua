@@ -3,7 +3,6 @@ return function()
 		library = {
 			"lazy.nvim",
 			{ path = "luvit-meta/library", words = { "vim%.uv" } },
-			{ path = "wezterm-types", mods = { "wezterm" } },
 		},
 	})
 end
