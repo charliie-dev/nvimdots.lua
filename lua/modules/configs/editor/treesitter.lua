@@ -7,7 +7,7 @@ return vim.schedule_wrap(function()
 
 	require("modules.utils").load_plugin("nvim-treesitter", {})
 	-- require("modules.utils").load_plugin("nvim-treesitter", {
-	-- 	ensure_installed = require("core.settings").treesitter_deps,
+	-- 	ensure_installed = vim.tbl_keys(require("core.settings").treesitter_deps),
 	-- 	playground = {
 	-- 		enable = true,
 	-- 		disable = {},
@@ -25,7 +25,9 @@ return vim.schedule_wrap(function()
 	-- 	matchup = { enable = true },
 	-- }, false, require("nvim-treesitter.configs").setup)
 
-	require("nvim-treesitter").install(require("core.settings").treesitter_deps)
+	local parsers = vim.tbl_keys(require("core.settings").treesitter_deps)
+	table.sort(parsers)
+	require("nvim-treesitter").install(parsers)
 	-- require("nvim-treesitter.install").prefer_git = true
 	-- if use_ssh then
 	-- 	local parsers = require("nvim-treesitter.parsers").get_parser_configs()

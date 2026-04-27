@@ -118,7 +118,9 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	branch = "main",
 	build = function()
 		if #vim.api.nvim_list_uis() > 0 then
-			vim.cmd.TSUpdate()
+			local parsers = vim.tbl_keys(require("core.settings").treesitter_deps)
+			table.sort(parsers)
+			require("nvim-treesitter").update(parsers, { summary = true })
 		end
 	end,
 	-- event = "BufReadPre",

@@ -1,7 +1,5 @@
 local autocmd = {}
-
--- jsonc uses the json treesitter parser (no separate jsonc parser exists)
-vim.treesitter.language.register("json", "jsonc")
+local treesitter_deps = require("core.settings").treesitter_deps
 
 -- Autoclose some filetype with <q>
 vim.api.nvim_create_autocmd("FileType", {
@@ -60,9 +58,13 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 
 -- Start treesitter for installed parsers
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = vim.list_extend(vim.deepcopy(require("core.settings").treesitter_deps), { "jsonc" }),
+	pattern = "*",
 	callback = function(args)
-		vim.treesitter.start(args.buf)
+		local ft = vim.bo[args.buf].filetype
+		local lang = vim.treesitter.language.get_lang(ft) or ft
+		if treesitter_deps[lang] then
+			pcall(vim.treesitter.start, args.buf, lang)
+		end
 	end,
 })
 
