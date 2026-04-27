@@ -18,3 +18,72 @@ tree-sitter = "latest"
 [tasks.ruler]  # command: mise run ruler
 description = "Compile ruler to AGENTS.md"
 run = "bunx @intellectronica/ruler apply"
+
+[tasks.clean-unsupported-ts-parsers]  # command: mise run clean-unsupported-ts-parsers
+description = "Remove installed nvim-treesitter parsers that are no longer supported"
+run = '''
+tmp_vim="${TMPDIR:-/tmp}/nvim-clean-unsupported-ts-parsers.vim"
+cat > "$tmp_vim" <<'EOF'
+lua << LUA
+local config = require("nvim-treesitter.config")
+
+local available = {}
+for _, lang in ipairs(config.get_available()) do
+	available[lang] = true
+end
+
+local unsupported = {}
+for _, lang in ipairs(config.get_installed()) do
+	if not available[lang] then
+		table.insert(unsupported, lang)
+	end
+end
+table.sort(unsupported)
+
+if #unsupported == 0 then
+	print("No unsupported nvim-treesitter parsers found")
+	vim.cmd.quitall()
+	return
+end
+
+local parser_dir = config.get_install_dir("parser")
+local parser_info_dir = config.get_install_dir("parser-info")
+local query_dir = config.get_install_dir("queries")
+
+for _, lang in ipairs(unsupported) do
+	local removed = {}
+
+	for _, parser in ipairs(vim.fn.globpath(parser_dir, lang .. ".*", false, true)) do
+		if vim.fn.delete(parser) == 0 then
+			table.insert(removed, parser)
+		end
+	end
+
+	local revision = vim.fs.joinpath(parser_info_dir, lang .. ".revision")
+	if vim.fn.filereadable(revision) == 1 and vim.fn.delete(revision) == 0 then
+		table.insert(removed, revision)
+	end
+
+	local queries = vim.fs.joinpath(query_dir, lang)
+	if vim.fn.isdirectory(queries) == 1 and vim.fn.delete(queries, "rf") == 0 then
+		table.insert(removed, queries)
+	end
+
+	if #removed == 0 then
+		print(("No files removed for unsupported parser: %s"):format(lang))
+	else
+		print(("Removed unsupported parser: %s"):format(lang))
+		for _, path in ipairs(removed) do
+			print("  " .. path)
+		end
+	end
+end
+
+vim.cmd.quitall()
+LUA
+EOF
+
+export NVIM_LOG_FILE="${NVIM_LOG_FILE:-${TMPDIR:-/tmp}/nvim-clean-unsupported-ts-parsers.log}"
+nvim --headless -i NONE -S "$tmp_vim"
+rm -f "$tmp_vim"
+'''
