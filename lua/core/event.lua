@@ -173,14 +173,6 @@ function autocmd.load_autocmds()
 					end
 				end,
 			},
-			-- Attempt to write shada when leaving nvim
-			{
-				"VimLeave",
-				"*",
-				function()
-					vim.cmd.wshada()
-				end,
-			},
 			-- Check if a file has changed when its window is in focus, being more proactive than 'autoread'
 			{
 				"FocusGained",
