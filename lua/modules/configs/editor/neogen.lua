@@ -2,6 +2,7 @@ return function()
 	require("modules.utils").load_plugin("neogen", {
 		snippet_engine = "luasnip",
 		enabled = true,
+		input_after_comment = true,
 		languages = {
 			lua = {
 				template = {
