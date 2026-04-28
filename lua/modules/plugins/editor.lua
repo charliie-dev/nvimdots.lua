@@ -18,7 +18,7 @@ editor["sindrets/diffview.nvim"] = {
 }
 editor["echasnovski/mini.align"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	keys = { { "gea" }, { "geA" } },
 	config = require("editor.align"),
 }
 editor["echasnovski/mini.cursorword"] = {
@@ -28,7 +28,7 @@ editor["echasnovski/mini.cursorword"] = {
 }
 editor["echasnovski/mini.surround"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "BufReadPost",
 	version = false,
 	config = require("editor.surround"),
 }
@@ -41,14 +41,8 @@ editor["echasnovski/mini.surround"] = {
 -- But as usual, you can always tweak the plugin to your liking.
 editor["folke/flash.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "VeryLazy",
 	config = require("editor.flash"),
-}
-editor["danymat/neogen"] = {
-	lazy = true,
-	cmd = "Neogen",
-	config = require("editor.neogen"),
-	dependencies = "nvim-treesitter/nvim-treesitter",
 }
 editor["olimorris/persisted.nvim"] = {
 	lazy = true,
@@ -71,7 +65,7 @@ editor["lambdalisue/suda.vim"] = {
 }
 editor["brenoprata10/nvim-highlight-colors"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "BufReadPost",
 	config = require("editor.highlight-colors"),
 }
 editor["MagicDuck/grug-far.nvim"] = {
@@ -108,7 +102,7 @@ editor["jmbuhr/otter.nvim"] = {
 
 editor["nemanjamalesija/smart-paste.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "BufReadPost",
 	config = require("editor.smart-paste"),
 }
 
@@ -160,6 +154,11 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			"echasnovski/mini.ai",
 			version = "*",
 			config = require("editor.ai_textobj"),
+		},
+		{
+			"danymat/neogen",
+			cmd = "Neogen",
+			config = require("editor.neogen"),
 		},
 	},
 }
