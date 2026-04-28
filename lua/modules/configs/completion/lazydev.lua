@@ -2,7 +2,7 @@ return function()
 	require("modules.utils").load_plugin("lazydev", {
 		library = {
 			"lazy.nvim",
-			{ path = "luvit-meta/library", words = { "vim%.uv" } },
+			{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
 		},
 	})
 end
