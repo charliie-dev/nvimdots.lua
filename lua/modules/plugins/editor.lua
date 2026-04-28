@@ -18,7 +18,7 @@ editor["sindrets/diffview.nvim"] = {
 }
 editor["echasnovski/mini.align"] = {
 	lazy = true,
-	keys = { { "gea" }, { "geA" } },
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.align"),
 }
 editor["echasnovski/mini.cursorword"] = {
@@ -103,7 +103,7 @@ editor["jmbuhr/otter.nvim"] = {
 
 editor["nemanjamalesija/smart-paste.nvim"] = {
 	lazy = true,
-	keys = { { "p" }, { "P" }, { "gp" }, { "gP" }, { "]p" }, { "[p" } },
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.smart-paste"),
 }
 
