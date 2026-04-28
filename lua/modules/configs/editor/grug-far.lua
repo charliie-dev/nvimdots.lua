@@ -14,6 +14,9 @@ return function()
 		icons = { enabled = true },
 		disableBufferLineNumbers = true,
 		windowCreationCommand = "bot split",
+		normalModeSearch = false,
+		maxLineLength = 1000,
+		maxSearchMatches = 2000,
 		keymaps = {
 			replace = { n = ",r" },
 			qflist = { n = ",q" },
