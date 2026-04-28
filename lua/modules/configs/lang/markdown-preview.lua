@@ -77,4 +77,16 @@ return function()
 
 	-- Default theme.
 	vim.g.mkdp_theme = "dark"
+
+	-- If true, the MarkdownPreview command is available for all filetypes.
+	vim.g.mkdp_command_for_global = false
+
+	-- Custom path for images. Leave empty to use default.
+	vim.g.mkdp_images_path = ""
+
+	-- If true, reuse the previous preview window instead of opening a new one.
+	vim.g.mkdp_combine_preview = false
+
+	-- If true, auto-refresh the combined preview window content.
+	vim.g.mkdp_combine_preview_auto_refresh = true
 end
