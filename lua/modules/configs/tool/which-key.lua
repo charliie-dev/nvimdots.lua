@@ -10,6 +10,7 @@ return function()
 	require("modules.utils").load_plugin("which-key", {
 		preset = "classic",
 		delay = vim.o.timeoutlen,
+		sort = { "local", "order", "group", "alphanum", "mod" },
 		triggers = {
 			{ "<auto>", mode = "nixso" },
 		},

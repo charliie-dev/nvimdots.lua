@@ -16,6 +16,20 @@ return function()
 	}
 
 	require("modules.utils").load_plugin("dropbar", {
+		menu = {
+			preview = true,
+		},
+		fzf = {
+			keymaps = {
+				["<Up>"] = "api.fuzzy_find_prev",
+				["<Down>"] = "api.fuzzy_find_next",
+				["<CR>"] = "api.fuzzy_find_click",
+				["<Esc>"] = "api.fuzzy_find_close",
+			},
+			char_pattern = "[%w%p]",
+			retain_inner_spaces = true,
+			fuzzy_find_on_click = true,
+		},
 		bar = {
 			hover = false,
 			truncate = true,
