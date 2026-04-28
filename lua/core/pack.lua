@@ -82,7 +82,6 @@ function Lazy:load_lazy()
 		root = data_dir .. "lazy", -- directory where plugins will be installed
 		rocks = {
 			enabled = true,
-			hererocks = false,
 		},
 		git = {
 			-- log = { "-10" }, -- show the last 10 commits
