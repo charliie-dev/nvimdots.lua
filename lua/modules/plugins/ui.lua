@@ -35,17 +35,17 @@ ui["nvim-lualine/lualine.nvim"] = {
 -- }
 ui["mrjones2014/smart-splits.nvim"] = {
 	lazy = true,
-	event = { "CursorHoldI", "CursorHold" },
+	event = "VeryLazy",
 	config = require("ui.splits"),
 }
 ui["folke/edgy.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "VeryLazy",
 	config = require("ui.edgy"),
 }
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "BufReadPost",
 	config = require("ui.todo"),
 	dependencies = "nvim-lua/plenary.nvim",
 }
