@@ -45,7 +45,7 @@ ui["folke/edgy.nvim"] = {
 }
 ui["folke/todo-comments.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = "VeryLazy",
 	config = require("ui.todo"),
 	dependencies = "nvim-lua/plenary.nvim",
 }

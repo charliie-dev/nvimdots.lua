@@ -65,7 +65,7 @@ editor["lambdalisue/suda.vim"] = {
 }
 editor["brenoprata10/nvim-highlight-colors"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = "VeryLazy",
 	config = require("editor.highlight-colors"),
 }
 editor["MagicDuck/grug-far.nvim"] = {
@@ -103,7 +103,7 @@ editor["jmbuhr/otter.nvim"] = {
 
 editor["nemanjamalesija/smart-paste.nvim"] = {
 	lazy = true,
-	event = "BufReadPost",
+	keys = { { "p" }, { "P" }, { "gp" }, { "gP" }, { "]p" }, { "[p" } },
 	config = require("editor.smart-paste"),
 }
 
