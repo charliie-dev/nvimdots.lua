@@ -4,7 +4,10 @@ return function()
 	local user_snippet_path = vim_path .. "/lua/user/snips/"
 
 	require("modules.utils").load_plugin("luasnip", {
-		history = true,
+		keep_roots = true,
+		link_roots = true,
+		link_children = true,
+		exit_roots = false,
 		update_events = "TextChanged,TextChangedI",
 		delete_check_events = "TextChanged,InsertLeave",
 	}, false, require("luasnip").config.set_config)
