@@ -93,7 +93,7 @@ editor["jmbuhr/otter.nvim"] = {
 	config = function()
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = { "toml", "markdown", "quarto", "org", "norg" },
-			group = vim.api.nvim_create_augroup("OtterActivate", {}),
+			group = vim.api.nvim_create_augroup("EmbedToml", {}),
 			callback = function()
 				require("otter").activate()
 			end,
