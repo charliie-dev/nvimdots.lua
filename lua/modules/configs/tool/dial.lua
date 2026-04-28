@@ -11,7 +11,7 @@ return function()
 				only_valid = true,
 				word = false,
 			}),
-			augend.date.alias["%Y/%m/%d"],
+			augend.date.new({ pattern = "%Y/%m/%d", default_kind = "day", only_valid = true, word = false }),
 			augend.constant.alias.bool,
 			augend.constant.new({
 				elements = { "&&", "||" },
@@ -34,7 +34,7 @@ return function()
 				only_valid = true,
 				word = false,
 			}),
-			augend.date.alias["%Y/%m/%d"],
+			augend.date.new({ pattern = "%Y/%m/%d", default_kind = "day", only_valid = true, word = false }),
 
 			augend.constant.alias.alpha, -- Lowercase alphabet letter (word)
 			augend.constant.alias.Alpha, -- Uppercase alphabet letter (word)
