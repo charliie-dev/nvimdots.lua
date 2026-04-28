@@ -118,7 +118,9 @@ local opts = {
 		ghost_text = {
 			enabled = true,
 			show_with_selection = true,
+			show_without_selection = false,
 			show_with_menu = true,
+			show_without_menu = true,
 		},
 	},
 
