@@ -172,11 +172,11 @@ settings["treesitter_deps"] = {
 	css = true,
 	gh_actions_expressions = true,
 	git_config = true,
+	gitignore = true,
 	go = true,
 	gomod = true,
 	gosum = true,
 	gotmpl = true,
-	gitignore = true,
 	hcl = true,
 	html = true,
 	javascript = true,
@@ -199,6 +199,10 @@ settings["treesitter_deps"] = {
 	vim = true,
 	vimdoc = true,
 	yaml = true,
+	scss = true,
+	svelte = true,
+	typst = true,
+	vue = true,
 }
 
 -- Set the dashboard startup image here.
