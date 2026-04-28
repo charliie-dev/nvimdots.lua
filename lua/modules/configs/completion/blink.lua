@@ -130,6 +130,9 @@ local opts = {
 				module = "lazydev.integrations.blink",
 				name = "LazyDev",
 				score_offset = 100,
+				enabled = function()
+					return vim.bo.filetype == "lua"
+				end,
 			},
 			buffer = {
 				score_offset = -10,
