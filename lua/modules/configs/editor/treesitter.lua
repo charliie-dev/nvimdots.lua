@@ -1,11 +1,19 @@
 return vim.schedule_wrap(function()
-	-- local use_ssh = require("core.settings").use_ssh
-	-- vim.api.nvim_set_option_value("foldmethod", "expr", {})
-	-- vim.api.nvim_set_option_value("foldexpr", "nvim_treesitter#foldexpr()", {})
-	-- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 	vim.api.nvim_set_option_value("indentexpr", "v:lua.require'nvim-treesitter'.indentexpr()", {})
 
 	require("modules.utils").load_plugin("nvim-treesitter", {})
+
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "*",
+		desc = "Start treesitter for installed parsers",
+		callback = function(args)
+			local ft = vim.bo[args.buf].filetype
+			local lang = vim.treesitter.language.get_lang(ft) or ft
+			if require("core.settings").treesitter_deps[lang] then
+				pcall(vim.treesitter.start, args.buf, lang)
+			end
+		end,
+	})
 	-- require("modules.utils").load_plugin("nvim-treesitter", {
 	-- 	ensure_installed = vim.tbl_keys(require("core.settings").treesitter_deps),
 	-- 	playground = {

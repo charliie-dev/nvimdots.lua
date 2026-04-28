@@ -1,5 +1,4 @@
 local autocmd = {}
-local treesitter_deps = require("core.settings").treesitter_deps
 
 -- Autoclose some filetype with <q>
 vim.api.nvim_create_autocmd("FileType", {
@@ -53,18 +52,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = ".env.*",
 	callback = function()
 		vim.bo.filetype = "dotenv"
-	end,
-})
-
--- Start treesitter for installed parsers
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "*",
-	callback = function(args)
-		local ft = vim.bo[args.buf].filetype
-		local lang = vim.treesitter.language.get_lang(ft) or ft
-		if treesitter_deps[lang] then
-			pcall(vim.treesitter.start, args.buf, lang)
-		end
 	end,
 })
 
