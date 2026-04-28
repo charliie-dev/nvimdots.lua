@@ -1,18 +1,39 @@
 return function()
 	require("modules.utils").load_plugin("tiny-inline-diagnostic", {
-		preset = "simple",
+		preset = "modern",
+		transparent_bg = false,
+		transparent_cursorline = true,
 		options = {
 			show_source = {
 				enabled = true,
 				if_many = true,
 			},
-			add_messages = true,
+			show_code = true,
+			add_messages = {
+				messages = true,
+				display_count = true,
+				use_max_severity = false,
+				show_multiple_glyphs = true,
+			},
 			set_arrow_to_diag_color = false,
 			use_icons_from_diagnostic = true,
-			show_all_diags_on_cursorline = false,
+			show_all_diags_on_cursorline = true,
+			show_related = {
+				enabled = true,
+				max_count = 3,
+			},
+			enable_on_insert = false,
+			multilines = {
+				enabled = true,
+				always_show = true,
+			},
 			break_line = {
 				enabled = true,
-				after = 80,
+				after = 60,
+			},
+			overflow = {
+				mode = "wrap",
+				padding = 0,
 			},
 			-- Filter severities up to the diagnostics level setting
 			severity = vim.tbl_filter(function(level)
