@@ -88,11 +88,12 @@ editor["MagicDuck/grug-far.nvim"] = {
 ----------------------------------------------------------------------
 editor["jmbuhr/otter.nvim"] = {
 	lazy = true,
+	ft = { "toml", "markdown", "quarto", "org", "norg" },
 	dependencies = "nvim-treesitter/nvim-treesitter",
 	config = function()
 		vim.api.nvim_create_autocmd("FileType", {
-			pattern = "toml",
-			group = vim.api.nvim_create_augroup("EmbedToml", {}),
+			pattern = { "toml", "markdown", "quarto", "org", "norg" },
+			group = vim.api.nvim_create_augroup("OtterActivate", {}),
 			callback = function()
 				require("otter").activate()
 			end,
@@ -109,7 +110,15 @@ editor["nemanjamalesija/smart-paste.nvim"] = {
 editor["nvim-treesitter/nvim-treesitter"] = {
 	-- lazy = true,
 	lazy = false,
+	-- event = "BufReadPre",
 	branch = "main",
+	init = function()
+		require("vim.treesitter.query").add_predicate("is-mise?", function(_, _, bufnr, _)
+			local filepath = vim.api.nvim_buf_get_name(tonumber(bufnr) or 0)
+			local filename = vim.fn.fnamemodify(filepath, ":t")
+			return string.match(filename, ".*mise.*%.toml$") ~= nil
+		end, { force = true, all = false })
+	end,
 	build = function()
 		if #vim.api.nvim_list_uis() > 0 then
 			local parsers = vim.tbl_keys(require("core.settings").treesitter_deps)
@@ -117,7 +126,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			require("nvim-treesitter").update(parsers, { summary = true })
 		end
 	end,
-	-- event = "BufReadPre",
 	config = require("editor.treesitter"),
 	dependencies = {
 		{ "charliie-dev/hmts.nvim", branch = "combined-fixes", ft = "nix" },

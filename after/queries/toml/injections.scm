@@ -1,4 +1,3 @@
-; mise TOML: inject language based on shebang in run commands
 ; extends
 
 (pair
