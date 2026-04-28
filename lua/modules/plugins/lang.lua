@@ -52,7 +52,6 @@ lang["lervag/vimtex"] = {
 lang["ranelpadon/python-copy-reference.vim"] = {
 	lazy = true,
 	ft = "python",
-	cmd = { "PythonCopyReferenceDotted", "PythonCopyReferencePytest" },
 }
 lang["fei6409/log-highlight.nvim"] = {
 	lazy = true,
