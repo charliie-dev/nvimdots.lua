@@ -1,10 +1,36 @@
 return function()
 	require("modules.utils").load_plugin("oil", {
 		default_file_explorer = true,
+		use_default_keymaps = false,
 		columns = { "icon" },
+		buf_options = {
+			buflisted = false,
+			bufhidden = "hide",
+		},
+		win_options = {
+			wrap = false,
+			signcolumn = "no",
+			cursorcolumn = false,
+			foldcolumn = "0",
+			spell = false,
+			list = false,
+			conceallevel = 3,
+			concealcursor = "nvic",
+		},
 		delete_to_trash = true,
 		skip_confirm_for_simple_edits = true,
 		watch_for_changes = true,
+		git = {
+			add = function()
+				return false
+			end,
+			mv = function()
+				return false
+			end,
+			rm = function()
+				return false
+			end,
+		},
 		lsp_file_methods = {
 			enabled = true,
 			timeout_ms = 1000,
