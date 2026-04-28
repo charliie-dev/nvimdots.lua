@@ -68,8 +68,6 @@ return function()
 						start = { start_line, 0 },
 						["end"] = { end_line, math.huge },
 					},
-					timeout_ms = format_timeout,
-					lsp_format = "fallback",
 					quiet = true,
 				})
 				if not ok_fmt then
@@ -90,6 +88,10 @@ return function()
 	end
 
 	require("modules.utils").load_plugin("conform", {
+		default_format_opts = {
+			timeout_ms = format_timeout,
+			lsp_format = "fallback",
+		},
 		formatters_by_ft = {
 			c = { "clang-format" },
 			cmake = { "cmake_format" },
@@ -162,10 +164,7 @@ return function()
 				-- Fall through to full format if no hunks found
 			end
 
-			return {
-				timeout_ms = format_timeout,
-				lsp_format = "fallback",
-			}
+			return {}
 		end or false,
 	})
 
@@ -181,7 +180,6 @@ return function()
 		end
 		require("conform").format({
 			async = true,
-			lsp_format = "fallback",
 			range = range,
 		}, function(err)
 			if not err and format_notify then
