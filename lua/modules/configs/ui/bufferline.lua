@@ -19,7 +19,7 @@ return function()
 			diagnostics_indicator = function(count)
 				return "(" .. count .. ")"
 			end,
-			numbers = nil,
+			numbers = "none",
 			max_name_length = 20,
 			max_prefix_length = 13,
 			buffer_close_icon = icons.ui.Close,

@@ -53,6 +53,7 @@ return function()
 			info = { "DiagnosticInfo", "#2563EB" },
 			hint = { "DiagnosticHint", "#F5C2E7" },
 			default = { "Conditional", "#7C3AED" },
+			test = { "Identifier", "#FF00FF" },
 		},
 	})
 end

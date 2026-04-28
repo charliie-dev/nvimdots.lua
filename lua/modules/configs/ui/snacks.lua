@@ -125,6 +125,11 @@ return function()
 			animate = {
 				duration = { step = 15, total = 150 },
 			},
+			animate_repeat = {
+				delay = 100,
+				duration = { step = 5, total = 50 },
+				easing = "linear",
+			},
 		},
 		terminal = { enabled = true },
 		quickfile = { enabled = true },
