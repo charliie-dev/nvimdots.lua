@@ -2,7 +2,7 @@ local tool = {}
 
 tool["monaqa/dial.nvim"] = {
 	lazy = true,
-	keys = { { "<leader>=" }, { "<leader>-" } },
+	event = { "CursorHold", "CursorHoldI" },
 	config = require("tool.dial"),
 }
 tool["tpope/vim-fugitive"] = {
