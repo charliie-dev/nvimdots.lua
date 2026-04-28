@@ -8,5 +8,6 @@ return function()
 		trim_scope = "outer",
 		mode = "cursor",
 		zindex = 50,
+		multiwindow = true,
 	})
 end
