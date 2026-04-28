@@ -1,9 +1,21 @@
 local completion = {}
 
+completion["mason-org/mason.nvim"] = {
+	lazy = true,
+	cmd = {
+		"Mason",
+		"MasonInstall",
+		"MasonUninstall",
+		"MasonUninstallAll",
+		"MasonUpdate",
+		"MasonLog",
+	},
+	config = require("completion.mason").setup,
+}
+
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
-	-- event = { "BufReadPre", "BufNewFile" },
-	event = { "CursorHold", "CursorHoldI" },
+	event = { "BufReadPre", "BufNewFile" },
 	config = require("completion.lsp"),
 	dependencies = {
 		{ "mason-org/mason.nvim" },
@@ -18,7 +30,9 @@ completion["nvimdev/lspsaga.nvim"] = {
 	dependencies = "nvim-tree/nvim-web-devicons",
 }
 completion["rachartier/tiny-inline-diagnostic.nvim"] = {
-	lazy = false,
+	lazy = true,
+	event = "VeryLazy",
+	priority = 1000,
 	config = require("completion.tiny-inline-diagnostic"),
 }
 completion["stevearc/conform.nvim"] = {
@@ -35,7 +49,7 @@ completion["mfussenegger/nvim-lint"] = {
 
 completion["saghen/blink.cmp"] = {
 	lazy = true,
-	event = { "InsertEnter", "CmdlineEnter" },
+	event = { "VeryLazy", "InsertEnter", "CmdlineEnter" },
 	config = require("completion.blink"),
 	version = "*",
 	dependencies = {

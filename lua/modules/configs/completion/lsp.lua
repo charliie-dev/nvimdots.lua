@@ -1,5 +1,4 @@
 return function()
-	require("completion.mason").setup()
 	require("completion.mason-lspconfig").setup()
 
 	local opts = {
