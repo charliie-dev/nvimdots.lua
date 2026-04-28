@@ -2,9 +2,8 @@ local tool = {}
 
 tool["monaqa/dial.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	keys = { { "<leader>=" }, { "<leader>-" } },
 	config = require("tool.dial"),
-	dependencies = "nvim-lua/plenary.nvim",
 }
 tool["tpope/vim-fugitive"] = {
 	lazy = true,
@@ -49,7 +48,7 @@ tool["folke/trouble.nvim"] = {
 }
 tool["folke/which-key.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	event = "VeryLazy",
 	config = require("tool.which-key"),
 }
 tool["mikavilpas/yazi.nvim"] = {
