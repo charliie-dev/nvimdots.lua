@@ -50,6 +50,24 @@ return function()
 				close = "<Esc>",
 			},
 		},
+		-- Finder: https://nvimdev.github.io/lspsaga/finder/
+		finder = {
+			max_height = 0.5,
+			left_width = 0.3,
+			default = "ref+imp",
+			layout = "float",
+			silent = false,
+			keys = {
+				shuttle = "[]",
+				toggle_or_open = "<CR>",
+				vsplit = "v",
+				split = "s",
+				tabe = "t",
+				tabnew = "T",
+				quit = "q",
+				close = "<Esc>",
+			},
+		},
 		-- Code Action: https://nvimdev.github.io/lspsaga/codeaction/
 		code_action = {
 			num_shortcut = true,
