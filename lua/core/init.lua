@@ -49,15 +49,22 @@ local clipboard_config = function()
 			cache_enabled = 0,
 		}
 	elseif os.getenv("SSH_TTY") then
+		local osc52 = require("vim.ui.clipboard.osc52")
+		-- Windows Terminal does not implement OSC 52 read; fall back to the
+		-- unnamed register so `"+p` does not block waiting for a reply.
+		local is_wt = os.getenv("WT_SESSION") ~= nil
+		local register_paste = function()
+			return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+		end
 		vim.g.clipboard = {
 			name = "OSC 52",
 			copy = {
-				["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-				["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+				["+"] = osc52.copy("+"),
+				["*"] = osc52.copy("*"),
 			},
 			paste = {
-				["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-				["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+				["+"] = is_wt and register_paste or osc52.paste("+"),
+				["*"] = is_wt and register_paste or osc52.paste("*"),
 			},
 		}
 	elseif os.getenv("TMUX") then
