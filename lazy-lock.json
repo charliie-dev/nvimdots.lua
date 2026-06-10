@@ -66,7 +66,7 @@
   "sniprun": { "branch": "master", "commit": "6416f98924018385f7f5ebfe8dc773a4482426e4" },
   "sops.nvim": { "branch": "main", "commit": "5946285744ffef26b792839d9130135365bfa8ea" },
   "suda.vim": { "branch": "master", "commit": "c492741b4679b3cdd4d9e34138209784e061d916" },
-  "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "680762989e8b05a72e90769959d0fb9a557e6917" },
+  "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "e930d0a46031645040d5492595b46cdf6ab3514f" },
   "todo-comments.nvim": { "branch": "main", "commit": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668" },
   "tree-sitter-d2": { "branch": "main", "commit": "200434618a6bede20ebd4982aa4d4f1edeb0b5c1" },
   "tree-sitter-ghostty": { "branch": "main", "commit": "7f41507014534e5f72d16e4639c0346d0adb8054" },
