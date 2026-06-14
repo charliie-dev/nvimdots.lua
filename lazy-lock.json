@@ -3,7 +3,7 @@
   "advanced-git-search.nvim": { "branch": "main", "commit": "cead1214709226bdef89093f0c58964fb65c81e8" },
   "blink-cmp-conventional-commits": { "branch": "main", "commit": "28f46593ef5e03ba7525bdf6075be0c56c6ceb55" },
   "blink-cmp-env": { "branch": "main", "commit": "6b147eca6fa5975d29f5508aff24e9a9acb6a1f5" },
-  "blink-ripgrep.nvim": { "branch": "main", "commit": "4491907dd46f6ae7a87ccc9f7a34b3d7c8616fc4" },
+  "blink-ripgrep.nvim": { "branch": "main", "commit": "a71468a7c271999c2b76d633d750a6bdf29e32ec" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
   "bufferline.nvim": { "branch": "main", "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" },
   "bullets.vim": { "branch": "master", "commit": "3f667eeca58bd4ba411b41edefef51e7fed1a2b1" },
@@ -72,7 +72,7 @@
   "tree-sitter-ghostty": { "branch": "main", "commit": "7f41507014534e5f72d16e4639c0346d0adb8054" },
   "trouble.nvim": { "branch": "main", "commit": "bd67efe408d4816e25e8491cc5ad4088e708a69a" },
   "vim-fugitive": { "branch": "master", "commit": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0" },
-  "vimtex": { "branch": "master", "commit": "24e229914182ff301496a3e2c4214b28c4928d3f" },
+  "vimtex": { "branch": "master", "commit": "fedb7ffc1bebf254cc74e7419c3a5930b6719065" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" },
   "yazi.nvim": { "branch": "main", "commit": "8a26074568790bb5c73e56eb871a74709a13dd43" }
 }
