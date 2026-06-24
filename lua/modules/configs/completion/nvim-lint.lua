@@ -26,6 +26,53 @@ return function()
 		{ source = "markdownlint" }
 	)
 
+	-- shuck: lints shell embedded in GitHub Actions workflows (the `run:` blocks).
+	-- Complements actionlint, which validates workflow syntax/expressions but not
+	-- the embedded shell. Standalone sh/bash/zsh diagnostics already come from the
+	-- shuck LSP server (see servers/shuck.lua), so shuck is only added to
+	-- `yaml.github` here, not to `sh`/`zsh`. `shuck check` has no working stdin
+	-- mode (it needs a project root), so run file-based and parse JSON output.
+	lint.linters.shuck = {
+		name = "shuck",
+		cmd = "shuck",
+		stdin = false,
+		append_fname = true,
+		args = { "check", "--output-format", "json" },
+		stream = "stdout",
+		ignore_exitcode = true, -- exit code 1 means violations were found
+		parser = function(output, _)
+			local diagnostics = {}
+			if output == nil or output == "" then
+				return diagnostics
+			end
+			local ok, decoded = pcall(vim.json.decode, output)
+			if not ok or type(decoded) ~= "table" then
+				return diagnostics
+			end
+			local severities = {
+				error = vim.diagnostic.severity.ERROR,
+				warning = vim.diagnostic.severity.WARN,
+				info = vim.diagnostic.severity.INFO,
+				hint = vim.diagnostic.severity.HINT,
+			}
+			for _, item in ipairs(decoded) do
+				local loc = item.location or {}
+				local endloc = item.end_location or {}
+				table.insert(diagnostics, {
+					lnum = (loc.row or 1) - 1,
+					col = (loc.column or 1) - 1,
+					end_lnum = (endloc.row or loc.row or 1) - 1,
+					end_col = (endloc.column or loc.column or 1) - 1,
+					severity = severities[item.severity] or vim.diagnostic.severity.WARN,
+					code = item.code,
+					message = item.message,
+					source = "shuck",
+				})
+			end
+			return diagnostics
+		end,
+	}
+
 	lint.linters_by_ft = {
 		dockerfile = { "hadolint" },
 		go = { "golangcilint" },
@@ -38,7 +85,7 @@ return function()
 		typescript = { "oxlint" },
 		typescriptreact = { "oxlint" },
 		systemd = { "systemdlint" },
-		["yaml.github"] = { "actionlint" },
+		["yaml.github"] = { "actionlint", "shuck" },
 		zsh = { "zsh" },
 	}
 

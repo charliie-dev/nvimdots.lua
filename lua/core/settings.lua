@@ -91,6 +91,7 @@ settings["lsp_inlayhints"] = false
 settings["external_lsp_deps"] = {
 	nixd = "nixd",
 	nil_ls = "nil",
+	shuck = "shuck", -- shell linter/formatter/LSP (Rust); installed via mise, not Mason
 	-- dartls = "dart",
 }
 
