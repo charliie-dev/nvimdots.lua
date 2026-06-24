@@ -226,12 +226,14 @@ return function()
 		end
 	end, { nargs = 1, complete = "filetype" })
 
-	-- Auto stop bashls for .env files (migrated from null-ls config)
+	-- Auto stop shell LSPs for .env files (migrated from null-ls config).
+	-- Both bashls and shuck attach to .env's `sh` filetype and only add noise there.
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(event)
 			local bufname = vim.api.nvim_buf_get_name(event.buf)
 			if bufname:match("%.env$") or bufname:match("%.env%.") then
 				vim.cmd.LspStop("bashls")
+				vim.cmd.LspStop("shuck")
 			end
 		end,
 	})
