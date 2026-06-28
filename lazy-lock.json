@@ -3,7 +3,7 @@
   "advanced-git-search.nvim": { "branch": "main", "commit": "cead1214709226bdef89093f0c58964fb65c81e8" },
   "blink-cmp-conventional-commits": { "branch": "main", "commit": "28f46593ef5e03ba7525bdf6075be0c56c6ceb55" },
   "blink-cmp-env": { "branch": "main", "commit": "6b147eca6fa5975d29f5508aff24e9a9acb6a1f5" },
-  "blink-ripgrep.nvim": { "branch": "main", "commit": "13023b933455725cc46cac2d80c988e50d15a1bf" },
+  "blink-ripgrep.nvim": { "branch": "main", "commit": "56796f7bdaa92b2b4c31675157da7ab2a0ce3ab3" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
   "bufferline.nvim": { "branch": "main", "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" },
   "bullets.vim": { "branch": "master", "commit": "3f667eeca58bd4ba411b41edefef51e7fed1a2b1" },
