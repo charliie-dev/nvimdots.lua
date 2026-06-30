@@ -1,6 +1,10 @@
 return function()
 	require("modules.utils").gen_lspkind_hl()
 
+	-- Only align kind icons to catppuccin's set when catppuccin is the active
+	-- colorscheme; other themes fall back to Lspsaga's built-in icons untouched.
+	local has_catppuccin = vim.g.colors_name:find("catppuccin") ~= nil
+
 	local icons = {
 		cmp = require("modules.utils.icons").get("cmp", true),
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
@@ -150,7 +154,7 @@ return function()
 			actionfix = icons.ui.Spell,
 			lines = { "┗", "┣", "┃", "━", "┏" },
 			imp_sign = icons.kind.Implementation,
-			kind = require("catppuccin.groups.integrations.lsp_saga").custom_kind(),
+			kind = has_catppuccin and require("catppuccin.groups.integrations.lsp_saga").custom_kind() or nil,
 		},
 		-- Scrolling Keymaps: https://nvimdev.github.io/lspsaga/misc/#scrolling-keymaps
 		scroll_preview = {
