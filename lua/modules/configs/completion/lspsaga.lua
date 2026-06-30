@@ -1,10 +1,6 @@
 return function()
 	require("modules.utils").gen_lspkind_hl()
 
-	-- Only align kind icons to catppuccin's set when catppuccin is the active
-	-- colorscheme; other themes fall back to Lspsaga's built-in icons untouched.
-	local has_catppuccin = (vim.g.colors_name or ""):find("catppuccin") ~= nil
-
 	local icons = {
 		cmp = require("modules.utils.icons").get("cmp", true),
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
@@ -154,7 +150,46 @@ return function()
 			actionfix = icons.ui.Spell,
 			lines = { "┗", "┣", "┃", "━", "┏" },
 			imp_sign = icons.kind.Implementation,
-			kind = has_catppuccin and require("catppuccin.groups.integrations.lsp_saga").custom_kind() or nil,
+			kind = {
+				-- Kind
+				Class = { icons.kind.Class, "LspKindClass" },
+				Constant = { icons.kind.Constant, "LspKindConstant" },
+				Constructor = { icons.kind.Constructor, "LspKindConstructor" },
+				Enum = { icons.kind.Enum, "LspKindEnum" },
+				EnumMember = { icons.kind.EnumMember, "LspKindEnumMember" },
+				Event = { icons.kind.Event, "LspKindEvent" },
+				Field = { icons.kind.Field, "LspKindField" },
+				File = { icons.kind.File, "LspKindFile" },
+				Function = { icons.kind.Function, "LspKindFunction" },
+				Interface = { icons.kind.Interface, "LspKindInterface" },
+				Key = { icons.kind.Keyword, "LspKindKey" },
+				Method = { icons.kind.Method, "LspKindMethod" },
+				Module = { icons.kind.Module, "LspKindModule" },
+				Namespace = { icons.kind.Namespace, "LspKindNamespace" },
+				Operator = { icons.kind.Operator, "LspKindOperator" },
+				Package = { icons.kind.Package, "LspKindPackage" },
+				Property = { icons.kind.Property, "LspKindProperty" },
+				Struct = { icons.kind.Struct, "LspKindStruct" },
+				TypeParameter = { icons.kind.TypeParameter, "LspKindTypeParameter" },
+				Variable = { icons.kind.Variable, "LspKindVariable" },
+				-- Type
+				Array = { icons.type.Array, "LspKindArray" },
+				Boolean = { icons.type.Boolean, "LspKindBoolean" },
+				Null = { icons.type.Null, "LspKindNull" },
+				Number = { icons.type.Number, "LspKindNumber" },
+				Object = { icons.type.Object, "LspKindObject" },
+				String = { icons.type.String, "LspKindString" },
+				-- ccls-specific icons.
+				TypeAlias = { icons.kind.TypeAlias, "LspKindTypeAlias" },
+				Parameter = { icons.kind.Parameter, "LspKindParameter" },
+				StaticMethod = { icons.kind.StaticMethod, "LspKindStaticMethod" },
+				-- Microsoft-specific icons.
+				Text = { icons.kind.Text, "LspKindText" },
+				Snippet = { icons.kind.Snippet, "LspKindSnippet" },
+				Folder = { icons.kind.Folder, "LspKindFolder" },
+				Unit = { icons.kind.Unit, "LspKindUnit" },
+				Value = { icons.kind.Value, "LspKindValue" },
+			},
 		},
 		-- Scrolling Keymaps: https://nvimdev.github.io/lspsaga/misc/#scrolling-keymaps
 		scroll_preview = {
