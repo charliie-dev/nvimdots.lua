@@ -3,7 +3,7 @@ return function()
 
 	-- Only align kind icons to catppuccin's set when catppuccin is the active
 	-- colorscheme; other themes fall back to Lspsaga's built-in icons untouched.
-	local has_catppuccin = vim.g.colors_name:find("catppuccin") ~= nil
+	local has_catppuccin = (vim.g.colors_name or ""):find("catppuccin") ~= nil
 
 	local icons = {
 		cmp = require("modules.utils.icons").get("cmp", true),
