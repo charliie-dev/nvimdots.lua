@@ -84,18 +84,12 @@ settings["external_browser"] = "chrome-cli open"
 ---@type boolean
 settings["lsp_inlayhints"] = false
 
--- LSPs installed outside Mason (e.g. via system package manager).
--- These will be configured but not installed by Mason.
--- Key: lspconfig server name, Value: executable name to check availability.
----@type table<string, string>
-settings["external_lsp_deps"] = {
-	nixd = "nixd",
-	nil_ls = "nil",
-	shuck = "shuck", -- shell linter/formatter/LSP (Rust); installed via mise, not Mason
-	-- dartls = "dart",
-}
-
--- LSPs to install during bootstrap.
+-- Language servers to enable. One flat list — no need to decide up front whether
+-- a server is "Mason-managed" or "system-provided". At runtime each entry is
+-- resolved discovery-first: if its binary is already on $PATH (system / Nix /
+-- Mason) it is used as-is; otherwise Mason installs it when it ships a package;
+-- otherwise the user is asked to install it manually. See `modules.utils.tools`
+-- and `completion/mason-lspconfig.lua`.
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lsp
 ---@type string[]
 settings["lsp_deps"] = {
@@ -111,7 +105,10 @@ settings["lsp_deps"] = {
 	"lua_ls",
 	"marksman",
 	"neocmake",
+	"nil_ls", -- Nix LSP; resolved from $PATH first (Nix-provided), else Mason-installed
+	"nixd", -- Nix LSP; resolved from $PATH first (Nix-provided), else Mason-installed
 	"ruff",
+	"shuck", -- shell linter/formatter/LSP (Rust); installed via mise, not Mason
 	"systemd_lsp",
 	"terraformls",
 	"tflint",
