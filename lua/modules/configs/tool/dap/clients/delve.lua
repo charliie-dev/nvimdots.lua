@@ -4,14 +4,26 @@ return function()
 	local dap = require("dap")
 	local utils = require("modules.utils.dap")
 
-	if not require("mason-registry").is_installed("go-debug-adapter") then
+	-- go-debug-adapter is a node-based adapter that in practice ships via Mason.
+	-- Mason is optional here: guard the registry require and $MASON so a Mason-less
+	-- setup degrades gracefully (no auto-install, adapter left unset) instead of
+	-- hard-erroring — mirroring the discovery-first guarding in `python.lua`.
+	local has_registry, registry = pcall(require, "mason-registry")
+	if has_registry and not registry.is_installed("go-debug-adapter") then
+		-- get_package throws when the name isn't in the registry (registry skew).
+		-- Guard it so that turns into a clear, actionable error the resolver's pcall
+		-- can surface, rather than a generic "missing" with the install path skipped.
+		local ok, go_dbg = pcall(registry.get_package, "go-debug-adapter")
+		if not ok then
+			error("go-debug-adapter is not in the Mason registry (registry outdated?); run :MasonUpdate")
+		end
+
 		vim.notify(
 			"Automatically installing `go-debug-adapter` for go debugging",
 			vim.log.levels.INFO,
 			{ title = "nvim-dap" }
 		)
 
-		local go_dbg = require("mason-registry").get_package("go-debug-adapter")
 		go_dbg:install():once(
 			"closed",
 			vim.schedule_wrap(function()
@@ -20,14 +32,32 @@ return function()
 				end
 			end)
 		)
+		-- The install was just kicked off (user informed via the INFO notification
+		-- above) and its bundle won't exist until it finishes. Configure on the next
+		-- launch rather than erroring below and being flagged "missing" while it's
+		-- already installing.
+		return
 	end
 
+	-- Reached only when Mason is absent or go-debug-adapter is already installed.
+	-- Resolve the node bundle; if it isn't readable ($MASON unset, or the package
+	-- reported installed but its bundle is missing/moved/corrupted), error out
+	-- instead of returning with `dap.adapters.go` unset. The resolver in
+	-- `tool/dap/init.lua` runs this under pcall, so throwing lets it mark `delve`
+	-- as missing rather than silently leaving Go debugging broken.
+	local mason_root = vim.env.MASON
+	local adapter_js = mason_root and (mason_root .. "/packages/go-debug-adapter/extension/dist/debugAdapter.js")
+	if not (adapter_js and vim.fn.filereadable(adapter_js) == 1) then
+		error(
+			"go-debug-adapter bundle not found"
+				.. (adapter_js and (" at " .. adapter_js) or " ($MASON is unset)")
+				.. "; install `go-debug-adapter` via Mason or provide its bundle on this path"
+		)
+	end
 	dap.adapters.go = {
 		type = "executable",
 		command = "node",
-		args = {
-			vim.env.MASON .. "/packages/go-debug-adapter" .. "/extension/dist/debugAdapter.js",
-		},
+		args = { adapter_js },
 	}
 	dap.configurations.go = {
 		{
