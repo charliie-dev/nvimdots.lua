@@ -128,7 +128,7 @@ in
 
       buildEnv = [
         ''CPATH=''${CPATH:+''${CPATH}:}${neovim-build-deps}/include''
-        ''CPLUS_INCLUDE_PATH=''${CPLUS_INCLUDE_PATH:+''${CPLUS_INCLUDE_PATH}:}:${neovim-build-deps}/include/c++/v1''
+        ''CPLUS_INCLUDE_PATH=''${CPLUS_INCLUDE_PATH:+''${CPLUS_INCLUDE_PATH}:}${neovim-build-deps}/include/c++/v1''
         ''LD_LIBRARY_PATH=''${LD_LIBRARY_PATH:+''${LD_LIBRARY_PATH}:}${neovim-build-deps}/lib''
         ''LIBRARY_PATH=''${LIBRARY_PATH:+''${LIBRARY_PATH}:}${neovim-build-deps}/lib''
         ''NIX_LD_LIBRARY_PATH=''${NIX_LD_LIBRARY_PATH:+''${NIX_LD_LIBRARY_PATH}:}${neovim-build-deps}/lib''
@@ -147,7 +147,6 @@ in
           "nvim/init.lua".source = ../../init.lua;
           "nvim/lua".source = ../../lua;
           "nvim/snips".source = ../../snips;
-          "nvim/tutor".source = ../../tutor;
         }
         // optionalAttrs cfg.bindLazyLock {
           "nvim/lazy-lock.json".source = ../../lazy-lock.json;
@@ -187,7 +186,6 @@ in
           extraPackages =
             [
               # Dependent packages used by default plugins
-              pkgs.doq
               pkgs.tree-sitter
             ]
             ++ optionals cfg.withBuildTools [
@@ -214,8 +212,6 @@ in
 
           extraPython3Packages =
             ps: with ps; [
-              docformatter
-              isort
               pynvim
             ];
         }
