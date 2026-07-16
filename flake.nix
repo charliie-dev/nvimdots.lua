@@ -13,9 +13,10 @@
   };
 
   outputs =
-    inputs@{ self
-    , flake-parts
-    , ...
+    inputs@{
+      self,
+      flake-parts,
+      ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
@@ -29,9 +30,10 @@
         "aarch64-darwin"
       ];
       perSystem =
-        { pkgs
-        , system
-        , ...
+        {
+          pkgs,
+          system,
+          ...
         }:
         {
           packages = {
