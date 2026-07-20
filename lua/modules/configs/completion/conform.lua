@@ -40,6 +40,18 @@ return function()
 		return false
 	end
 
+	---The gates a buffer must pass before an automatic format, grouped into one
+	---named predicate for the format_on_save callback's readability.
+	---@param bufnr integer
+	---@return boolean
+	local function autoformat_allowed(bufnr)
+		return format_on_save_enabled
+			and block_list[vim.bo[bufnr].filetype] ~= true
+			and not is_disabled_workspace(bufnr)
+			and not vim.g.disable_autoformat
+			and not vim.b[bufnr].disable_autoformat
+	end
+
 	---Format only git-modified lines using gitsigns hunks + conform range format
 	---@param bufnr integer
 	---@return boolean @true if modifications were formatted
@@ -87,6 +99,8 @@ return function()
 		return true
 	end
 
+	local tools = require("modules.utils.tools")
+
 	require("modules.utils").load_plugin("conform", {
 		default_format_opts = {
 			timeout_ms = format_timeout,
@@ -132,8 +146,9 @@ return function()
 				args = { "fix", "--stdin" },
 				stdin = true,
 			},
-			-- prettier: stdin mode does not work under bun's node shim,
-			-- so use --write (file-based) mode instead.
+			-- prettier: stdin is broken under bun's node shim, so use --write on
+			-- conform's temp copy (`stdin = false` points $FILENAME at a
+			-- `.conform.$RANDOM.*` copy; the real file is never touched).
 			prettier = {
 				command = "prettier",
 				args = { "--write", "$FILENAME" },
@@ -141,18 +156,8 @@ return function()
 			},
 		},
 		format_on_save = format_on_save_enabled and function(bufnr)
-			-- Check disabled filetypes
-			if block_list[vim.bo[bufnr].filetype] == true then
-				return
-			end
-
-			-- Check disabled workspaces
-			if is_disabled_workspace(bufnr) then
-				return
-			end
-
-			-- Check global toggle
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+			-- Disabled filetypes, disabled workspaces, and the global/buffer toggles
+			if not autoformat_allowed(bufnr) then
 				return
 			end
 
@@ -167,6 +172,47 @@ return function()
 			return {}
 		end or false,
 	})
+
+	-- Make Mason's bin dir resolvable BEFORE the replayed save formats — a bare
+	-- Mason formatter binary must spawn — so no per-formatter command rewrite is
+	-- needed. Idempotent; the resolver calls it again itself.
+	tools.ensure_mason_on_path()
+	-- Resolve `formatter_deps` (conform formatter names) discovery-first against
+	-- conform's own registry, so a missing formatter is installed / reported.
+	-- The probe only drives install/warn — nothing on the save path reads it —
+	-- so the whole resolve moves off the BufWritePre tick that lazy-loaded
+	-- conform instead of delaying the first save behind it.
+	vim.schedule(function()
+		tools.resolve_runtime_tools("conform.nvim", settings.formatter_deps, function(name)
+			-- get_formatter_config is conform's @private API; if dropped, degrade to
+			-- "resolves itself" rather than misreporting every formatter as unknown.
+			local conform = require("conform")
+			if type(conform.get_formatter_config) ~= "function" then
+				return { binary = nil }
+			end
+			-- get_formatter_config runs a function-form override directly, so pcall keeps a
+			-- throwing override (a broken config) from being misread as an unknown name.
+			local ok, config, err = pcall(conform.get_formatter_config, name)
+			if not ok then
+				return { broken = tostring(config) }
+			end
+			if config then
+				-- A function-form command resolves per buffer at format time (e.g. the
+				-- builtin from_node_modules): treat it as self-resolving rather than
+				-- evaluating it for a representative binary — a node_modules command
+				-- shouldn't map to a Mason install anyway.
+				if type(config.command) == "function" then
+					return { binary = nil }
+				end
+				return { binary = config.command }
+			end
+			-- (nil, err) is a real formatter with a broken config; bare nil is an unknown name.
+			if type(err) == "string" then
+				return { broken = err }
+			end
+			return nil
+		end)
+	end)
 
 	-- User commands
 	vim.api.nvim_create_user_command("Format", function(args)
