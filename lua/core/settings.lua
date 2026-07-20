@@ -250,4 +250,35 @@ settings["dashboard_image"] = {
 	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⠿⢿⠿⠷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
 }
 
-return require("modules.utils").extend_config(settings, "user.settings")
+local merged = require("modules.utils").extend_config(settings, "user.settings")
+
+-- Migration guard: the discovery-first refactor removed this key; a stale
+-- user/settings.lua would merge it in and feed nothing — its servers would
+-- vanish without a word. (Scheduled: the notifier plugin isn't loaded this
+-- early; the default notify still lands in :messages.)
+if merged.external_lsp_deps ~= nil then
+	-- The removed setting was a MAP of server name -> executable name: tell
+	-- the user to move the KEYS and list them (moving a value like "nil"
+	-- instead of the key "nil_ls" would land an invalid lsp_deps entry).
+	local keys = {}
+	if type(merged.external_lsp_deps) == "table" then
+		for server in pairs(merged.external_lsp_deps) do
+			keys[#keys + 1] = tostring(server)
+		end
+		table.sort(keys)
+	end
+	local names = #keys > 0 and (" (" .. table.concat(keys, ", ") .. ")") or ""
+	vim.schedule(function()
+		vim.notify(
+			"`external_lsp_deps` was removed: non-Mason servers are now discovered\n"
+				.. "from $PATH. Move its KEYS"
+				.. names
+				.. " — the server names, not the\n"
+				.. "executable values — into `lsp_deps` in user/settings.lua.",
+			vim.log.levels.WARN,
+			{ title = "core.settings" }
+		)
+	end)
+end
+
+return merged
