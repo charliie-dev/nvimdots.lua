@@ -29,6 +29,13 @@ M.setup = function()
 
 	-- Formatter/linter resolution lives in conform.lua and nvim-lint.lua (against their
 	-- own registrations); Mason here is UI-only / lazy install fallback.
+
+	-- A user-driven install (:MasonInstall / the :Mason UI) must finish any
+	-- pending resolver hand-off even when no resolver ever loaded the registry.
+	local ok, registry = pcall(require, "mason-registry")
+	if ok then
+		require("modules.utils.tools").attach_registry_events(registry)
+	end
 end
 
 return M

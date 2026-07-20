@@ -302,6 +302,8 @@ local function missing_collector(title, timeout_ms)
 					.. "Install them / ensure they are on $PATH, or check their configuration\n"
 					.. "for errors:\n  • "
 					.. table.concat(lines, "\n  • ")
+					.. "\n\nMason installs are picked up automatically; after installing a tool\n"
+					.. "outside Mason, run :ToolsRetry or restart Neovim."
 			end
 			if #unknown_new > 0 then
 				table.sort(unknown_new)
@@ -361,6 +363,12 @@ local function missing_collector(title, timeout_ms)
 	return {
 		mark = add,
 		mark_unknown = add_unknown,
+		---An install tracked here whose "closed" callback hasn't run yet (and
+		---whose deadline hasn't settled it): such a name is owned by that
+		---callback, so hand-off retries leave it alone.
+		is_unsettled = function(name)
+			return unsettled[name] ~= nil
+		end,
 		track = function(pkg, name, recheck, on_ready, fail_reason)
 			-- Attach to an in-flight OPEN install handle instead of starting a
 			-- duplicate (install() asserts; once("closed") never fires on a closed one).
@@ -600,6 +608,136 @@ end
 -- per filetype) aggregates one warning instead of one per batch.
 local collectors_by_title = {}
 
+-- Install hand-off: resolve() sessions whose deps are still waiting for a tool
+-- to appear. Each entry pairs a spec with its pending set so a later Mason
+-- install event or :ToolsRetry can finish the configure without a restart.
+local sessions = {}
+
+---Deregister a session once nothing is pending (leak-free bookkeeping). Sole
+---owner of removal — called from every path that empties a pending set, so
+---iterations over `sessions` never race a second remover.
+---@param session table
+local function drop_session_if_done(session)
+	if next(session.pending) ~= nil then
+		return
+	end
+	for index = #sessions, 1, -1 do
+		if sessions[index] == session then
+			table.remove(sessions, index)
+			return
+		end
+	end
+end
+
+---Gated late-configure across sessions: for every pending name accepted by
+---`eligible`, run the session's configure — at most one SUCCESS per name (the
+---pending set is the gate; a failure keeps the name recoverable) — and report
+---each subsystem's batch in one INFO. An emptied session drops out via the
+---configure path itself (drop_session_if_done); descending order keeps the
+---iteration safe across that removal.
+---@param eligible fun(session: table, name: string): boolean
+local function retry_pending(eligible)
+	local configured_by_title = {}
+	for index = #sessions, 1, -1 do
+		local session = sessions[index]
+		for _, name in ipairs(vim.tbl_keys(session.pending)) do
+			-- Re-check pending: an earlier name's configure may have consumed it.
+			if session.pending[name] ~= nil and eligible(session, name) and session.configure(name) then
+				local bucket = configured_by_title[session.title] or {}
+				bucket[#bucket + 1] = name
+				configured_by_title[session.title] = bucket
+			end
+		end
+	end
+	for title, names in pairs(configured_by_title) do
+		table.sort(names)
+		vim.notify("Configured after install: " .. table.concat(names, ", "), vim.log.levels.INFO, { title = title })
+	end
+end
+
+-- Attached once per session lifetime; pcall guards mason-registry API drift
+-- (no events = status quo: the tool is picked up on the next launch).
+local registry_events_attached = false
+
+---Subscribe to Mason install successes so a package installed mid-session by
+---ANY means (resolver-started, :MasonInstall, the :Mason UI) finishes the
+---pending configure of every subsystem that waited for it. Never require()s
+---mason-registry itself — callers pass a registry they already hold, keeping
+---"a fully-provisioned setup never loads Mason" intact.
+---@param registry table|nil @The mason-registry module (or nil).
+function M.attach_registry_events(registry)
+	if registry_events_attached or type(registry) ~= "table" or type(registry.on) ~= "function" then
+		return
+	end
+	local attached = pcall(function()
+		registry:on(
+			"package:install:success",
+			-- The emitter fires from the install handle's lifecycle (fast event
+			-- context): hop to the main loop before touching consumer configs.
+			vim.schedule_wrap(function(pkg)
+				local pkg_name = type(pkg) == "table" and type(pkg.name) == "string" and pkg.name or nil
+				if not pkg_name then
+					return
+				end
+				retry_pending(function(session, name)
+					-- An install still in flight is owned by its closed callback.
+					if session.is_unsettled(name) then
+						return false
+					end
+					local ok, mapped = pcall(session.spec.package_of, name, registry)
+					if ok and mapped == pkg_name then
+						return true
+					end
+					local bins_ok, bins = pcall(session.spec.binaries_of, name, nil)
+					return bins_ok and M.find_executable(bins) ~= nil
+				end)
+			end)
+		)
+	end)
+	registry_events_attached = attached
+end
+
+---Re-attempt every pending dep whose tool has since appeared — the manual
+---hand-off entry (:ToolsRetry) for installs done outside Mason (mise/nix/npm).
+function M.retry_missing()
+	retry_pending(function(session, name)
+		-- An install still in flight is owned by its closed callback.
+		if session.is_unsettled(name) then
+			return false
+		end
+		local spec = session.spec
+		local bins_ok, bins = pcall(spec.binaries_of, name, nil)
+		if bins_ok and M.find_executable(bins) ~= nil then
+			return true
+		end
+		-- Function-cmd LSP servers (jsonls/yamlls) declare no bare binary:
+		-- derive it from the Mason package spec even when the binary itself was
+		-- installed outside Mason.
+		local registry = session.resolve_registry()
+		if registry then
+			local ok, pkg_name = pcall(spec.package_of, name, registry)
+			if ok and type(pkg_name) == "string" then
+				local pkg_ok, pkg = pcall(registry.get_package, pkg_name)
+				if pkg_ok and type(pkg) == "table" then
+					local pkg_bins_ok, pkg_bins = pcall(spec.binaries_of, name, pkg)
+					if pkg_bins_ok and M.find_executable(pkg_bins) ~= nil then
+						return true
+					end
+				end
+			end
+		end
+		-- Only self-VALIDATING configs may retry on config evidence alone: their
+		-- configure re-checks the tool and a still-missing one fails the attempt,
+		-- keeping the name pending. A generic local config (LSP) would instead
+		-- enable a server whose binary is still absent.
+		if spec.local_config_mode ~= "validates" or type(spec.has_local_config) ~= "function" then
+			return false
+		end
+		local has_ok, has = pcall(spec.has_local_config, name)
+		return has_ok and has == true
+	end)
+end
+
 ---Shared discovery-first resolution loop. For each entry in `spec.deps`:
 ---  0. Unrecognized name (`unknown_of`)           -> fix the config; never install.
 ---  1. Available (Mason-installed / on $PATH)     -> configure now.
@@ -651,6 +789,25 @@ function M.resolve(spec)
 	-- gets `late = true`.
 	local synchronous = true
 
+	-- This call's hand-off record: phase-2 leftovers park in `pending` until a
+	-- configure SUCCEEDS, so the Mason install event or :ToolsRetry can finish
+	-- them later; registered in `sessions` only when leftovers exist.
+	local session = {
+		title = spec.title,
+		spec = spec,
+		pending = {},
+		is_unsettled = collector.is_unsettled,
+		---The spec's registry (value or lazy thunk), resolved on demand.
+		resolve_registry = function()
+			local registry = spec.registry
+			if type(registry) == "function" then
+				local ok, resolved = pcall(registry)
+				registry = ok and resolved or nil
+			end
+			return type(registry) == "table" and registry or nil
+		end,
+	}
+
 	---Configure one tool; false plus the cleaned error when the config threw.
 	local function try_configure(name)
 		if type(spec.configure) ~= "function" then
@@ -663,13 +820,25 @@ function M.resolve(spec)
 		return false, error_reason(err)
 	end
 
-	-- Configure one tool, surfacing a config-time error in the aggregated warning.
+	-- Configure one tool, surfacing a config-time error in the aggregated
+	-- warning. Late calls race (install completion, the registry install event,
+	-- :ToolsRetry, a late refresh finish): `pending` is the gate — the first
+	-- SUCCESS clears it and later arrivals skip; a failure keeps the name
+	-- recoverable. Returns true only when the configure ran and succeeded.
 	local function do_configure(name)
-		local ok, reason = try_configure(name)
-		if not ok then
-			collector.mark(name, reason)
+		if not synchronous and session.pending[name] == nil then
+			return false
 		end
+		local ok, reason = try_configure(name)
+		if ok then
+			session.pending[name] = nil
+			drop_session_if_done(session)
+			return true
+		end
+		collector.mark(name, reason)
+		return false
 	end
+	session.configure = do_configure
 
 	-- Phase-1 "validates" failures, surfaced by phase 2 without re-running the
 	-- config; `false` = failed with no message.
@@ -727,6 +896,8 @@ function M.resolve(spec)
 	local function resolve_missing(name, registry)
 		-- Judged after the refresh: unknown_of may consult the Mason mapping.
 		if spec.unknown_of and spec.unknown_of(name) then
+			-- A typo can't be fixed by an install: drop it from the hand-off set.
+			session.pending[name] = nil
 			collector.mark_unknown(name)
 			return
 		end
@@ -776,6 +947,9 @@ function M.resolve(spec)
 		if spec.has_local_config and spec.has_local_config(name) then
 			do_configure(name)
 		elseif pkg_unknown and #spec.binaries_of(name, nil) == 0 then
+			-- A stale mapping can't be fixed by an install either: drop it from
+			-- the hand-off set like the unknown_of branch above.
+			session.pending[name] = nil
 			collector.mark_unknown(pkg_name == name and name or (pkg_name .. " (for " .. name .. ")"))
 		else
 			collector.mark(name)
@@ -804,6 +978,7 @@ function M.resolve(spec)
 					collector.mark(name, error_reason(handled))
 				elseif handled ~= true then
 					unresolved[#unresolved + 1] = name
+					session.pending[name] = true
 				end
 			end
 		end
@@ -813,6 +988,8 @@ function M.resolve(spec)
 			collector.done()
 			return
 		end
+		-- Leftovers exist: expose them to the install hand-off paths.
+		sessions[#sessions + 1] = session
 
 		-- Phase 2: resolve leftovers against the registry (value, nil, or lazy
 		-- thunk — only called here, so a fully-provisioned subsystem never loads
@@ -822,6 +999,10 @@ function M.resolve(spec)
 			local ok, resolved = pcall(registry)
 			registry = ok and resolved or nil
 		end
+		-- The registry is loaded anyway: make sure mid-session installs hand off.
+		if registry then
+			M.attach_registry_events(registry)
+		end
 		local function finish()
 			for _, name in ipairs(unresolved) do
 				local ok, err = pcall(resolve_missing, name, registry)
@@ -830,6 +1011,9 @@ function M.resolve(spec)
 				end
 			end
 			collector.done()
+			-- Unknown-name removals don't pass through do_configure: sweep here
+			-- so a fully-classified session doesn't linger in `sessions`.
+			drop_session_if_done(session)
 		end
 		if registry and type(registry.refresh) == "function" and not registry_bootstrapped(registry) then
 			-- A stalled refresh() never calls back: arm a REPORTING deadline. It
@@ -956,5 +1140,11 @@ function M.resolve_runtime_tools(title, deps, probe, configure)
 		end,
 	})
 end
+
+-- Manual hand-off entry for installs Mason can't announce (mise/nix/npm);
+-- pcall so a re-source of this module can't fail on the existing command.
+pcall(vim.api.nvim_create_user_command, "ToolsRetry", function()
+	M.retry_missing()
+end, { desc = "Retry configuring missing tools (pick up installs done outside Mason)" })
 
 return M
