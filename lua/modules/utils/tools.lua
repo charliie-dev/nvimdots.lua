@@ -568,12 +568,19 @@ end
 ---@param binary string @Executable name to look up.
 ---@return string|nil @Mason package name shipping that binary, or nil.
 local bin_to_package = nil
+-- Unfrozen scans stay re-buildable by design (self-heal after a late
+-- refresh), but within ONE event-loop tick nothing can change: memoize per
+-- tick so a batch of lookups decodes registry.json once, not N times.
+local unfrozen_index = nil
 local function package_for_binary(registry, binary)
 	-- Freeze the index only once the registry is FULLY bootstrapped:
 	-- get_all_package_specs() silently skips uninstalled sources, and a frozen
 	-- partial index would outlive resolve()'s re-refresh self-heal. (A source
 	-- appended at runtime after the freeze is out of scope.)
 	if bin_to_package == nil then
+		if unfrozen_index then
+			return unfrozen_index[binary]
+		end
 		local index = {}
 		local populated = false
 		local ok, specs = pcall(registry.get_all_package_specs)
@@ -592,7 +599,12 @@ local function package_for_binary(registry, binary)
 		if populated and registry_bootstrapped(registry) then
 			bin_to_package = index
 		else
-			-- Partial/uncertain scan: consult what was found, but don't cache it.
+			-- Partial/uncertain scan: consult what was found, keep it only for
+			-- the current tick.
+			unfrozen_index = index
+			vim.schedule(function()
+				unfrozen_index = nil
+			end)
 			return index[binary]
 		end
 	end
@@ -621,6 +633,11 @@ end
 ---re-checked for existence each call (the dir appears after the first install).
 ---@return string|nil
 local mason_root_dir = nil
+-- The user-override existence check is memoized separately from module_path's
+-- hit-only cache: it merely gates the default-dir guess below, and a user
+-- adding user/configs/mason mid-session needs a restart for a new root
+-- anyway — so unlike a general module miss, staleness here is harmless.
+local mason_override_absent = nil
 function M.mason_root()
 	if not mason_root_dir then
 		local settings = package.loaded["mason.settings"]
@@ -636,7 +653,10 @@ function M.mason_root()
 			-- Never require() mason.settings here — it lazy-loads all of mason.nvim
 			-- during a pure discovery probe, defeating "Mason optional".
 			local guess = vim.fn.stdpath("data") .. "/mason"
-			if not M.module_path("user.configs.mason") and vim.uv.fs_stat(guess) then
+			if mason_override_absent == nil then
+				mason_override_absent = M.module_path("user.configs.mason") == nil
+			end
+			if mason_override_absent and vim.uv.fs_stat(guess) then
 				return guess
 			end
 		end
