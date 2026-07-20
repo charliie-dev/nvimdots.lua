@@ -15,17 +15,34 @@ return function()
 	end
 
 	local client_config_cache = {}
-	---Load the first usable client config (user override, then repo preset) via
-	---the shared first-usable loader, memoized per adapter: the resolver consults
-	---it from several predicates (has_local_config, unknown_of) plus the handler,
-	---and an uncached miss would re-run a failed require each time.
+	---Load the first usable client config (user override, then repo preset),
+	---memoized per adapter: the resolver consults it from several predicates
+	---(has_local_config, unknown_of) plus the handler, and an uncached miss
+	---would re-run a failed require each time. First success wins outright (no
+	---merge-base semantics); a higher-precedence exists-but-broken candidate's
+	---reason survives alongside a lower-precedence success, so the handler can
+	---refuse to fall past a broken override (usable_or_raise raises it).
 	---@param name string
 	---@return any value, string|nil broken_reason, boolean any_exists, string|nil winner
 	local function load_client_config(name)
 		local cached = client_config_cache[name]
 		if not cached then
-			local value, broken_reason, any_exists, winner = tools.load_first_usable(client_modules(name), "nvim-dap")
-			cached = { value = value, broken_reason = broken_reason, any_exists = any_exists, winner = winner }
+			cached = { value = nil, broken_reason = nil, any_exists = false, winner = nil }
+			for _, module in ipairs(client_modules(name)) do
+				local ok, value, exists, reason = tools.load_module_or_report(module, "nvim-dap")
+				if ok then
+					cached.value = value
+					cached.winner = module
+					cached.any_exists = true
+					break
+				end
+				if exists then
+					cached.any_exists = true
+					if cached.broken_reason == nil then
+						cached.broken_reason = reason
+					end
+				end
+			end
 			client_config_cache[name] = cached
 		end
 		return cached.value, cached.broken_reason, cached.any_exists, cached.winner
