@@ -10,6 +10,16 @@ local user_lsp_configs = {}
 -- `user.configs.lsp` read of a not-yet-registered lsp_deps server sees the
 -- post-registration view regardless of install timing.
 local registration_trigger = nil
+-- Bridge set by setup(): drops a server's cached probe when a user op or a
+-- registration changes what the truth source resolves for it.
+local server_info_invalidate = nil
+-- Bridge set by setup(): the discovery pass, run AFTER `user.configs.lsp` so
+-- its runtime registrations are visible to the unknown/binary classification.
+local resolve_deps = nil
+-- User overrides run once per session: lsp.lua's config function is the only
+-- caller and lazy.nvim runs it once; a rerun could not undo the first pass's
+-- write-through ops anyway, so a second call is refused loudly instead.
+local overrides_ran = false
 
 ---Run `user.configs.lsp` with vim.lsp.config proxied to record per-server
 ---registrations. Reads forward to the real table — after triggering the dep's
@@ -17,7 +27,26 @@ local registration_trigger = nil
 ---base whether or not the server was installed yet. "*" is not recorded (core
 ---merges it at read time); the real table is always restored right after the
 ---pcall'd require (same silent-if-missing behavior as before).
+---
+---Supported surface for the user module: per-name operations only —
+---`vim.lsp.config[name]` reads, `vim.lsp.config(name, cfg)` calls and
+---`vim.lsp.config[name] = cfg` assignments (record/replay and the read
+---trigger exist for exactly these). Enumeration (pairs over the proxy,
+---core-private `_configs`) is out of contract: its visible set depends on
+---registration order by nature.
+---
+---Once per session: the ops write through to the real table, so a rerun
+---could not rebuild from a clean slate; changes need a restart.
 function M.run_user_lsp_overrides()
+	if overrides_ran then
+		vim.notify(
+			"user LSP overrides are applied once per session; restart Neovim to apply changes",
+			vim.log.levels.WARN,
+			{ title = "nvim-lspconfig" }
+		)
+		return
+	end
+	overrides_ran = true
 	local real = vim.lsp.config
 	local proxy
 	proxy = setmetatable({}, {
@@ -38,6 +67,11 @@ function M.run_user_lsp_overrides()
 			if type(key) == "string" and key ~= "*" then
 				-- Assignment replaces the whole config: supersede earlier recordings.
 				user_lsp_configs[key] = { { replace = true, cfg = value } }
+				-- The op may have changed what the truth source resolves (cmd
+				-- included): drop the cached probe.
+				if server_info_invalidate then
+					server_info_invalidate(key)
+				end
 			end
 		end,
 		__call = function(_, name, cfg)
@@ -46,12 +80,25 @@ function M.run_user_lsp_overrides()
 				local list = user_lsp_configs[name] or {}
 				list[#list + 1] = { cfg = cfg }
 				user_lsp_configs[name] = list
+				if server_info_invalidate then
+					server_info_invalidate(name)
+				end
 			end
 		end,
 	})
 	vim.lsp.config = proxy
 	pcall(require, "user.configs.lsp")
 	vim.lsp.config = real
+end
+
+---The discovery pass, split out of setup(): lsp.lua runs it AFTER
+---`user.configs.lsp`, so runtime registrations from the user module exist
+---before the unknown/binary classification judges the deps. No-op until
+---setup() has installed the pass.
+function M.resolve_deps()
+	if resolve_deps then
+		resolve_deps()
+	end
 end
 
 M.setup = function()
@@ -81,30 +128,6 @@ M.setup = function()
 		return { "user.configs.lsp-servers." .. name, "completion.servers." .. name }
 	end
 
-	-- name -> lsp/<name>.lua paths in rtp order, built by ONE glob: reading
-	-- vim.lsp.config[name] for a not-yet-enabled server rescans the rtp per name.
-	local lsp_runtime_files = nil
-	---@param name string
-	---@return string[]|nil
-	local function lsp_files_of(name)
-		if lsp_runtime_files == nil then
-			lsp_runtime_files = {}
-			for _, path in ipairs(vim.api.nvim_get_runtime_file("lsp/*.lua", true)) do
-				-- Single segment only: a nested lsp/<dir>/<file>.lua is not a server.
-				local server = path:match("[/\\]lsp[/\\]([^/\\]+)%.lua$")
-				if server then
-					local files = lsp_runtime_files[server]
-					if not files then
-						files = {}
-						lsp_runtime_files[server] = files
-					end
-					files[#files + 1] = path
-				end
-			end
-		end
-		return lsp_runtime_files[name]
-	end
-
 	vim.diagnostic.config({
 		signs = true,
 		underline = true,
@@ -123,6 +146,7 @@ M.setup = function()
 	---@field has_module boolean
 	---@field binary string|nil
 	---@field known_lspconfig boolean
+	---@field self_resolving boolean|nil @Resolved cmd is a function owned by the config: no Mason classification.
 	---@field user_loaded boolean
 	---@field user_spec any
 	---@field default_loaded boolean
@@ -188,49 +212,59 @@ M.setup = function()
 				end
 			end
 		end
-		-- nvim-lspconfig's built-in config: a table cmd yields the launch binary;
-		-- any cmd (even a function) proves the name real (keeps jsonls out of the
-		-- unknown bucket). Read only when it can still change the outcome.
-		if info.binary == nil or not info.has_module then
-			-- Mirror vim.lsp.config's file resolution (later rtp files win) from
-			-- the pre-globbed map instead of its per-name rescan. `*` defaults and
-			-- pure-runtime registrations are not merged — this only feeds the
-			-- binary probe; registration still reads vim.lsp.config[name].
-			local files = lsp_files_of(name)
-			if files then
-				local merged = {}
-				for _, path in ipairs(files) do
-					local ok, chunk = pcall(loadfile, path)
-					if ok and chunk then
-						local ok_run, config = pcall(chunk)
-						if ok_run and type(config) == "table" then
-							merged = vim.tbl_deep_extend("force", merged, config)
-						end
-					end
+		---The truth source: vim.lsp.config[name] resolves '*', rtp lsp/<name>.lua
+		---files and stored registrations exactly the way enable() will consume
+		---them; nil = no name-specific source at all (a pure '*' config cannot
+		---make a name known). The per-name rtp rescan only happens for names
+		---this cache hasn't answered yet — bounded by lsp_deps.
+		local function resolved_config()
+			local ok, config = pcall(function()
+				return vim.lsp.config[name]
+			end)
+			return (ok and type(config) == "table") and config or nil
+		end
+		---Whether the recorded user ops explicitly set a cmd: the replay
+		---guarantees that cmd is the enable-time winner.
+		local user_sets_cmd = false
+		for _, entry in ipairs(user_lsp_configs[name] or {}) do
+			if type(entry.cfg) == "table" and entry.cfg.cmd ~= nil then
+				user_sets_cmd = true
+			end
+		end
+		if registered[name] or user_sets_cmd then
+			-- Registered (or user-overridden cmd): the resolved config IS what
+			-- enable() will spawn — it outranks the module-derived binary. A
+			-- non-table cmd (function) means the config owns its own launch:
+			-- flag it so Mason never classifies/installs against it.
+			local config = resolved_config()
+			if config and config.cmd ~= nil then
+				info.known_lspconfig = true
+				if type(config.cmd) == "table" then
+					info.binary = config.cmd[1]
+				else
+					info.binary = nil
+					info.self_resolving = true
 				end
-				if merged.cmd ~= nil then
-					info.known_lspconfig = true
-					if info.binary == nil and type(merged.cmd) == "table" then
-						info.binary = merged.cmd[1]
-					end
-				end
-			elseif not info.has_module then
-				-- Last chance before the typo bucket: a pure-runtime registration is
-				-- looked up only for names nothing else proved real, so the per-name
-				-- rescan stays normally zero.
-				local ok, config = pcall(function()
-					return vim.lsp.config[name]
-				end)
-				if ok and type(config) == "table" and config.cmd ~= nil then
-					info.known_lspconfig = true
-					if info.binary == nil and type(config.cmd) == "table" then
-						info.binary = config.cmd[1]
-					end
+			end
+		elseif info.binary == nil or not info.has_module then
+			-- Pre-registration the module spec is the better predictor of the
+			-- upcoming stored registration (an lspconfig rtp default must not
+			-- shadow a module's custom path); consult the truth source only for
+			-- what the modules couldn't answer. Any cmd (even a function)
+			-- proves the name real (keeps jsonls out of the unknown bucket).
+			local config = resolved_config()
+			if config and config.cmd ~= nil then
+				info.known_lspconfig = true
+				if info.binary == nil and type(config.cmd) == "table" then
+					info.binary = config.cmd[1]
 				end
 			end
 		end
 		server_info_cache[name] = info
 		return info
+	end
+	server_info_invalidate = function(name)
+		server_info_cache[name] = nil
 	end
 
 	---Register (not enable) a server's config, reusing the spec server_info()
@@ -293,6 +327,11 @@ M.setup = function()
 		if not mason_ok then
 			return nil
 		end
+		-- A registered/user function cmd owns its own launch: never classify
+		-- it against a Mason package (no install fallback for it).
+		if server_info(name).self_resolving then
+			return nil
+		end
 		if lspconfig_to_package == nil or next(lspconfig_to_package) == nil then
 			local mappings = mason_lspconfig.get_mappings()
 			lspconfig_to_package = (mappings and mappings.lspconfig_to_package) or {}
@@ -318,7 +357,23 @@ M.setup = function()
 			return false
 		end
 		local info = server_info(name)
-		return not info.has_module and not info.known_lspconfig
+		if info.has_module or info.known_lspconfig then
+			return false
+		end
+		-- A runtime registration may have landed after the probe cached its
+		-- negative (the user read the name first, then wrote a cmd): re-consult
+		-- the truth source before the typo verdict, upgrading the cache in place.
+		local ok, config = pcall(function()
+			return vim.lsp.config[name]
+		end)
+		if ok and type(config) == "table" and config.cmd ~= nil then
+			info.known_lspconfig = true
+			if info.binary == nil and type(config.cmd) == "table" then
+				info.binary = config.cmd[1]
+			end
+			return false
+		end
+		return true
 	end
 
 	---Register a server (unless a read trigger already did), then enable it (a
@@ -327,6 +382,9 @@ M.setup = function()
 		if not registered[name] then
 			mason_lsp_handler(name)
 			registered[name] = true
+			-- The probe cached pre-registration state: rebuild so later readers
+			-- (group-1 retry/event matchers) see the resolved cmd.
+			server_info_cache[name] = nil
 		end
 		-- Replay recorded `user.configs.lsp` registrations on top: a post-install
 		-- configure may register AFTER that module ran (write-only overrides get
@@ -364,33 +422,47 @@ M.setup = function()
 		local before = vim.deepcopy(store[name])
 		if pcall(mason_lsp_handler, name) then
 			registered[name] = true
+			-- The handler's own server_info ran pre-registration (a function-form
+			-- spec registers its cmd mid-trigger, bypassing the proxy hooks):
+			-- rebuild so the probe reflects the resolved, registered cmd.
+			server_info_cache[name] = nil
 		else
 			store[name] = before
 		end
 	end
 
-	tools.resolve({
-		title = "LSP",
-		deps = settings.lsp_deps,
-		-- A value, not a thunk: mason-registry was already required at setup top.
-		registry = mason_ok and mason_registry or nil,
-		package_of = package_of,
-		binaries_of = function(name, pkg)
-			local binary = server_info(name).binary
-			if binary then
-				return { binary }
-			end
-			-- Function-cmd server (jsonls): probe the package's declared bins so a
-			-- system copy is found instead of installing a duplicate.
-			if pkg ~= nil then
-				return tools.package_binaries(pkg, name)
-			end
-			return {}
-		end,
-		unknown_of = unknown_of,
-		has_local_config = has_local_config,
-		configure = configure,
-	})
+	-- The discovery pass itself runs via M.resolve_deps() AFTER
+	-- run_user_lsp_overrides() (see lsp.lua): user runtime registrations must
+	-- exist before the unknown/binary classification.
+	resolve_deps = function()
+		tools.resolve({
+			title = "LSP",
+			deps = settings.lsp_deps,
+			-- A value, not a thunk: mason-registry was already required at setup top.
+			registry = mason_ok and mason_registry or nil,
+			package_of = package_of,
+			binaries_of = function(name, pkg)
+				local info = server_info(name)
+				if info.binary then
+					return { info.binary }
+				end
+				-- A registered/user function cmd resolves its own launch: probing
+				-- Mason bins would misread it as installable/missing.
+				if info.self_resolving then
+					return {}
+				end
+				-- Function-cmd MODULE server (jsonls): probe the package's declared
+				-- bins so a system copy is found instead of installing a duplicate.
+				if pkg ~= nil then
+					return tools.package_binaries(pkg, name)
+				end
+				return {}
+			end,
+			unknown_of = unknown_of,
+			has_local_config = has_local_config,
+			configure = configure,
+		})
+	end
 end
 
 return M
