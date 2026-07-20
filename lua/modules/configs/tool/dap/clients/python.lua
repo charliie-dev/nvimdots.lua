@@ -64,6 +64,14 @@ return function()
 		return nil
 	end
 
+	-- Negative session cache for the import probe: a session where debugpy
+	-- stays missing must not re-pay the blocking interpreter spawns on every
+	-- launch attempt. Every recovery path bypasses or resets it: the fast
+	-- probes run FIRST each call (a Mason install takes over there), a
+	-- resolver re-configure rebuilds this whole closure, and :ToolsRetry
+	-- re-runs the client config for a pip-installed debugpy.
+	local import_probe_failed = false
+
 	-- Full cascade: fast probes, then a system python that can import debugpy.
 	-- The import probe spawns a short-lived python, but only when the fast probes
 	-- miss. Both the launch path and the config-time availability check at the
@@ -72,6 +80,9 @@ return function()
 		local command, args = fast_command()
 		if command then
 			return command, args
+		end
+		if import_probe_failed then
+			return nil
 		end
 		-- Last resort: probe interpreter candidates rather than hard-coding one
 		-- (pythonw.exe is often absent on a Windows box with only python.exe).
@@ -97,6 +108,7 @@ return function()
 				end
 			end
 		end
+		import_probe_failed = true
 		return nil
 	end
 
