@@ -6,14 +6,31 @@ local M = {}
 -- otherwise force-merge over the user's keys (install-timing-dependent).
 local user_lsp_configs = {}
 
+-- Bridge set by setup(): read-triggered registration (fun(real, name)) so a
+-- `user.configs.lsp` read of a not-yet-registered lsp_deps server sees the
+-- post-registration view regardless of install timing.
+local registration_trigger = nil
+
 ---Run `user.configs.lsp` with vim.lsp.config proxied to record per-server
----registrations. Reads forward to the real table; "*" is not recorded (core
+---registrations. Reads forward to the real table — after triggering the dep's
+---real registration first, so a read-modify-write override snapshots the same
+---base whether or not the server was installed yet. "*" is not recorded (core
 ---merges it at read time); the real table is always restored right after the
 ---pcall'd require (same silent-if-missing behavior as before).
 function M.run_user_lsp_overrides()
 	local real = vim.lsp.config
-	vim.lsp.config = setmetatable({}, {
+	local proxy
+	proxy = setmetatable({}, {
 		__index = function(_, key)
+			if registration_trigger and type(key) == "string" and key ~= "*" then
+				-- The handler (and a function-form spec) registers through the
+				-- GLOBAL vim.lsp.config: it must be the real table while the
+				-- trigger runs, or the registration would be recorded as user
+				-- ops / re-enter this proxy. pcall guarantees the restore.
+				vim.lsp.config = real
+				pcall(registration_trigger, real, key)
+				vim.lsp.config = proxy
+			end
 			return real[key]
 		end,
 		__newindex = function(_, key, value)
@@ -32,6 +49,7 @@ function M.run_user_lsp_overrides()
 			end
 		end,
 	})
+	vim.lsp.config = proxy
 	pcall(require, "user.configs.lsp")
 	vim.lsp.config = real
 end
@@ -44,6 +62,17 @@ M.setup = function()
 	local has_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
 	local mason_ok = has_registry and has_mlsp
 	local tools = require("modules.utils.tools")
+
+	-- lsp_deps as a set: the read trigger below only acts on names this config
+	-- actually manages.
+	local deps_set = {}
+	for _, name in ipairs(tools.normalize_names(settings.lsp_deps)) do
+		deps_set[name] = true
+	end
+	-- Servers whose registration already ran (configure() or a read trigger):
+	-- configure() skips re-registration, so a registration triggered before the
+	-- user's ops can never be re-asserted over them later.
+	local registered = {}
 
 	---Ordered server-spec modules for a server: user override, then repo default.
 	---@param name string
@@ -135,6 +164,10 @@ M.setup = function()
 		end
 		-- Load the repo preset only when usable (no override, or as merge base under a
 		-- table override): a function-form override replaces it wholesale.
+		-- POLICY (unified since the discovery-first branch, including the formerly
+		-- "external" servers nil_ls/nixd/shuck): a TABLE override MERGES over the
+		-- repo preset ("write what you change"); full replacement is expressed as
+		-- a function-form override.
 		if not user_ok or type(user_spec) == "table" then
 			local ok, spec, exists, reason = tools.load_module_or_report(modules[2], "nvim-lspconfig")
 			if ok then
@@ -288,14 +321,19 @@ M.setup = function()
 		return not info.has_module and not info.known_lspconfig
 	end
 
-	---Register a server, then enable it (a bare Mason `cmd` spawns fine: the
-	---resolver put Mason's bin dir on $PATH).
+	---Register a server (unless a read trigger already did), then enable it (a
+	---bare Mason `cmd` spawns fine: the resolver put Mason's bin dir on $PATH).
 	local function configure(name)
-		mason_lsp_handler(name)
+		if not registered[name] then
+			mason_lsp_handler(name)
+			registered[name] = true
+		end
 		-- Replay recorded `user.configs.lsp` registrations on top: a post-install
-		-- configure runs after that module did, and the repo spec would otherwise
-		-- force-merge over the user's keys. Synchronous configures precede the
-		-- user module, so the replay is a natural no-op there.
+		-- configure may register AFTER that module ran (write-only overrides get
+		-- no read trigger), and the repo spec would otherwise force-merge over
+		-- the user's keys. Synchronous configures precede the user module, and a
+		-- read-triggered registration precedes the recording — both make this a
+		-- natural no-op.
 		for _, entry in ipairs(user_lsp_configs[name] or {}) do
 			if entry.replace then
 				vim.lsp.config[name] = entry.cfg
@@ -304,6 +342,31 @@ M.setup = function()
 			end
 		end
 		vim.lsp.enable(name)
+	end
+
+	-- Read-triggered registration (transactional). Any spec form is covered by
+	-- simply running the real registration: the function-form contract is
+	-- "only registers via vim.lsp.config()" (see clangd.lua), so running it
+	-- early is registration, not behavior. A failing registration is rolled
+	-- back so the read never leaks a partial config; `registered` stays false
+	-- and the resolver's configure() path reports the raise as usual.
+	registration_trigger = function(real, name)
+		if not deps_set[name] or registered[name] then
+			return
+		end
+		-- Core keeps stored registrations in `vim.lsp.config._configs`; without
+		-- it (API drift) the trigger degrades to the status-quo read — no
+		-- half-transaction.
+		local store = rawget(real, "_configs")
+		if type(store) ~= "table" then
+			return
+		end
+		local before = vim.deepcopy(store[name])
+		if pcall(mason_lsp_handler, name) then
+			registered[name] = true
+		else
+			store[name] = before
+		end
 	end
 
 	tools.resolve({
