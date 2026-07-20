@@ -86,7 +86,11 @@ settings["lsp_inlayhints"] = false
 
 -- Language servers to enable, resolved discovery-first at runtime: binary on $PATH is
 -- used as-is; else Mason installs it when it ships a package; else an aggregated warning
--- asks you to provision it. See `modules.utils.tools` and `completion/mason-lspconfig.lua`.
+-- asks you to provision it. Names whose filetypes lspconfig knows resolve on that
+-- filetype's FIRST buffer (a late sweep classifies the rest once per session); names
+-- with user overrides, repo modules that override filetypes, or no filetype data
+-- resolve on the first file open. See `modules.utils.tools` and
+-- `completion/mason-lspconfig.lua`.
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lsp
 ---@type string[]
 settings["lsp_deps"] = {
