@@ -812,11 +812,18 @@ end
 ---  unresolvable_of?: fun(name: string): string|nil,
 ---  configure?: fun(name: string, late: boolean),
 ---  defer_phase2?: boolean,
+---  defer?: boolean,
 ---}
 ---`unresolvable_of` (optional): a non-nil reason short-circuits the name in
 ---phase 1 — marked missing with that reason and flushed immediately, never
 ---classified against the registry (the one exception to "phase 1 never marks
 ---missing").
+---`defer` (optional): move the WHOLE resolve off the caller's tick. The
+---resolver still pays ensure_mason_on_path synchronously — deferring must not
+---lose the same-tick guarantee that a replayed trigger's bare Mason spawns
+---can resolve — and phase-1 configures inside the scheduled run still count
+---as trigger-backed (`late = false`), exactly like a caller-side
+---vim.schedule wrapper did.
 function M.resolve(spec)
 	local ok_settings, settings = pcall(require, "core.settings")
 	local timeout_ms = (
@@ -1149,8 +1156,16 @@ function M.resolve(spec)
 		end
 	end
 
-	run()
-	synchronous = false
+	if spec.defer then
+		M.ensure_mason_on_path()
+		vim.schedule(function()
+			run()
+			synchronous = false
+		end)
+	else
+		run()
+		synchronous = false
+	end
 end
 
 ---Discovery-first resolution for a subsystem whose own runtime registrations
@@ -1171,7 +1186,9 @@ end
 ---@param configure? fun(name: string, late: boolean) @Optional: run for each available/local tool
 ---  (e.g. rewrite its command to an absolute path while Mason's bin dir is
 ---  still off $PATH).
-function M.resolve_runtime_tools(title, deps, probe, configure)
+---@param opts? { defer?: boolean } @`defer` moves the whole resolve off the
+---  caller's tick (see M.resolve); the $PATH guarantee stays synchronous.
+function M.resolve_runtime_tools(title, deps, probe, configure, opts)
 	local cache = {}
 	local function info(name)
 		if cache[name] == nil then
@@ -1227,6 +1244,7 @@ function M.resolve_runtime_tools(title, deps, probe, configure)
 		-- A binary-less runtime tool can't map to a package, so it self-resolves.
 		local_config_mode = "resolves",
 		defer_phase2 = true,
+		defer = type(opts) == "table" and opts.defer == true or nil,
 		configure = function(name, late)
 			-- A broken config must never configure: raise its reason verbatim (it
 			-- may carry the broken file's own "path:line:").

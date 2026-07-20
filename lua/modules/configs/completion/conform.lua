@@ -173,55 +173,50 @@ return function()
 		end or false,
 	})
 
-	-- Make Mason's bin dir resolvable BEFORE the replayed save formats — a bare
-	-- Mason formatter binary must spawn — so no per-formatter command rewrite is
-	-- needed. Idempotent; the resolver calls it again itself.
-	tools.ensure_mason_on_path()
 	-- Resolve `formatter_deps` (conform formatter names) discovery-first against
 	-- conform's own registry, so a missing formatter is installed / reported.
 	-- The probe only drives install/warn — nothing on the save path reads it —
-	-- so the whole resolve moves off the BufWritePre tick that lazy-loaded
-	-- conform instead of delaying the first save behind it.
-	vim.schedule(function()
-		tools.resolve_runtime_tools("conform.nvim", settings.formatter_deps, function(name)
-			-- get_formatter_config is conform's @private API; if dropped, degrade to
-			-- "resolves itself" rather than misreporting every formatter as unknown.
-			local conform = require("conform")
-			if type(conform.get_formatter_config) ~= "function" then
+	-- so `defer` moves the resolve off the BufWritePre tick that lazy-loaded
+	-- conform; the resolver itself keeps the same-tick guarantee that Mason's
+	-- bin dir is on $PATH before the replayed save's spawns.
+	tools.resolve_runtime_tools("conform.nvim", settings.formatter_deps, function(name)
+		-- get_formatter_config is conform's @private API; if dropped, degrade to
+		-- "resolves itself" rather than misreporting every formatter as unknown.
+		local conform = require("conform")
+		if type(conform.get_formatter_config) ~= "function" then
+			return { binary = nil }
+		end
+		-- get_formatter_config runs a function-form override directly, so pcall keeps a
+		-- throwing override (a broken config) from being misread as an unknown name.
+		local ok, config, err = pcall(conform.get_formatter_config, name)
+		if not ok then
+			return { broken = tostring(config) }
+		end
+		if config then
+			-- A function-form command resolves per buffer at format time (e.g. the
+			-- builtin from_node_modules): treat it as self-resolving rather than
+			-- evaluating it for a representative binary — a node_modules command
+			-- shouldn't map to a Mason install anyway.
+			if type(config.command) == "function" then
 				return { binary = nil }
 			end
-			-- get_formatter_config runs a function-form override directly, so pcall keeps a
-			-- throwing override (a broken config) from being misread as an unknown name.
-			local ok, config, err = pcall(conform.get_formatter_config, name)
-			if not ok then
-				return { broken = tostring(config) }
-			end
-			if config then
-				-- A function-form command resolves per buffer at format time (e.g. the
-				-- builtin from_node_modules): treat it as self-resolving rather than
-				-- evaluating it for a representative binary — a node_modules command
-				-- shouldn't map to a Mason install anyway.
-				if type(config.command) == "function" then
-					return { binary = nil }
-				end
-				return { binary = config.command }
-			end
-			-- (nil, err) is a real formatter with a broken config; bare nil is an unknown name.
-			if type(err) == "string" then
-				return { broken = err }
-			end
-			-- A function-form override may legitimately return nil for the
-			-- probe-time buffer (this probe runs on a scheduled tick against
-			-- whatever buffer happens to be current): its existence proves the
-			-- name real, but nothing is verifiable — report it unresolved
-			-- (missing bucket, tailored reason) instead of a typo or a silent pass.
-			local overrides = conform.formatters
-			if type(overrides) == "table" and type(overrides[name]) == "function" then
-				return { unresolved = true }
-			end
-			return nil
-		end)
-	end)
+			return { binary = config.command }
+		end
+		-- (nil, err) is a real formatter with a broken config; bare nil is an unknown name.
+		if type(err) == "string" then
+			return { broken = err }
+		end
+		-- A function-form override may legitimately return nil for the
+		-- probe-time buffer (this probe runs on a scheduled tick against
+		-- whatever buffer happens to be current): its existence proves the
+		-- name real, but nothing is verifiable — report it unresolved
+		-- (missing bucket, tailored reason) instead of a typo or a silent pass.
+		local overrides = conform.formatters
+		if type(overrides) == "table" and type(overrides[name]) == "function" then
+			return { unresolved = true }
+		end
+		return nil
+	end, nil, { defer = true })
 
 	-- User commands
 	vim.api.nvim_create_user_command("Format", function(args)
