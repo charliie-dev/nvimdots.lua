@@ -1202,7 +1202,7 @@ end
 ---Mason is only the lazy install fallback, reverse-looked-up from the binary.
 ---@param title string @Notification title identifying the subsystem.
 ---@param deps string[] @Tool names as the subsystem knows them.
----@param probe fun(name: string): { binary: string|nil, broken: string|nil }|nil
+---@param probe fun(name: string): { binary: string|nil, broken: string|nil, unresolved: boolean|nil }|nil
 ---@param configure? fun(name: string, late: boolean) @Optional: run for each available/local tool
 ---  (e.g. rewrite its command to an absolute path while Mason's bin dir is
 ---  still off $PATH).
