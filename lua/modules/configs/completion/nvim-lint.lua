@@ -157,6 +157,10 @@ return function()
 	---Rebuild a module-backed linter for a late configure: some (golangcilint)
 	---compute `args` by RUNNING their binary at module-load time, and a result
 	---computed while the binary was absent would persist all session.
+	---Deliberately SYNCHRONOUS inside the resolver's configure (F24 evaluated
+	---and rejected deferral): the hand-off pending gate and the aggregated
+	---warning both key off configure's synchronous success/failure — deferring
+	---the reload would report success before the rebuild happened.
 	---@param name string
 	local function refresh_linter(name)
 		local module = "lint.linters." .. name
@@ -166,13 +170,17 @@ return function()
 		local prev = lint.linters[name]
 		package.loaded[module] = nil
 		-- Also drop any explicit assignment (a wrapped factory) shadowing the
-		-- lint.linters __index loader; the read below re-requires the module.
+		-- lint.linters __index loader.
 		rawset(lint.linters, name, nil)
-		local fresh = lint.linters[name]
-		if fresh == nil then
-			-- Nothing regenerated the linter (loader gone or reload throws):
-			-- restore — stale args beat a deleted linter (asserts on try_lint).
+		-- Require it OURSELVES: the __index loader pcall-swallows a reload
+		-- failure into nil, which would read as configure success and clear
+		-- the hand-off pending gate over a stale linter.
+		local ok, err = pcall(require, module)
+		if not ok then
+			-- Restore — stale args beat a deleted linter (asserts on try_lint) —
+			-- then raise so the resolver keeps the name pending and reported.
 			rawset(lint.linters, name, prev)
+			tools.raise_verbatim("linter reload failed after install: " .. tostring(err))
 		end
 		apply_override(name)
 	end
