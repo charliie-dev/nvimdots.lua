@@ -1,30 +1,13 @@
 return function()
+	-- Server resolution (Mason-installed / on $PATH / installable / missing) is handled
+	-- discovery-first in `mason-lspconfig.setup`, driven by `settings.lsp_deps`.
 	require("completion.mason-lspconfig").setup()
 
-	local opts = {
-		capabilities = require("modules.utils").get_lsp_capabilities(),
-	}
-	-- Configure LSPs that are not managed by Mason but are available in `nvim-lspconfig`.
-	-- Servers are defined in `settings.external_lsp_deps` as { server_name = "executable" }.
-	for lsp_name, exe in pairs(require("core.settings").external_lsp_deps) do
-		if vim.fn.executable(exe) == 1 then
-			local ok, _opts = pcall(require, "user.configs.lsp-servers." .. lsp_name)
-			if not ok then
-				local default_ok, default_opts = pcall(require, "completion.servers." .. lsp_name)
-				if default_ok then
-					_opts = default_opts
-				end
-			end
-			if type(_opts) == "table" then
-				local final_opts = vim.tbl_deep_extend("keep", _opts, opts)
-				require("modules.utils").register_server(lsp_name, final_opts)
-			else
-				require("modules.utils").register_server(lsp_name, opts)
-			end
-		end
-	end
-
-	pcall(require, "user.configs.lsp")
+	-- Run `user.configs.lsp` with its vim.lsp.config registrations recorded: a
+	-- mid-session install registers after this point, and the replay keeps the
+	-- user's overrides on top regardless of timing.
+	-- `user.configs.lsp-servers.<name>` remains the richer per-server hook.
+	require("completion.mason-lspconfig").run_user_lsp_overrides()
 
 	-- Start LSPs
 	pcall(vim.cmd.LspStart)
