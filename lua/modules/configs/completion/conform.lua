@@ -210,6 +210,15 @@ return function()
 			if type(err) == "string" then
 				return { broken = err }
 			end
+			-- A function-form override may legitimately return nil for the
+			-- probe-time buffer (this probe runs on a scheduled tick against
+			-- whatever buffer happens to be current): its existence proves the
+			-- name real, but nothing is verifiable — report it unresolved
+			-- (missing bucket, tailored reason) instead of a typo or a silent pass.
+			local overrides = conform.formatters
+			if type(overrides) == "table" and type(overrides[name]) == "function" then
+				return { unresolved = true }
+			end
 			return nil
 		end)
 	end)
