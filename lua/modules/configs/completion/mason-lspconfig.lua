@@ -459,6 +459,13 @@ M.setup = function()
 			unknown_of = unknown_of,
 			has_local_config = has_local_config,
 			configure = configure,
+			-- Phase 2 (registry classification: full mappings decode + package
+			-- hydration) moves off the BufReadPre tick. Safe because a late
+			-- configure's vim.lsp.enable() attaches already-open matching
+			-- buffers (verified on this nvim), so the one same-tick
+			-- beneficiary — a Mason-installed server whose binary name differs
+			-- from the probe — still reaches the triggering buffer.
+			defer_phase2 = true,
 		})
 	end
 end
