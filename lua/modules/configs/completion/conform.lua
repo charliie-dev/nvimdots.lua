@@ -181,11 +181,16 @@ return function()
 	-- conform; the resolver itself keeps the same-tick guarantee that Mason's
 	-- bin dir is on $PATH before the replayed save's spawns.
 	tools.resolve_runtime_tools("conform.nvim", settings.formatter_deps, function(name)
-		-- get_formatter_config is conform's @private API; if dropped, degrade to
-		-- "resolves itself" rather than misreporting every formatter as unknown.
+		-- get_formatter_config is conform's @private API; if it vanishes, every
+		-- formatter is UNVERIFIABLE — report unresolved with the reason (missing
+		-- bucket, immediate flush) instead of silently classifying them all as
+		-- self-resolving, which would turn off installs and warnings wholesale.
 		local conform = require("conform")
 		if type(conform.get_formatter_config) ~= "function" then
-			return { binary = nil }
+			return {
+				unresolved = true,
+				reason = "conform.get_formatter_config is unavailable (conform API drift?) — formatters cannot be verified",
+			}
 		end
 		-- get_formatter_config runs a function-form override directly, so pcall keeps a
 		-- throwing override (a broken config) from being misread as an unknown name.
