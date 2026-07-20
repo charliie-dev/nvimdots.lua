@@ -114,6 +114,16 @@ return function()
 					0
 				)
 			end
+			-- Partial mappings drift can hand us configurations without
+			-- filetypes (or vice versa); default_setup ipairs() both
+			-- unconditionally. Degrade to whatever half is present instead of
+			-- a raw ipairs(nil) raise.
+			if type(config.configurations) ~= "table" then
+				config.configurations = {}
+			end
+			if type(config.filetypes) ~= "table" then
+				config.filetypes = {}
+			end
 			mason_dap.default_setup(config)
 		elseif type(custom_handler) == "function" then
 			-- Case where the protocol requires its own setup
