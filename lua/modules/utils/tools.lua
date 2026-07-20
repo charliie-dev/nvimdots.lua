@@ -196,19 +196,28 @@ local function error_reason(err)
 	return (err:gsub("^[^\n]-:%d+: ", ""))
 end
 
+-- Private brand for raise_verbatim errors: only sentinels carrying this key
+-- count as config-layer failures — a config that happens to throw its own
+-- `{ reason = ... }` table stays an ordinary error.
+local VERBATIM = {}
+
 ---Raise a config failure whose message must reach the warning verbatim: it may
----itself start with a "path:line:" that position stripping would eat.
+---itself start with a "path:line:" that position stripping would eat. The
+---resolver also treats this sentinel as a config-layer error: a "validates"
+---local config raising it is reported immediately, never answered with an
+---install (an install can't fix a broken config).
 ---@param reason string
 function M.raise_verbatim(reason)
 	-- selene: allow(incorrect_standard_library_use) -- error() does accept any value
-	error({ reason = reason })
+	error({ reason = reason, [VERBATIM] = true })
 end
 
 ---Aggregate tools that could not be set up into one deferred warning, in two
 ---sections: `mark` (install it / config failed) and `mark_unknown`
 ---(unrecognized name — fix the config, don't install).
 ---@class ToolCollector
----@field mark fun(name: string, reason?: string) @Record an unresolved tool (optionally with a reason).
+---@field mark fun(name: string, reason?: string, provisional?: boolean) @Record an unresolved tool;
+---  a provisional reason is a placeholder a later concrete failure may replace.
 ---@field mark_unknown fun(name: string) @Record an unrecognized name (typo / outdated / unsupported).
 ---@field track fun(pkg: table, name: string, recheck: fun(): boolean, on_ready?: fun(), fail_reason?: string)
 ---@field done fun() @Flush the aggregated warning once all tracked installs settle.
@@ -223,14 +232,18 @@ local function missing_collector(title, timeout_ms)
 	local seen = {}
 	local emitted = {}
 	-- Tracked installs whose "closed" callback hasn't run yet
-	-- (name -> { reason = phase-1 fail_reason or false, expires_at = uv ms });
-	-- the chained deadline settles each entry once its own window elapses.
+	-- (name -> { reason = phase-1 fail_reason or false }); each entry owns a
+	-- defer_fn timer that settles it if the closed callback never does.
 	local unsettled = {}
 	local pending = 0
-	local deadline_started = false
-	local deadline_passed = false
 	local flush_scheduled = false
 	local announce_scheduled = false
+	-- Names whose recorded reason is a placeholder (generic install-timeout /
+	-- registry-refresh note): a later concrete failure may upgrade the reason
+	-- or move the name to the unknown bucket.
+	local provisional = {}
+	-- Forward declaration: add/add_unknown re-flush after an upgrade/migration.
+	local flush
 
 	-- Dedup across both buckets; non-string names are tostring()'d, nil/empty dropped.
 	local function normalize(name)
@@ -247,14 +260,56 @@ local function missing_collector(title, timeout_ms)
 		bucket[#bucket + 1] = name
 		return true
 	end
-	local function add(name, reason)
+	local function add(name, reason, is_provisional)
 		name = normalize(name)
-		if record(missing, name) and type(reason) == "string" and reason ~= "" then
+		if record(missing, name) then
+			if type(reason) == "string" and reason ~= "" then
+				reasons[name] = reason
+			end
+			if is_provisional then
+				provisional[name] = true
+			end
+			return
+		end
+		-- Already recorded: a concrete reason may replace a placeholder one
+		-- (generic timeout/refresh note, or a reason-less mark) and re-notify.
+		-- The first REAL reason wins; later ones never overwrite it.
+		if
+			name ~= nil
+			and type(reason) == "string"
+			and reason ~= ""
+			and reason ~= reasons[name]
+			and (reasons[name] == nil or provisional[name])
+		then
 			reasons[name] = reason
+			provisional[name] = is_provisional or nil
+			emitted[name] = nil
+			flush()
 		end
 	end
 	local function add_unknown(name)
-		record(unknown, normalize(name))
+		name = normalize(name)
+		if record(unknown, name) then
+			return
+		end
+		-- Bucket migration: a name parked in `missing` under a placeholder
+		-- reason (registry-refresh timeout) may classify as unknown once the
+		-- late refresh completes — move it so a typo doesn't keep stale
+		-- install guidance. Entries with a real reason never migrate.
+		if name == nil or not (provisional[name] or reasons[name] == nil) then
+			return
+		end
+		for index, existing in ipairs(missing) do
+			if existing == name then
+				table.remove(missing, index)
+				reasons[name] = nil
+				provisional[name] = nil
+				unknown[#unknown + 1] = name
+				emitted[name] = nil
+				flush()
+				return
+			end
+		end
 	end
 
 	local function render(name)
@@ -263,10 +318,10 @@ local function missing_collector(title, timeout_ms)
 	end
 
 	-- Emit names not yet notified, coalesced per event-loop tick. Gated while
-	-- installs are pending unless forced (done() forces: its records are final)
-	-- or the deadline passed; `emitted` lets late failures still notify.
-	local function flush(force)
-		if not force and pending > 0 and not deadline_passed then
+	-- installs are pending unless forced (done() and per-install timers force:
+	-- their records are final); `emitted` lets late failures still notify.
+	function flush(force)
+		if not force and pending > 0 then
 			return
 		end
 		if flush_scheduled then
@@ -313,51 +368,6 @@ local function missing_collector(title, timeout_ms)
 			end
 			vim.notify(table.concat(sections, "\n\n"), vim.log.levels.WARN, { title = title })
 		end)
-	end
-
-	-- One timer, chained: each fire settles only the entries whose OWN window
-	-- (expires_at) elapsed, then re-arms for the earliest remaining expiry — a
-	-- late-tracked install keeps its full timeout. `deadline_started` stays
-	-- true across the whole chain.
-	local function arm_deadline(delay)
-		deadline_started = true
-		-- A live timer backs the coalescing gate and guarantees the deferred flush.
-		deadline_passed = false
-		vim.defer_fn(function()
-			vim.uv.update_time()
-			local now = vim.uv.now()
-			-- Settle expired installs here: their "closed" callback may never run,
-			-- and it is the only other place that records and decrements `pending`.
-			-- A late settle stays silent (`seen` dedups) but still configures.
-			-- Snapshot the keys first so `unsettled` isn't mutated mid-pairs.
-			local next_expiry = nil
-			for _, hung in ipairs(vim.tbl_keys(unsettled)) do
-				local entry = unsettled[hung]
-				if entry.expires_at <= now then
-					add(
-						hung,
-						type(entry.reason) == "string" and entry.reason
-							or "Mason install did not finish within the timeout (check :Mason for progress)"
-					)
-					pending = pending - 1
-					unsettled[hung] = nil
-				elseif next_expiry == nil or entry.expires_at < next_expiry then
-					next_expiry = entry.expires_at
-				end
-			end
-			if next_expiry ~= nil and next_expiry ~= math.huge then
-				-- Report the expired batch now (its marks are final, so forcing past
-				-- the pending gate is sound); chain to the earliest remaining expiry.
-				flush(true)
-				arm_deadline(math.max(next_expiry - now, 50))
-			else
-				deadline_passed = true
-				flush()
-				-- Between chains no timer is live, so the gate must stay open or a
-				-- late-recorded name would never flush; the next track re-arms.
-				deadline_started = false
-			end
-		end, delay)
 	end
 
 	return {
@@ -414,19 +424,32 @@ local function missing_collector(title, timeout_ms)
 			if first_track then
 				pending = pending + 1
 				if name ~= nil then
-					vim.uv.update_time()
-					unsettled[name] = {
-						reason = fail_reason or false,
-						-- math.huge when no deadline is configured: never expires.
-						expires_at = vim.uv.now()
-							+ ((type(timeout_ms) == "number" and timeout_ms > 0) and timeout_ms or math.huge),
-					}
+					unsettled[name] = { reason = fail_reason or false }
+					-- One timer per tracked install, settling only its own entry
+					-- (a no-op when the closed callback got there first), so a
+					-- late-tracked install always keeps its full window. Without
+					-- a configured timeout the entry settles via "closed" only.
+					if type(timeout_ms) == "number" and timeout_ms > 0 then
+						vim.defer_fn(function()
+							local entry = unsettled[name]
+							if entry == nil then
+								return
+							end
+							unsettled[name] = nil
+							-- The generic note is a placeholder a later concrete
+							-- failure may upgrade (see add()).
+							add(
+								name,
+								type(entry.reason) == "string" and entry.reason
+									or "Mason install did not finish within the timeout (check :Mason for progress)",
+								entry.reason == false
+							)
+							pending = pending - 1
+							-- This entry is final: force past the pending gate.
+							flush(true)
+						end, timeout_ms)
+					end
 				end
-			end
-			-- Arm when no timer is live; installs tracked during a live chain are
-			-- reached by its re-arms.
-			if not deadline_started and type(timeout_ms) == "number" and timeout_ms > 0 then
-				arm_deadline(timeout_ms)
 			end
 			-- "closed" fires in a fast event context: hop to the main loop. recheck/
 			-- on_ready are pcall'd so a throw can't suppress flush; skip the decrement
@@ -809,6 +832,9 @@ function M.resolve(spec)
 	}
 
 	---Configure one tool; false plus the cleaned error when the config threw.
+	---The third result flags a BRANDED raise_verbatim sentinel — a config-layer
+	---error an install can't fix. Any other thrown value (including a config's
+	---own `{ reason = ... }` table) stays an ordinary failure.
 	local function try_configure(name)
 		if type(spec.configure) ~= "function" then
 			return true
@@ -817,7 +843,7 @@ function M.resolve(spec)
 		if ok then
 			return true
 		end
-		return false, error_reason(err)
+		return false, error_reason(err), type(err) == "table" and err[VERBATIM] == true
 	end
 
 	-- Configure one tool, surfacing a config-time error in the aggregated
@@ -841,8 +867,10 @@ function M.resolve(spec)
 	session.configure = do_configure
 
 	-- Phase-1 "validates" failures, surfaced by phase 2 without re-running the
-	-- config; `false` = failed with no message.
+	-- config; `false` = failed with no message. Names whose failure was a
+	-- raise_verbatim config error are flagged separately: installs can't fix those.
 	local validate_failed = {}
+	local validate_config_error = {}
 	---String reason or nil — the one decoder of the false-vs-string encoding.
 	---@param name string
 	---@return string|nil
@@ -880,11 +908,14 @@ function M.resolve(spec)
 		-- A "validates" config is its own resolver: let it try; remember a
 		-- failure for phase 2 instead of re-running it there.
 		if spec.local_config_mode == "validates" and spec.has_local_config and spec.has_local_config(name) then
-			local ok, reason = try_configure(name)
+			local ok, reason, config_error = try_configure(name)
 			if ok then
 				return true
 			end
 			validate_failed[name] = reason or false
+			if config_error then
+				validate_config_error[name] = true
+			end
 		end
 		return false
 	end
@@ -914,9 +945,11 @@ function M.resolve(spec)
 			end
 		end
 
-		-- The config already failed this pass; only an install changes the outcome.
+		-- The config already failed this pass. A raise_verbatim failure is a
+		-- config-layer error an install can't fix: report it immediately. Only
+		-- a provisioning failure (missing binary) is answered with an install.
 		if validate_failed[name] ~= nil then
-			if pkg ~= nil and not pkg:is_installed() then
+			if not validate_config_error[name] and pkg ~= nil and not pkg:is_installed() then
 				start_install(pkg, name) -- annotates the failure reason itself
 			else
 				collector.mark(name, validate_reason(name))
@@ -1033,8 +1066,13 @@ function M.resolve(spec)
 				end
 				for _, name in ipairs(unresolved) do
 					local reason = validate_reason(name)
-						or "Mason registry refresh did not complete (cannot classify or auto-install)"
-					collector.mark(name, reason)
+					-- The generic refresh note is a placeholder: a later concrete
+					-- failure (or a late unknown classification) may replace it.
+					collector.mark(
+						name,
+						reason or "Mason registry refresh did not complete (cannot classify or auto-install)",
+						reason == nil
+					)
 				end
 				collector.done()
 			end, timeout_ms)
