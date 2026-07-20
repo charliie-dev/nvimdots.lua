@@ -15,7 +15,9 @@ local schemas = require("schemastore").yaml.schemas({
 			name = "gh-dash config",
 			description = "gh-dash config YAML schema",
 			fileMatch = "*/gh-dash/config.{yml,yaml}",
-			url = "https://www.gh-dash.dev/schema.json",
+			-- The DOCUMENTED canonical form (docs + astro site config use the
+			-- bare host; the www alias is just today's hosting redirect target).
+			url = "https://gh-dash.dev/schema.json",
 		},
 		-- The catalog's own "Traefik v3" entry carries no fileMatch, so this
 		-- extra is what actually claims the static-config files for v3.
