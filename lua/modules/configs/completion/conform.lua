@@ -41,12 +41,13 @@ return function()
 	end
 
 	---The gates a buffer must pass before an automatic format, grouped into one
-	---named predicate for the format_on_save callback's readability.
+	---named predicate for the format_on_save callback's readability. The
+	---format_on_save SETTING is not re-checked here: its gate lives at the
+	---single place the callback is installed (format_on_save = enabled and …).
 	---@param bufnr integer
 	---@return boolean
 	local function autoformat_allowed(bufnr)
-		return format_on_save_enabled
-			and block_list[vim.bo[bufnr].filetype] ~= true
+		return block_list[vim.bo[bufnr].filetype] ~= true
 			and not is_disabled_workspace(bufnr)
 			and not vim.g.disable_autoformat
 			and not vim.b[bufnr].disable_autoformat
