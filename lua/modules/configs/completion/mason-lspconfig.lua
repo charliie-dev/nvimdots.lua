@@ -369,6 +369,18 @@ M.setup = function()
 		end
 		return lspconfig_to_package[name]
 	end
+	-- The mapping derives from the registry specs: a registry update must not
+	-- leave the first non-empty snapshot frozen. SYNCHRONOUS (pure-Lua clear,
+	-- fast-event-safe): mason emits update:success before update callbacks
+	-- run, so a scheduled clear would leave a same-tick stale window. Once
+	-- per setup; pcall guards mason-registry API drift.
+	if mason_ok and type(mason_registry.on) == "function" then
+		pcall(function()
+			mason_registry:on("update:success", function()
+				lspconfig_to_package = nil
+			end)
+		end)
+	end
 
 	---Use a manual/built-in spec as fallback only when its binary can't be probed
 	---statically (function/absent `cmd`); with a known binary the $PATH check decides.
