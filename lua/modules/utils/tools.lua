@@ -202,9 +202,19 @@ function M.exepath_or_error(names, hint)
 	error(string.format("%s not found on $PATH or in Mason's bin dir; %s", label, hint), 0)
 end
 
+-- Real chunkname prefixes error() prepends, most specific first. A lazy
+-- catch-all would also eat the leading prose of a prefix-less level-0 raise
+-- whose message contains ":<digits>: " (e.g. "parse failed at 12:30: ...").
+local CHUNK_PREFIXES = {
+	'^%[string "[^\n]*"%]:%d+: ',
+	"^%[C%]:%d+: ",
+	"^[^\n]-%.lua:%d+: ",
+}
+
 ---Normalize a pcall-captured error: a raise_verbatim sentinel yields its
----reason untouched; a string loses the "chunkname:line: " prefix error() adds;
----anything else is dropped.
+---reason untouched; a string loses the "chunkname:line: " prefix error() adds
+---(only shapes that ARE chunknames — a custom non-.lua chunk keeps its
+---prefix, which is more information, never less); anything else is dropped.
 ---@param err any
 ---@return string|nil
 local function error_reason(err)
@@ -214,7 +224,13 @@ local function error_reason(err)
 	if type(err) ~= "string" then
 		return nil
 	end
-	return (err:gsub("^[^\n]-:%d+: ", ""))
+	for _, pattern in ipairs(CHUNK_PREFIXES) do
+		local stripped, hits = err:gsub(pattern, "")
+		if hits > 0 then
+			return stripped
+		end
+	end
+	return err
 end
 
 -- Private brand for raise_verbatim errors: only sentinels carrying this key
