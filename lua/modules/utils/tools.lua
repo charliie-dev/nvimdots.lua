@@ -789,9 +789,14 @@ end
 ---  unknown_of?: fun(name: string): boolean,
 ---  has_local_config?: fun(name: string): boolean,
 ---  local_config_mode?: "resolves"|"validates",
+---  unresolvable_of?: fun(name: string): string|nil,
 ---  configure?: fun(name: string, late: boolean),
 ---  defer_phase2?: boolean,
 ---}
+---`unresolvable_of` (optional): a non-nil reason short-circuits the name in
+---phase 1 — marked missing with that reason and flushed immediately, never
+---classified against the registry (the one exception to "phase 1 never marks
+---missing").
 function M.resolve(spec)
 	local ok_settings, settings = pcall(require, "core.settings")
 	local timeout_ms = (
@@ -992,28 +997,54 @@ function M.resolve(spec)
 	local function run()
 		-- Make Mason's bin dir resolvable before any probe or spawn (see file header).
 		M.ensure_mason_on_path()
-		-- A non-table deps (user override gone wrong) degrades to "nothing to resolve".
-		if type(spec.deps) ~= "table" then
-			collector.done()
-			return
+		-- ONE normalization policy for every consumer (see normalize_names):
+		-- non-table deps degrade to nothing to resolve, and dropped entries
+		-- (non-string / empty — config mistakes) surface in the unknown bucket
+		-- instead of vanishing or flowing into module-name concatenation.
+		local deps = normalize_names(spec.deps)
+		if type(spec.deps) == "table" then
+			for i = 1, table.maxn(spec.deps) do
+				local entry = spec.deps[i]
+				if entry ~= nil and (type(entry) ~= "string" or entry == "") then
+					collector.mark_unknown(entry == "" and '""' or entry)
+				end
+			end
 		end
 		-- Phase 1: configure everything resolvable without the registry.
 		local visited = {}
 		local unresolved = {}
-		-- maxn, not ipairs: a nil hole must skip a slot, not end resolution.
-		for i = 1, table.maxn(spec.deps) do
-			local name = spec.deps[i]
+		local finalized = false
+		for _, name in ipairs(deps) do
 			-- Dedup (a duplicate would double-install); pcall isolates each dep.
-			if name ~= nil and not visited[name] then
+			if not visited[name] then
 				visited[name] = true
-				local ok, handled = pcall(configure_available, name)
-				if not ok then
-					collector.mark(name, error_reason(handled))
-				elseif handled ~= true then
-					unresolved[#unresolved + 1] = name
-					session.pending[name] = true
+				-- A name the spec knows it can never resolve (e.g. a conform
+				-- function-form override that yields nothing at probe time) is
+				-- final here: tailored reason, no phase 2, no registry.
+				local unresolvable = nil
+				if spec.unresolvable_of then
+					local ok, reason = pcall(spec.unresolvable_of, name)
+					unresolvable = (ok and type(reason) == "string") and reason or nil
+				end
+				if unresolvable then
+					collector.mark(name, unresolvable)
+					finalized = true
+				else
+					local ok, handled = pcall(configure_available, name)
+					if not ok then
+						collector.mark(name, error_reason(handled))
+					elseif handled ~= true then
+						unresolved[#unresolved + 1] = name
+						session.pending[name] = true
+					end
 				end
 			end
+		end
+		-- Final phase-1 marks must not wait behind installs or a stalled
+		-- registry refresh elsewhere in the batch: flush them now (`emitted`
+		-- dedups the later done()).
+		if finalized then
+			collector.done()
 		end
 
 		-- Nothing left to install: Mason stays unloaded.
@@ -1107,6 +1138,10 @@ end
 ---  * nil                   -> unknown name (typo) -> fix config.
 ---  * { binary = "x" }      -> the tool invokes executable "x".
 ---  * { binary = nil }      -> the tool resolves its own command at runtime.
+---  * { unresolved = true } -> the name is real but its command can't be
+---                             verified at probe time (e.g. a per-buffer
+---                             function override): reported missing with a
+---                             tailored reason — never a typo, never an install.
 ---  * { broken = "reason" } -> config exists but errors: surfaced with the
 ---                             reason — never typo guidance, never an install.
 ---Mason is only the lazy install fallback, reverse-looked-up from the binary.
@@ -1126,6 +1161,7 @@ function M.resolve_runtime_tools(title, deps, probe, configure)
 					known = true,
 					binary = type(result.binary) == "string" and result.binary or nil,
 					broken = type(result.broken) == "string" and result.broken or nil,
+					unresolved = result.unresolved == true,
 				}
 			else
 				-- A probe error is treated as unknown: either way, fix the config entry.
@@ -1158,9 +1194,15 @@ function M.resolve_runtime_tools(title, deps, probe, configure)
 			return not info(name).known
 		end,
 		has_local_config = function(name)
-			-- A broken config counts as local so configure below surfaces its reason.
+			-- A broken config counts as local so configure below surfaces its
+			-- reason; an unresolved one does NOT (nothing verifiable to trust).
 			local i = info(name)
-			return i.known and i.binary == nil
+			return i.known and i.binary == nil and not i.unresolved
+		end,
+		unresolvable_of = function(name)
+			if info(name).unresolved then
+				return "config resolves per buffer and could not be verified at startup"
+			end
 		end,
 		-- A binary-less runtime tool can't map to a package, so it self-resolves.
 		local_config_mode = "resolves",

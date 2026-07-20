@@ -257,7 +257,8 @@ return function()
 
 	-- Names mapped in `by_ft` resolve lazily on their filetype's first lint
 	-- event; the rest (typos, manual-only linters) get a deferred immediate pass.
-	local deps = tools.normalize_names(require("core.settings").linter_deps)
+	local raw_deps = require("core.settings").linter_deps
+	local deps = tools.normalize_names(raw_deps)
 	local mapped = {}
 	for _, names in pairs(by_ft) do
 		for _, name in ipairs(names) do
@@ -270,6 +271,17 @@ return function()
 			pending[name] = true
 		else
 			immediate[#immediate + 1] = name
+		end
+	end
+	-- Entries normalize_names drops (non-string / empty) are config mistakes:
+	-- forward them raw so the resolver's own sweep reports them in the unknown
+	-- bucket, identically to the other consumers.
+	if type(raw_deps) == "table" then
+		for i = 1, table.maxn(raw_deps) do
+			local entry = raw_deps[i]
+			if entry ~= nil and (type(entry) ~= "string" or entry == "") then
+				immediate[#immediate + 1] = entry
+			end
 		end
 	end
 	if #immediate > 0 then
