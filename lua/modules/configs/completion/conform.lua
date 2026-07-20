@@ -214,7 +214,9 @@ return function()
 		-- (missing bucket, tailored reason) instead of a typo or a silent pass.
 		local overrides = conform.formatters
 		if type(overrides) == "table" and type(overrides[name]) == "function" then
-			return { unresolved = true }
+			-- The reason rides on the probe result: the phrasing is conform's,
+			-- not the shared resolver's (nvim-lint shares resolve_runtime_tools).
+			return { unresolved = true, reason = "config resolves per buffer and could not be verified at startup" }
 		end
 		return nil
 	end, nil, { defer = true })

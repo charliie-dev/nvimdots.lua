@@ -1249,6 +1249,9 @@ function M.resolve_runtime_tools(title, deps, probe, configure, opts)
 					binary = type(result.binary) == "string" and result.binary or nil,
 					broken = type(result.broken) == "string" and result.broken or nil,
 					unresolved = result.unresolved == true,
+					-- Consumer-specific phrasing for the unresolved warning
+					-- stays in the consumer's probe, not in this shared helper.
+					reason = type(result.reason) == "string" and result.reason or nil,
 				}
 			else
 				-- A probe error is treated as unknown: either way, fix the config entry.
@@ -1287,8 +1290,9 @@ function M.resolve_runtime_tools(title, deps, probe, configure, opts)
 			return i.known and i.binary == nil and not i.unresolved
 		end,
 		unresolvable_of = function(name)
-			if info(name).unresolved then
-				return "config resolves per buffer and could not be verified at startup"
+			local i = info(name)
+			if i.unresolved then
+				return i.reason or "config could not be verified at startup"
 			end
 		end,
 		-- A binary-less runtime tool can't map to a package, so it self-resolves.
