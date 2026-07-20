@@ -20,15 +20,15 @@ return function()
 	---it from several predicates (has_local_config, unknown_of) plus the handler,
 	---and an uncached miss would re-run a failed require each time.
 	---@param name string
-	---@return any value, string|nil broken_reason, boolean any_exists
+	---@return any value, string|nil broken_reason, boolean any_exists, string|nil winner
 	local function load_client_config(name)
 		local cached = client_config_cache[name]
 		if not cached then
-			local value, broken_reason, any_exists = tools.load_first_usable(client_modules(name), "nvim-dap")
-			cached = { value = value, broken_reason = broken_reason, any_exists = any_exists }
+			local value, broken_reason, any_exists, winner = tools.load_first_usable(client_modules(name), "nvim-dap")
+			cached = { value = value, broken_reason = broken_reason, any_exists = any_exists, winner = winner }
 			client_config_cache[name] = cached
 		end
-		return cached.value, cached.broken_reason, cached.any_exists
+		return cached.value, cached.broken_reason, cached.any_exists, cached.winner
 	end
 
 	-- Initialize debug hooks
@@ -97,9 +97,28 @@ return function()
 	end
 	-- mason-nvim-dap private internals, not a public API: guard each require so
 	-- drift degrades to client-config/$PATH resolution instead of aborting.
+	-- Failed requires are RECORDED: with presence evidence they are upstream
+	-- API drift worth naming; in a Mason-less session the same failures are
+	-- expected silence (mason_evidence below tells the two apart).
+	local mapping_drift = {}
+	local mapping_sibling_ok = false
+	local mapping_drift_warned = false
 	local function map_or_empty(mod, default)
 		local ok, m = pcall(require, mod)
-		return (ok and type(m) == "table") and m or default
+		if ok and type(m) == "table" then
+			mapping_sibling_ok = true
+			return m
+		end
+		mapping_drift[#mapping_drift + 1] = mod:match("[^.]+$")
+		return default
+	end
+	---Mason presence evidence without forcing a load: a sibling mapping module
+	---loaded, the parent is already in package.loaded, or its file is
+	---locatable on the search paths (rtp'd by a failed lazy require attempt).
+	local function mason_evidence()
+		return mapping_sibling_ok
+			or package.loaded["mason-nvim-dap"] ~= nil
+			or tools.module_path("mason-nvim-dap") ~= nil
 	end
 	local mason_maps_cache = nil
 	local function mason_maps()
@@ -124,7 +143,7 @@ return function()
 	---(every adapter in this repo) configures without loading Mason.
 	---@param dap_name string
 	local function mason_dap_handler(dap_name)
-		local custom_handler, broken_reason = load_client_config(dap_name)
+		local custom_handler, broken_reason, _, winner = load_client_config(dap_name)
 		-- No-fall-through contract, enforced by the ONE shared implementation
 		-- (tools.usable_or_raise, also used by mason_lsp_handler): a broken or
 		-- wrong-shaped config must never read as success — that would suppress
@@ -155,11 +174,23 @@ return function()
 				filetypes = map.filetypes[dap_name],
 			}
 			-- default_setup silently no-ops on a nil adapter config: error instead.
+			-- No drift CLAIM on the nil lookup itself — upstream legitimately
+			-- ships source-only names (js/javadbg/elixir…) with no default
+			-- adapter; the remedy is the same either way. Only a recorded
+			-- module-level require failure is named as drift.
 			if config.adapters == nil then
+				local drift = #mapping_drift > 0
+						and (" — mapping modules failed to load: " .. table.concat(mapping_drift, ", ") .. " (mason-nvim-dap API drift?)")
+					or ""
 				error(
 					string.format(
-						"no client config for `%s` and mason-nvim-dap has no adapter definition for it",
-						dap_name
+						"no client config for `%s`; mason-nvim-dap can install its package but ships no\n"
+							.. "default adapter setup for it — add a client config (`tool/dap/clients/%s.lua`\n"
+							.. "or `user.configs.dap-clients.%s`)%s",
+						dap_name,
+						dap_name,
+						dap_name,
+						drift
 					),
 					0
 				)
@@ -181,16 +212,55 @@ return function()
 			-- * dap.adapters.<dap_name> = { your config }
 			-- * dap.configurations.<lang> = { your config }
 			-- See `codelldb.lua` for a concrete example.
-			-- The opts table keeps the historical contract (name + the Mason
-			-- mapping fields) without the eager Mason cost: mapping fields load
-			-- on first ACCESS, so the zero-arg repo clients never touch Mason
-			-- while a user override reading opts.adapters still gets them.
-			custom_handler(setmetatable({ name = dap_name }, {
-				__index = function(_, key)
-					local map = mason_maps()[key]
-					return type(map) == "table" and map[dap_name] or nil
-				end,
-			}))
+			if winner == client_modules(dap_name)[1] then
+				-- User-authored override: the historical contract is a PLAIN
+				-- table — pairs()/tbl_deep_extend must see the mapping fields,
+				-- which a lazy __index proxy cannot provide (LuaJIT has no
+				-- __pairs). Costs an eager mason_maps() load only for adapters
+				-- the user explicitly overrode.
+				local map = mason_maps()
+				local opts = {
+					name = dap_name,
+					adapters = map.adapters[dap_name],
+					configurations = map.configurations[dap_name],
+					filetypes = map.filetypes[dap_name],
+				}
+				-- Module-level drift would vanish here: the override "succeeds",
+				-- so neither the factory error nor the resolver's missing path
+				-- runs. One WARN per session, only with Mason evidence (absence
+				-- is not drift) — the override itself still runs: a
+				-- self-sufficient one keeps working. A nil field WITHOUT module
+				-- drift is the legitimate source-only shape: silent.
+				if
+					not mapping_drift_warned
+					and #mapping_drift > 0
+					and (opts.adapters == nil or opts.configurations == nil or opts.filetypes == nil)
+					and mason_evidence()
+				then
+					mapping_drift_warned = true
+					vim.notify(
+						string.format(
+							"mason-nvim-dap mapping modules failed to load: %s — Mason-derived fields\n"
+								.. "in the `%s` override opts may be nil (upstream API drift?)",
+							table.concat(mapping_drift, ", "),
+							dap_name
+						),
+						vim.log.levels.WARN,
+						{ title = "nvim-dap" }
+					)
+				end
+				custom_handler(opts)
+			else
+				-- Repo clients are zero-arg and must not ENUMERATE opts: the
+				-- lazy proxy keeps Mason off the :Dap tick for provisioned
+				-- sessions; mapping fields resolve on first ACCESS only.
+				custom_handler(setmetatable({ name = dap_name }, {
+					__index = function(_, key)
+						local map = mason_maps()[key]
+						return type(map) == "table" and map[dap_name] or nil
+					end,
+				}))
+			end
 		end
 	end
 
@@ -241,6 +311,17 @@ return function()
 			return src[name] == nil
 		end,
 		has_local_config = has_client_config,
+		---A drifted mappings.source makes package_of return nil, so the name
+		---dead-ends in the resolver's reason-less missing branch — name the
+		---recorded drift there. Only with Mason evidence: absence is not drift.
+		missing_reason_of = function(name)
+			if has_client_config(name) or #mapping_drift == 0 or not mason_evidence() then
+				return nil
+			end
+			return "mason-nvim-dap mapping modules failed to load ("
+				.. table.concat(mapping_drift, ", ")
+				.. ") — cannot derive its Mason package (upstream API drift?)"
+		end,
 		-- Client configs self-validate, so try an existing config before the Mason
 		-- install fallback — python resolves debugpy from a venv $PATH can't see.
 		-- The raise on a missing launch binary is the provisioning signal.

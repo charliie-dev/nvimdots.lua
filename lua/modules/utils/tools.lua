@@ -126,12 +126,13 @@ end
 ---@return any value @First loaded module value, or nil.
 ---@return string|nil broken_reason @Highest-precedence exists-but-broken reason.
 ---@return boolean any_exists @Whether any candidate exists on the search paths.
+---@return string|nil winner @The module name that loaded, when value is non-nil.
 function M.load_first_usable(modules, title)
 	local broken_reason, any_exists = nil, false
 	for _, module in ipairs(modules) do
 		local ok, value, exists, reason = M.load_module_or_report(module, title)
 		if ok then
-			return value, broken_reason, true
+			return value, broken_reason, true, module
 		end
 		if exists then
 			any_exists = true
@@ -830,6 +831,7 @@ end
 ---  has_local_config?: fun(name: string): boolean,
 ---  local_config_mode?: "resolves"|"validates",
 ---  unresolvable_of?: fun(name: string): string|nil,
+---  missing_reason_of?: fun(name: string): string|nil,
 ---  configure?: fun(name: string, late: boolean),
 ---  defer_phase2?: boolean,
 ---  defer?: boolean,
@@ -838,6 +840,9 @@ end
 ---phase 1 — marked missing with that reason and flushed immediately, never
 ---classified against the registry (the one exception to "phase 1 never marks
 ---missing").
+---`missing_reason_of` (optional): consulted only for the final reason-less
+---missing mark in phase 2 (no package, no local config) — a string return
+---annotates the aggregated warning; errors and non-strings are ignored.
 ---`defer` (optional): move the WHOLE resolve off the caller's tick. The
 ---resolver still pays ensure_mason_on_path synchronously — deferring must not
 ---lose the same-tick guarantee that a replayed trigger's bare Mason spawns
@@ -1037,7 +1042,16 @@ function M.resolve(spec)
 			session.pending[name] = nil
 			collector.mark_unknown(pkg_name == name and name or (pkg_name .. " (for " .. name .. ")"))
 		else
-			collector.mark(name)
+			-- An optional spec hook may supply a concrete reason for an
+			-- otherwise reason-less miss (e.g. DAP naming recorded mapping
+			-- drift that made package_of return nil); a hook throw must not
+			-- break the mark itself.
+			local reason
+			if type(spec.missing_reason_of) == "function" then
+				local hook_ok, hook_reason = pcall(spec.missing_reason_of, name)
+				reason = (hook_ok and type(hook_reason) == "string") and hook_reason or nil
+			end
+			collector.mark(name, reason)
 		end
 	end
 
