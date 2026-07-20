@@ -114,32 +114,52 @@ function M.load_module_or_report(module, title)
 	return false, nil, true, reason
 end
 
----Load the first candidate module that returns a non-nil value (highest
----precedence first; no merge-base semantics — spec-merging consumers like the
----LSP server_info don't use this). A broken/nil-returning candidate keeps
----`any_exists` true and its reason is returned even alongside a
----lower-precedence success, so callers can refuse to fall past a broken override.
+---Load the first candidate module that loads (highest precedence first; no
+---merge-base semantics — spec-merging consumers like the LSP server_info
+---don't use this). A broken candidate keeps `any_exists` true and its reason
+---is returned even alongside a lower-precedence success, so callers can
+---refuse to fall past a broken override. Shape checks are the caller's job
+---(see `usable_or_raise`): require() never yields nil for a successful load —
+---a module without a return statement loads as `true`.
 ---@param modules string[] @Module names, highest precedence first.
 ---@param title? string @Notification title for broken-module load errors.
----@param nil_reason? string @Format (%s = module name) for the loaded-but-returned-nil case.
----@return any value @First usable module value, or nil.
----@return string|nil broken_reason @Highest-precedence exists-but-unusable reason.
+---@return any value @First loaded module value, or nil.
+---@return string|nil broken_reason @Highest-precedence exists-but-broken reason.
 ---@return boolean any_exists @Whether any candidate exists on the search paths.
-function M.load_first_usable(modules, title, nil_reason)
+function M.load_first_usable(modules, title)
 	local broken_reason, any_exists = nil, false
 	for _, module in ipairs(modules) do
 		local ok, value, exists, reason = M.load_module_or_report(module, title)
-		if ok and value ~= nil then
+		if ok then
 			return value, broken_reason, true
 		end
 		if exists then
 			any_exists = true
 			if broken_reason == nil then
-				broken_reason = reason or string.format(nil_reason or "`%s` returned no value", module)
+				broken_reason = reason
 			end
 		end
 	end
 	return nil, broken_reason, any_exists
+end
+
+---Enforce the no-fall-through contract for a locally loaded config: a broken
+---candidate raises its reason verbatim (it must never read as success to the
+---resolver — that would suppress both the warning and the install fallback),
+---and a loaded value outside the accepted shapes raises a labeled shape
+---error. Returns the value (nil = no config exists) once safe to consume.
+---@param value any @The loaded config value (nil when no candidate exists).
+---@param broken_reason string|nil @From load_first_usable / server_info.
+---@param opts { label: string, expected: string, shapes: table<string, boolean> }
+---@return any value
+function M.usable_or_raise(value, broken_reason, opts)
+	if broken_reason then
+		M.raise_verbatim(broken_reason)
+	end
+	if value ~= nil and not opts.shapes[type(value)] then
+		M.raise_verbatim(string.format("%s must return %s (got `%s`)", opts.label, opts.expected, type(value)))
+	end
+	return value
 end
 
 local mason_path_added = false

@@ -27,11 +27,7 @@ return function()
 	local function load_client_config(name)
 		local cached = client_config_cache[name]
 		if not cached then
-			local value, broken_reason, any_exists = tools.load_first_usable(
-				client_modules(name),
-				"nvim-dap",
-				"client config `%s` returned no value (must return a function)"
-			)
+			local value, broken_reason, any_exists = tools.load_first_usable(client_modules(name), "nvim-dap")
 			cached = { value = value, broken_reason = broken_reason, any_exists = any_exists }
 			client_config_cache[name] = cached
 		end
@@ -86,12 +82,15 @@ return function()
 	local function mason_dap_handler(config)
 		local dap_name = config.name
 		local custom_handler, broken_reason = load_client_config(dap_name)
-		-- A broken config must not fall through to the repo preset or Mason's
-		-- factory setup: that would read as success and suppress both the warning
-		-- and the install fallback (same contract as mason_lsp_handler).
-		if broken_reason then
-			tools.raise_verbatim(broken_reason)
-		end
+		-- No-fall-through contract, enforced by the ONE shared implementation
+		-- (tools.usable_or_raise, also used by mason_lsp_handler): a broken or
+		-- wrong-shaped config must never read as success — that would suppress
+		-- both the warning and the install fallback.
+		custom_handler = tools.usable_or_raise(custom_handler, broken_reason, {
+			label = "client config",
+			expected = "a fun(opts)",
+			shapes = { ["function"] = true },
+		})
 		if custom_handler == nil then
 			-- No client config: fall back to Mason's factory config, erroring
 			-- (level 0) so the resolver reports failures.
@@ -125,19 +124,13 @@ return function()
 				config.filetypes = {}
 			end
 			mason_dap.default_setup(config)
-		elseif type(custom_handler) == "function" then
-			-- Case where the protocol requires its own setup
-			-- Make sure to set
+		else
+			-- Function form (the only other shape usable_or_raise lets through):
+			-- the protocol owns its setup. Make sure to set
 			-- * dap.adapters.<dap_name> = { your config }
 			-- * dap.configurations.<lang> = { your config }
 			-- See `codelldb.lua` for a concrete example.
 			custom_handler(config)
-		else
-			-- Raise, don't notify-and-return: a normal return reads as success to
-			-- the resolver and suppresses the warning + install fallback.
-			tools.raise_verbatim(
-				string.format("client config must return a fun(opts) (got `%s`)", type(custom_handler))
-			)
 		end
 	end
 
@@ -228,7 +221,11 @@ return function()
 		-- The raise on a missing launch binary is the provisioning signal.
 		--
 		-- CANONICAL availability contract for dap/clients/*.lua (referenced by the
-		-- one-line notes in each client; keep the two patterns in sync here):
+		-- one-line notes in each client; keep the two patterns in sync here).
+		-- Shape enforcement itself lives in tools.usable_or_raise; a
+		-- metadata-declared contract ({ attach_capable, binaries }) was
+		-- considered and rejected — it would churn the fun(opts) user-override
+		-- interface for four clients. Revisit if the client count grows.
 		--   * validate FIRST (top of config): launch AND attach both spawn the local
 		--     binary, so nothing is worth registering without it — codelldb, lldb.
 		--   * raise LAST (bottom of config): attach needs no local binary, so the

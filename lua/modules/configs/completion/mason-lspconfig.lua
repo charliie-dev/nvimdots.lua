@@ -151,6 +151,8 @@ M.setup = function()
 	---@field user_spec any
 	---@field default_loaded boolean
 	---@field default_spec any
+	---@field spec any @Winning local spec (user precedence, else repo default).
+	---@field merge_base table|nil @Repo default table under a user TABLE override (merge-under policy).
 	---@field broken_reason string|nil
 	---@param name string
 	---@return mason_lspconfig.ServerInfo
@@ -211,6 +213,17 @@ M.setup = function()
 						or string.format("failed to load `%s` (see the earlier error notification)", modules[2])
 				end
 			end
+		end
+		-- Precedence, decided ONCE here (the handler consumes these fields
+		-- instead of re-deriving it): user wins; a user TABLE override merges
+		-- over the repo default (merge_base), any other user shape replaces it.
+		if info.user_loaded then
+			info.spec = info.user_spec
+			if type(info.user_spec) == "table" and type(info.default_spec) == "table" then
+				info.merge_base = info.default_spec
+			end
+		elseif info.default_loaded then
+			info.spec = info.default_spec
 		end
 		---The truth source: vim.lsp.config[name] resolves '*', rtp lsp/<name>.lua
 		---files and stored registrations exactly the way enable() will consume
@@ -273,40 +286,25 @@ M.setup = function()
 	---@param lsp_name string
 	local function mason_lsp_handler(lsp_name)
 		local info = server_info(lsp_name)
-		-- A broken config must not fall through to a lower-precedence spec or
-		-- the factory config: that would read as success and suppress both the
-		-- warning and the install fallback.
-		if info.broken_reason then
-			tools.raise_verbatim(info.broken_reason)
-		end
-		local ok, custom_handler = info.user_loaded, info.user_spec
-		local default_handler = info.default_spec
-		-- Use preset if there is no user definition
-		if not ok then
-			ok, custom_handler = info.default_loaded, info.default_spec
-		end
-
-		if not ok then
+		-- No-fall-through contract, enforced by the ONE shared implementation
+		-- (tools.usable_or_raise, also used by mason_dap_handler): a broken or
+		-- wrong-shaped config must never read as success — that would suppress
+		-- both the warning and the install fallback. Precedence was decided by
+		-- server_info (info.spec / info.merge_base).
+		local spec = tools.usable_or_raise(info.spec, info.broken_reason, {
+			label = "server config",
+			expected = "a fun(opts) or a table",
+			shapes = { ["function"] = true, table = true },
+		})
+		if spec == nil then
 			-- Default to use factory config for server(s) that doesn't include a spec
 			vim.lsp.config(lsp_name, opts)
-		elseif type(custom_handler) == "function" then
+		elseif type(spec) == "function" then
 			-- Server owns its setup; it must call vim.lsp.config() itself (see
 			-- clangd.lua for an example).
-			custom_handler(opts)
-		elseif type(custom_handler) == "table" then
-			vim.lsp.config(
-				lsp_name,
-				vim.tbl_deep_extend(
-					"force",
-					opts,
-					type(default_handler) == "table" and default_handler or {},
-					custom_handler
-				)
-			)
+			spec(opts)
 		else
-			tools.raise_verbatim(
-				string.format("server config must return a fun(opts) or a table (got `%s`)", type(custom_handler))
-			)
+			vim.lsp.config(lsp_name, vim.tbl_deep_extend("force", opts, info.merge_base or {}, spec))
 		end
 	end
 
