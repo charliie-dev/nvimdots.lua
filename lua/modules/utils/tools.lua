@@ -773,6 +773,15 @@ function M.attach_registry_events(registry)
 				end)
 			end)
 		)
+		registry:on("update:success", function()
+			-- SYNCHRONOUS on purpose: mason emits this inside the update
+			-- success path, before callers' callbacks run — a scheduled clear
+			-- would leave a same-tick window still reading the stale frozen
+			-- index. Clearing two locals is pure Lua, fast-event-safe; the
+			-- next lookup rebuilds (and re-freezes on a bootstrapped registry).
+			bin_to_package = nil
+			unfrozen_index = nil
+		end)
 	end)
 	registry_events_attached = attached
 end
