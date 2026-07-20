@@ -134,8 +134,11 @@ settings["formatter_deps"] = {
 	"stylua",
 }
 
--- Linters to resolve when nvim-lint lazy-loads (first BufReadPost). nvim-lint
--- linter names, resolved discovery-first like formatter_deps.
+-- Linters to resolve discovery-first (nvim-lint linter names). A name mapped
+-- to a filetype resolves on that filetype's FIRST matching event after
+-- nvim-lint lazy-loads (the resolve-only FileType autocmd or a lint event) —
+-- nothing is installed or warned about before such a buffer opens; unmapped
+-- names (typos, manual-only linters) get an immediate deferred pass instead.
 ---@type string[]
 settings["linter_deps"] = {
 	"actionlint",
