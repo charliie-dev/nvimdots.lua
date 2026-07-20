@@ -16,8 +16,8 @@ return function()
 		return is_windows and root .. "/Scripts/pythonw.exe" or root .. "/bin/python"
 	end
 
-	-- Resolve the debugpy command discovery-first. Higher-priority sources
-	-- (Mason venv, adapter shim) are re-probed every call, so a mid-session
+	-- Resolve the debugpy command discovery-first. The higher-priority source
+	-- (the `debugpy-adapter` shim) is re-probed every call, so a mid-session
 	-- install takes over; the cache is consulted LAST purely to spare the
 	-- blocking import probe, and a cached hit re-checks existence. (A `pip
 	-- uninstall` that keeps the interpreter fails only at import time — accepted.)
@@ -27,24 +27,19 @@ return function()
 		return command, args
 	end
 	-- One copy for both raise sites so the install guidance can't drift.
-	local no_debugpy = "debugpy not found: no Mason venv, no `debugpy-adapter` on $PATH or in Mason's bin\n"
-		.. "dir, and no python able to import debugpy; install debugpy via Mason (`:Mason`)\n"
+	local no_debugpy = "debugpy not found: no `debugpy-adapter` shim on $PATH or in Mason's bin dir,\n"
+		.. "and no python able to import debugpy; install debugpy via Mason (`:Mason`)\n"
 		.. "or your package manager"
 
-	-- Fast, non-blocking probes only (executable()/exepath()): Mason's managed
-	-- venv → `debugpy-adapter` on $PATH. Spawns nothing itself; the import probe
-	-- lives in the full cascade below and runs only when these probes miss.
+	-- Fast, non-blocking probes only (executable()/exepath()): the
+	-- `debugpy-adapter` shim, then the cached last resolution. Spawns nothing
+	-- itself; the import probe lives in the full cascade below and runs only
+	-- when these probes miss. The shim is the SUPPORTED Mason surface — it is
+	-- declared by the debugpy package spec and exists exactly when the managed
+	-- venv does, so no probe hardcodes Mason's packages/<name>/venv layout.
+	-- (Accepted nuance: on Windows the shim spawns via .cmd instead of
+	-- pythonw.exe, so no console-window suppression on that path.)
 	local function fast_command()
-		-- Re-derive the Mason root each call so a debugpy installed mid-session is
-		-- picked up: capturing it at config load would freeze it to nil whenever
-		-- Mason wasn't resolvable on the first :Dap (its dir not yet created).
-		local mason_root = tools.mason_root()
-		if mason_root then
-			local mason_python = venv_python(mason_root .. "/packages/debugpy/venv")
-			if vim.fn.executable(mason_python) == 1 then
-				return found(mason_python, { "-m", "debugpy.adapter" })
-			end
-		end
 		-- find_executable reaches a Mason shim even before mason.setup() puts its
 		-- bin dir on $PATH; spawn by absolute path (the bare name wouldn't launch).
 		local adapter = tools.find_executable("debugpy-adapter")
@@ -99,8 +94,10 @@ return function()
 				if not probed[key] then
 					probed[key] = true
 					local probe_cmd = abs ~= "" and abs or py
-					vim.fn.system({ probe_cmd, "-c", "import debugpy" })
-					if vim.v.shell_error == 0 then
+					-- vim.system, not vim.fn.system: the exit code stays local
+					-- instead of round-tripping through the v:shell_error global
+					-- (repo convention — core/pack.lua, servers/gopls.lua).
+					if vim.system({ probe_cmd, "-c", "import debugpy" }):wait().code == 0 then
 						-- Spawn by the probed exepath, not its realpath: a venv python is a
 						-- symlink and pyvenv.cfg discovery precedes symlink resolution.
 						return found(probe_cmd, { "-m", "debugpy.adapter" })
