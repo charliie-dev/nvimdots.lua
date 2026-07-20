@@ -106,6 +106,8 @@ tool["mfussenegger/nvim-dap"] = {
 	},
 	config = require("tool.dap"),
 	dependencies = {
+		-- mason-nvim-dap only supplies the adapter -> package mappings; the DAP resolver
+		-- degrades to $PATH discovery when it (or mason.nvim) is absent.
 		{ "jay-babu/mason-nvim-dap.nvim" },
 		{
 			"rcarriga/nvim-dap-ui",

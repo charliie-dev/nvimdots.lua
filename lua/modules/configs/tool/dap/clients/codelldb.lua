@@ -4,13 +4,17 @@ return function()
 	local utils = require("modules.utils.dap")
 	local is_windows = require("core.global").is_windows
 
+	-- Self-validate at config time: launch AND attach both spawn the local binary, so
+	-- unlike delve/python nothing is worth registering without it — error if missing.
+	local command =
+		require("modules.utils.tools").exepath_or_error("codelldb", "install it via Mason or your package manager")
 	dap.adapters.codelldb = {
 		type = "server",
 		port = "${port}",
 		executable = {
-			command = vim.fn.exepath("codelldb"), -- Find codelldb on $PATH
+			command = command,
 			args = { "--port", "${port}" },
-			detached = is_windows and false or true,
+			detached = not is_windows,
 		},
 	}
 	dap.configurations.c = {
