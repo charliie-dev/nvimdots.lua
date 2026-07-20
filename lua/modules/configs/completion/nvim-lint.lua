@@ -33,15 +33,12 @@ return function()
 		end,
 	}
 	---@param name string
-	---@param linter? table @Apply to this table instead of the registry entry —
-	---  a factory linter's value only exists per call, so its wrapper below
-	---  passes the returned table in directly.
-	local function apply_override(name, linter)
+	local function apply_override(name)
 		local apply = overrides[name]
 		if not apply then
 			return
 		end
-		linter = linter or lint.linters[name]
+		local linter = lint.linters[name]
 		if type(linter) == "table" then
 			apply(linter)
 		end
@@ -126,34 +123,11 @@ return function()
 	-- batched BY FILETYPE off the lint events below: the probe requires the
 	-- linter module, and some (golangcilint) run blocking system calls at load.
 	local tools = require("modules.utils.tools")
-	-- Wrappers installed by reapply_factory_override; the identity check keeps
-	-- reapplication idempotent (no stacking), while a fresh factory — e.g. after
-	-- refresh_linter reloads the module — is wrapped anew.
-	local factory_wrappers = {}
-	---Re-apply local overrides to a factory linter's per-call table (the
-	---setup-time apply_override loop only reaches table linters). No-op for a
-	---table linter and for a factory without an override.
-	---@param name string
-	local function reapply_factory_override(name)
-		if not overrides[name] then
-			return
-		end
-		local linter = lint.linters[name]
-		-- Skip a non-factory, or a linter we've already wrapped (idempotent).
-		if type(linter) ~= "function" or linter == factory_wrappers[name] then
-			return
-		end
-		local factory = linter
-		local wrapper = function(...)
-			local out = factory(...)
-			if type(out) == "table" then
-				apply_override(name, out)
-			end
-			return out
-		end
-		factory_wrappers[name] = wrapper
-		lint.linters[name] = wrapper
-	end
+	-- No factory-wrapper machinery here on purpose: both overridden linters
+	-- (selene, markdownlint-cli2) are plain-table modules upstream, so a
+	-- per-call wrapper would be unreachable speculation. If upstream ever
+	-- converts one to a factory, the override silently stops applying (the
+	-- probe's factory branch still resolves the linter) — revisit then.
 	---Rebuild a module-backed linter for a late configure: some (golangcilint)
 	---compute `args` by RUNNING their binary at module-load time, and a result
 	---computed while the binary was absent would persist all session.
@@ -238,10 +212,12 @@ return function()
 			return { binary = type(cmd) == "string" and cmd or nil }
 		end, function(name, late)
 			if late then
-				-- Rebuild so load-time work sees the just-installed binary.
+				-- Rebuild so load-time work sees the just-installed binary
+				-- (refresh_linter re-applies the local override itself).
 				refresh_linter(name)
+			else
+				apply_override(name)
 			end
-			reapply_factory_override(name)
 			if late then
 				-- No lint event follows a late configure: re-lint every loaded
 				-- buffer whose filetype maps to this linter.
