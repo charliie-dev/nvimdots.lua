@@ -192,6 +192,11 @@ return function()
 				if not tools.module_path(module) then
 					return nil -- unknown linter name (typo / not registered)
 				end
+				-- The swallowed require left the loader sentinel behind: retrying
+				-- as-is only yields "loop or previous error loading module".
+				-- Clear it so the retry re-throws the ORIGINAL error (the module
+				-- never finished loading, so no side effects run twice).
+				package.loaded[module] = nil
 				local ok, err = pcall(require, module)
 				if not ok then
 					return { broken = tostring(err) }
