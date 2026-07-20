@@ -16,6 +16,9 @@ local server_info_invalidate = nil
 -- Bridge set by setup(): the discovery pass, run AFTER `user.configs.lsp` so
 -- its runtime registrations are visible to the unknown/binary classification.
 local resolve_deps = nil
+-- Bridge set by setup(): resolves every still-deferred per-filetype batch —
+-- the parity sweep's target and a manual escape hatch.
+local resolve_remaining = nil
 -- User overrides run once per session: lsp.lua's config function is the only
 -- caller and lazy.nvim runs it once; a rerun could not undo the first pass's
 -- write-through ops anyway, so a second call is refused loudly instead.
@@ -101,6 +104,14 @@ function M.resolve_deps()
 	end
 end
 
+---Resolve every per-filetype batch still deferred (the parity sweep calls
+---this once per session; also a manual escape hatch and the harness hook).
+function M.resolve_remaining()
+	if resolve_remaining then
+		resolve_remaining()
+	end
+end
+
 M.setup = function()
 	local settings = require("core.settings")
 	-- Mason is an optional installer backend: guard its requires so a Mason-less
@@ -127,6 +138,28 @@ M.setup = function()
 	local function server_modules(name)
 		return { "user.configs.lsp-servers." .. name, "completion.servers." .. name }
 	end
+
+	-- Repo server modules that OVERRIDE `filetypes`: their ft semantics live in
+	-- the module, not in lspconfig defaults, so the per-filetype partition must
+	-- resolve them on the load tick (shuck adds ksh — deferring it by
+	-- lspconfig's bash/sh/zsh would strand a ksh-only session until the sweep).
+	-- This declares a property of OUR OWN modules; the ft_override_consistency
+	-- harness scenario asserts it stays in sync with servers/*.lua.
+	local eager_ft_override_modules = {
+		gopls = true,
+		harper_ls = true,
+		ruff = true,
+		shuck = true,
+		terraformls = true,
+		tflint = true,
+		tombi = true,
+	}
+	M.eager_ft_override_modules = eager_ft_override_modules
+
+	-- Late parity sweep: every lsp_deps entry is classified at most this long
+	-- after resolve_deps even if its filetype never opens (missing-tool
+	-- warnings and installs still happen once per session, off any hot path).
+	local SWEEP_DELAY_MS = 120000
 
 	vim.diagnostic.config({
 		signs = true,
@@ -429,13 +462,14 @@ M.setup = function()
 		end
 	end
 
-	-- The discovery pass itself runs via M.resolve_deps() AFTER
-	-- run_user_lsp_overrides() (see lsp.lua): user runtime registrations must
-	-- exist before the unknown/binary classification.
-	resolve_deps = function()
+	---One resolve pass over a batch of deps. The collector aggregates by
+	---title across batches; each batch gets its own session/pending record
+	---(retry_pending walks all of them).
+	---@param deps any[]
+	local function resolve_batch(deps)
 		tools.resolve({
 			title = "LSP",
-			deps = settings.lsp_deps,
+			deps = deps,
 			-- A value, not a thunk: mason-registry was already required at setup top.
 			registry = mason_ok and mason_registry or nil,
 			package_of = package_of,
@@ -467,6 +501,142 @@ M.setup = function()
 			-- from the probe — still reaches the triggering buffer.
 			defer_phase2 = true,
 		})
+	end
+
+	-- Per-filetype deferral state, (re)built by each resolve_deps run:
+	-- ft -> names still waiting, plus a hand-off set so a multi-ft name
+	-- resolves exactly once.
+	local deferred_by_ft = {}
+	local handed_off = {}
+	local perft_group = nil
+
+	---Hand a filetype's bucket to the resolver (no-op when already consumed).
+	---@param ft string
+	local function resolve_ft(ft)
+		local bucket = deferred_by_ft[ft]
+		if not bucket then
+			return
+		end
+		deferred_by_ft[ft] = nil
+		local batch = {}
+		for _, name in ipairs(bucket) do
+			if not handed_off[name] then
+				handed_off[name] = true
+				batch[#batch + 1] = name
+			end
+		end
+		if #batch > 0 then
+			resolve_batch(batch)
+		end
+		if next(deferred_by_ft) == nil and perft_group then
+			pcall(vim.api.nvim_del_augroup_by_id, perft_group)
+			perft_group = nil
+		end
+	end
+
+	resolve_remaining = function()
+		local fts = vim.tbl_keys(deferred_by_ft)
+		local batch = {}
+		for _, ft in ipairs(fts) do
+			for _, name in ipairs(deferred_by_ft[ft]) do
+				if not handed_off[name] then
+					handed_off[name] = true
+					batch[#batch + 1] = name
+				end
+			end
+			deferred_by_ft[ft] = nil
+		end
+		if perft_group then
+			pcall(vim.api.nvim_del_augroup_by_id, perft_group)
+			perft_group = nil
+		end
+		if #batch > 0 then
+			resolve_batch(batch)
+		end
+	end
+
+	-- The discovery pass itself runs via M.resolve_deps() AFTER
+	-- run_user_lsp_overrides() (see lsp.lua): user runtime registrations must
+	-- exist before the unknown/binary classification. It partitions the RAW
+	-- dep list: invalid entries stay in the immediate batch verbatim (the
+	-- resolver's own re-scan reports them); user-overridden names (either
+	-- hook) and ft-override modules keep today's load-tick semantics; only
+	-- names whose filetypes come from NON-user sources (rtp lsp/ files,
+	-- default registrations) defer to their filetype's first buffer, with the
+	-- sweep as the parity backstop.
+	resolve_deps = function()
+		local raw = type(settings.lsp_deps) == "table" and settings.lsp_deps or {}
+		local immediate = {}
+		deferred_by_ft = {}
+		handed_off = {}
+		for index = 1, table.maxn(raw) do
+			local entry = raw[index]
+			if type(entry) ~= "string" or entry == "" then
+				if entry ~= nil then
+					immediate[#immediate + 1] = entry
+				end
+			else
+				local fts = nil
+				local user_hooked = tools.module_path(server_modules(entry)[1]) ~= nil
+					or (user_lsp_configs[entry] and #user_lsp_configs[entry] > 0)
+				if not eager_ft_override_modules[entry] and not user_hooked then
+					local ok, config = pcall(function()
+						return vim.lsp.config[entry]
+					end)
+					if ok and type(config) == "table" and type(config.filetypes) == "table" then
+						fts = config.filetypes
+					end
+				end
+				local placed = false
+				if fts then
+					for _, ft in ipairs(fts) do
+						if type(ft) == "string" and ft ~= "" then
+							local bucket = deferred_by_ft[ft] or {}
+							bucket[#bucket + 1] = entry
+							deferred_by_ft[ft] = bucket
+							placed = true
+						end
+					end
+				end
+				if not placed then
+					immediate[#immediate + 1] = entry
+				end
+			end
+		end
+
+		-- Immediate batch first: same-tick semantics identical to the old
+		-- whole-list resolve for everything that must not defer.
+		if #immediate > 0 then
+			resolve_batch(immediate)
+		end
+
+		if next(deferred_by_ft) ~= nil then
+			perft_group = vim.api.nvim_create_augroup("MasonLspPerFtResolve", { clear = true })
+			vim.api.nvim_create_autocmd("FileType", {
+				group = perft_group,
+				pattern = vim.tbl_keys(deferred_by_ft),
+				callback = function(args)
+					resolve_ft(args.match)
+				end,
+				desc = "lsp: resolve this filetype's language servers",
+			})
+			-- Already-loaded buffers (including the one whose BufReadPre
+			-- triggered this whole config, if its FileType already fired):
+			-- resolve their filetypes on this same tick.
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				if vim.api.nvim_buf_is_loaded(buf) then
+					local ft = vim.bo[buf].filetype
+					if ft ~= "" and deferred_by_ft[ft] then
+						resolve_ft(ft)
+					end
+				end
+			end
+			if next(deferred_by_ft) ~= nil then
+				vim.defer_fn(function()
+					resolve_remaining()
+				end, SWEEP_DELAY_MS)
+			end
+		end
 	end
 end
 
