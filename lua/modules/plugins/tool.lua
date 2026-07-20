@@ -106,15 +106,21 @@ tool["mfussenegger/nvim-dap"] = {
 	},
 	config = require("tool.dap"),
 	dependencies = {
-		-- mason-nvim-dap only supplies the adapter -> package mappings; the DAP resolver
-		-- degrades to $PATH discovery when it (or mason.nvim) is absent.
-		{ "jay-babu/mason-nvim-dap.nvim" },
 		{
 			"rcarriga/nvim-dap-ui",
 			dependencies = "nvim-neotest/nvim-nio",
 			config = require("tool.dap.dapui"),
 		},
 	},
+}
+
+-- mason-nvim-dap only supplies the adapter -> package mappings; the DAP resolver
+-- degrades to $PATH discovery when it (or mason.nvim) is absent. Deliberately
+-- NOT a dependency of nvim-dap: lazy.nvim loads dependencies together with the
+-- parent, and a fully provisioned session must not pay Mason on the :Dap*
+-- tick — the DAP config requires it on demand (module loader) instead.
+tool["jay-babu/mason-nvim-dap.nvim"] = {
+	lazy = true,
 }
 
 tool["trixnz/sops.nvim"] = {

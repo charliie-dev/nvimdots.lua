@@ -1,9 +1,6 @@
 return function()
 	local dap = require("dap")
 	local dapui = require("dapui")
-	-- Mason is optional: a Mason-less setup still configures adapters that
-	-- resolve their own binary (client configs / $PATH).
-	local has_mason_dap, mason_dap = pcall(require, "mason-nvim-dap")
 
 	local icons = { dap = require("modules.utils.icons").get("dap") }
 	local colors = require("modules.utils").get_palette()
@@ -77,10 +74,56 @@ return function()
 	)
 	vim.fn.sign_define("DapLogPoint", { text = icons.dap.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
 
-	---A handler to setup all clients defined under `tool/dap/clients/*.lua`
-	---@param config table
-	local function mason_dap_handler(config)
-		local dap_name = config.name
+	-- Everything Mason-flavored loads LAZILY: a session where every adapter
+	-- self-validates from $PATH must not load mason.nvim / mason-nvim-dap on
+	-- the :Dap* tick. First use (the factory fallback or a phase-2
+	-- classification) goes through lazy.nvim's module loader; absence degrades
+	-- to client-config/$PATH resolution as before.
+	local mason_dap = nil
+	local function mason_dap_mod()
+		if mason_dap == nil then
+			local ok, m = pcall(require, "mason-nvim-dap")
+			if ok and type(m) == "table" then
+				require("modules.utils").load_plugin("mason-nvim-dap", {
+					ensure_installed = {},
+					automatic_installation = false,
+				})
+				mason_dap = m
+			else
+				mason_dap = false
+			end
+		end
+		return mason_dap or nil
+	end
+	-- mason-nvim-dap private internals, not a public API: guard each require so
+	-- drift degrades to client-config/$PATH resolution instead of aborting.
+	local function map_or_empty(mod, default)
+		local ok, m = pcall(require, mod)
+		return (ok and type(m) == "table") and m or default
+	end
+	local mason_maps_cache = nil
+	local function mason_maps()
+		if not mason_maps_cache then
+			mason_maps_cache = {
+				source = map_or_empty("mason-nvim-dap.mappings.source", {}),
+				adapters = map_or_empty("mason-nvim-dap.mappings.adapters", {}),
+				configurations = map_or_empty("mason-nvim-dap.mappings.configurations", {}),
+				filetypes = map_or_empty("mason-nvim-dap.mappings.filetypes", {}),
+			}
+			-- The module may load with the indexed field renamed/removed; normalize
+			-- so package_of/unknown_of below never index nil.
+			if type(mason_maps_cache.source.nvim_dap_to_package) ~= "table" then
+				mason_maps_cache.source.nvim_dap_to_package = {}
+			end
+		end
+		return mason_maps_cache
+	end
+
+	---A handler to setup all clients defined under `tool/dap/clients/*.lua`.
+	---Only the factory branch touches mason-nvim-dap: a client-config'd adapter
+	---(every adapter in this repo) configures without loading Mason.
+	---@param dap_name string
+	local function mason_dap_handler(dap_name)
 		local custom_handler, broken_reason = load_client_config(dap_name)
 		-- No-fall-through contract, enforced by the ONE shared implementation
 		-- (tools.usable_or_raise, also used by mason_lsp_handler): a broken or
@@ -94,7 +137,8 @@ return function()
 		if custom_handler == nil then
 			-- No client config: fall back to Mason's factory config, erroring
 			-- (level 0) so the resolver reports failures.
-			if not has_mason_dap then
+			local m = mason_dap_mod()
+			if not m then
 				error(
 					string.format(
 						"no client config for `%s` and mason-nvim-dap is unavailable for a default setup",
@@ -103,6 +147,13 @@ return function()
 					0
 				)
 			end
+			local map = mason_maps()
+			local config = {
+				name = dap_name,
+				adapters = map.adapters[dap_name],
+				configurations = map.configurations[dap_name],
+				filetypes = map.filetypes[dap_name],
+			}
 			-- default_setup silently no-ops on a nil adapter config: error instead.
 			if config.adapters == nil then
 				error(
@@ -123,46 +174,27 @@ return function()
 			if type(config.filetypes) ~= "table" then
 				config.filetypes = {}
 			end
-			mason_dap.default_setup(config)
+			m.default_setup(config)
 		else
 			-- Function form (the only other shape usable_or_raise lets through):
 			-- the protocol owns its setup. Make sure to set
 			-- * dap.adapters.<dap_name> = { your config }
 			-- * dap.configurations.<lang> = { your config }
 			-- See `codelldb.lua` for a concrete example.
-			custom_handler(config)
+			-- The opts table keeps the historical contract (name + the Mason
+			-- mapping fields) without the eager Mason cost: mapping fields load
+			-- on first ACCESS, so the zero-arg repo clients never touch Mason
+			-- while a user override reading opts.adapters still gets them.
+			custom_handler(setmetatable({ name = dap_name }, {
+				__index = function(_, key)
+					local map = mason_maps()[key]
+					return type(map) == "table" and map[dap_name] or nil
+				end,
+			}))
 		end
 	end
 
 	local settings = require("core.settings")
-
-	-- Mason-driven bits (mappings + install) only exist when Mason does; setup
-	-- stays discovery-first either way, not gated on mason-nvim-dap's installed set.
-	local has_registry, registry = pcall(require, "mason-registry")
-	local mason_ok = has_mason_dap and has_registry
-	local source_map = { nvim_dap_to_package = {} }
-	local adapters_map, configs_map, filetypes_map = {}, {}, {}
-	if mason_ok then
-		require("modules.utils").load_plugin("mason-nvim-dap", {
-			ensure_installed = {},
-			automatic_installation = false,
-		})
-		-- mason-nvim-dap private internals, not a public API: guard each require so
-		-- drift degrades to client-config/$PATH resolution instead of aborting.
-		local function map_or_empty(mod, default)
-			local ok, m = pcall(require, mod)
-			return (ok and type(m) == "table") and m or default
-		end
-		source_map = map_or_empty("mason-nvim-dap.mappings.source", {})
-		adapters_map = map_or_empty("mason-nvim-dap.mappings.adapters", {})
-		configs_map = map_or_empty("mason-nvim-dap.mappings.configurations", {})
-		filetypes_map = map_or_empty("mason-nvim-dap.mappings.filetypes", {})
-		-- The module may load with the indexed field renamed/removed; normalize so
-		-- package_of/binaries_of below never index nil.
-		if type(source_map.nvim_dap_to_package) ~= "table" then
-			source_map.nvim_dap_to_package = {}
-		end
-	end
 
 	---Does an explicit client config exist for this adapter (system-resolved)?
 	---A config that exists but fails to load still counts — treating it as
@@ -174,27 +206,19 @@ return function()
 		return value ~= nil or any_exists
 	end
 
-	---Configure an adapter via the shared handler; client configs self-validate.
-	---@param name string
-	local function configure_adapter(name)
-		mason_dap_handler({
-			name = name,
-			adapters = adapters_map[name],
-			configurations = configs_map[name],
-			filetypes = filetypes_map[name],
-		})
-	end
-
 	-- Discovery-first resolution, shared with LSP and formatters/linters. nvim-dap
 	-- has no command registry like nvim-lspconfig, so $PATH detection leans on the
 	-- Mason package's declared binaries; configs without a package resolve their own.
 	tools.resolve({
 		title = "DAP",
 		deps = settings.dap_deps,
-		-- A value, not a thunk: mason-registry was already required at config top.
-		registry = has_registry and registry or nil,
+		-- Lazy thunk so a fully-provisioned setup never loads mason-registry.
+		registry = function()
+			local ok, resolved = pcall(require, "mason-registry")
+			return ok and resolved or nil
+		end,
 		package_of = function(name)
-			return source_map.nvim_dap_to_package[name]
+			return mason_maps().source.nvim_dap_to_package[name]
 		end,
 		binaries_of = function(name, pkg)
 			if pkg ~= nil then
@@ -210,10 +234,11 @@ return function()
 			if has_client_config(name) then
 				return false
 			end
-			if next(source_map.nvim_dap_to_package) == nil then
+			local src = mason_maps().source.nvim_dap_to_package
+			if next(src) == nil then
 				return false
 			end
-			return source_map.nvim_dap_to_package[name] == nil
+			return src[name] == nil
 		end,
 		has_local_config = has_client_config,
 		-- Client configs self-validate, so try an existing config before the Mason
@@ -233,6 +258,6 @@ return function()
 		--     registered when it raises; the raise only signals provisioning (the
 		--     warning reasons say remote attach still works) — delve, python.
 		local_config_mode = "validates",
-		configure = configure_adapter,
+		configure = mason_dap_handler,
 	})
 end
