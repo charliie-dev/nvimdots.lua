@@ -8,26 +8,44 @@
 -- must call `M.ensure_mason_on_path()` itself or use `M.find_executable`.
 local M = {}
 
----Valid executable names from a caller-supplied spec: string → singleton;
----table → non-string/empty entries dropped, nil holes skipped (maxn, so a
----hole can't truncate the list); anything else → no names.
+-- Fallback when `settings.tool_install_timeout` is missing or non-positive;
+-- lua/core/settings.lua's doc comment references this constant by name.
+local DEFAULT_TOOL_INSTALL_TIMEOUT_MS = 300000
+
+---Split a caller-supplied name spec into valid names and the raw entries
+---dropped: string → singleton; table → non-string/empty entries collected
+---into `invalid` (config mistakes the caller may report), nil holes skipped
+---(maxn, so a hole can't truncate the list); anything else → no names. The
+---ONE definition of what counts as a valid dep entry.
 ---@param names any @Executable name(s) as callers pass them.
----@return string[]
-local function normalize_names(names)
+---@return string[] valid
+---@return any[] invalid @Raw non-nil dropped entries, in order.
+local function split_dep_names(names)
 	if type(names) == "string" then
-		return { names }
+		return { names }, {}
 	end
 	if type(names) ~= "table" then
-		return {}
+		return {}, {}
 	end
-	local out = {}
+	local out, invalid = {}, {}
 	for i = 1, table.maxn(names) do
 		local name = names[i]
 		if type(name) == "string" and name ~= "" then
 			out[#out + 1] = name
+		elseif name ~= nil then
+			invalid[#invalid + 1] = name
 		end
 	end
-	return out
+	return out, invalid
+end
+M.split_dep_names = split_dep_names
+
+---Valid names only — a single-return wrapper (the parentheses truncate), so
+---the public alias's arity never changes under vararg-position calls.
+---@param names any
+---@return string[]
+local function normalize_names(names)
+	return (split_dep_names(names))
 end
 -- Public alias for dep-list consumers.
 M.normalize_names = normalize_names
@@ -272,7 +290,6 @@ local function missing_collector(title, timeout_ms)
 	-- (name -> { reason = phase-1 fail_reason or false }); each entry owns a
 	-- defer_fn timer that settles it if the closed callback never does.
 	local unsettled = {}
-	local pending = 0
 	local flush_scheduled = false
 	local announce_scheduled = false
 	-- Names whose recorded reason is a placeholder (generic install-timeout /
@@ -358,7 +375,7 @@ local function missing_collector(title, timeout_ms)
 	-- installs are pending unless forced (done() and per-install timers force:
 	-- their records are final); `emitted` lets late failures still notify.
 	function flush(force)
-		if not force and pending > 0 then
+		if not force and next(unsettled) ~= nil then
 			return
 		end
 		if flush_scheduled then
@@ -454,52 +471,48 @@ local function missing_collector(title, timeout_ms)
 				return
 			end
 
-			-- Only the first in-flight track for a name touches the accounting: a
-			-- repeat (re-resolve pass / shared-handle piggyback) must not increment
-			-- `pending` twice against one settle.
-			local first_track = name == nil or unsettled[name] == nil
+			-- Only the first in-flight track for a name creates the entry: a
+			-- repeat (re-resolve pass / shared-handle piggyback) must not add a
+			-- second settle against one install. `track` is only ever called
+			-- with a non-empty string name (start_install), so `unsettled`
+			-- membership IS the whole accounting — the flush gate reads it.
+			local first_track = unsettled[name] == nil
 			if first_track then
-				pending = pending + 1
-				if name ~= nil then
-					unsettled[name] = { reason = fail_reason or false }
-					-- One timer per tracked install, settling only its own entry
-					-- (a no-op when the closed callback got there first), so a
-					-- late-tracked install always keeps its full window. Without
-					-- a configured timeout the entry settles via "closed" only.
-					if type(timeout_ms) == "number" and timeout_ms > 0 then
-						vim.defer_fn(function()
-							local entry = unsettled[name]
-							if entry == nil then
-								return
-							end
-							unsettled[name] = nil
-							-- The generic note is a placeholder a later concrete
-							-- failure may upgrade (see add()).
-							add(
-								name,
-								type(entry.reason) == "string" and entry.reason
-									or "Mason install did not finish within the timeout (check :Mason for progress)",
-								entry.reason == false
-							)
-							pending = pending - 1
-							-- This entry is final: force past the pending gate.
-							flush(true)
-						end, timeout_ms)
-					end
+				unsettled[name] = { reason = fail_reason or false }
+				-- One timer per tracked install, settling only its own entry
+				-- (a no-op when the closed callback got there first), so a
+				-- late-tracked install always keeps its full window. Without
+				-- a configured timeout the entry settles via "closed" only.
+				if type(timeout_ms) == "number" and timeout_ms > 0 then
+					vim.defer_fn(function()
+						local entry = unsettled[name]
+						if entry == nil then
+							return
+						end
+						unsettled[name] = nil
+						-- The generic note is a placeholder a later concrete
+						-- failure may upgrade (see add()).
+						add(
+							name,
+							type(entry.reason) == "string" and entry.reason
+								or "Mason install did not finish within the timeout (check :Mason for progress)",
+							entry.reason == false
+						)
+						-- This entry is final: force past the unsettled gate.
+						flush(true)
+					end, timeout_ms)
 				end
 			end
 			-- "closed" fires in a fast event context: hop to the main loop. recheck/
-			-- on_ready are pcall'd so a throw can't suppress flush; skip the decrement
-			-- when the deadline already settled this install, but still run on_ready.
+			-- on_ready are pcall'd so a throw can't suppress flush; clearing the
+			-- entry is a no-op when the deadline already settled this install,
+			-- but on_ready still runs.
 			local registered, reg_err = pcall(
 				handle.once,
 				handle,
 				"closed",
 				vim.schedule_wrap(function()
-					local counted = name == nil or unsettled[name] ~= nil
-					if name ~= nil then
-						unsettled[name] = nil
-					end
+					unsettled[name] = nil
 					local rc_ok, available = pcall(recheck)
 					if rc_ok and available then
 						if type(on_ready) == "function" then
@@ -512,20 +525,14 @@ local function missing_collector(title, timeout_ms)
 					else
 						add(name, fail_reason)
 					end
-					if counted then
-						pending = pending - 1
-					end
 					flush()
 				end)
 			)
 			-- once() threw: undo only what THIS track added, or a failed piggyback
-			-- would decrement pending / clear another caller's in-flight entry.
+			-- would clear another caller's in-flight entry.
 			if not registered then
 				if first_track then
-					pending = pending - 1
-					if name ~= nil then
-						unsettled[name] = nil
-					end
+					unsettled[name] = nil
 				end
 				add(name, fail_reason or error_reason(reg_err))
 			elseif started_here and type(name) == "string" and name ~= "" then
@@ -554,7 +561,7 @@ local function missing_collector(title, timeout_ms)
 					vim.notify(message, vim.log.levels.INFO, { title = title })
 				end)
 			end
-			-- done()'s records are final: force past the pending gate.
+			-- done()'s records are final: force past the unsettled gate.
 			flush(true)
 		end,
 	}
@@ -875,6 +882,10 @@ end
 ---as trigger-backed (`late = false`), exactly like a caller-side
 ---vim.schedule wrapper did.
 function M.resolve(spec)
+	-- Every call site owns a configure (the resolver's whole job funnels into
+	-- it): a missing one is a programmer error — fail at the call site instead
+	-- of silently "succeeding" every configure.
+	assert(type(spec.configure) == "function", "tools.resolve: spec.configure must be a function")
 	local ok_settings, settings = pcall(require, "core.settings")
 	local timeout_ms = (
 		ok_settings
@@ -882,7 +893,7 @@ function M.resolve(spec)
 		and settings.tool_install_timeout > 0
 	)
 			and settings.tool_install_timeout
-		or 300000
+		or DEFAULT_TOOL_INSTALL_TIMEOUT_MS
 	local collector = collectors_by_title[spec.title]
 	if not collector then
 		collector = missing_collector(spec.title, timeout_ms)
@@ -918,9 +929,6 @@ function M.resolve(spec)
 	---error an install can't fix. Any other thrown value (including a config's
 	---own `{ reason = ... }` table) stays an ordinary failure.
 	local function try_configure(name)
-		if type(spec.configure) ~= "function" then
-			return true
-		end
 		local ok, err = pcall(spec.configure, name, not synchronous)
 		if ok then
 			return true
@@ -949,16 +957,15 @@ function M.resolve(spec)
 	session.configure = do_configure
 
 	-- Phase-1 "validates" failures, surfaced by phase 2 without re-running the
-	-- config; `false` = failed with no message. Names whose failure was a
-	-- raise_verbatim config error are flagged separately: installs can't fix those.
-	local validate_failed = {}
-	local validate_config_error = {}
-	---String reason or nil — the one decoder of the false-vs-string encoding.
+	-- config. One record per failed name: `reason` (string or nil for a
+	-- message-less failure) and `config_error` (a raise_verbatim config-layer
+	-- error an install can't fix). Record EXISTENCE is the failure mark.
+	local validates = {}
 	---@param name string
 	---@return string|nil
 	local function validate_reason(name)
-		local reason = validate_failed[name]
-		return type(reason) == "string" and reason or nil
+		local record = validates[name]
+		return record and record.reason or nil
 	end
 
 	-- Install `pkg`, configure on completion; failures keep the phase-1 reason.
@@ -994,10 +1001,10 @@ function M.resolve(spec)
 			if ok then
 				return true
 			end
-			validate_failed[name] = reason or false
-			if config_error then
-				validate_config_error[name] = true
-			end
+			validates[name] = {
+				reason = type(reason) == "string" and reason or nil,
+				config_error = config_error == true,
+			}
 		end
 		return false
 	end
@@ -1030,8 +1037,8 @@ function M.resolve(spec)
 		-- The config already failed this pass. A raise_verbatim failure is a
 		-- config-layer error an install can't fix: report it immediately. Only
 		-- a provisioning failure (missing binary) is answered with an install.
-		if validate_failed[name] ~= nil then
-			if not validate_config_error[name] and pkg ~= nil and not pkg:is_installed() then
+		if validates[name] ~= nil then
+			if not validates[name].config_error and pkg ~= nil and not pkg:is_installed() then
 				start_install(pkg, name) -- annotates the failure reason itself
 			else
 				collector.mark(name, validate_reason(name))
@@ -1087,14 +1094,9 @@ function M.resolve(spec)
 		-- non-table deps degrade to nothing to resolve, and dropped entries
 		-- (non-string / empty — config mistakes) surface in the unknown bucket
 		-- instead of vanishing or flowing into module-name concatenation.
-		local deps = normalize_names(spec.deps)
-		if type(spec.deps) == "table" then
-			for i = 1, table.maxn(spec.deps) do
-				local entry = spec.deps[i]
-				if entry ~= nil and (type(entry) ~= "string" or entry == "") then
-					collector.mark_unknown(entry == "" and '""' or entry)
-				end
-			end
+		local deps, invalid_entries = split_dep_names(spec.deps)
+		for _, entry in ipairs(invalid_entries) do
+			collector.mark_unknown(entry == "" and '""' or entry)
 		end
 		-- Phase 1: configure everything resolvable without the registry.
 		local visited = {}

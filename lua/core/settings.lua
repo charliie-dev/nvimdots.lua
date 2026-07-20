@@ -162,7 +162,8 @@ settings["linter_deps"] = {
 
 -- Deadline (ms) for background Mason work before the aggregated missing-tool warning
 -- flushes anyway. Gates each tracked install (its own window) AND the registry refresh
--- wait; late completions still recover. Non-positive values use the default.
+-- wait; late completions still recover. Missing or non-positive values fall back to
+-- the resolver's DEFAULT_TOOL_INSTALL_TIMEOUT_MS (300000) in `modules/utils/tools.lua`.
 ---@type number
 settings["tool_install_timeout"] = 300000
 
