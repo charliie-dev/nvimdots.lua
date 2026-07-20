@@ -22,8 +22,25 @@ return function()
 	-- blocking import probe, and a cached hit re-checks existence. (A `pip
 	-- uninstall` that keeps the interpreter fails only at import time — accepted.)
 	local resolved
+	-- Negative session cache for the import probe, TTL'd with a finite budget:
+	-- launch attempts inside the window, or after the budget is spent, stay
+	-- spawn-free (a session where debugpy stays missing pays a bounded total,
+	-- then never again). An attempt after the window re-probes while budget
+	-- remains, so a pip-installed debugpy is picked up without :ToolsRetry in
+	-- the common install-then-retry flow. A success closes the miss-epoch
+	-- (found() resets the state) so a later vanished `resolved` starts a fresh
+	-- budget. Faster recovery paths stay: the fast probes run FIRST each call
+	-- (a Mason install takes over there), a resolver re-configure rebuilds this
+	-- whole closure, and :ToolsRetry re-runs the client config.
+	local IMPORT_PROBE_TTL_NS = 10 * 1000 * 1000 * 1000 -- 10s between re-probes
+	local IMPORT_PROBE_BUDGET = 3 -- post-failure re-probe rounds per miss-epoch
+	local import_probe_failed_at = nil
+	local import_probe_retries = 0
 	local function found(command, args)
 		resolved = { command = command, args = args }
+		-- Any successful resolution closes the current miss-epoch.
+		import_probe_failed_at = nil
+		import_probe_retries = 0
 		return command, args
 	end
 	-- One copy for both raise sites so the install guidance can't drift.
@@ -59,14 +76,6 @@ return function()
 		return nil
 	end
 
-	-- Negative session cache for the import probe: a session where debugpy
-	-- stays missing must not re-pay the blocking interpreter spawns on every
-	-- launch attempt. Every recovery path bypasses or resets it: the fast
-	-- probes run FIRST each call (a Mason install takes over there), a
-	-- resolver re-configure rebuilds this whole closure, and :ToolsRetry
-	-- re-runs the client config for a pip-installed debugpy.
-	local import_probe_failed = false
-
 	-- Full cascade: fast probes, then a system python that can import debugpy.
 	-- The import probe spawns a short-lived python, but only when the fast probes
 	-- miss. Both the launch path and the config-time availability check at the
@@ -76,8 +85,14 @@ return function()
 		if command then
 			return command, args
 		end
-		if import_probe_failed then
-			return nil
+		if import_probe_failed_at then
+			if import_probe_retries >= IMPORT_PROBE_BUDGET then
+				return nil -- budget spent: the latch is permanent for this epoch
+			end
+			if vim.uv.hrtime() - import_probe_failed_at < IMPORT_PROBE_TTL_NS then
+				return nil -- inside the window: no respawn
+			end
+			import_probe_retries = import_probe_retries + 1
 		end
 		-- Last resort: probe interpreter candidates rather than hard-coding one
 		-- (pythonw.exe is often absent on a Windows box with only python.exe).
@@ -105,7 +120,7 @@ return function()
 				end
 			end
 		end
-		import_probe_failed = true
+		import_probe_failed_at = vim.uv.hrtime()
 		return nil
 	end
 
