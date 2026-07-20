@@ -1,0 +1,960 @@
+-- Discovery-first tool resolution (RFC: ayamir/nvimdots#1293): $PATH → Mason
+-- install → aggregated missing-tool warning, with Mason as an optional backend
+-- and `M.resolve` as the shared loop.
+--
+-- Only mason.setup() (lazy-loaded) puts Mason's bin dir on $PATH, so resolve()
+-- APPENDS it once first (`M.ensure_mason_on_path`) — appended, not prepended,
+-- so a system copy still wins. A bare-name spawn that bypasses `M.resolve`
+-- must call `M.ensure_mason_on_path()` itself or use `M.find_executable`.
+local M = {}
+
+---Valid executable names from a caller-supplied spec: string → singleton;
+---table → non-string/empty entries dropped, nil holes skipped (maxn, so a
+---hole can't truncate the list); anything else → no names.
+---@param names any @Executable name(s) as callers pass them.
+---@return string[]
+local function normalize_names(names)
+	if type(names) == "string" then
+		return { names }
+	end
+	if type(names) ~= "table" then
+		return {}
+	end
+	local out = {}
+	for i = 1, table.maxn(names) do
+		local name = names[i]
+		if type(name) == "string" and name ~= "" then
+			out[#out + 1] = name
+		end
+	end
+	return out
+end
+-- Public alias for dep-list consumers.
+M.normalize_names = normalize_names
+
+---Locate the first of the given executables: $PATH, then Mason's bin dir
+---(reachable before mason.setup() prepends it). First-found by design:
+---callers pass alternates for one tool, not a list of required binaries.
+---@param names string|string[] @Executable name(s), probed in order.
+---@return string|nil @Absolute path of the first name found, or nil.
+function M.find_executable(names)
+	names = normalize_names(names)
+	for _, name in ipairs(names) do
+		local path = vim.fn.exepath(name)
+		if path ~= "" then
+			return path
+		end
+	end
+	local root = M.mason_root()
+	if root then
+		for _, name in ipairs(names) do
+			-- exepath() also resolves the Windows `.cmd` shim extension.
+			local path = vim.fn.exepath(root .. "/bin/" .. name)
+			if path ~= "" then
+				return path
+			end
+		end
+	end
+	return nil
+end
+
+-- Hits only: rtp grows as lazy.nvim loads plugins, so a cached miss would go
+-- stale mid-session.
+local module_path_cache = {}
+
+---Locate a module file on the paths require() uses, without executing it:
+---package.path plus the runtimepath loader (covers `user.*`).
+---@param module string
+---@return string|nil
+function M.module_path(module)
+	if module_path_cache[module] then
+		return module_path_cache[module]
+	end
+	local path = package.searchpath(module, package.path)
+	if not path then
+		-- vim.loader.find covers foo.lua and foo/init.lua without an rtp glob.
+		local found = vim.loader.find(module)[1]
+		path = found and found.modpath or nil
+	end
+	module_path_cache[module] = path
+	return path
+end
+
+-- First load error per module: a re-require after a failed load only says
+-- "previous error loading module", so the original message must be kept.
+local broken_module_reason = {}
+
+---Require a module, distinguishing "missing" from "exists but broken": a file
+---present on the search paths that throws at load is notified (once) and
+---keeps `exists` true, so callers don't misread it as an unknown name.
+---@param module string
+---@param title? string @Notification title for broken-module load errors.
+---@return boolean ok @Whether the require succeeded.
+---@return any value @The module's value when ok, else nil.
+---@return boolean exists @Whether the module file exists on the search paths.
+---@return string|nil reason @The load error when the module exists but is broken.
+function M.load_module_or_report(module, title)
+	local ok, value = pcall(require, module)
+	if ok then
+		return true, value, true
+	end
+	if not M.module_path(module) then
+		return false, nil, false
+	end
+	local reason = broken_module_reason[module]
+	if not reason then
+		reason = tostring(value)
+		broken_module_reason[module] = reason
+		vim.notify(
+			string.format("Failed to load `%s`:\n%s", module, reason),
+			vim.log.levels.ERROR,
+			{ title = title or "tools" }
+		)
+	end
+	return false, nil, true, reason
+end
+
+---Load the first candidate module that returns a non-nil value (highest
+---precedence first; no merge-base semantics — spec-merging consumers like the
+---LSP server_info don't use this). A broken/nil-returning candidate keeps
+---`any_exists` true and its reason is returned even alongside a
+---lower-precedence success, so callers can refuse to fall past a broken override.
+---@param modules string[] @Module names, highest precedence first.
+---@param title? string @Notification title for broken-module load errors.
+---@param nil_reason? string @Format (%s = module name) for the loaded-but-returned-nil case.
+---@return any value @First usable module value, or nil.
+---@return string|nil broken_reason @Highest-precedence exists-but-unusable reason.
+---@return boolean any_exists @Whether any candidate exists on the search paths.
+function M.load_first_usable(modules, title, nil_reason)
+	local broken_reason, any_exists = nil, false
+	for _, module in ipairs(modules) do
+		local ok, value, exists, reason = M.load_module_or_report(module, title)
+		if ok and value ~= nil then
+			return value, broken_reason, true
+		end
+		if exists then
+			any_exists = true
+			if broken_reason == nil then
+				broken_reason = reason or string.format(nil_reason or "`%s` returned no value", module)
+			end
+		end
+	end
+	return nil, broken_reason, any_exists
+end
+
+local mason_path_added = false
+
+---Append Mason's bin dir to $PATH once (see the file header) — appended so a
+---system copy still wins. Idempotent; while the Mason root is still unknown
+---the flag stays unset so a later call retries.
+function M.ensure_mason_on_path()
+	if mason_path_added then
+		return
+	end
+	local root = M.mason_root()
+	if not root then
+		return
+	end
+	local bin = root .. "/bin"
+	local sep = require("core.global").is_windows and ";" or ":"
+	local path = vim.env.PATH or ""
+	-- Exact-entry membership check (mason.setup may have prepended it): wrap
+	-- both sides in the separator; plain find — $PATH may hold magic chars.
+	if not (sep .. path .. sep):find(sep .. bin .. sep, 1, true) then
+		vim.env.PATH = path ~= "" and (path .. sep .. bin) or bin
+	end
+	mason_path_added = true
+end
+
+---Resolve the first of the given executable names, or `error()` with the
+---install hint — at level 0 so the message carries no "file:line:" prefix.
+---@param names string|string[] @Executable name(s), probed in order.
+---@param hint string @Actionable install guidance appended to the error.
+---@return string @Absolute path of the first name found.
+function M.exepath_or_error(names, hint)
+	local path = M.find_executable(names)
+	if path then
+		return path
+	end
+	local shown = normalize_names(names)
+	local label = #shown > 0 and table.concat(shown, "/") or "<invalid executable spec>"
+	error(string.format("%s not found on $PATH or in Mason's bin dir; %s", label, hint), 0)
+end
+
+---Normalize a pcall-captured error: a raise_verbatim sentinel yields its
+---reason untouched; a string loses the "chunkname:line: " prefix error() adds;
+---anything else is dropped.
+---@param err any
+---@return string|nil
+local function error_reason(err)
+	if type(err) == "table" and type(err.reason) == "string" then
+		return err.reason
+	end
+	if type(err) ~= "string" then
+		return nil
+	end
+	return (err:gsub("^[^\n]-:%d+: ", ""))
+end
+
+---Raise a config failure whose message must reach the warning verbatim: it may
+---itself start with a "path:line:" that position stripping would eat.
+---@param reason string
+function M.raise_verbatim(reason)
+	-- selene: allow(incorrect_standard_library_use) -- error() does accept any value
+	error({ reason = reason })
+end
+
+---Aggregate tools that could not be set up into one deferred warning, in two
+---sections: `mark` (install it / config failed) and `mark_unknown`
+---(unrecognized name — fix the config, don't install).
+---@class ToolCollector
+---@field mark fun(name: string, reason?: string) @Record an unresolved tool (optionally with a reason).
+---@field mark_unknown fun(name: string) @Record an unrecognized name (typo / outdated / unsupported).
+---@field track fun(pkg: table, name: string, recheck: fun(): boolean, on_ready?: fun(), fail_reason?: string)
+---@field done fun() @Flush the aggregated warning once all tracked installs settle.
+---@param title string @Notification title identifying the subsystem.
+---@param timeout_ms? number @Deadline before the warning is flushed despite unsettled installs.
+---@return ToolCollector
+local function missing_collector(title, timeout_ms)
+	local missing = {}
+	local reasons = {}
+	local unknown = {}
+	local queued = {}
+	local seen = {}
+	local emitted = {}
+	-- Tracked installs whose "closed" callback hasn't run yet
+	-- (name -> { reason = phase-1 fail_reason or false, expires_at = uv ms });
+	-- the chained deadline settles each entry once its own window elapses.
+	local unsettled = {}
+	local pending = 0
+	local deadline_started = false
+	local deadline_passed = false
+	local flush_scheduled = false
+	local announce_scheduled = false
+
+	-- Dedup across both buckets; non-string names are tostring()'d, nil/empty dropped.
+	local function normalize(name)
+		if name == nil or name == "" then
+			return nil
+		end
+		return type(name) == "string" and name or tostring(name)
+	end
+	local function record(bucket, name)
+		if name == nil or seen[name] then
+			return false
+		end
+		seen[name] = true
+		bucket[#bucket + 1] = name
+		return true
+	end
+	local function add(name, reason)
+		name = normalize(name)
+		if record(missing, name) and type(reason) == "string" and reason ~= "" then
+			reasons[name] = reason
+		end
+	end
+	local function add_unknown(name)
+		record(unknown, normalize(name))
+	end
+
+	local function render(name)
+		local reason = reasons[name]
+		return reason and (name .. " — " .. reason) or name
+	end
+
+	-- Emit names not yet notified, coalesced per event-loop tick. Gated while
+	-- installs are pending unless forced (done() forces: its records are final)
+	-- or the deadline passed; `emitted` lets late failures still notify.
+	local function flush(force)
+		if not force and pending > 0 and not deadline_passed then
+			return
+		end
+		if flush_scheduled then
+			return
+		end
+		flush_scheduled = true
+		vim.schedule(function()
+			flush_scheduled = false
+			local missing_new, unknown_new = {}, {}
+			for _, name in ipairs(missing) do
+				if not emitted[name] then
+					emitted[name] = true
+					missing_new[#missing_new + 1] = name
+				end
+			end
+			for _, name in ipairs(unknown) do
+				if not emitted[name] then
+					emitted[name] = true
+					unknown_new[#unknown_new + 1] = name
+				end
+			end
+			if #missing_new == 0 and #unknown_new == 0 then
+				return
+			end
+			local sections = {}
+			if #missing_new > 0 then
+				table.sort(missing_new)
+				local lines = {}
+				for _, name in ipairs(missing_new) do
+					lines[#lines + 1] = render(name)
+				end
+				sections[#sections + 1] = "The following tools could not be set up automatically.\n"
+					.. "Install them / ensure they are on $PATH, or check their configuration\n"
+					.. "for errors:\n  • "
+					.. table.concat(lines, "\n  • ")
+			end
+			if #unknown_new > 0 then
+				table.sort(unknown_new)
+				sections[#sections + 1] = "The following names are not recognized (likely a typo, or an outdated\n"
+					.. "or unsupported name) — correct or remove them from your config:\n  • "
+					.. table.concat(unknown_new, "\n  • ")
+			end
+			vim.notify(table.concat(sections, "\n\n"), vim.log.levels.WARN, { title = title })
+		end)
+	end
+
+	-- One timer, chained: each fire settles only the entries whose OWN window
+	-- (expires_at) elapsed, then re-arms for the earliest remaining expiry — a
+	-- late-tracked install keeps its full timeout. `deadline_started` stays
+	-- true across the whole chain.
+	local function arm_deadline(delay)
+		deadline_started = true
+		-- A live timer backs the coalescing gate and guarantees the deferred flush.
+		deadline_passed = false
+		vim.defer_fn(function()
+			vim.uv.update_time()
+			local now = vim.uv.now()
+			-- Settle expired installs here: their "closed" callback may never run,
+			-- and it is the only other place that records and decrements `pending`.
+			-- A late settle stays silent (`seen` dedups) but still configures.
+			-- Snapshot the keys first so `unsettled` isn't mutated mid-pairs.
+			local next_expiry = nil
+			for _, hung in ipairs(vim.tbl_keys(unsettled)) do
+				local entry = unsettled[hung]
+				if entry.expires_at <= now then
+					add(
+						hung,
+						type(entry.reason) == "string" and entry.reason
+							or "Mason install did not finish within the timeout (check :Mason for progress)"
+					)
+					pending = pending - 1
+					unsettled[hung] = nil
+				elseif next_expiry == nil or entry.expires_at < next_expiry then
+					next_expiry = entry.expires_at
+				end
+			end
+			if next_expiry ~= nil and next_expiry ~= math.huge then
+				-- Report the expired batch now (its marks are final, so forcing past
+				-- the pending gate is sound); chain to the earliest remaining expiry.
+				flush(true)
+				arm_deadline(math.max(next_expiry - now, 50))
+			else
+				deadline_passed = true
+				flush()
+				-- Between chains no timer is live, so the gate must stay open or a
+				-- late-recorded name would never flush; the next track re-arms.
+				deadline_started = false
+			end
+		end, delay)
+	end
+
+	return {
+		mark = add,
+		mark_unknown = add_unknown,
+		track = function(pkg, name, recheck, on_ready, fail_reason)
+			-- Attach to an in-flight OPEN install handle instead of starting a
+			-- duplicate (install() asserts; once("closed") never fires on a closed one).
+			local handle
+			if type(pkg) == "table" and type(pkg.get_install_handle) == "function" then
+				local ok, opt = pcall(function()
+					return pkg:get_install_handle()
+				end)
+				if ok and type(opt) == "table" and type(opt.if_present) == "function" then
+					opt:if_present(function(h)
+						local ok_closed, closed = pcall(function()
+							return h:is_closed()
+						end)
+						if ok_closed and not closed then
+							handle = h
+						end
+					end)
+				end
+			end
+
+			-- Only a self-started install is announced in the "Installing N tool(s)" INFO.
+			local started_here = handle == nil
+			if not handle then
+				local ok, h = pcall(function()
+					return pkg:install()
+				end)
+				if not ok or type(h) ~= "table" or type(h.once) ~= "function" then
+					-- A synchronous install() throw is the only failure detail there is.
+					add(name, fail_reason or (not ok and error_reason(h) or nil))
+					return
+				end
+				handle = h
+			elseif type(handle.once) ~= "function" then
+				-- Shared handle isn't usable (unexpected shape); mark rather than hang.
+				add(name, fail_reason)
+				return
+			end
+
+			-- Only the first in-flight track for a name touches the accounting: a
+			-- repeat (re-resolve pass / shared-handle piggyback) must not increment
+			-- `pending` twice against one settle.
+			local first_track = name == nil or unsettled[name] == nil
+			if first_track then
+				pending = pending + 1
+				if name ~= nil then
+					vim.uv.update_time()
+					unsettled[name] = {
+						reason = fail_reason or false,
+						-- math.huge when no deadline is configured: never expires.
+						expires_at = vim.uv.now()
+							+ ((type(timeout_ms) == "number" and timeout_ms > 0) and timeout_ms or math.huge),
+					}
+				end
+			end
+			-- Arm when no timer is live; installs tracked during a live chain are
+			-- reached by its re-arms.
+			if not deadline_started and type(timeout_ms) == "number" and timeout_ms > 0 then
+				arm_deadline(timeout_ms)
+			end
+			-- "closed" fires in a fast event context: hop to the main loop. recheck/
+			-- on_ready are pcall'd so a throw can't suppress flush; skip the decrement
+			-- when the deadline already settled this install, but still run on_ready.
+			local registered, reg_err = pcall(
+				handle.once,
+				handle,
+				"closed",
+				vim.schedule_wrap(function()
+					local counted = name == nil or unsettled[name] ~= nil
+					if name ~= nil then
+						unsettled[name] = nil
+					end
+					local rc_ok, available = pcall(recheck)
+					if rc_ok and available then
+						if type(on_ready) == "function" then
+							-- A configure throw after the install must still reach the warning.
+							local ready_ok, ready_err = pcall(on_ready)
+							if not ready_ok then
+								add(name, error_reason(ready_err) or fail_reason)
+							end
+						end
+					else
+						add(name, fail_reason)
+					end
+					if counted then
+						pending = pending - 1
+					end
+					flush()
+				end)
+			)
+			-- once() threw: undo only what THIS track added, or a failed piggyback
+			-- would decrement pending / clear another caller's in-flight entry.
+			if not registered then
+				if first_track then
+					pending = pending - 1
+					if name ~= nil then
+						unsettled[name] = nil
+					end
+				end
+				add(name, fail_reason or error_reason(reg_err))
+			elseif started_here and type(name) == "string" and name ~= "" then
+				-- Announce only self-started installs, only once registration stuck.
+				queued[#queued + 1] = name
+			end
+		end,
+		done = function()
+			-- One coalesced INFO per batch so a first launch shows progress;
+			-- drained after announcing so a later done() can't re-announce.
+			if #queued > 0 and not announce_scheduled then
+				announce_scheduled = true
+				vim.schedule(function()
+					announce_scheduled = false
+					if #queued == 0 then
+						return
+					end
+					table.sort(queued)
+					local message = string.format(
+						"Installing %d tool(s) via Mason in the background; each is configured\n"
+							.. "automatically once its install finishes (relaunch if one isn't picked up):\n  • %s",
+						#queued,
+						table.concat(queued, "\n  • ")
+					)
+					queued = {}
+					vim.notify(message, vim.log.levels.INFO, { title = title })
+				end)
+			end
+			-- done()'s records are final: force past the pending gate.
+			flush(true)
+		end,
+	}
+end
+
+---Whether the registry's source specs are all on disk. On API drift err toward
+---false: resolve() then refreshes redundantly (a no-op), and package_for_binary
+---rebuilds instead of freezing — both err toward correctness.
+---@param registry table|nil @The mason-registry module (or nil).
+---@return boolean
+local function registry_bootstrapped(registry)
+	if not registry or registry.sources == nil then
+		return false
+	end
+	local ok, all_installed = pcall(function()
+		return registry.sources:is_all_installed()
+	end)
+	if not ok then
+		return false
+	end
+	return all_installed == true
+end
+
+---Find the Mason package shipping the given binary, via a lazily-built
+---bin -> package index over the registry specs: tool name, binary, and
+---package name may all differ (cmake_format -> cmake-format -> cmakelang).
+---@param registry table @The mason-registry module.
+---@param binary string @Executable name to look up.
+---@return string|nil @Mason package name shipping that binary, or nil.
+local bin_to_package = nil
+local function package_for_binary(registry, binary)
+	-- Freeze the index only once the registry is FULLY bootstrapped:
+	-- get_all_package_specs() silently skips uninstalled sources, and a frozen
+	-- partial index would outlive resolve()'s re-refresh self-heal. (A source
+	-- appended at runtime after the freeze is out of scope.)
+	if bin_to_package == nil then
+		local index = {}
+		local populated = false
+		local ok, specs = pcall(registry.get_all_package_specs)
+		if ok and type(specs) == "table" then
+			for _, spec in ipairs(specs) do
+				if type(spec) == "table" and type(spec.name) == "string" and type(spec.bin) == "table" then
+					for bin_name in pairs(spec.bin) do
+						if index[bin_name] == nil then
+							index[bin_name] = spec.name
+							populated = true
+						end
+					end
+				end
+			end
+		end
+		if populated and registry_bootstrapped(registry) then
+			bin_to_package = index
+		else
+			-- Partial/uncertain scan: consult what was found, but don't cache it.
+			return index[binary]
+		end
+	end
+	return bin_to_package[binary]
+end
+
+---Executable name(s) a Mason package provides, from its spec. Without a `bin`
+---table prefer `pkg.name`: the subsystem name can differ (python -> debugpy).
+---@param pkg table @A mason-registry Package object.
+---@param fallback string @Last-resort name when even `pkg.name` is absent.
+---@return string[]
+function M.package_binaries(pkg, fallback)
+	local bins = (type(pkg.spec) == "table" and type(pkg.spec.bin) == "table") and vim.tbl_keys(pkg.spec.bin) or {}
+	-- tbl_keys order is unspecified; sort so multi-bin probes stay stable.
+	table.sort(bins)
+	if #bins == 0 then
+		bins = { type(pkg.name) == "string" and pkg.name or fallback }
+	end
+	return bins
+end
+
+---Mason's install root WITHOUT loading Mason (this runs from every resolve()):
+---a loaded mason.settings, then $MASON, then the default data-dir guess. The
+---guess only counts when no `user.configs.mason` override exists (the one
+---supported home for a custom root) and is never cached; a cached root is
+---re-checked for existence each call (the dir appears after the first install).
+---@return string|nil
+local mason_root_dir = nil
+function M.mason_root()
+	if not mason_root_dir then
+		local settings = package.loaded["mason.settings"]
+		if
+			type(settings) == "table"
+			and type(settings.current) == "table"
+			and type(settings.current.install_root_dir) == "string"
+		then
+			mason_root_dir = settings.current.install_root_dir
+		elseif type(vim.env.MASON) == "string" and vim.env.MASON ~= "" then
+			mason_root_dir = vim.env.MASON
+		else
+			-- Never require() mason.settings here — it lazy-loads all of mason.nvim
+			-- during a pure discovery probe, defeating "Mason optional".
+			local guess = vim.fn.stdpath("data") .. "/mason"
+			if not M.module_path("user.configs.mason") and vim.uv.fs_stat(guess) then
+				return guess
+			end
+		end
+	end
+	if mason_root_dir and vim.uv.fs_stat(mason_root_dir) then
+		return mason_root_dir
+	end
+	return nil
+end
+
+-- One collector per title so a subsystem that resolves in batches (nvim-lint,
+-- per filetype) aggregates one warning instead of one per batch.
+local collectors_by_title = {}
+
+---Shared discovery-first resolution loop. For each entry in `spec.deps`:
+---  0. Unrecognized name (`unknown_of`)           -> fix the config; never install.
+---  1. Available (Mason-installed / on $PATH)     -> configure now.
+---  2. Mason package exists but not available yet -> a "validates" local
+---     config tries first; else configure if its declared bins are on $PATH;
+---     else install, then configure on completion.
+---  3. No Mason package but a local config exists -> configure now.
+---  4. Otherwise                                  -> aggregated warning.
+---
+---Everything resolvable without an install configures on the load tick (before
+---lazy.nvim replays the trigger); each dep is pcall-isolated. `configure` gets
+---`late = true` after resolve() returned (deferred phase 2, install completion,
+---async refresh) — no replayed trigger backs such a call, so the consumer must
+---re-drive its own event if one is needed.
+---`local_config_mode` (for a binary-less local config): nil defers to phase 2,
+---"resolves" trusts it outright, "validates" lets it try and installs on
+---failure — keep "validates" checks cheap (phase 1 runs on the load tick); a
+---bounded probe spawn on the miss path is acceptable when it keeps config-time
+---and launch-time resolution in agreement.
+---@param spec {
+---  title: string,
+---  deps: string[],
+---  registry: table|nil,
+---  package_of: fun(name: string, registry: table|nil): string|nil,
+---  binaries_of: fun(name: string, pkg: table|nil): string[],
+---  unknown_of?: fun(name: string): boolean,
+---  has_local_config?: fun(name: string): boolean,
+---  local_config_mode?: "resolves"|"validates",
+---  configure?: fun(name: string, late: boolean),
+---  defer_phase2?: boolean,
+---}
+function M.resolve(spec)
+	local ok_settings, settings = pcall(require, "core.settings")
+	local timeout_ms = (
+		ok_settings
+		and type(settings.tool_install_timeout) == "number"
+		and settings.tool_install_timeout > 0
+	)
+			and settings.tool_install_timeout
+		or 300000
+	local collector = collectors_by_title[spec.title]
+	if not collector then
+		collector = missing_collector(spec.title, timeout_ms)
+		collectors_by_title[spec.title] = collector
+	end
+
+	-- False once run() returns: a configure running later (deferred phase 2,
+	-- install completion, async refresh) has no replayed trigger behind it and
+	-- gets `late = true`.
+	local synchronous = true
+
+	---Configure one tool; false plus the cleaned error when the config threw.
+	local function try_configure(name)
+		if type(spec.configure) ~= "function" then
+			return true
+		end
+		local ok, err = pcall(spec.configure, name, not synchronous)
+		if ok then
+			return true
+		end
+		return false, error_reason(err)
+	end
+
+	-- Configure one tool, surfacing a config-time error in the aggregated warning.
+	local function do_configure(name)
+		local ok, reason = try_configure(name)
+		if not ok then
+			collector.mark(name, reason)
+		end
+	end
+
+	-- Phase-1 "validates" failures, surfaced by phase 2 without re-running the
+	-- config; `false` = failed with no message.
+	local validate_failed = {}
+	---String reason or nil — the one decoder of the false-vs-string encoding.
+	---@param name string
+	---@return string|nil
+	local function validate_reason(name)
+		local reason = validate_failed[name]
+		return type(reason) == "string" and reason or nil
+	end
+
+	-- Install `pkg`, configure on completion; failures keep the phase-1 reason.
+	local function start_install(pkg, name)
+		local reason = validate_reason(name)
+		collector.track(pkg, name, function()
+			return pkg:is_installed() or M.find_executable(spec.binaries_of(name, pkg)) ~= nil
+		end, function()
+			do_configure(name)
+		end, reason)
+	end
+
+	---Phase 1 — configure a dep resolvable without the Mason registry ($PATH,
+	---self-resolving local config, or a succeeding "validates" resolver).
+	---False = needs the registry (phase 2). Never marks missing, stays same-tick.
+	---@param name string
+	---@return boolean handled
+	local function configure_available(name)
+		if M.find_executable(spec.binaries_of(name, nil)) ~= nil then
+			do_configure(name)
+			return true
+		end
+		-- "resolves" only: a binary-less LSP server (jsonls) still maps to a
+		-- package by NAME and must reach phase 2 to install.
+		if spec.local_config_mode == "resolves" and spec.has_local_config and spec.has_local_config(name) then
+			do_configure(name)
+			return true
+		end
+		-- A "validates" config is its own resolver: let it try; remember a
+		-- failure for phase 2 instead of re-running it there.
+		if spec.local_config_mode == "validates" and spec.has_local_config and spec.has_local_config(name) then
+			local ok, reason = try_configure(name)
+			if ok then
+				return true
+			end
+			validate_failed[name] = reason or false
+		end
+		return false
+	end
+
+	---Phase 2 — resolve a dep against the now-ready registry: configure an
+	---installed package, install a missing one, or mark it missing/unknown.
+	---@param name string
+	---@param registry table|nil
+	local function resolve_missing(name, registry)
+		-- Judged after the refresh: unknown_of may consult the Mason mapping.
+		if spec.unknown_of and spec.unknown_of(name) then
+			collector.mark_unknown(name)
+			return
+		end
+
+		local pkg, pkg_unknown = nil, false
+		local pkg_name = spec.package_of(name, registry)
+		if pkg_name and registry then
+			local ok, resolved = pcall(registry.get_package, pkg_name)
+			if ok then
+				pkg = resolved
+			else
+				-- Stale mapping; reported only if nothing below resolves the tool.
+				pkg_unknown = true
+			end
+		end
+
+		-- The config already failed this pass; only an install changes the outcome.
+		if validate_failed[name] ~= nil then
+			if pkg ~= nil and not pkg:is_installed() then
+				start_install(pkg, name) -- annotates the failure reason itself
+			else
+				collector.mark(name, validate_reason(name))
+			end
+			return
+		end
+
+		-- Installed via Mason but its binary name differs from the phase-1 probe.
+		if pkg ~= nil and pkg:is_installed() then
+			do_configure(name)
+			return
+		end
+
+		-- The package's declared binaries are already on $PATH: system-provided,
+		-- don't install a duplicate (covers function-cmd servers like jsonls).
+		if pkg ~= nil and M.find_executable(spec.binaries_of(name, pkg)) ~= nil then
+			do_configure(name)
+			return
+		end
+
+		-- Mason ships it but it isn't available yet: install, configure on completion.
+		if pkg ~= nil then
+			start_install(pkg, name)
+			return
+		end
+
+		-- No installable package: local config self-validates, else mark missing/unknown.
+		if spec.has_local_config and spec.has_local_config(name) then
+			do_configure(name)
+		elseif pkg_unknown and #spec.binaries_of(name, nil) == 0 then
+			collector.mark_unknown(pkg_name == name and name or (pkg_name .. " (for " .. name .. ")"))
+		else
+			collector.mark(name)
+		end
+	end
+
+	local function run()
+		-- Make Mason's bin dir resolvable before any probe or spawn (see file header).
+		M.ensure_mason_on_path()
+		-- A non-table deps (user override gone wrong) degrades to "nothing to resolve".
+		if type(spec.deps) ~= "table" then
+			collector.done()
+			return
+		end
+		-- Phase 1: configure everything resolvable without the registry.
+		local visited = {}
+		local unresolved = {}
+		-- maxn, not ipairs: a nil hole must skip a slot, not end resolution.
+		for i = 1, table.maxn(spec.deps) do
+			local name = spec.deps[i]
+			-- Dedup (a duplicate would double-install); pcall isolates each dep.
+			if name ~= nil and not visited[name] then
+				visited[name] = true
+				local ok, handled = pcall(configure_available, name)
+				if not ok then
+					collector.mark(name, error_reason(handled))
+				elseif handled ~= true then
+					unresolved[#unresolved + 1] = name
+				end
+			end
+		end
+
+		-- Nothing left to install: Mason stays unloaded.
+		if #unresolved == 0 then
+			collector.done()
+			return
+		end
+
+		-- Phase 2: resolve leftovers against the registry (value, nil, or lazy
+		-- thunk — only called here, so a fully-provisioned subsystem never loads
+		-- Mason), refreshing a never-bootstrapped one first.
+		local registry = spec.registry
+		if type(registry) == "function" then
+			local ok, resolved = pcall(registry)
+			registry = ok and resolved or nil
+		end
+		local function finish()
+			for _, name in ipairs(unresolved) do
+				local ok, err = pcall(resolve_missing, name, registry)
+				if not ok then
+					collector.mark(name, error_reason(err))
+				end
+			end
+			collector.done()
+		end
+		if registry and type(registry.refresh) == "function" and not registry_bootstrapped(registry) then
+			-- A stalled refresh() never calls back: arm a REPORTING deadline. It
+			-- does not cancel a late refresh — finish() still runs on completion,
+			-- its re-marks absorbed by seen/emitted dedup.
+			local finished = false
+			local function on_refreshed()
+				if finished then
+					return
+				end
+				finished = true
+				finish()
+			end
+			vim.defer_fn(function()
+				if finished then
+					return
+				end
+				for _, name in ipairs(unresolved) do
+					local reason = validate_reason(name)
+						or "Mason registry refresh did not complete (cannot classify or auto-install)"
+					collector.mark(name, reason)
+				end
+				collector.done()
+			end, timeout_ms)
+			-- pcall guards a synchronous throw; the callback arrives in a fast event context.
+			local ok = pcall(registry.refresh, function()
+				if vim.in_fast_event() then
+					vim.schedule(on_refreshed)
+				else
+					on_refreshed()
+				end
+			end)
+			if not ok then
+				on_refreshed()
+			end
+		elseif spec.defer_phase2 then
+			-- Runtime-tool phase 2 only classifies/installs: move the full registry
+			-- spec decode off the lazy-load trigger's tick.
+			vim.schedule(finish)
+		else
+			-- LSP/DAP configure IN phase 2, and a cmd-triggered lazy-load replays
+			-- synchronously right after config: finish on this tick.
+			finish()
+		end
+	end
+
+	run()
+	synchronous = false
+end
+
+---Discovery-first resolution for a subsystem whose own runtime registrations
+---are the ground truth (conform, nvim-lint). `probe(name)` returns:
+---  * nil                   -> unknown name (typo) -> fix config.
+---  * { binary = "x" }      -> the tool invokes executable "x".
+---  * { binary = nil }      -> the tool resolves its own command at runtime.
+---  * { broken = "reason" } -> config exists but errors: surfaced with the
+---                             reason — never typo guidance, never an install.
+---Mason is only the lazy install fallback, reverse-looked-up from the binary.
+---@param title string @Notification title identifying the subsystem.
+---@param deps string[] @Tool names as the subsystem knows them.
+---@param probe fun(name: string): { binary: string|nil, broken: string|nil }|nil
+---@param configure? fun(name: string, late: boolean) @Optional: run for each available/local tool
+---  (e.g. rewrite its command to an absolute path while Mason's bin dir is
+---  still off $PATH).
+function M.resolve_runtime_tools(title, deps, probe, configure)
+	local cache = {}
+	local function info(name)
+		if cache[name] == nil then
+			local ok, result = pcall(probe, name)
+			if ok and type(result) == "table" then
+				cache[name] = {
+					known = true,
+					binary = type(result.binary) == "string" and result.binary or nil,
+					broken = type(result.broken) == "string" and result.broken or nil,
+				}
+			else
+				-- A probe error is treated as unknown: either way, fix the config entry.
+				cache[name] = { known = false }
+			end
+		end
+		return cache[name]
+	end
+
+	M.resolve({
+		title = title,
+		deps = deps,
+		-- Lazy thunk so a fully-provisioned setup never loads mason-registry.
+		registry = function()
+			local ok, resolved = pcall(require, "mason-registry")
+			return ok and resolved or nil
+		end,
+		package_of = function(name, registry)
+			local binary = info(name).binary
+			if not registry or not binary then
+				return nil
+			end
+			return package_for_binary(registry, binary)
+		end,
+		binaries_of = function(name)
+			local binary = info(name).binary
+			return binary and { binary } or {}
+		end,
+		unknown_of = function(name)
+			return not info(name).known
+		end,
+		has_local_config = function(name)
+			-- A broken config counts as local so configure below surfaces its reason.
+			local i = info(name)
+			return i.known and i.binary == nil
+		end,
+		-- A binary-less runtime tool can't map to a package, so it self-resolves.
+		local_config_mode = "resolves",
+		defer_phase2 = true,
+		configure = function(name, late)
+			-- A broken config must never configure: raise its reason verbatim (it
+			-- may carry the broken file's own "path:line:").
+			local reason = info(name).broken
+			if reason then
+				M.raise_verbatim(reason)
+			end
+			if type(configure) == "function" then
+				return configure(name, late)
+			end
+		end,
+	})
+end
+
+return M
