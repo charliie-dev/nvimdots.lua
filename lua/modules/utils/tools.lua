@@ -281,26 +281,30 @@ end
 ---@param timeout_ms? number @Deadline before the warning is flushed despite unsettled installs.
 ---@return ToolCollector
 local function missing_collector(title, timeout_ms)
-	local missing = {}
-	local reasons = {}
-	local unknown = {}
+	-- ONE record per name across both report buckets — upgrades, the
+	-- placeholder retraction, and the bucket migration each mutate a single
+	-- record instead of five parallel structures in lockstep.
+	--   bucket      "missing" (install it / config failed) | "unknown" (typo).
+	--   reason      rendered in the missing section only.
+	--   provisional the reason is a placeholder (generic install-timeout /
+	--               registry-refresh note): a later concrete failure may
+	--               upgrade it or the migration may re-bucket the name.
+	--   final       from an actual ATTEMPTED-AND-FAILED configure/install:
+	--               never migrated to the typo bucket (a name that resolved
+	--               far enough to run is real; a late "unknown" verdict would
+	--               be the misclassification).
+	--   emitted     already notified; cleared to re-notify a changed record.
+	---@type table<string, { bucket: "missing"|"unknown", reason: string|nil, provisional: boolean|nil, final: boolean|nil, emitted: boolean|nil }>
+	local entries = {}
 	local queued = {}
-	local seen = {}
-	local emitted = {}
 	-- Tracked installs whose "closed" callback hasn't run yet
 	-- (name -> { reason = phase-1 fail_reason or false }); each entry owns a
 	-- defer_fn timer that settles it if the closed callback never does.
+	-- Deliberately separate from `entries`: different lifecycle (install
+	-- tracking, not reporting).
 	local unsettled = {}
 	local flush_scheduled = false
 	local announce_scheduled = false
-	-- Names whose recorded reason is a placeholder (generic install-timeout /
-	-- registry-refresh note): a later concrete failure may upgrade the reason
-	-- or move the name to the unknown bucket.
-	local provisional = {}
-	-- Names that come from an actual ATTEMPTED-AND-FAILED configure/install:
-	-- never migrated to the typo bucket (a name that resolved far enough to
-	-- run is real; a late "unknown" verdict would be the misclassification).
-	local final = {}
 	-- Forward declaration: add/add_unknown re-flush after an upgrade/migration.
 	local flush
 
@@ -311,47 +315,50 @@ local function missing_collector(title, timeout_ms)
 		end
 		return type(name) == "string" and name or tostring(name)
 	end
-	local function record(bucket, name)
-		if name == nil or seen[name] then
-			return false
-		end
-		seen[name] = true
-		bucket[#bucket + 1] = name
-		return true
-	end
 	local function add(name, reason, is_provisional, is_final)
 		name = normalize(name)
-		if name ~= nil and is_final then
-			final[name] = true
-		end
-		if record(missing, name) then
-			if type(reason) == "string" and reason ~= "" then
-				reasons[name] = reason
-			end
-			if is_provisional then
-				provisional[name] = true
-			end
+		if name == nil then
 			return
 		end
+		local entry = entries[name]
+		if entry == nil then
+			entries[name] = {
+				bucket = "missing",
+				reason = (type(reason) == "string" and reason ~= "") and reason or nil,
+				provisional = is_provisional or nil,
+				final = is_final or nil,
+			}
+			return
+		end
+		if is_final then
+			entry.final = true
+		end
 		-- Already recorded: a concrete reason may replace a placeholder one
-		-- (generic timeout/refresh note, or a reason-less mark) and re-notify.
-		-- The first REAL reason wins; later ones never overwrite it.
+		-- (generic timeout/refresh note, or a reason-less mark) and re-notify —
+		-- also for a name sitting in the UNKNOWN bucket, where the reason is
+		-- unread but the re-emission stands ("unknown wins once assigned": the
+		-- bucket never flips back). The first REAL reason wins; later ones
+		-- never overwrite it.
 		if
-			name ~= nil
-			and type(reason) == "string"
+			type(reason) == "string"
 			and reason ~= ""
-			and reason ~= reasons[name]
-			and (reasons[name] == nil or provisional[name])
+			and reason ~= entry.reason
+			and (entry.reason == nil or entry.provisional)
 		then
-			reasons[name] = reason
-			provisional[name] = is_provisional or nil
-			emitted[name] = nil
+			entry.reason = reason
+			entry.provisional = is_provisional or nil
+			entry.emitted = nil
 			flush()
 		end
 	end
 	local function add_unknown(name)
 		name = normalize(name)
-		if record(unknown, name) then
+		if name == nil then
+			return
+		end
+		local entry = entries[name]
+		if entry == nil then
+			entries[name] = { bucket = "unknown" }
 			return
 		end
 		-- Bucket migration: a name parked in `missing` under a placeholder
@@ -360,24 +367,19 @@ local function missing_collector(title, timeout_ms)
 		-- install guidance. Entries with a real reason never migrate, and
 		-- neither does anything flagged `final` (attempted-and-failed) — a
 		-- reason-LESS real failure must not turn into typo guidance.
-		if name == nil or final[name] or not (provisional[name] or reasons[name] == nil) then
+		if entry.bucket == "unknown" or entry.final or not (entry.provisional or entry.reason == nil) then
 			return
 		end
-		for index, existing in ipairs(missing) do
-			if existing == name then
-				table.remove(missing, index)
-				reasons[name] = nil
-				provisional[name] = nil
-				unknown[#unknown + 1] = name
-				emitted[name] = nil
-				flush()
-				return
-			end
-		end
+		entry.bucket = "unknown"
+		entry.reason = nil
+		entry.provisional = nil
+		entry.emitted = nil
+		flush()
 	end
 
 	local function render(name)
-		local reason = reasons[name]
+		local entry = entries[name]
+		local reason = entry and entry.reason
 		return reason and (name .. " — " .. reason) or name
 	end
 
@@ -394,17 +396,17 @@ local function missing_collector(title, timeout_ms)
 		flush_scheduled = true
 		vim.schedule(function()
 			flush_scheduled = false
+			-- Un-emitted records only; each batch is sorted below, so the
+			-- pairs() order never reaches the user.
 			local missing_new, unknown_new = {}, {}
-			for _, name in ipairs(missing) do
-				if not emitted[name] then
-					emitted[name] = true
-					missing_new[#missing_new + 1] = name
-				end
-			end
-			for _, name in ipairs(unknown) do
-				if not emitted[name] then
-					emitted[name] = true
-					unknown_new[#unknown_new + 1] = name
+			for name, entry in pairs(entries) do
+				if not entry.emitted then
+					entry.emitted = true
+					if entry.bucket == "missing" then
+						missing_new[#missing_new + 1] = name
+					else
+						unknown_new[#unknown_new + 1] = name
+					end
 				end
 			end
 			if #missing_new == 0 and #unknown_new == 0 then
@@ -537,17 +539,18 @@ local function missing_collector(title, timeout_ms)
 						end
 					elseif fail_reason ~= nil then
 						add(name, fail_reason, nil, true) -- a concrete reason upgrades any placeholder
-					elseif provisional[name] then
+					elseif entries[name] and entries[name].provisional then
 						-- The deadline timer already parked this name under the
 						-- "did not finish within the timeout" note — now known
 						-- FALSE: the install finished (and failed) with no reason
 						-- to offer. Retract the placeholder and re-emit the bare
 						-- name (accurate: unknown failure) instead of pointing
 						-- the user at :Mason progress that will never come.
-						reasons[name] = nil
-						provisional[name] = nil
-						final[name] = true -- retraction IS an attempted-and-failed verdict
-						emitted[name] = nil -- the trailing flush re-emits the corrected entry
+						local entry = entries[name]
+						entry.reason = nil
+						entry.provisional = nil
+						entry.final = true -- retraction IS an attempted-and-failed verdict
+						entry.emitted = nil -- the trailing flush re-emits the corrected entry
 					else
 						add(name, nil, nil, true)
 					end
@@ -1146,7 +1149,9 @@ function M.resolve(spec)
 			if not validates[name].config_error and pkg ~= nil and not pkg:is_installed() then
 				start_install(pkg, name) -- annotates the failure reason itself
 			else
-				collector.mark(name, validate_reason(name))
+				-- The "validates" configure ran and failed: attempted-and-failed,
+				-- never typo-migratable.
+				collector.mark(name, validate_reason(name), nil, true)
 			end
 			return
 		end
