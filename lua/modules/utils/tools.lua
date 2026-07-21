@@ -150,19 +150,16 @@ function M.usable_or_raise(value, broken_reason, opts)
 	return value
 end
 
----Keep Mason's bin dir on $PATH (see the file header) — appended so a system
----copy still wins. Idempotent via the exact-entry membership check each call
----(one plain find over $PATH): a set-once flag would skip exactly the cases
----the recheck exists for — a $PATH something overwrote mid-session, and a
----root that switched once mason.setup applied a different one (see
----mason_root). APPEND-ONLY on purpose: identical strings in an externally
----mutable list admit no robust ownership proof, so nothing is ever removed —
----and per Mason PATH mode nothing needs to be: under the default
----`PATH = "prepend"` mason.setup itself prepends the new root's bin on a
----switch, out-preceding any stale appended entry for same-named shims (the
----stale tail then only serves old-root-only names); under `PATH = "append"`
----the user chose tail ordering, so a pre-switch stale entry preceding the
----post-switch one is that mode's own semantics (same-name shadowing until
+---Keep Mason's bin dir on $PATH (see the file header). Idempotent via the
+---exact-entry membership check each call (one plain find over $PATH): a
+---set-once flag would skip exactly the cases the recheck exists for — a
+---$PATH something overwrote mid-session, and a root that switched once
+---mason.setup applied a different one (see mason_root). APPEND-ONLY on
+---purpose: identical strings in an externally mutable list admit no robust
+---ownership proof, so nothing is ever removed — and per Mason PATH mode
+---(mason 2.x semantics) nothing needs to be: the default prepend puts the
+---new root's bin ahead of any stale appended entry on a switch, and append
+---mode's tail ordering is the user's own choice (same-name shadowing until
 ---restart accepted). KNOWN DEVIATION: mason's `PATH = "skip"` is NOT honored
 ---here — deliberately. The resolver's availability verdicts (find_executable,
 ---consulted by every resolve()) and its consumers' bare-name spawns
@@ -189,8 +186,9 @@ end
 
 ---Lazy mason-registry thunk for resolve() specs — the ONE copy (dap and the
 ---runtime-tools resolver share it, so a change to the load guard cannot
----drift between consumers). Passed as a spec `registry` value: only phase 2
----calls it, so a fully-provisioned setup never loads mason-registry.
+---drift between consumers). Passed as a spec `registry` value: phase 1 never
+---calls it — phase 2 and the retry paths resolve it only once leftovers
+---exist, so a fully-provisioned setup never loads mason-registry.
 ---@return table|nil
 function M.default_registry()
 	local ok, resolved = pcall(require, "mason-registry")
@@ -267,6 +265,7 @@ end
 ---  a provisional reason is a placeholder a later concrete failure may replace.
 ---@field mark_unknown fun(name: string) @Record an unrecognized name (typo / outdated / unsupported).
 ---@field track fun(pkg: table, name: string, recheck: fun(): boolean, on_ready?: fun(), fail_reason?: string)
+---@field is_unsettled fun(name: string): boolean @Whether an in-flight tracked install still owns the name.
 ---@field done fun() @Flush the aggregated warning once all tracked installs settle.
 ---@param title string @Notification title identifying the subsystem.
 ---@param timeout_ms? number @Deadline before the warning is flushed despite unsettled installs.
@@ -577,17 +576,19 @@ local function registry_bootstrapped(registry)
 	return all_installed == true
 end
 
+-- Frozen bin -> package index (see package_for_binary below).
+local bin_to_package = nil
+-- Unfrozen scans stay re-buildable by design (self-heal after a late
+-- refresh), but within ONE event-loop tick nothing can change: memoize per
+-- tick so a batch of lookups decodes registry.json once, not N times.
+local unfrozen_index = nil
+
 ---Find the Mason package shipping the given binary, via a lazily-built
 ---bin -> package index over the registry specs: tool name, binary, and
 ---package name may all differ (cmake_format -> cmake-format -> cmakelang).
 ---@param registry table @The mason-registry module.
 ---@param binary string @Executable name to look up.
 ---@return string|nil @Mason package name shipping that binary, or nil.
-local bin_to_package = nil
--- Unfrozen scans stay re-buildable by design (self-heal after a late
--- refresh), but within ONE event-loop tick nothing can change: memoize per
--- tick so a batch of lookups decodes registry.json once, not N times.
-local unfrozen_index = nil
 local function package_for_binary(registry, binary)
 	-- Freeze the index only once the registry is FULLY bootstrapped:
 	-- get_all_package_specs() silently skips uninstalled sources, and a frozen
@@ -651,9 +652,9 @@ end
 ---default data-dir guess. The guess only counts when no `user.configs.mason`
 ---override exists (the one supported home for a custom root) and is never
 ---cached; every returned root is re-checked for existence each call (the dir
----appears after the first install). Public as the TESTED CONTRACT of these
----priority semantics (the g4-latch and collector harnesses pin it directly);
----no external runtime caller today.
+---appears after the first install). Kept public deliberately so these
+---priority semantics stay independently testable from outside the module
+---(test hook); no external runtime caller today.
 ---@return string|nil
 local mason_env_root = nil
 -- The user-override existence check is memoized separately from module_path's
@@ -756,12 +757,6 @@ end
 local install_events_attached = false
 local update_events_attached = false
 
----Subscribe to Mason install successes so a package installed mid-session by
----ANY means (resolver-started, :MasonInstall, the :Mason UI) finishes the
----pending configure of every subsystem that waited for it. Never require()s
----mason-registry itself — callers pass a registry they already hold, keeping
----"a fully-provisioned setup never loads Mason" intact.
----@param registry table|nil @The mason-registry module (or nil).
 ---A pending name's declared bare binaries, probed on $PATH / Mason's bin —
 ---the first (cheapest) availability evidence BOTH install hand-off paths
 ---share (the Mason install event and :ToolsRetry). The is_unsettled
@@ -778,6 +773,12 @@ local function pending_bins_available(session, name)
 	return bins_ok and M.find_executable(bins) ~= nil
 end
 
+---Subscribe to Mason install successes so a package installed mid-session by
+---ANY means (resolver-started, :MasonInstall, the :Mason UI) finishes the
+---pending configure of every subsystem that waited for it. Never require()s
+---mason-registry itself — callers pass a registry they already hold, keeping
+---"a fully-provisioned setup never loads Mason" intact.
+---@param registry table|nil @The mason-registry module (or nil).
 function M.attach_registry_events(registry)
 	if install_events_attached and update_events_attached then
 		return
@@ -819,6 +820,8 @@ function M.attach_registry_events(registry)
 				-- would leave a same-tick window still reading the stale frozen
 				-- index. Clearing two locals is pure Lua, fast-event-safe; the
 				-- next lookup rebuilds (and re-freezes on a bootstrapped registry).
+				-- Were upstream ever to emit this asynchronously instead, the
+				-- sync clear degrades to one harmless extra rebuild.
 				bin_to_package = nil
 				unfrozen_index = nil
 			end)
@@ -911,8 +914,7 @@ end
 ---resolver still pays ensure_mason_on_path synchronously — deferring must not
 ---lose the same-tick guarantee that a replayed trigger's bare Mason spawns
 ---can resolve — and phase-1 configures inside the scheduled run still count
----as trigger-backed (`late = false`), exactly like a caller-side
----vim.schedule wrapper did.
+---as trigger-backed (`late = false`).
 function M.resolve(spec)
 	-- Every call site owns a configure (the resolver's whole job funnels into
 	-- it): a missing one is a programmer error — fail at the call site instead
@@ -945,7 +947,8 @@ function M.resolve(spec)
 		spec = spec,
 		pending = {},
 		is_unsettled = collector.is_unsettled,
-		---The spec's registry (value or lazy thunk), resolved on demand.
+		---The spec's registry (value or lazy thunk), resolved on demand; a
+		---drifted non-table result normalizes to nil (degrade, never crash).
 		resolve_registry = function()
 			local registry = spec.registry
 			if type(registry) == "function" then
@@ -1176,10 +1179,9 @@ function M.resolve(spec)
 		sessions[#sessions + 1] = session
 
 		-- Phase 2: resolve leftovers against the registry (value, nil, or lazy
-		-- thunk — resolved through session.resolve_registry, and only here, so
-		-- a fully-provisioned subsystem never loads Mason), refreshing a
-		-- never-bootstrapped one first. The helper also normalizes a drifted
-		-- non-table result to nil instead of letting it crash phase 2.
+		-- thunk — via session.resolve_registry; phase 1 never touches it, so a
+		-- fully-provisioned subsystem with no leftovers never loads Mason),
+		-- refreshing a never-bootstrapped one first.
 		local registry = session.resolve_registry()
 		-- The registry is loaded anyway: make sure mid-session installs hand off.
 		if registry then
@@ -1237,11 +1239,13 @@ function M.resolve(spec)
 				on_refreshed()
 			end
 		elseif spec.defer_phase2 then
-			-- Runtime-tool phase 2 only classifies/installs: move the full registry
-			-- spec decode off the lazy-load trigger's tick.
+			-- Opt-in consumers (runtime tools, LSP) move the full registry spec
+			-- decode off the lazy-load trigger's tick; their late configures
+			-- have their own catch-up paths (enable() attaches open buffers,
+			-- lint re-runs itself).
 			vim.schedule(finish)
 		else
-			-- LSP/DAP configure IN phase 2, and a cmd-triggered lazy-load replays
+			-- DAP configures IN phase 2, and a cmd-triggered lazy-load replays
 			-- synchronously right after config: finish on this tick.
 			finish()
 		end
