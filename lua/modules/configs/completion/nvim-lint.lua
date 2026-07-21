@@ -301,4 +301,97 @@ return function()
 			end
 		end,
 	})
+
+	-- Parity backstop, mirroring mason-lspconfig's sweep intent: a mapped
+	-- linter whose filetype never fires a lint event this session must still
+	-- be resolved (installed or reported) instead of silently skipped.
+	--
+	-- Shape, driven by two constraints:
+	--  * The probe requires linter modules and golangcilint blocks at load
+	--    (deliberate, see refresh_linter above), so the sweep must not land
+	--    mid-editing: the 120s timer only ARMS a one-shot CursorHold(I) idle
+	--    gate, and the gate warms module loads one per tick before a single
+	--    aggregated resolve.
+	--  * A config re-source strands this closure with a stale `pending`
+	--    table: every async hop re-checks a vim.g generation token (survives
+	--    both re-source flavors), and the gate autocmd dies with the
+	--    augroup's clear=true above.
+	local SWEEP_DELAY_MS = 120000 -- keep in sync with mason-lspconfig's parity sweep
+	local gen = (vim.g._nvimlint_sweep_gen or 0) + 1
+	vim.g._nvimlint_sweep_gen = gen
+	local function sweep_live()
+		return vim.g._nvimlint_sweep_gen == gen
+	end
+
+	local function run_sweep()
+		-- Snapshot WITHOUT draining: `pending` stays owned by ensure_resolved
+		-- until the moment of resolution, so a filetype opened mid-warm still
+		-- takes its normal first-event path (resolve before its first lint).
+		local names = {}
+		for name in pairs(pending) do
+			names[#names + 1] = name
+		end
+		if #names == 0 then
+			return
+		end
+		table.sort(names) -- pairs order is nondeterministic; keep the warning stable
+		-- The event path loads linter modules inside tools.resolve(), AFTER it
+		-- put Mason's bin dir on $PATH. PATH-sensitive modules (golangcilint
+		-- RUNS its binary at load to compute args) must see the same
+		-- environment when the warm phase loads them first instead.
+		tools.ensure_mason_on_path()
+		-- Warm the __index module loads one per tick (bounds any blocking
+		-- load to a single tick), then resolve everything still pending in
+		-- ONE batch so the missing-tools warning stays aggregated. Loader
+		-- errors are swallowed here on purpose: resolve_batch's probe
+		-- re-derives broken-vs-unknown.
+		local index = 0
+		local function step()
+			if not sweep_live() then
+				return
+			end
+			index = index + 1
+			if index <= #names then
+				local name = names[index]
+				if pending[name] then -- skip names an event already claimed
+					pcall(function()
+						local _ = lint.linters[name]
+					end)
+				end
+				vim.schedule(step)
+				return
+			end
+			local batch = {}
+			for _, name in ipairs(names) do
+				if pending[name] then
+					pending[name] = nil
+					batch[#batch + 1] = name
+				end
+			end
+			if #batch > 0 then
+				resolve_batch(batch) -- order-preserving subset of sorted `names`
+			end
+		end
+		step()
+	end
+
+	vim.defer_fn(function()
+		if not sweep_live() or next(pending) == nil then
+			return
+		end
+		-- Arm, don't run: CursorHold(I) is the first real idle window, so the
+		-- module loads never land mid-keystroke-burst. One-shot across BOTH
+		-- events via del_autocmd — a callback returning true only drops the
+		-- registration of the event that fired, leaving the sibling armed.
+		local gate = nil
+		gate = vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+			group = "NvimLint",
+			callback = function()
+				pcall(vim.api.nvim_del_autocmd, gate)
+				if sweep_live() then
+					run_sweep()
+				end
+			end,
+		})
+	end, SWEEP_DELAY_MS)
 end
