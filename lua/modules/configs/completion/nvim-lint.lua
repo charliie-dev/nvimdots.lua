@@ -167,6 +167,12 @@ return function()
 	---lint that triggered the batch; late configures (install completion /
 	---post-refresh) have no later lint event and re-lint buffers themselves.
 	---@param names string[]
+	-- First broken-load verdict per linter module: the recovery re-require
+	-- below re-runs any side effects the module executed before its failure
+	-- point (golangcilint spawns its binary at load time — see refresh_linter),
+	-- so it must run at most once per session, not once per resolve batch.
+	-- Session staleness is fine: fixing a broken module needs a restart anyway.
+	local broken_probe = {}
 	local function resolve_batch(names)
 		tools.resolve_runtime_tools("nvim-lint", names, function(name)
 			-- Read — and possibly lazy-load — the linter (the __index loader
@@ -179,14 +185,19 @@ return function()
 				if not tools.module_path(module) then
 					return nil -- unknown linter name (typo / not registered)
 				end
+				if broken_probe[module] then
+					return { broken = broken_probe[module] }
+				end
 				-- The swallowed require left the loader sentinel behind: retrying
 				-- as-is only yields "loop or previous error loading module".
-				-- Clear it so the retry re-throws the ORIGINAL error (the module
-				-- never finished loading, so no side effects run twice).
+				-- Clear it so the retry re-throws the ORIGINAL error. COST,
+				-- accepted and bounded by the memo above: side effects the module
+				-- ran before failing (load-time spawns) run a second time here.
 				package.loaded[module] = nil
 				local ok, err = pcall(require, module)
 				if not ok then
-					return { broken = tostring(err) }
+					broken_probe[module] = tostring(err)
+					return { broken = broken_probe[module] }
 				end
 				-- The retry loaded (nondeterministic loader): pick up the fresh value.
 				linter = lint.linters[name]
