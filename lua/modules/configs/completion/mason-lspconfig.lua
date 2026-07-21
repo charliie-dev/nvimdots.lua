@@ -51,10 +51,18 @@ function M.run_user_lsp_overrides()
 	end
 	overrides_ran = true
 	local real = vim.lsp.config
+	-- The proxy may outlive the require below (a user module can stash the
+	-- reference and read it from a deferred context): every metamethod is
+	-- gated on this window so a post-restore read can never re-install the
+	-- proxy as the global, and post-window ops write through without being
+	-- recorded as overrides. (Deliberate consequence: server_info_invalidate
+	-- no longer fires for post-window writes through a captured reference —
+	-- an out-of-contract surface either way.)
+	local window_open = true
 	local proxy
 	proxy = setmetatable({}, {
 		__index = function(_, key)
-			if registration_trigger and type(key) == "string" and key ~= "*" then
+			if window_open and registration_trigger and type(key) == "string" and key ~= "*" then
 				-- The handler (and a function-form spec) registers through the
 				-- GLOBAL vim.lsp.config: it must be the real table while the
 				-- trigger runs, or the registration would be recorded as user
@@ -67,7 +75,7 @@ function M.run_user_lsp_overrides()
 		end,
 		__newindex = function(_, key, value)
 			real[key] = value
-			if type(key) == "string" and key ~= "*" then
+			if window_open and type(key) == "string" and key ~= "*" then
 				-- Assignment replaces the whole config: supersede earlier recordings.
 				user_lsp_configs[key] = { { replace = true, cfg = value } }
 				-- The op may have changed what the truth source resolves (cmd
@@ -79,7 +87,7 @@ function M.run_user_lsp_overrides()
 		end,
 		__call = function(_, name, cfg)
 			real(name, cfg)
-			if type(name) == "string" and name ~= "*" and type(cfg) == "table" then
+			if window_open and type(name) == "string" and name ~= "*" and type(cfg) == "table" then
 				local list = user_lsp_configs[name] or {}
 				list[#list + 1] = { cfg = cfg }
 				user_lsp_configs[name] = list
@@ -92,6 +100,15 @@ function M.run_user_lsp_overrides()
 	vim.lsp.config = proxy
 	pcall(require, "user.configs.lsp")
 	vim.lsp.config = real
+	window_open = false
+end
+
+---Test hook (anti-rot, same pattern as M.eager_ft_override_modules): recorded
+---user-op count for a server — the override window's observable. No runtime reader.
+---@param name string
+---@return integer
+function M._recorded_ops_count(name)
+	return #(user_lsp_configs[name] or {})
 end
 
 ---The discovery pass, split out of setup(): lsp.lua runs it AFTER
