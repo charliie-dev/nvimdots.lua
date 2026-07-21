@@ -502,7 +502,14 @@ M.setup = function()
 		if type(store) ~= "table" then
 			return
 		end
-		local before = vim.deepcopy(store[name])
+		-- vim.deepcopy raises on userdata values; without a snapshot there is
+		-- no rollback guarantee, so degrade to the status-quo read exactly
+		-- like the _configs drift guard above. (Hardening: the sole caller
+		-- already pcalls the trigger, but the swallow made the abort silent.)
+		local copy_ok, before = pcall(vim.deepcopy, store[name])
+		if not copy_ok then
+			return
+		end
 		if pcall(mason_lsp_handler, name) then
 			registered[name] = true
 			-- The handler's own server_info ran pre-registration (a function-form
