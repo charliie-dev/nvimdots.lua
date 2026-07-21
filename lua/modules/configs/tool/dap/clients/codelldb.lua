@@ -4,7 +4,8 @@ return function()
 	local utils = require("modules.utils.dap")
 	local is_windows = require("core.global").is_windows
 
-	-- Self-validate at config time: launch AND attach both spawn the local binary, so
+	-- Self-validate at config time (validate FIRST — contract: tool/dap/init.lua
+	-- resolver spec): launch AND attach both spawn the local binary, so
 	-- unlike delve/python nothing is worth registering without it — error if missing.
 	local command =
 		require("modules.utils.tools").exepath_or_error("codelldb", "install it via Mason or your package manager")

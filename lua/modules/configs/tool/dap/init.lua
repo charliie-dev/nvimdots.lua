@@ -96,10 +96,11 @@ return function()
 	vim.fn.sign_define("DapLogPoint", { text = icons.dap.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
 
 	-- Everything Mason-flavored loads LAZILY: a session where every adapter
-	-- self-validates from $PATH must not load mason.nvim / mason-nvim-dap on
-	-- the :Dap* tick. First use (the factory fallback or a phase-2
-	-- classification) goes through lazy.nvim's module loader; absence degrades
-	-- to client-config/$PATH resolution as before.
+	-- self-validates from $PATH — with no user overrides — must not load
+	-- mason.nvim / mason-nvim-dap on the :Dap* tick. First use (the factory
+	-- fallback, a phase-2 classification, or a user override's opts
+	-- materialization) goes through lazy.nvim's module loader; absence
+	-- degrades to client-config/$PATH resolution as before.
 	local mason_dap = nil
 	local function mason_dap_mod()
 		if mason_dap == nil then
@@ -160,15 +161,16 @@ return function()
 	end
 
 	---A handler to setup all clients defined under `tool/dap/clients/*.lua`.
-	---Only the factory branch touches mason-nvim-dap: a client-config'd adapter
-	---(every adapter in this repo) configures without loading Mason.
+	---The factory branch and a user override's opts materialization load
+	---mason-nvim-dap; a repo zero-arg client (every adapter in this repo)
+	---configures without loading Mason.
 	---@param dap_name string
 	local function mason_dap_handler(dap_name)
 		local custom_handler, broken_reason, _, user_won = load_client_config(dap_name)
 		-- No-fall-through contract, enforced by the ONE shared implementation
-		-- (tools.usable_or_raise, also used by mason_lsp_handler): a broken or
-		-- wrong-shaped config must never read as success — that would suppress
-		-- both the warning and the install fallback.
+		-- (tools.usable_or_raise): a broken or wrong-shaped config must never
+		-- read as success — that would suppress both the warning and the
+		-- install fallback.
 		custom_handler = tools.usable_or_raise(custom_handler, broken_reason, {
 			label = "client config",
 			expected = "a fun(opts)",
@@ -217,9 +219,10 @@ return function()
 				)
 			end
 			-- Partial mappings drift can hand us configurations without
-			-- filetypes (or vice versa); default_setup ipairs() both
-			-- unconditionally. Degrade to whatever half is present instead of
-			-- a raw ipairs(nil) raise.
+			-- filetypes: upstream's default_setup guards configurations
+			-- (`or {}`) but ipairs()es filetypes whenever configurations are
+			-- non-empty — that combination raises ipairs(nil). Normalize both
+			-- halves defensively.
 			if type(config.configurations) ~= "table" then
 				config.configurations = {}
 			end
@@ -345,8 +348,8 @@ return function()
 		-- install fallback — python resolves debugpy from a venv $PATH can't see.
 		-- The raise on a missing launch binary is the provisioning signal.
 		--
-		-- CANONICAL availability contract for dap/clients/*.lua (referenced by the
-		-- one-line notes in each client; keep the two patterns in sync here).
+		-- CANONICAL availability contract for dap/clients/*.lua (the raise-LAST
+		-- clients carry pointer notes back here; keep the two patterns in sync).
 		-- Shape enforcement itself lives in tools.usable_or_raise; a
 		-- metadata-declared contract ({ attach_capable, binaries }) was
 		-- considered and rejected — it would churn the fun(opts) user-override

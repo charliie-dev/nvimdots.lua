@@ -15,8 +15,9 @@ return function()
 	---@param config table
 	local function delve_adapter(callback, config)
 		if config.request == "attach" and config.mode == "remote" then
-			-- Default when unset, but a malformed user port errors rather than silently
-			-- falling back to delve's default 38697.
+			-- Default when unset (38697 is the conventional example port from the
+			-- nvim-dap wiki, not a delve default), but a malformed user port
+			-- errors rather than silently falling back to it.
 			local port = 38697
 			if config.port ~= nil then
 				local n = tonumber(config.port)

@@ -52,7 +52,7 @@ return function()
 		import_probe_retries = 0
 		return command, args
 	end
-	-- One copy for both raise sites so the install guidance can't drift.
+	-- One copy for all raise sites so the install guidance can't drift.
 	local no_debugpy = "debugpy not found: no `debugpy-adapter` shim on $PATH or in Mason's bin dir,\n"
 		.. "and no python able to import debugpy; install debugpy via Mason (`:Mason`)\n"
 		.. "or your package manager"
@@ -159,11 +159,9 @@ return function()
 	end
 	dap.configurations.python = {
 		{
-			-- The first three options are required by nvim-dap
-			type = "python", -- the type here established the link to the adapter definition: `dap.adapters.python`
+			type = "python", -- links to the adapter definition: `dap.adapters.python`
 			request = "launch",
 			name = "Debug",
-			-- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
 			console = "integratedTerminal",
 			program = utils.input_file_path(),
 			pythonPath = function()
@@ -176,11 +174,9 @@ return function()
 			end,
 		},
 		{
-			-- NOTE: This setting is for people using venv
 			type = "python",
 			request = "launch",
 			name = "Debug (using venv)",
-			-- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
 			console = "integratedTerminal",
 			program = utils.input_file_path(),
 			pythonPath = function()

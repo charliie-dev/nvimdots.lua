@@ -4,8 +4,10 @@ return function()
 	local utils = require("modules.utils.dap")
 
 	-- Opt-in preset (not in default dap_deps; codelldb covers C-family). Self-validate
-	-- so the resolver surfaces `lldb`. LLVM 15 renamed `lldb-vscode` -> `lldb-dap`;
-	-- probe the new name first, keep the old for distros still shipping it.
+	-- so the resolver surfaces `lldb` (validate FIRST — contract:
+	-- tool/dap/init.lua resolver spec). LLVM 18 renamed `lldb-vscode` ->
+	-- `lldb-dap`; probe the new name first, keep the old for distros still
+	-- shipping it.
 	local command = require("modules.utils.tools").exepath_or_error(
 		{ "lldb-dap", "lldb-vscode" },
 		"install it via your package manager (ships with LLVM/lldb)"
