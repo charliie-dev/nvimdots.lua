@@ -163,16 +163,6 @@ return function()
 				args = { "fix", "--stdin" },
 				stdin = true,
 			},
-			-- prettier: the --write-on-temp-copy shape dates from the bun
-			-- node-shim era (stdin was broken); mise ships real node now, so
-			-- stdin likely works again — kept pending re-evaluation. `stdin =
-			-- false` points $FILENAME at a `.conform.$RANDOM.*` copy; the real
-			-- file is never touched.
-			prettier = {
-				command = "prettier",
-				args = { "--write", "$FILENAME" },
-				stdin = false,
-			},
 		},
 		format_on_save = format_on_save_enabled and function(bufnr)
 			if not autoformat_allowed(bufnr) then
