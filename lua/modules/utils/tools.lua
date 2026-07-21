@@ -51,6 +51,14 @@ end
 -- Public alias for dep-list consumers.
 M.normalize_names = normalize_names
 
+---Keep a value only when it is a string: probe/config results are untrusted
+---external shapes, and every non-string sanitizes to nil.
+---@param value any
+---@return string|nil
+local function str_or_nil(value)
+	return type(value) == "string" and value or nil
+end
+
 ---Locate the first of the given executables: $PATH, then Mason's bin dir
 ---(reachable before mason.setup() prepends it). First-found by design:
 ---callers pass alternates for one tool, not a list of required binaries.
@@ -1034,7 +1042,7 @@ function M.resolve(spec)
 				return true
 			end
 			validates[name] = {
-				reason = type(reason) == "string" and reason or nil,
+				reason = str_or_nil(reason),
 				config_error = config_error == true,
 			}
 		end
@@ -1287,12 +1295,12 @@ function M.resolve_runtime_tools(title, deps, probe, configure, opts)
 			if ok and type(result) == "table" then
 				cache[name] = {
 					known = true,
-					binary = type(result.binary) == "string" and result.binary or nil,
-					broken = type(result.broken) == "string" and result.broken or nil,
+					binary = str_or_nil(result.binary),
+					broken = str_or_nil(result.broken),
 					unresolved = result.unresolved == true,
 					-- Consumer-specific phrasing for the unresolved warning
 					-- stays in the consumer's probe, not in this shared helper.
-					reason = type(result.reason) == "string" and result.reason or nil,
+					reason = str_or_nil(result.reason),
 				}
 			else
 				-- A probe error is treated as unknown: either way, fix the config entry.
