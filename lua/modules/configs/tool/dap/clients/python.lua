@@ -135,11 +135,13 @@ return function()
 
 	dap.adapters.python = function(callback, config)
 		if config.request == "attach" then
-			local port = (config.connect or config).port
-			local host = (config.connect or config).host or "127.0.0.1"
+			-- Shared shape validation (utils.attach_endpoint): a malformed
+			-- port/host errors clearly at config time instead of surfacing as
+			-- an opaque TCP failure. No default port — attach must name one.
+			local host, port = utils.attach_endpoint(config.connect or config, { label = "python attach" })
 			callback({
 				type = "server",
-				port = assert(port, "`connect.port` is required for a python `attach` configuration"),
+				port = port,
 				host = host,
 				options = { source_filetype = "python" },
 			})

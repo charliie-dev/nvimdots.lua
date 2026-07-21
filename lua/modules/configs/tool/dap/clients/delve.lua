@@ -15,39 +15,11 @@ return function()
 	---@param config table
 	local function delve_adapter(callback, config)
 		if config.request == "attach" and config.mode == "remote" then
-			-- Default when unset (38697 is the conventional example port from the
-			-- nvim-dap wiki, not a delve default), but a malformed user port
-			-- errors rather than silently falling back to it.
-			local port = 38697
-			if config.port ~= nil then
-				local n = tonumber(config.port)
-				if not n or n ~= math.floor(n) or n < 1 or n > 65535 then
-					error(
-						string.format(
-							"delve remote attach: invalid `port` %s (want an integer 1-65535)",
-							vim.inspect(config.port)
-						),
-						0
-					)
-				end
-				port = n
-			end
-			-- Same contract as `port` above: a malformed value errors at config
-			-- time instead of surfacing as an opaque connection failure. Hosts
-			-- are free-form (hostname/IPv4/IPv6), so only the shape is checked.
-			local host = "127.0.0.1"
-			if config.host ~= nil then
-				if type(config.host) ~= "string" or config.host == "" then
-					error(
-						string.format(
-							"delve remote attach: invalid `host` %s (want a non-empty string)",
-							vim.inspect(config.host)
-						),
-						0
-					)
-				end
-				host = config.host
-			end
+			-- Shared shape validation (utils.attach_endpoint): malformed values
+			-- error at config time instead of surfacing as an opaque connection
+			-- failure. Default when unset: 38697 is the conventional example
+			-- port from the nvim-dap wiki, not a delve default.
+			local host, port = utils.attach_endpoint(config, { label = "delve remote attach", default_port = 38697 })
 			callback({
 				type = "server",
 				host = host,

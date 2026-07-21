@@ -21,7 +21,46 @@ function M.get_env()
 	return variables
 end
 
-return setmetatable({}, {
+---Validate a remote-attach endpoint's shape at config time — a clear error
+---beats an opaque connection failure. Hosts are free-form (hostname/IPv4/
+---IPv6), so only the shape is checked; ports must be integers 1-65535
+---(tonumber-coerced). `opts.default_port` fills an absent port; nil means the
+---port is required. An absent host defaults to "127.0.0.1".
+---@param config table @The table carrying .host/.port (caller resolves any connect indirection).
+---@param opts { label: string, default_port: integer|nil }
+---@return string host, integer port
+function M.attach_endpoint(config, opts)
+	local port = opts.default_port
+	if config.port ~= nil then
+		local n = tonumber(config.port)
+		if not n or n ~= math.floor(n) or n < 1 or n > 65535 then
+			error(
+				string.format("%s: invalid `port` %s (want an integer 1-65535)", opts.label, vim.inspect(config.port)),
+				0
+			)
+		end
+		port = n
+	elseif port == nil then
+		error(string.format("%s: `port` is required", opts.label), 0)
+	end
+	local host = "127.0.0.1"
+	if config.host ~= nil then
+		if type(config.host) ~= "string" or config.host == "" then
+			error(
+				string.format("%s: invalid `host` %s (want a non-empty string)", opts.label, vim.inspect(config.host)),
+				0
+			)
+		end
+		host = config.host
+	end
+	return host, port
+end
+
+local export = setmetatable({}, {
+	-- Lazy nullary double-thunk: `program = utils.input_file_path()` hands
+	-- nvim-dap a zero-arg closure. Any key reached through this __index
+	-- DISCARDS call arguments — functions that take arguments must be
+	-- CONCRETE keys on the export (raw hits bypass __index).
 	__index = function(_, key)
 		return function()
 			return function()
@@ -30,3 +69,5 @@ return setmetatable({}, {
 		end
 	end,
 })
+export.attach_endpoint = M.attach_endpoint
+return export
