@@ -30,43 +30,69 @@ local schemas = require("schemastore").yaml.schemas({
 	},
 })
 
----Bounded worklist expansion of `{a,b,...}` alternations: multi-group globs
----flatten to their full product, capped so a pathological upstream glob can't
----allocate a Cartesian blow-up on the startup path. `truncated` (cap hit)
----means the matcher could not judge the glob; a brace-less glob expands to
----itself. (The claimed-file check below judges leaves DURING expansion and
----does not use this list form — this stays for building `claimed` itself.)
+---THE bounded worklist over a glob's `{a,b,...}` alternations — one
+---implementation for both consumers (building `claimed` below and the
+---conflict check in claims_same_files): `on_leaf` runs for every fully
+---expanded candidate, and a true return stops the walk with that verdict.
+---Leaves are judged BEFORE cap accounting, so no cap gate may starve a leaf
+---check (the claimed-file short-circuit relies on this). The cap bounds a
+---pathological upstream glob's Cartesian product on the startup path.
+---`beyond` = the glob is past this matcher's power (cap hit before a stop,
+---or stray braces): the caller must not treat a false `stopped` as an
+---exhaustive judgment then.
 local BRACE_EXPANSION_CAP = 64
 ---@param glob string
----@return string[] expanded
----@return boolean truncated
-local function expand_braces(glob)
-	local work, out, truncated = { glob }, {}, false
-	while #work > 0 and not truncated do
+---@param on_leaf fun(leaf: string): boolean|nil
+---@return boolean stopped
+---@return boolean beyond
+local function expand_each(glob, on_leaf)
+	local work, seen, beyond = { glob }, 0, false
+	while #work > 0 do
 		local current = table.remove(work)
 		local head, alts, tail = current:match("^(.-){([^{}]+)}(.-)$")
 		if not head then
-			out[#out + 1] = current
+			if on_leaf(current) then
+				return true, beyond
+			end
+			if current:find("{", 1, true) or current:find("}", 1, true) then
+				beyond = true
+			end
 		else
 			for alt in (alts .. ","):gmatch("([^,]*),") do
-				if #work + #out >= BRACE_EXPANSION_CAP then
-					truncated = true
-					break
+				local candidate = head .. alt .. tail
+				if candidate:find("{", 1, true) then
+					seen = seen + 1
+					if seen > BRACE_EXPANSION_CAP then
+						return false, true
+					end
+					work[#work + 1] = candidate
+				elseif on_leaf(candidate) then
+					return true, beyond
+				else
+					seen = seen + 1
+					if seen > BRACE_EXPANSION_CAP then
+						return false, true
+					end
+					if candidate:find("}", 1, true) then
+						beyond = true
+					end
 				end
-				work[#work + 1] = head .. alt .. tail
 			end
 		end
 	end
-	return out, truncated
+	return false, beyond
 end
 
 -- The files our v3 extra claims, expanded: the ONLY globs other schemas may
 -- not keep. Derived from the extra itself (no mirror of catalog naming).
 local claimed = {}
 for _, glob in ipairs(traefik_v3_files) do
-	for _, expanded in ipairs(expand_braces(glob)) do
-		claimed[expanded] = true
-	end
+	local _, beyond = expand_each(glob, function(leaf)
+		claimed[leaf] = true
+	end)
+	-- Our own literal input must be fully judgeable — a truncated claimed set
+	-- would silently under-prune every other schema's globs.
+	assert(not beyond, "traefik_v3_files glob is beyond the brace matcher: " .. glob)
 end
 -- Stems of the claimed files ("traefik"), derived from our own extra — the
 -- sentinel gate below never mirrors catalog naming. A glob beyond the
@@ -94,11 +120,11 @@ end
 ---A glob conflicts only when its basename expands to a claimed file: v2's
 ---`traefik.yml`/`traefik.yaml` (and `**/`-prefixed forms) do; merely
 ---traefik-NAMED globs (.traefik.yml plugin manifests, traefik-dynamic.*)
----do not and keep their schemas. Leaves are judged DURING the bounded
----expansion, so a claimed file short-circuits `claims` even when the full
----product would blow the cap. The second result flags a glob BEYOND the
----matcher (cap hit before a claim was found, or unbalanced braces): the
----caller must not trust the false and decides fail-closed.
+---do not and keep their schemas. The non-string guard is the deliberate
+---degrade path for drifted catalog entries (kept, never thrown on). The
+---walk itself is expand_each's: a claimed leaf short-circuits `claims` even
+---when the full product would blow the cap, and `beyond` means the caller
+---must not trust the false — it decides fail-closed.
 ---@param glob any
 ---@return boolean claims
 ---@return boolean beyond
@@ -107,42 +133,9 @@ local function claims_same_files(glob)
 		return false, false
 	end
 	local base = glob:match("([^/\\]+)$") or glob
-	local work, seen, beyond = { base }, 0, false
-	while #work > 0 do
-		local current = table.remove(work)
-		local head, alts, tail = current:match("^(.-){([^{}]+)}(.-)$")
-		if not head then
-			if claimed[current] then
-				return true, beyond
-			end
-			if current:find("{", 1, true) or current:find("}", 1, true) then
-				beyond = true
-			end
-		else
-			for alt in (alts .. ","):gmatch("([^,]*),") do
-				local candidate = head .. alt .. tail
-				if candidate:find("{", 1, true) then
-					seen = seen + 1
-					if seen > BRACE_EXPANSION_CAP then
-						return false, true
-					end
-					work[#work + 1] = candidate
-				elseif claimed[candidate] then
-					-- Judged immediately: no cap gate may starve a claim check.
-					return true, beyond
-				else
-					seen = seen + 1
-					if seen > BRACE_EXPANSION_CAP then
-						return false, true
-					end
-					if candidate:find("}", 1, true) then
-						beyond = true
-					end
-				end
-			end
-		end
-	end
-	return false, beyond
+	return expand_each(base, function(leaf)
+		return claimed[leaf] == true
+	end)
 end
 
 -- traefik.{yml,yaml} belong to our Traefik v3 extra alone: strip exactly those
