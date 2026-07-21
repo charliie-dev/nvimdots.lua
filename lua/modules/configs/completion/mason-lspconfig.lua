@@ -619,11 +619,11 @@ M.setup = function()
 		local immediate = {}
 		deferred_by_ft = {}
 		handed_off = {}
-		-- Container-shape policy stays here (a non-table lsp_deps is dropped
-		-- whole, exactly as before — split_dep_names would treat a bare string
-		-- as a singleton dep); only the per-entry valid/invalid rule is
-		-- delegated to the one definition (tools.split_dep_names).
-		local valid, invalid = tools.split_dep_names(type(settings.lsp_deps) == "table" and settings.lsp_deps or {})
+		-- ONE container-shape policy, shared with deps_set at setup top
+		-- (split_dep_names: bare string = singleton dep) — a divergent
+		-- drop-whole here let a string lsp_deps register via the read trigger
+		-- yet never resolve, enable, or warn.
+		local valid, invalid = tools.split_dep_names(settings.lsp_deps)
 		for _, entry in ipairs(valid) do
 			local fts = nil
 			local user_hooked = tools.module_path(server_modules(entry)[1]) ~= nil
