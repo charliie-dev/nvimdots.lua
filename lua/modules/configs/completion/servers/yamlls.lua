@@ -101,9 +101,12 @@ end
 local claimed_stems = {}
 for expanded in pairs(claimed) do
 	local stem = expanded:match("^[^.]+")
-	if stem and stem ~= "" then
-		claimed_stems[stem:lower()] = true
-	end
+	-- Hard requirement, not best-effort: check_glob's brace-free pre-filter
+	-- skips globs that mention no stem, so a claimed file yielding none
+	-- (e.g. a future dot-prefixed ".traefik.yml") would make its own exact
+	-- duplicate invisible to the prune. Fail loudly at construction instead.
+	assert(stem and stem ~= "", "claimed file yields no stem for the prune pre-filter: " .. expanded)
+	claimed_stems[stem:lower()] = true
 end
 ---@param glob string
 ---@return boolean
@@ -146,6 +149,21 @@ end
 -- the sentinel below instead of being silently trusted as non-conflicting.
 local dropped_unjudgeable = {}
 local function check_glob(glob)
+	-- Type guard FIRST: non-string catalog drift keeps its silent degrade
+	-- (same false verdict claims_same_files' own guard yields) and must never
+	-- reach a string method below.
+	if type(glob) ~= "string" then
+		return false
+	end
+	-- Brace-free fast path: such a glob equals its own expansion, so it can
+	-- only claim a stemmed literal file by containing the stem contiguously —
+	-- skipping it on a stem miss is provably verdict-identical, and it covers
+	-- the entire installed catalog (braces appear only in our own extras).
+	-- Brace-containing globs keep the full matcher: a split stem
+	-- (trae{fik,x}.yml) is decidable there and must stay decided.
+	if not glob:find("{", 1, true) and not mentions_claimed_stem(glob) then
+		return false
+	end
 	local claims, beyond = claims_same_files(glob)
 	if claims then
 		return true
