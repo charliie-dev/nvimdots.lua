@@ -1,9 +1,10 @@
 local M = {}
 
 -- vim.lsp.config registrations from `user.configs.lsp` (name -> ordered list
--- of { cfg } merges / { replace = true, cfg } assignments): a POST-INSTALL
--- late configure replays them, since its repo-spec registration would
--- otherwise force-merge over the user's keys (install-timing-dependent).
+-- of { cfg } merges / { replace = true, cfg } assignments): EVERY configure
+-- replays them, since its repo-spec registration would otherwise force-merge
+-- over the user's keys — a post-install late configure is merely the latest
+-- timing this covers.
 local user_lsp_configs = {}
 
 -- Bridge set by setup(): read-triggered registration (fun(real, name)) so a
@@ -19,9 +20,8 @@ local resolve_deps = nil
 -- Bridge set by setup(): resolves every still-deferred per-filetype batch —
 -- the parity sweep's target and a manual escape hatch.
 local resolve_remaining = nil
--- User overrides run once per session: lsp.lua's config function is the only
--- caller and lazy.nvim runs it once; a rerun could not undo the first pass's
--- write-through ops anyway, so a second call is refused loudly instead.
+-- User overrides run once per session (see run_user_lsp_overrides' doc):
+-- a second call is refused loudly.
 local overrides_ran = false
 
 ---Run `user.configs.lsp` with vim.lsp.config proxied to record per-server
@@ -142,7 +142,7 @@ M.setup = function()
 
 	---cmd → probeable binary: a table cmd's argv[0], nil otherwise (a function
 	---cmd resolves its own launch). The ONE extraction rule for every
-	---classification site in server_info/invalidate below.
+	---classification site in server_info/unknown_of below.
 	---@param cmd any
 	---@return string|nil
 	local function binary_of_cmd(cmd)
@@ -153,8 +153,8 @@ M.setup = function()
 	-- the module, not in lspconfig defaults, so the per-filetype partition must
 	-- resolve them on the load tick (shuck adds ksh — deferring it by
 	-- lspconfig's bash/sh/zsh would strand a ksh-only session until the sweep).
-	-- This declares a property of OUR OWN modules; the ft_override_consistency
-	-- harness scenario asserts it stays in sync with servers/*.lua.
+	-- This declares a property of OUR OWN modules; the export below is the
+	-- anti-rot hook that keeps it honest against servers/*.lua.
 	local eager_ft_override_modules = {
 		gopls = true,
 		harper_ls = true,
@@ -171,7 +171,7 @@ M.setup = function()
 	-- Late parity sweep: every lsp_deps entry is classified at most this long
 	-- after resolve_deps even if its filetype never opens (missing-tool
 	-- warnings and installs still happen once per session, off any hot path).
-	local SWEEP_DELAY_MS = 120000
+	local SWEEP_DELAY_MS = 120000 -- keep in sync with nvim-lint's parity sweep
 
 	vim.diagnostic.config({
 		signs = true,
@@ -186,6 +186,8 @@ M.setup = function()
 
 	---Probe and cache a server's spec once. `binary` = first table-cmd entry in
 	---precedence order (user, repo, lspconfig); nil for a function/absent cmd.
+	---Post-registration the resolved config's cmd wins unconditionally (a
+	---registered cmd is what enable() will spawn).
 	local server_info_cache = {}
 	---@class mason_lspconfig.ServerInfo
 	---@field has_module boolean
@@ -330,10 +332,10 @@ M.setup = function()
 	local function mason_lsp_handler(lsp_name)
 		local info = server_info(lsp_name)
 		-- No-fall-through contract, enforced by the ONE shared implementation
-		-- (tools.usable_or_raise, also used by mason_dap_handler): a broken or
-		-- wrong-shaped config must never read as success — that would suppress
-		-- both the warning and the install fallback. Precedence was decided by
-		-- server_info (info.spec / info.merge_base).
+		-- (tools.usable_or_raise): a broken or wrong-shaped config must never
+		-- read as success — that would suppress both the warning and the
+		-- install fallback. Precedence was decided by server_info
+		-- (info.spec / info.merge_base).
 		local spec = tools.usable_or_raise(info.spec, info.broken_reason, {
 			label = "server config",
 			expected = "a fun(opts) or a table",
@@ -389,10 +391,10 @@ M.setup = function()
 		return lspconfig_to_package[name]
 	end
 	-- The mapping derives from the registry specs: a registry update must not
-	-- leave the first non-empty snapshot frozen. SYNCHRONOUS (pure-Lua clear,
-	-- fast-event-safe): mason emits update:success before update callbacks
-	-- run, so a scheduled clear would leave a same-tick stale window. Once
-	-- per setup; pcall guards mason-registry API drift.
+	-- leave the first non-empty snapshot frozen. SYNCHRONOUS clear on purpose —
+	-- the emit-order rationale lives at tools.lua's update:success handler
+	-- (the one place that fact is argued). Once per setup; pcall guards
+	-- mason-registry API drift.
 	if mason_ok and type(mason_registry.on) == "function" then
 		pcall(function()
 			mason_registry:on("update:success", function()
@@ -448,12 +450,12 @@ M.setup = function()
 			-- (group-1 retry/event matchers) see the resolved cmd.
 			server_info_cache[name] = nil
 		end
-		-- Replay recorded `user.configs.lsp` registrations on top: a post-install
-		-- configure may register AFTER that module ran (write-only overrides get
-		-- no read trigger), and the repo spec would otherwise force-merge over
-		-- the user's keys. Synchronous configures precede the user module, and a
-		-- read-triggered registration precedes the recording — both make this a
-		-- natural no-op.
+		-- Replay recorded `user.configs.lsp` registrations on top: discovery
+		-- runs AFTER the user module (lsp.lua orders setup → overrides →
+		-- resolve), so the repo-spec registration above just force-merged over
+		-- any write-only override's keys — this replay restores them on every
+		-- configure. Only the read-triggered path (registration before
+		-- recording) makes it a natural no-op.
 		for _, entry in ipairs(user_lsp_configs[name] or {}) do
 			if entry.replace then
 				vim.lsp.config[name] = entry.cfg
@@ -527,9 +529,10 @@ M.setup = function()
 			-- Phase 2 (registry classification: full mappings decode + package
 			-- hydration) moves off the BufReadPre tick. Safe because a late
 			-- configure's vim.lsp.enable() attaches already-open matching
-			-- buffers (verified on this nvim), so the one same-tick
-			-- beneficiary — a Mason-installed server whose binary name differs
-			-- from the probe — still reaches the triggering buffer.
+			-- buffers (documented semantics — :h vim.lsp.enable()), so the one
+			-- same-tick beneficiary — a Mason-installed server whose binary
+			-- name differs from the probe — still reaches the triggering
+			-- buffer.
 			defer_phase2 = true,
 		})
 	end
