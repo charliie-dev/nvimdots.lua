@@ -127,7 +127,7 @@ jobs:
 
       - name: Check Nix flake inputs
         if: steps.gate.outputs.run == 'true'
-        uses: DeterminateSystems/flake-checker-action@v12
+        uses: DeterminateSystems/flake-checker-action@v13
         with:
           ignore-missing-flake-lock: false
           fail-mode: true
