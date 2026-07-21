@@ -104,7 +104,12 @@ return function()
 	local mason_dap = nil
 	local function mason_dap_mod()
 		if mason_dap == nil then
-			local ok, m = pcall(require, "mason-nvim-dap")
+			-- load_module_or_report, not a bare pcall: an exists-but-broken
+			-- mason-nvim-dap must surface its real load error once instead of
+			-- silently reading as "Mason absent" (the factory error's
+			-- "unavailable for a default setup" would otherwise be the only,
+			-- misleading, signal). Genuinely absent stays silent as before.
+			local ok, m = tools.load_module_or_report("mason-nvim-dap", "nvim-dap")
 			if ok and type(m) == "table" then
 				require("modules.utils").load_plugin("mason-nvim-dap", {
 					ensure_installed = {},
