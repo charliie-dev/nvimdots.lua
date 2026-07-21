@@ -191,14 +191,16 @@ return function()
 					return python
 				end
 
-				-- Otherwise, fall back to check if there are any local venvs available.
-				venv = vim.fn.isdirectory(cwd .. "/venv") == 1 and cwd .. "/venv" or cwd .. "/.venv"
-				python = venv_python(venv)
-				if vim.fn.executable(python) == 1 then
-					return python
-				else
-					return is_windows and "pythonw.exe" or "python3"
+				-- Otherwise fall back to any local venv — guarded: vim.uv.cwd()
+				-- returns nil when the process working directory was deleted.
+				if cwd then
+					venv = vim.fn.isdirectory(cwd .. "/venv") == 1 and cwd .. "/venv" or cwd .. "/.venv"
+					python = venv_python(venv)
+					if vim.fn.executable(python) == 1 then
+						return python
+					end
 				end
+				return is_windows and "pythonw.exe" or "python3"
 			end,
 		},
 	}
