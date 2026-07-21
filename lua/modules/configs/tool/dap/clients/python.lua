@@ -121,7 +121,12 @@ return function()
 					-- vim.system, not vim.fn.system: the exit code stays local
 					-- instead of round-tripping through the v:shell_error global
 					-- (repo convention — core/pack.lua, servers/gopls.lua).
-					if vim.system({ probe_cmd, "-c", "import debugpy" }):wait().code == 0 then
+					-- Bounded wait: this runs synchronously on the :Dap* setup
+					-- tick, and a hung interpreter (dead network FS, broken
+					-- shim) would otherwise freeze the editor. On timeout the
+					-- probe is SIGKILLed with code 124 — a failed probe, so
+					-- resolution falls through to the remaining candidates.
+					if vim.system({ probe_cmd, "-c", "import debugpy" }):wait(5000).code == 0 then
 						-- Spawn by the probed exepath, not its realpath: a venv python is a
 						-- symlink and pyvenv.cfg discovery precedes symlink resolution.
 						return found(probe_cmd, { "-m", "debugpy.adapter" })
