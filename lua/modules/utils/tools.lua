@@ -3,9 +3,10 @@
 -- and `M.resolve` as the shared loop.
 --
 -- Only mason.setup() (lazy-loaded) puts Mason's bin dir on $PATH, so resolve()
--- APPENDS it once first (`M.ensure_mason_on_path`) — appended, not prepended,
--- so a system copy still wins. A bare-name spawn that bypasses `M.resolve`
--- must call `M.ensure_mason_on_path()` itself or use `M.find_executable`.
+-- keeps it there first (`M.ensure_mason_on_path`, idempotent membership
+-- check) — appended, not prepended, so a system copy still wins. A bare-name
+-- spawn that bypasses `M.resolve` must call `M.ensure_mason_on_path()` itself
+-- or use `M.find_executable`.
 local M = {}
 
 -- Fallback when `settings.tool_install_timeout` is missing or non-positive;
@@ -151,15 +152,29 @@ function M.usable_or_raise(value, broken_reason, opts)
 	return value
 end
 
-local mason_path_added = false
-
----Append Mason's bin dir to $PATH once (see the file header) — appended so a
----system copy still wins. Idempotent; while the Mason root is still unknown
----the flag stays unset so a later call retries.
+---Keep Mason's bin dir on $PATH (see the file header) — appended so a system
+---copy still wins. Idempotent via the exact-entry membership check each call
+---(one plain find over $PATH): a set-once flag would skip exactly the cases
+---the recheck exists for — a $PATH something overwrote mid-session, and a
+---root that switched once mason.setup applied a different one (see
+---mason_root). APPEND-ONLY on purpose: identical strings in an externally
+---mutable list admit no robust ownership proof, so nothing is ever removed —
+---and per Mason PATH mode nothing needs to be: under the default
+---`PATH = "prepend"` mason.setup itself prepends the new root's bin on a
+---switch, out-preceding any stale appended entry for same-named shims (the
+---stale tail then only serves old-root-only names); under `PATH = "append"`
+---the user chose tail ordering, so a pre-switch stale entry preceding the
+---post-switch one is that mode's own semantics (same-name shadowing until
+---restart accepted). KNOWN DEVIATION: mason's `PATH = "skip"` is NOT honored
+---here — deliberately. The resolver's availability verdicts (find_executable,
+---consulted by every resolve()) and its consumers' bare-name spawns
+---(conform/nvim-lint commands, LSP cmds) must AGREE, and this append is what
+---keeps them agreeing; honoring skip would classify a Mason-only tool as
+---available while its spawn fails, turning the aggregated report into a lie.
+---Honoring skip coherently requires absolute-command configuration across
+---every bare-spawn consumer — a cross-cutting change tracked as follow-up
+---work, out of this module's scope.
 function M.ensure_mason_on_path()
-	if mason_path_added then
-		return
-	end
 	local root = M.mason_root()
 	if not root then
 		return
@@ -172,7 +187,6 @@ function M.ensure_mason_on_path()
 	if not (sep .. path .. sep):find(sep .. bin .. sep, 1, true) then
 		vim.env.PATH = path ~= "" and (path .. sep .. bin) or bin
 	end
-	mason_path_added = true
 end
 
 ---Resolve the first of the given executable names, or `error()` with the
