@@ -975,19 +975,21 @@ function M.resolve(spec)
 	-- warning. Late calls race (install completion, the registry install event,
 	-- :ToolsRetry, a late refresh finish): `pending` is the gate — the first
 	-- SUCCESS clears it and later arrivals skip; a failure keeps the name
-	-- recoverable. Returns true only when the configure ran and succeeded.
+	-- recoverable. Returns true only when the configure ran and succeeded;
+	-- on failure the cleaned reason and the config-layer flag ride along
+	-- (phase-1 parking and the retry report consume them).
 	local function do_configure(name)
 		if not synchronous and session.pending[name] == nil then
 			return false
 		end
-		local ok, reason = try_configure(name)
+		local ok, reason, config_error = try_configure(name)
 		if ok then
 			session.pending[name] = nil
 			drop_session_if_done(session)
 			return true
 		end
 		collector.mark(name, reason)
-		return false
+		return false, reason, config_error
 	end
 	session.configure = do_configure
 
@@ -1020,11 +1022,24 @@ function M.resolve(spec)
 	---@return boolean handled
 	local function configure_available(name)
 		if M.find_executable(spec.binaries_of(name, nil)) ~= nil then
-			do_configure(name)
+			local ok, _, config_error = do_configure(name)
+			-- A failed configure whose binary IS on $PATH parks for the retry
+			-- paths (pending_bins_available re-accepts it, so :ToolsRetry and
+			-- the install event can finish it after the cause is fixed) —
+			-- except a raise_verbatim config-layer error, which no install or
+			-- retry can fix: the mark above is its final report, mirroring
+			-- resolve_missing's report-immediately policy.
+			if not ok and not config_error then
+				session.pending[name] = true
+			end
 			return true
 		end
 		-- "resolves" only: a binary-less LSP server (jsonls) still maps to a
-		-- package by NAME and must reach phase 2 to install.
+		-- package by NAME and must reach phase 2 to install. A FAILURE here is
+		-- deliberately NOT parked: every retry gate is structurally closed for
+		-- a binary-less "resolves" name (no bins for pending_bins_available,
+		-- no package_of mapping for the install event, validates gate closed
+		-- by mode), so parking it would leak the session until restart.
 		if spec.local_config_mode == "resolves" and spec.has_local_config and spec.has_local_config(name) then
 			do_configure(name)
 			return true
@@ -1170,13 +1185,18 @@ function M.resolve(spec)
 			collector.done()
 		end
 
+		-- Expose anything pending to the install hand-off paths — phase-2
+		-- leftovers AND parked phase-1 $PATH-branch failures (pending ⊇
+		-- unresolved, so this is the single registration point).
+		if next(session.pending) ~= nil then
+			sessions[#sessions + 1] = session
+		end
+
 		-- Nothing left to install: Mason stays unloaded.
 		if #unresolved == 0 then
 			collector.done()
 			return
 		end
-		-- Leftovers exist: expose them to the install hand-off paths.
-		sessions[#sessions + 1] = session
 
 		-- Phase 2: resolve leftovers against the registry (value, nil, or lazy
 		-- thunk — via session.resolve_registry; phase 1 never touches it, so a
