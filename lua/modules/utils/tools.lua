@@ -261,7 +261,7 @@ end
 ---sections: `mark` (install it / config failed) and `mark_unknown`
 ---(unrecognized name — fix the config, don't install).
 ---@class ToolCollector
----@field mark fun(name: string, reason?: string, provisional?: boolean) @Record an unresolved tool;
+---@field mark fun(name: string, reason?: string, provisional?: boolean, final?: boolean) @Record an unresolved tool;
 ---  a provisional reason is a placeholder a later concrete failure may replace.
 ---@field mark_unknown fun(name: string) @Record an unrecognized name (typo / outdated / unsupported).
 ---@field track fun(pkg: table, name: string, recheck: fun(): boolean, on_ready?: fun(), fail_reason?: string)
@@ -287,6 +287,10 @@ local function missing_collector(title, timeout_ms)
 	-- registry-refresh note): a later concrete failure may upgrade the reason
 	-- or move the name to the unknown bucket.
 	local provisional = {}
+	-- Names that come from an actual ATTEMPTED-AND-FAILED configure/install:
+	-- never migrated to the typo bucket (a name that resolved far enough to
+	-- run is real; a late "unknown" verdict would be the misclassification).
+	local final = {}
 	-- Forward declaration: add/add_unknown re-flush after an upgrade/migration.
 	local flush
 
@@ -305,8 +309,11 @@ local function missing_collector(title, timeout_ms)
 		bucket[#bucket + 1] = name
 		return true
 	end
-	local function add(name, reason, is_provisional)
+	local function add(name, reason, is_provisional, is_final)
 		name = normalize(name)
+		if name ~= nil and is_final then
+			final[name] = true
+		end
 		if record(missing, name) then
 			if type(reason) == "string" and reason ~= "" then
 				reasons[name] = reason
@@ -340,8 +347,10 @@ local function missing_collector(title, timeout_ms)
 		-- Bucket migration: a name parked in `missing` under a placeholder
 		-- reason (registry-refresh timeout) may classify as unknown once the
 		-- late refresh completes — move it so a typo doesn't keep stale
-		-- install guidance. Entries with a real reason never migrate.
-		if name == nil or not (provisional[name] or reasons[name] == nil) then
+		-- install guidance. Entries with a real reason never migrate, and
+		-- neither does anything flagged `final` (attempted-and-failed) — a
+		-- reason-LESS real failure must not turn into typo guidance.
+		if name == nil or final[name] or not (provisional[name] or reasons[name] == nil) then
 			return
 		end
 		for index, existing in ipairs(missing) do
@@ -452,13 +461,13 @@ local function missing_collector(title, timeout_ms)
 				end)
 				if not ok or type(h) ~= "table" or type(h.once) ~= "function" then
 					-- A synchronous install() throw is the only failure detail there is.
-					add(name, fail_reason or (not ok and error_reason(h) or nil))
+					add(name, fail_reason or (not ok and error_reason(h) or nil), nil, true)
 					return
 				end
 				handle = h
 			elseif type(handle.once) ~= "function" then
 				-- Shared handle isn't usable (unexpected shape); mark rather than hang.
-				add(name, fail_reason)
+				add(name, fail_reason, nil, true)
 				return
 			end
 
@@ -513,11 +522,11 @@ local function missing_collector(title, timeout_ms)
 							-- pre-existing shape shared with the branch below.)
 							local ready_ok, ready_err = pcall(on_ready)
 							if not ready_ok then
-								add(name, error_reason(ready_err) or fail_reason)
+								add(name, error_reason(ready_err) or fail_reason, nil, true)
 							end
 						end
 					elseif fail_reason ~= nil then
-						add(name, fail_reason) -- a concrete reason upgrades any placeholder
+						add(name, fail_reason, nil, true) -- a concrete reason upgrades any placeholder
 					elseif provisional[name] then
 						-- The deadline timer already parked this name under the
 						-- "did not finish within the timeout" note — now known
@@ -527,9 +536,10 @@ local function missing_collector(title, timeout_ms)
 						-- the user at :Mason progress that will never come.
 						reasons[name] = nil
 						provisional[name] = nil
+						final[name] = true -- retraction IS an attempted-and-failed verdict
 						emitted[name] = nil -- the trailing flush re-emits the corrected entry
 					else
-						add(name, nil)
+						add(name, nil, nil, true)
 					end
 					flush()
 				end)
@@ -540,7 +550,7 @@ local function missing_collector(title, timeout_ms)
 				if first_track then
 					unsettled[name] = nil
 				end
-				add(name, fail_reason or error_reason(reg_err))
+				add(name, fail_reason or error_reason(reg_err), nil, true)
 			elseif started_here and type(name) == "string" and name ~= "" then
 				-- Announce only self-started installs, only once registration stuck.
 				queued[#queued + 1] = name
@@ -1024,7 +1034,7 @@ function M.resolve(spec)
 			drop_session_if_done(session)
 			return true
 		end
-		collector.mark(name, reason)
+		collector.mark(name, reason, nil, true)
 		return false, reason, config_error
 	end
 	session.configure = do_configure
