@@ -15,8 +15,12 @@ return function()
 				"-",
 			}
 		end,
-		-- markdownlint-cli2: stdin broken under bun's node shim (for-await yields empty).
-		-- Override to file-based mode and update parser for "path:line:col severity message" format.
+		-- markdownlint-cli2: file-based mode + stderr parser date from the bun
+		-- node-shim era (stdin's for-await yielded empty); mise ships real node
+		-- now, so stdin likely works again — kept pending re-evaluation.
+		-- NOTE (known limitation): the pattern requires "path:line:col", but
+		-- upstream omits the column when unknown (e.g. MD012), so those
+		-- findings are silently dropped.
 		["markdownlint-cli2"] = function(linter)
 			linter.stdin = false
 			linter.args = {
@@ -47,9 +51,10 @@ return function()
 		apply_override(name)
 	end
 
-	-- shuck: lints shell embedded in GitHub Actions `run:` blocks (actionlint
-	-- skips those); standalone sh/bash comes from the shuck LSP server. No usable
-	-- stdin mode (needs a project root), so run file-based and parse JSON.
+	-- shuck: lints shell embedded in GitHub Actions `run:` blocks with rules
+	-- beyond actionlint's shellcheck pass-through; standalone sh/bash comes
+	-- from the shuck LSP server. No usable stdin mode (needs a project root),
+	-- so run file-based and parse JSON.
 	lint.linters.shuck = {
 		name = "shuck",
 		cmd = "shuck",
@@ -121,7 +126,7 @@ return function()
 
 	-- Resolve `linter_deps` discovery-first against nvim-lint's own registry,
 	-- batched BY FILETYPE off the lint events below: the probe requires the
-	-- linter module, and some (golangcilint) run blocking system calls at load.
+	-- linter module, and some block at load (see refresh_linter below).
 	local tools = require("modules.utils.tools")
 	-- No factory-wrapper machinery here on purpose: both overridden linters
 	-- (selene, markdownlint-cli2) are plain-table modules upstream, so a
@@ -143,8 +148,8 @@ return function()
 		end
 		local prev = lint.linters[name]
 		package.loaded[module] = nil
-		-- Also drop any explicit assignment (a wrapped factory) shadowing the
-		-- lint.linters __index loader.
+		-- Also drop any explicit assignment (e.g. a prior error-path restore
+		-- below) shadowing the lint.linters __index loader.
 		rawset(lint.linters, name, nil)
 		-- Require it OURSELVES: the __index loader pcall-swallows a reload
 		-- failure into nil, which would read as configure success and clear
@@ -336,9 +341,9 @@ return function()
 		end
 		table.sort(names) -- pairs order is nondeterministic; keep the warning stable
 		-- The event path loads linter modules inside tools.resolve(), AFTER it
-		-- put Mason's bin dir on $PATH. PATH-sensitive modules (golangcilint
-		-- RUNS its binary at load to compute args) must see the same
-		-- environment when the warm phase loads them first instead.
+		-- put Mason's bin dir on $PATH. PATH-sensitive module loads (see
+		-- refresh_linter above) must see the same environment when the warm
+		-- phase loads them first instead.
 		tools.ensure_mason_on_path()
 		-- Warm the __index module loads one per tick (bounds any blocking
 		-- load to a single tick), then resolve everything still pending in
