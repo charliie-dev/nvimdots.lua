@@ -730,20 +730,41 @@ end
 ---@param eligible fun(session: table, name: string): boolean
 local function retry_pending(eligible)
 	local configured_by_title = {}
+	local failed_by_title = {}
 	for index = #sessions, 1, -1 do
 		local session = sessions[index]
 		for _, name in ipairs(vim.tbl_keys(session.pending)) do
 			-- Re-check pending: an earlier name's configure may have consumed it.
-			if session.pending[name] ~= nil and eligible(session, name) and session.configure(name) then
-				local bucket = configured_by_title[session.title] or {}
-				bucket[#bucket + 1] = name
-				configured_by_title[session.title] = bucket
+			if session.pending[name] ~= nil and eligible(session, name) then
+				local ok, reason = session.configure(name)
+				if ok then
+					local bucket = configured_by_title[session.title] or {}
+					bucket[#bucket + 1] = name
+					configured_by_title[session.title] = bucket
+				else
+					-- A silent failed retry is indistinguishable from "retry
+					-- never considered this name" — and the collector's
+					-- first-real-reason-wins gate absorbs the fresh reason,
+					-- so this WARN is the only accurate signal. nil reasons
+					-- render as the bare name (never concat nil).
+					local bucket = failed_by_title[session.title] or {}
+					bucket[#bucket + 1] = reason and (name .. " — " .. reason) or name
+					failed_by_title[session.title] = bucket
+				end
 			end
 		end
 	end
 	for title, names in pairs(configured_by_title) do
 		table.sort(names)
 		vim.notify("Configured after install: " .. table.concat(names, ", "), vim.log.levels.INFO, { title = title })
+	end
+	for title, lines in pairs(failed_by_title) do
+		table.sort(lines)
+		vim.notify(
+			"Retry failed (still pending):\n  • " .. table.concat(lines, "\n  • "),
+			vim.log.levels.WARN,
+			{ title = title }
+		)
 	end
 end
 
