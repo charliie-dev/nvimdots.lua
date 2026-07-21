@@ -673,15 +673,16 @@ end
 ---module may load long after the first resolve cached a fallback and call
 ---timing must not invert the priority; gated on mason.has_setup because
 ---mason-registry requires mason.settings at load with the DEFAULTS, and only
----setup() applies a user's custom root — then a cached $MASON, then the
----default data-dir guess. The guess only counts when no `user.configs.mason`
+---setup() applies a user's custom root — then $MASON (read live each call,
+---like every other branch: a stale export corrected via :let must take
+---effect, and a latched dead path must not shadow the guess forever), then
+---the default data-dir guess. The guess only counts when no `user.configs.mason`
 ---override exists (the one supported home for a custom root) and is never
 ---cached; every returned root is re-checked for existence each call (the dir
 ---appears after the first install). Kept public deliberately so these
 ---priority semantics stay independently testable from outside the module
 ---(test hook); no external runtime caller today.
 ---@return string|nil
-local mason_env_root = nil
 -- The user-override existence check is memoized separately from module_path's
 -- hit-only cache: it merely gates the default-dir guess below, and a user
 -- adding user/configs/mason mid-session needs a restart for a new root
@@ -703,11 +704,9 @@ function M.mason_root()
 		local root = settings.current.install_root_dir
 		return vim.uv.fs_stat(root) and root or nil
 	end
-	if not mason_env_root and type(vim.env.MASON) == "string" and vim.env.MASON ~= "" then
-		mason_env_root = vim.env.MASON
-	end
-	if mason_env_root then
-		return vim.uv.fs_stat(mason_env_root) and mason_env_root or nil
+	local env_root = type(vim.env.MASON) == "string" and vim.env.MASON ~= "" and vim.env.MASON or nil
+	if env_root then
+		return vim.uv.fs_stat(env_root) and env_root or nil
 	end
 	-- Never require() mason.settings here — it lazy-loads all of mason.nvim
 	-- during a pure discovery probe, defeating "Mason optional".
