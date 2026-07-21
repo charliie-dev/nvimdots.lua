@@ -651,7 +651,9 @@ end
 ---default data-dir guess. The guess only counts when no `user.configs.mason`
 ---override exists (the one supported home for a custom root) and is never
 ---cached; every returned root is re-checked for existence each call (the dir
----appears after the first install).
+---appears after the first install). Public as the TESTED CONTRACT of these
+---priority semantics (the g4-latch and collector harnesses pin it directly);
+---no external runtime caller today.
 ---@return string|nil
 local mason_env_root = nil
 -- The user-override existence check is memoized separately from module_path's
