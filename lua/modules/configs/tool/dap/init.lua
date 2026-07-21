@@ -23,16 +23,20 @@ return function()
 	---reason survives alongside a lower-precedence success, so the handler can
 	---refuse to fall past a broken override (usable_or_raise raises it).
 	---@param name string
-	---@return any value, string|nil broken_reason, boolean any_exists, string|nil winner
+	---@return any value, string|nil broken_reason, boolean any_exists, boolean user_won
 	local function load_client_config(name)
 		local cached = client_config_cache[name]
 		if not cached then
-			cached = { value = nil, broken_reason = nil, any_exists = false, winner = nil }
-			for _, module in ipairs(client_modules(name)) do
+			cached = { value = nil, broken_reason = nil, any_exists = false, user_won = false }
+			local modules = client_modules(name)
+			for index, module in ipairs(modules) do
 				local ok, value, exists, reason = tools.load_module_or_report(module, "nvim-dap")
 				if ok then
 					cached.value = value
-					cached.winner = module
+					-- Recorded here, where `modules` is already built — the
+					-- handler must not rebuild the list per call just to ask
+					-- whether the user candidate won.
+					cached.user_won = index == 1
 					cached.any_exists = true
 					break
 				end
@@ -45,7 +49,7 @@ return function()
 			end
 			client_config_cache[name] = cached
 		end
-		return cached.value, cached.broken_reason, cached.any_exists, cached.winner
+		return cached.value, cached.broken_reason, cached.any_exists, cached.user_won
 	end
 
 	-- Initialize debug hooks
@@ -160,7 +164,7 @@ return function()
 	---(every adapter in this repo) configures without loading Mason.
 	---@param dap_name string
 	local function mason_dap_handler(dap_name)
-		local custom_handler, broken_reason, _, winner = load_client_config(dap_name)
+		local custom_handler, broken_reason, _, user_won = load_client_config(dap_name)
 		-- No-fall-through contract, enforced by the ONE shared implementation
 		-- (tools.usable_or_raise, also used by mason_lsp_handler): a broken or
 		-- wrong-shaped config must never read as success — that would suppress
@@ -229,7 +233,7 @@ return function()
 			-- * dap.adapters.<dap_name> = { your config }
 			-- * dap.configurations.<lang> = { your config }
 			-- See `codelldb.lua` for a concrete example.
-			if winner == client_modules(dap_name)[1] then
+			if user_won then
 				-- User-authored override: the historical contract is a PLAIN
 				-- table — pairs()/tbl_deep_extend must see the mapping fields,
 				-- which a lazy __index proxy cannot provide (LuaJIT has no
