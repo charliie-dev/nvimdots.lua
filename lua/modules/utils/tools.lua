@@ -1162,13 +1162,11 @@ function M.resolve(spec)
 		sessions[#sessions + 1] = session
 
 		-- Phase 2: resolve leftovers against the registry (value, nil, or lazy
-		-- thunk — only called here, so a fully-provisioned subsystem never loads
-		-- Mason), refreshing a never-bootstrapped one first.
-		local registry = spec.registry
-		if type(registry) == "function" then
-			local ok, resolved = pcall(registry)
-			registry = ok and resolved or nil
-		end
+		-- thunk — resolved through session.resolve_registry, and only here, so
+		-- a fully-provisioned subsystem never loads Mason), refreshing a
+		-- never-bootstrapped one first. The helper also normalizes a drifted
+		-- non-table result to nil instead of letting it crash phase 2.
+		local registry = session.resolve_registry()
 		-- The registry is loaded anyway: make sure mid-session installs hand off.
 		if registry then
 			M.attach_registry_events(registry)
