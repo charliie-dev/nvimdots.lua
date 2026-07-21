@@ -762,6 +762,22 @@ local update_events_attached = false
 ---mason-registry itself — callers pass a registry they already hold, keeping
 ---"a fully-provisioned setup never loads Mason" intact.
 ---@param registry table|nil @The mason-registry module (or nil).
+---A pending name's declared bare binaries, probed on $PATH / Mason's bin —
+---the first (cheapest) availability evidence BOTH install hand-off paths
+---share (the Mason install event and :ToolsRetry). The is_unsettled
+---ownership guard deliberately stays at each call site: the two paths
+---interleave DIFFERENT extra evidence around this probe (the event handler
+---checks the installed package's name first; retry layers registry-derived
+---binaries and the validates re-run after), so only the probe itself is the
+---common core.
+---@param session table
+---@param name string
+---@return boolean
+local function pending_bins_available(session, name)
+	local bins_ok, bins = pcall(session.spec.binaries_of, name, nil)
+	return bins_ok and M.find_executable(bins) ~= nil
+end
+
 function M.attach_registry_events(registry)
 	if install_events_attached and update_events_attached then
 		return
@@ -789,8 +805,7 @@ function M.attach_registry_events(registry)
 						if ok and mapped == pkg_name then
 							return true
 						end
-						local bins_ok, bins = pcall(session.spec.binaries_of, name, nil)
-						return bins_ok and M.find_executable(bins) ~= nil
+						return pending_bins_available(session, name)
 					end)
 				end)
 			)
@@ -820,8 +835,7 @@ function M.retry_missing()
 			return false
 		end
 		local spec = session.spec
-		local bins_ok, bins = pcall(spec.binaries_of, name, nil)
-		if bins_ok and M.find_executable(bins) ~= nil then
+		if pending_bins_available(session, name) then
 			return true
 		end
 		-- Function-cmd LSP servers (jsonls/yamlls) declare no bare binary:
