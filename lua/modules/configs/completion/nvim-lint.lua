@@ -163,16 +163,16 @@ return function()
 		end
 		apply_override(name)
 	end
-	---Resolve one batch of linter names. Synchronous configures land before the
-	---lint that triggered the batch; late configures (install completion /
-	---post-refresh) have no later lint event and re-lint buffers themselves.
-	---@param names string[]
 	-- First broken-load verdict per linter module: the recovery re-require
 	-- below re-runs any side effects the module executed before its failure
 	-- point (golangcilint spawns its binary at load time — see refresh_linter),
 	-- so it must run at most once per session, not once per resolve batch.
 	-- Session staleness is fine: fixing a broken module needs a restart anyway.
 	local broken_probe = {}
+	---Resolve one batch of linter names. Synchronous configures land before the
+	---lint that triggered the batch; late configures (install completion /
+	---post-refresh) have no later lint event and re-lint buffers themselves.
+	---@param names string[]
 	local function resolve_batch(names)
 		tools.resolve_runtime_tools("nvim-lint", names, function(name)
 			-- Read — and possibly lazy-load — the linter (the __index loader
