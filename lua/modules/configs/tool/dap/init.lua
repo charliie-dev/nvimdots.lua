@@ -299,11 +299,9 @@ return function()
 	tools.resolve({
 		title = "DAP",
 		deps = settings.dap_deps,
-		-- Lazy thunk so a fully-provisioned setup never loads mason-registry.
-		registry = function()
-			local ok, resolved = pcall(require, "mason-registry")
-			return ok and resolved or nil
-		end,
+		-- The shared lazy thunk (tools.default_registry): a fully-provisioned
+		-- setup never loads mason-registry.
+		registry = tools.default_registry,
 		package_of = function(name)
 			return mason_maps().source.nvim_dap_to_package[name]
 		end,

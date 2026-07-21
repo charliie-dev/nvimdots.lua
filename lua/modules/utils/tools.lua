@@ -189,6 +189,16 @@ function M.ensure_mason_on_path()
 	end
 end
 
+---Lazy mason-registry thunk for resolve() specs — the ONE copy (dap and the
+---runtime-tools resolver share it, so a change to the load guard cannot
+---drift between consumers). Passed as a spec `registry` value: only phase 2
+---calls it, so a fully-provisioned setup never loads mason-registry.
+---@return table|nil
+function M.default_registry()
+	local ok, resolved = pcall(require, "mason-registry")
+	return ok and resolved or nil
+end
+
 ---Resolve the first of the given executable names, or `error()` with the
 ---install hint — at level 0 so the message carries no "file:line:" prefix.
 ---@param names string|string[] @Executable name(s), probed in order.
@@ -1283,11 +1293,7 @@ function M.resolve_runtime_tools(title, deps, probe, configure, opts)
 	M.resolve({
 		title = title,
 		deps = deps,
-		-- Lazy thunk so a fully-provisioned setup never loads mason-registry.
-		registry = function()
-			local ok, resolved = pcall(require, "mason-registry")
-			return ok and resolved or nil
-		end,
+		registry = M.default_registry,
 		package_of = function(name, registry)
 			local binary = info(name).binary
 			if not registry or not binary then
