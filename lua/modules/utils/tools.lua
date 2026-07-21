@@ -621,42 +621,52 @@ function M.package_binaries(pkg, fallback)
 end
 
 ---Mason's install root WITHOUT loading Mason (this runs from every resolve()):
----a loaded mason.settings, then $MASON, then the default data-dir guess. The
----guess only counts when no `user.configs.mason` override exists (the one
----supported home for a custom root) and is never cached; a cached root is
----re-checked for existence each call (the dir appears after the first install).
+---a set-up mason.settings always wins — checked LIVE each call, because the
+---module may load long after the first resolve cached a fallback and call
+---timing must not invert the priority; gated on mason.has_setup because
+---mason-registry requires mason.settings at load with the DEFAULTS, and only
+---setup() applies a user's custom root — then a cached $MASON, then the
+---default data-dir guess. The guess only counts when no `user.configs.mason`
+---override exists (the one supported home for a custom root) and is never
+---cached; every returned root is re-checked for existence each call (the dir
+---appears after the first install).
 ---@return string|nil
-local mason_root_dir = nil
+local mason_env_root = nil
 -- The user-override existence check is memoized separately from module_path's
 -- hit-only cache: it merely gates the default-dir guess below, and a user
 -- adding user/configs/mason mid-session needs a restart for a new root
 -- anyway — so unlike a general module miss, staleness here is harmless.
 local mason_override_absent = nil
 function M.mason_root()
-	if not mason_root_dir then
-		local settings = package.loaded["mason.settings"]
-		if
-			type(settings) == "table"
-			and type(settings.current) == "table"
-			and type(settings.current.install_root_dir) == "string"
-		then
-			mason_root_dir = settings.current.install_root_dir
-		elseif type(vim.env.MASON) == "string" and vim.env.MASON ~= "" then
-			mason_root_dir = vim.env.MASON
-		else
-			-- Never require() mason.settings here — it lazy-loads all of mason.nvim
-			-- during a pure discovery probe, defeating "Mason optional".
-			local guess = vim.fn.stdpath("data") .. "/mason"
-			if mason_override_absent == nil then
-				mason_override_absent = M.module_path("user.configs.mason") == nil
-			end
-			if mason_override_absent and vim.uv.fs_stat(guess) then
-				return guess
-			end
-		end
+	local mason = package.loaded["mason"]
+	local settings = package.loaded["mason.settings"]
+	if
+		type(mason) == "table"
+		and mason.has_setup == true
+		and type(settings) == "table"
+		and type(settings.current) == "table"
+		and type(settings.current.install_root_dir) == "string"
+	then
+		-- Presence decides the branch, existence decides the return: a
+		-- configured-but-not-yet-created root yields nil, it must NOT fall
+		-- back to a wrong root.
+		local root = settings.current.install_root_dir
+		return vim.uv.fs_stat(root) and root or nil
 	end
-	if mason_root_dir and vim.uv.fs_stat(mason_root_dir) then
-		return mason_root_dir
+	if not mason_env_root and type(vim.env.MASON) == "string" and vim.env.MASON ~= "" then
+		mason_env_root = vim.env.MASON
+	end
+	if mason_env_root then
+		return vim.uv.fs_stat(mason_env_root) and mason_env_root or nil
+	end
+	-- Never require() mason.settings here — it lazy-loads all of mason.nvim
+	-- during a pure discovery probe, defeating "Mason optional".
+	local guess = vim.fn.stdpath("data") .. "/mason"
+	if mason_override_absent == nil then
+		mason_override_absent = M.module_path("user.configs.mason") == nil
+	end
+	if mason_override_absent and vim.uv.fs_stat(guess) then
+		return guess
 	end
 	return nil
 end
