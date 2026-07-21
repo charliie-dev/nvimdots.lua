@@ -334,7 +334,7 @@ return function()
 	--    table: every async hop re-checks a vim.g generation token (survives
 	--    both re-source flavors), and the gate autocmd dies with the
 	--    augroup's clear=true above.
-	local SWEEP_DELAY_MS = 120000 -- keep in sync with mason-lspconfig's parity sweep
+	local SWEEP_DELAY_MS = tools.SWEEP_DELAY_MS -- one source; divergence rationale lives there
 	local SWEEP_FALLBACK_MS = 60000 -- idle-gate fallback: bounds the sweep when idle predates the gate
 	local gen = (vim.g._nvimlint_sweep_gen or 0) + 1
 	vim.g._nvimlint_sweep_gen = gen

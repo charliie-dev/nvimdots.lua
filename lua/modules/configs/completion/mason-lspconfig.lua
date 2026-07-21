@@ -190,7 +190,7 @@ M.setup = function()
 	-- Late parity sweep: every lsp_deps entry is classified at most this long
 	-- after resolve_deps even if its filetype never opens (missing-tool
 	-- warnings and installs still happen once per session, off any hot path).
-	local SWEEP_DELAY_MS = 120000 -- keep in sync with nvim-lint's parity sweep
+	local SWEEP_DELAY_MS = tools.SWEEP_DELAY_MS -- one source; divergence rationale lives there
 
 	vim.diagnostic.config({
 		signs = true,

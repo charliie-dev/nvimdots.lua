@@ -13,6 +13,16 @@ local M = {}
 -- lua/core/settings.lua's doc comment references this constant by name.
 local DEFAULT_TOOL_INSTALL_TIMEOUT_MS = 300000
 
+-- ONE source for the parity-sweep deadline shared by the two per-filetype
+-- consumers (mason-lspconfig's LSP sweep, nvim-lint's linter sweep): every
+-- deferred dep is classified at most this long after its resolve pass even if
+-- its filetype never opens. The two sweeps deliberately DIFFER in mechanics —
+-- lint arms a CursorHold idle gate plus a fallback timer and warms module
+-- loads one per tick (linter modules may block at load: golangcilint runs its
+-- binary), while the LSP sweep is a plain generation-guarded timer (its
+-- module loads are cheap) — only the deadline itself is common.
+M.SWEEP_DELAY_MS = 120000
+
 ---Split a caller-supplied name spec into valid names and the raw entries
 ---dropped: string → singleton; table → non-string/empty entries collected
 ---into `invalid` (config mistakes the caller may report), nil holes skipped
