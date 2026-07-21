@@ -139,6 +139,15 @@ M.setup = function()
 		return { "user.configs.lsp-servers." .. name, "completion.servers." .. name }
 	end
 
+	---cmd → probeable binary: a table cmd's argv[0], nil otherwise (a function
+	---cmd resolves its own launch). The ONE extraction rule for every
+	---classification site in server_info/invalidate below.
+	---@param cmd any
+	---@return string|nil
+	local function binary_of_cmd(cmd)
+		return type(cmd) == "table" and cmd[1] or nil
+	end
+
 	-- Repo server modules that OVERRIDE `filetypes`: their ft semantics live in
 	-- the module, not in lspconfig defaults, so the per-filetype partition must
 	-- resolve them on the load tick (shuck adds ksh — deferring it by
@@ -213,8 +222,8 @@ M.setup = function()
 			info.has_module = true
 			info.user_loaded = true
 			info.user_spec = user_spec
-			if type(user_spec) == "table" and type(user_spec.cmd) == "table" then
-				info.binary = user_spec.cmd[1]
+			if type(user_spec) == "table" then
+				info.binary = binary_of_cmd(user_spec.cmd)
 			end
 		elseif user_exists then
 			info.has_module = true
@@ -233,8 +242,8 @@ M.setup = function()
 				info.has_module = true
 				info.default_loaded = true
 				info.default_spec = spec
-				if info.binary == nil and type(spec) == "table" and type(spec.cmd) == "table" then
-					info.binary = spec.cmd[1]
+				if info.binary == nil and type(spec) == "table" then
+					info.binary = binary_of_cmd(spec.cmd)
 				end
 			elseif exists then
 				info.has_module = true
@@ -285,10 +294,8 @@ M.setup = function()
 			local config = resolved_config()
 			if config and config.cmd ~= nil then
 				info.known_lspconfig = true
-				if type(config.cmd) == "table" then
-					info.binary = config.cmd[1]
-				else
-					info.binary = nil
+				info.binary = binary_of_cmd(config.cmd)
+				if type(config.cmd) ~= "table" then
 					info.self_resolving = true
 				end
 			end
@@ -301,8 +308,8 @@ M.setup = function()
 			local config = resolved_config()
 			if config and config.cmd ~= nil then
 				info.known_lspconfig = true
-				if info.binary == nil and type(config.cmd) == "table" then
-					info.binary = config.cmd[1]
+				if info.binary == nil then
+					info.binary = binary_of_cmd(config.cmd)
 				end
 			end
 		end
@@ -420,8 +427,8 @@ M.setup = function()
 		end)
 		if ok and type(config) == "table" and config.cmd ~= nil then
 			info.known_lspconfig = true
-			if info.binary == nil and type(config.cmd) == "table" then
-				info.binary = config.cmd[1]
+			if info.binary == nil then
+				info.binary = binary_of_cmd(config.cmd)
 			end
 			return false
 		end
