@@ -1,5 +1,14 @@
 -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#python
 -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+
+-- One optimistic spawn-free provisioning raise per process (see the
+-- availability check at the bottom). Module-level on purpose: every configure
+-- call (validates, :ToolsRetry, install events, late configure) rebuilds the
+-- closure below, and the fallback-to-probe contract needs state that survives
+-- re-runs. A config reload (package.loaded wipe) resets it, consistent with
+-- re-source semantics elsewhere.
+local provision_raise_used = false
+
 return function()
 	local dap = require("dap")
 	local utils = require("modules.utils.dap")
@@ -194,11 +203,91 @@ return function()
 		},
 	}
 
+	-- Spawn-free evidence that a raise will reach a provisioner. No Mason-root
+	-- check on purpose: a clean bootstrap has no data dir yet (the raise is
+	-- what creates it), a custom root is unknowable before Mason loads, and a
+	-- stale dir proves nothing — the evidence that matters is that BOTH halves
+	-- of the provisioning pipeline are managed and present: mason.nvim (the
+	-- installer) and mason-nvim-dap.nvim (the python→debugpy mapper) are
+	-- independent lazy specs (plugins/completion.lua vs plugins/tool.lua), and
+	-- a managed spec whose code is not on disk cannot provision this session.
+	-- lazy.core.config is resident (lazy.nvim bootstraps this config); reading
+	-- its spec table loads no plugin.
+	local function mason_provisionable()
+		-- Guard the whole read, not just the require: a drifted module that
+		-- returns a non-table (an empty module body makes require return
+		-- `true`) must degrade to the probe path, never throw before the
+		-- latch/probe below run.
+		local ok, lazy_config = pcall(require, "lazy.core.config")
+		if not ok or type(lazy_config) ~= "table" or type(lazy_config.plugins) ~= "table" then
+			return false
+		end
+		-- Entries are untrusted for the same reason: a drifted spec shape must
+		-- degrade to false, never throw before the latch/probe run.
+		local mason = lazy_config.plugins["mason.nvim"]
+		local mapper = lazy_config.plugins["mason-nvim-dap.nvim"]
+		if
+			not (
+				type(mason) == "table"
+				and type(mapper) == "table"
+				and type(mason.dir) == "string"
+				and vim.uv.fs_stat(mason.dir) ~= nil
+				and type(mapper.dir) == "string"
+				and vim.uv.fs_stat(mapper.dir) ~= nil
+			)
+		then
+			return false
+		end
+		-- The raise can only provision if the mapper still derives a package
+		-- for this adapter — checked as "maps to SOME non-empty string", not a
+		-- hard-coded package name (an upstream rename must not rot this gate).
+		-- Loading Mason modules here keeps the ':Dap tick stays Mason-free'
+		-- rule intact in spirit: the gate only runs shimless, where the raise
+		-- path's phase 2 loads the same modules moments later on this very
+		-- resolution; any drift degrades to the probe path.
+		local map_ok, source = pcall(require, "mason-nvim-dap.mappings.source")
+		if
+			not (
+				map_ok
+				and type(source) == "table"
+				and type(source.nvim_dap_to_package) == "table"
+				and type(source.nvim_dap_to_package.python) == "string"
+				and source.nvim_dap_to_package.python ~= ""
+			)
+		then
+			return false
+		end
+		-- ...and only if the registry can actually resolve that package: a
+		-- stale mapping (or an unrefreshed/broken registry) would make the
+		-- raise dead-end in a mark instead of an install, so those states
+		-- keep the probe path.
+		local reg_ok, registry = pcall(require, "mason-registry")
+		if not reg_ok or type(registry) ~= "table" or type(registry.has_package) ~= "function" then
+			return false
+		end
+		local has_ok, has = pcall(registry.has_package, source.nvim_dap_to_package.python)
+		return has_ok and has == true
+	end
+
 	-- Availability check LAST (contract: tool/dap/init.lua resolver spec); the
 	-- raise is the provisioning signal — the attach adapters stay registered.
-	-- A capable system python passes (no needless install); the bounded import
-	-- probe spawns only when the fast probes miss.
-	if not debugpy_command() then
-		error(no_debugpy .. " (remote attach works regardless)", 0)
+	-- The FIRST shimless check with a provisioner present raises WITHOUT the
+	-- blocking import probe: probing a system python here would freeze the
+	-- shared :Dap tick that validates the OTHER dap clients too (debugging Go
+	-- paid for python's probe), and when the raise leads to an install the
+	-- probe was pure waste. One shot per process: if provisioning did not
+	-- produce the shim (package installed but broken, registry down), every
+	-- later validates run — :ToolsRetry, install events, late configure —
+	-- falls back to the bounded import probe below, so a capable system
+	-- python still validates and clears pending state. A capable system
+	-- python on a Mason-less setup passes as before (no needless install).
+	if not fast_command() then
+		if not provision_raise_used and mason_provisionable() then
+			provision_raise_used = true
+			error(no_debugpy .. " (remote attach works regardless)", 0)
+		end
+		if not debugpy_command() then
+			error(no_debugpy .. " (remote attach works regardless)", 0)
+		end
 	end
 end
