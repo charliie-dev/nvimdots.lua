@@ -41,16 +41,6 @@ local function split_dep_names(names)
 end
 M.split_dep_names = split_dep_names
 
----Valid names only — a single-return wrapper (the parentheses truncate), so
----the public alias's arity never changes under vararg-position calls.
----@param names any
----@return string[]
-local function normalize_names(names)
-	return (split_dep_names(names))
-end
--- Public alias for dep-list consumers.
-M.normalize_names = normalize_names
-
 ---Keep a value only when it is a string: probe/config results are untrusted
 ---external shapes, and every non-string sanitizes to nil.
 ---@param value any
@@ -65,7 +55,7 @@ end
 ---@param names string|string[] @Executable name(s), probed in order.
 ---@return string|nil @Absolute path of the first name found, or nil.
 function M.find_executable(names)
-	names = normalize_names(names)
+	names = (split_dep_names(names))
 	for _, name in ipairs(names) do
 		local path = vim.fn.exepath(name)
 		if path ~= "" then
@@ -217,7 +207,7 @@ function M.exepath_or_error(names, hint)
 	if path then
 		return path
 	end
-	local shown = normalize_names(names)
+	local shown = (split_dep_names(names))
 	local label = #shown > 0 and table.concat(shown, "/") or "<invalid executable spec>"
 	error(string.format("%s not found on $PATH or in Mason's bin dir; %s", label, hint), 0)
 end
@@ -1130,7 +1120,7 @@ function M.resolve(spec)
 	local function run()
 		-- Make Mason's bin dir resolvable before any probe or spawn (see file header).
 		M.ensure_mason_on_path()
-		-- ONE normalization policy for every consumer (see normalize_names):
+		-- ONE normalization policy for every consumer (see split_dep_names):
 		-- non-table deps degrade to nothing to resolve, and dropped entries
 		-- (non-string / empty — config mistakes) surface in the unknown bucket
 		-- instead of vanishing or flowing into module-name concatenation.

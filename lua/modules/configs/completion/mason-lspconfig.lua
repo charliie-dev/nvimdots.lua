@@ -124,7 +124,8 @@ M.setup = function()
 	-- lsp_deps as a set: the read trigger below only acts on names this config
 	-- actually manages.
 	local deps_set = {}
-	for _, name in ipairs(tools.normalize_names(settings.lsp_deps)) do
+	-- Parenthesized: split_dep_names' second return must not reach ipairs.
+	for _, name in ipairs((tools.split_dep_names(settings.lsp_deps))) do
 		deps_set[name] = true
 	end
 	-- Servers whose registration already ran (configure() or a read trigger):
