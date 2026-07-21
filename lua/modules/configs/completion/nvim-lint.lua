@@ -322,6 +322,7 @@ return function()
 	--    both re-source flavors), and the gate autocmd dies with the
 	--    augroup's clear=true above.
 	local SWEEP_DELAY_MS = 120000 -- keep in sync with mason-lspconfig's parity sweep
+	local SWEEP_FALLBACK_MS = 60000 -- idle-gate fallback: bounds the sweep when idle predates the gate
 	local gen = (vim.g._nvimlint_sweep_gen or 0) + 1
 	vim.g._nvimlint_sweep_gen = gen
 	local function sweep_live()
@@ -384,19 +385,31 @@ return function()
 		if not sweep_live() or next(pending) == nil then
 			return
 		end
-		-- Arm, don't run: CursorHold(I) is the first real idle window, so the
-		-- module loads never land mid-keystroke-burst. One-shot across BOTH
-		-- events via del_autocmd — a callback returning true only drops the
-		-- registration of the event that fired, leaving the sibling armed.
+		-- Arm, don't run: CursorHold(I) keeps the module loads off keystroke
+		-- bursts in the interactive case. But an autocmd created MID-idle never
+		-- fires — nvim's did_cursorhold flag was already consumed by whichever
+		-- CursorHold consumer registered at startup and only a real key press
+		-- resets it — so a session left idle before this arms would defer the
+		-- sweep unboundedly. The fallback timer bounds that: first trigger
+		-- wins; run_sweep's warm loop bounds per-tick blocking either way.
+		local fired = false
 		local gate = nil
+		local function fire()
+			if fired or not sweep_live() then
+				return
+			end
+			fired = true
+			if gate then
+				pcall(vim.api.nvim_del_autocmd, gate)
+			end
+			run_sweep()
+		end
+		-- One-shot across BOTH events via del_autocmd — a callback returning
+		-- true only drops the registration of the event that fired.
 		gate = vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 			group = "NvimLint",
-			callback = function()
-				pcall(vim.api.nvim_del_autocmd, gate)
-				if sweep_live() then
-					run_sweep()
-				end
-			end,
+			callback = fire,
 		})
+		vim.defer_fn(fire, SWEEP_FALLBACK_MS)
 	end, SWEEP_DELAY_MS)
 end
