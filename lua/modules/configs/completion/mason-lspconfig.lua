@@ -173,6 +173,7 @@ M.setup = function()
 	-- This declares a property of OUR OWN modules; the export below is the
 	-- anti-rot hook that keeps it honest against servers/*.lua.
 	local eager_ft_override_modules = {
+		gh_actions_ls = true,
 		gopls = true,
 		harper_ls = true,
 		ruff = true,
@@ -180,6 +181,7 @@ M.setup = function()
 		terraformls = true,
 		tflint = true,
 		tombi = true,
+		yamlls = true,
 	}
 	-- Test hook: read by the ft_override_consistency harness scenario
 	-- (anti-rot); no runtime reader.
