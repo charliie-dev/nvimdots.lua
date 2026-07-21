@@ -58,6 +58,7 @@ settings["disabled_plugins"] = {}
 -- Parameters will auto-complete as you type.
 -- Example: { sky = "#04A5E5" }
 ---@type palette
+---@diagnostic disable-next-line: missing-fields
 settings["palette_overwrite"] = {}
 
 -- Set the colorscheme here.
