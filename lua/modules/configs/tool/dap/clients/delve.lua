@@ -31,9 +31,25 @@ return function()
 				end
 				port = n
 			end
+			-- Same contract as `port` above: a malformed value errors at config
+			-- time instead of surfacing as an opaque connection failure. Hosts
+			-- are free-form (hostname/IPv4/IPv6), so only the shape is checked.
+			local host = "127.0.0.1"
+			if config.host ~= nil then
+				if type(config.host) ~= "string" or config.host == "" then
+					error(
+						string.format(
+							"delve remote attach: invalid `host` %s (want a non-empty string)",
+							vim.inspect(config.host)
+						),
+						0
+					)
+				end
+				host = config.host
+			end
 			callback({
 				type = "server",
-				host = config.host or "127.0.0.1",
+				host = host,
 				port = port,
 			})
 		else
