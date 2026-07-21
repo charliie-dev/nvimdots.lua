@@ -147,9 +147,11 @@ return function()
 				args = { "fix", "--stdin" },
 				stdin = true,
 			},
-			-- prettier: stdin is broken under bun's node shim, so use --write on
-			-- conform's temp copy (`stdin = false` points $FILENAME at a
-			-- `.conform.$RANDOM.*` copy; the real file is never touched).
+			-- prettier: the --write-on-temp-copy shape dates from the bun
+			-- node-shim era (stdin was broken); mise ships real node now, so
+			-- stdin likely works again — kept pending re-evaluation. `stdin =
+			-- false` points $FILENAME at a `.conform.$RANDOM.*` copy; the real
+			-- file is never touched.
 			prettier = {
 				command = "prettier",
 				args = { "--write", "$FILENAME" },
@@ -157,12 +159,10 @@ return function()
 			},
 		},
 		format_on_save = format_on_save_enabled and function(bufnr)
-			-- Disabled filetypes, disabled workspaces, and the global/buffer toggles
 			if not autoformat_allowed(bufnr) then
 				return
 			end
 
-			-- Format only modified lines if enabled
 			if format_modifications_only then
 				if format_modifications(bufnr) then
 					return
@@ -284,7 +284,7 @@ return function()
 		end
 	end, { nargs = 1, complete = "filetype" })
 
-	-- Auto stop shell LSPs for .env files (migrated from null-ls config).
+	-- Auto stop shell LSPs for .env files.
 	-- Both bashls and shuck attach to .env's `sh` filetype and only add noise there.
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(event)
