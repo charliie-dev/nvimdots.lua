@@ -364,8 +364,17 @@ M.setup = function()
 			return nil
 		end
 		if lspconfig_to_package == nil or next(lspconfig_to_package) == nil then
-			local mappings = mason_lspconfig.get_mappings()
-			lspconfig_to_package = (mappings and mappings.lspconfig_to_package) or {}
+			-- pcall like every other registry touch in this file: get_mappings
+			-- is mason-lspconfig-v2 surface, and drift must degrade to
+			-- $PATH-only classification (empty map → nil → the plain
+			-- missing/unknown report), not throw a raw Lua error into the
+			-- resolver's error-mark. The empty map keeps the re-fetch-while-
+			-- empty semantics: a persistently drifted call re-degrades per
+			-- lookup instead of freezing a bad shape.
+			local ok, mappings = pcall(mason_lspconfig.get_mappings)
+			lspconfig_to_package = (ok and type(mappings) == "table" and type(mappings.lspconfig_to_package) == "table")
+					and mappings.lspconfig_to_package
+				or {}
 		end
 		return lspconfig_to_package[name]
 	end
