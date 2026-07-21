@@ -621,6 +621,12 @@ M.setup = function()
 		local immediate = {}
 		deferred_by_ft = {}
 		handed_off = {}
+		-- Re-source/generation token for the sweep timer, same pattern as
+		-- nvim-lint's parity sweep (vim.g survives both re-source flavors): a
+		-- stale timer from a previous run — or a previous module instance —
+		-- must not drain rebuilt buckets at the wrong deadline.
+		local gen = (vim.g._masonlsp_resolve_gen or 0) + 1
+		vim.g._masonlsp_resolve_gen = gen
 		-- ONE container-shape policy, shared with deps_set at setup top
 		-- (split_dep_names: bare string = singleton dep) — a divergent
 		-- drop-whole here let a string lsp_deps register via the read trigger
@@ -689,7 +695,9 @@ M.setup = function()
 			end
 			if next(deferred_by_ft) ~= nil then
 				vim.defer_fn(function()
-					resolve_remaining()
+					if vim.g._masonlsp_resolve_gen == gen then
+						resolve_remaining()
+					end
 				end, SWEEP_DELAY_MS)
 			end
 		end
