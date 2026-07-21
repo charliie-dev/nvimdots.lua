@@ -57,7 +57,7 @@ settings["disabled_plugins"] = {}
 -- These settings will override the defaults during initialization.
 -- Parameters will auto-complete as you type.
 -- Example: { sky = "#04A5E5" }
----@type palette[]
+---@type palette
 settings["palette_overwrite"] = {}
 
 -- Set the colorscheme here.
@@ -107,10 +107,10 @@ settings["lsp_deps"] = {
 	"lua_ls",
 	"marksman",
 	"neocmake",
-	"nil_ls", -- Nix LSP; prefer the $PATH binary (Nix), else Mason installs it (package `nil`)
-	"nixd", -- Nix LSP (Rust); no Mason package, comes from Nix ($PATH)
+	"nil_ls", -- Nix LSP; the Nix-provisioned $PATH binary is preferred
+	"nixd", -- Nix LSP (Rust); provisioned from Nix ($PATH)
 	"ruff",
-	"shuck", -- shell linter/formatter/LSP (Rust); no Mason package, installed via mise
+	"shuck", -- shell linter/formatter/LSP (Rust); installed via mise by choice ($PATH wins)
 	"systemd_lsp",
 	"terraformls",
 	"tflint",
@@ -154,7 +154,7 @@ settings["linter_deps"] = {
 	"golangcilint",
 	"selene",
 	"shellcheck",
-	"shuck", -- shell linter for yaml.github `run:` blocks; no Mason package, installed via mise
+	"shuck", -- shell linter for yaml.github `run:` blocks; installed via mise by choice
 	"statix", -- Nix linter; prefer the $PATH binary (Nix)
 	"systemdlint",
 	"zsh", -- `zsh -n` syntax check via the system shell itself
@@ -163,12 +163,12 @@ settings["linter_deps"] = {
 -- Deadline (ms) for background Mason work before the aggregated missing-tool warning
 -- flushes anyway. Gates each tracked install (its own window) AND the registry refresh
 -- wait; late completions still recover. Missing or non-positive values fall back to
--- the resolver's DEFAULT_TOOL_INSTALL_TIMEOUT_MS (300000) in `modules/utils/tools.lua`.
+-- the resolver's DEFAULT_TOOL_INSTALL_TIMEOUT_MS in `modules/utils/tools.lua`.
 ---@type number
 settings["tool_install_timeout"] = 300000
 
 -- DAP adapters to enable (mason-nvim-dap adapter names), resolved
--- discovery-first when nvim-dap lazy-loads (first :Dap* command).
+-- discovery-first when nvim-dap lazy-loads (first :Dap* command or debug keymap).
 -- Supported DAPs: https://github.com/jay-babu/mason-nvim-dap.nvim/blob/main/lua/mason-nvim-dap/mappings/source.lua
 ---@type string[]
 settings["dap_deps"] = {
@@ -262,8 +262,7 @@ local merged = require("modules.utils").extend_config(settings, "user.settings")
 
 -- Migration guard: the discovery-first refactor removed this key; a stale
 -- user/settings.lua would merge it in and feed nothing — its servers would
--- vanish without a word. (Scheduled: the notifier plugin isn't loaded this
--- early; the default notify still lands in :messages.)
+-- vanish without a word.
 if merged.external_lsp_deps ~= nil then
 	-- The removed setting was a MAP of server name -> executable name, but a
 	-- stale override can survive in any shape: classify before advising so the
