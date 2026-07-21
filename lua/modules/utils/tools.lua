@@ -1282,7 +1282,7 @@ function M.resolve(spec)
 		if registry and type(registry.refresh) == "function" and not registry_bootstrapped(registry) then
 			-- A stalled refresh() never calls back: arm a REPORTING deadline. It
 			-- does not cancel a late refresh — finish() still runs on completion,
-			-- its re-marks absorbed by seen/emitted dedup.
+			-- its re-marks absorbed by the entries-table dedup.
 			local finished = false
 			local function on_refreshed()
 				if finished then

@@ -237,8 +237,10 @@ return function()
 			if late then
 				-- No lint event follows a late configure: re-lint every loaded
 				-- buffer whose filetype maps to this linter — running only THIS
-				-- linter (the buffer's other linters already ran on their own
-				-- events; try_lint(nil) would respawn the whole set per buffer).
+				-- linter (try_lint(nil) would respawn the buffer's whole set).
+				-- Siblings that haven't linted yet (the plugin-loading buffer's
+				-- FileType is resolve-only) catch up on their next natural lint
+				-- event; a late configure is not that event.
 				vim.schedule(function()
 					for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 						if
