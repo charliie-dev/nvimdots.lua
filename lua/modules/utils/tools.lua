@@ -507,14 +507,29 @@ local function missing_collector(title, timeout_ms)
 					local rc_ok, available = pcall(recheck)
 					if rc_ok and available then
 						if type(on_ready) == "function" then
-							-- A configure throw after the install must still reach the warning.
+							-- A configure throw after the install must still reach the
+							-- warning. (A nil error_reason with nil fail_reason can
+							-- still strand a deadline placeholder here — rare,
+							-- pre-existing shape shared with the branch below.)
 							local ready_ok, ready_err = pcall(on_ready)
 							if not ready_ok then
 								add(name, error_reason(ready_err) or fail_reason)
 							end
 						end
+					elseif fail_reason ~= nil then
+						add(name, fail_reason) -- a concrete reason upgrades any placeholder
+					elseif provisional[name] then
+						-- The deadline timer already parked this name under the
+						-- "did not finish within the timeout" note — now known
+						-- FALSE: the install finished (and failed) with no reason
+						-- to offer. Retract the placeholder and re-emit the bare
+						-- name (accurate: unknown failure) instead of pointing
+						-- the user at :Mason progress that will never come.
+						reasons[name] = nil
+						provisional[name] = nil
+						emitted[name] = nil -- the trailing flush re-emits the corrected entry
 					else
-						add(name, fail_reason)
+						add(name, nil)
 					end
 					flush()
 				end)
