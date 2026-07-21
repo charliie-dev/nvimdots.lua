@@ -586,43 +586,46 @@ M.setup = function()
 	-- default registrations) defer to their filetype's first buffer, with the
 	-- sweep as the parity backstop.
 	resolve_deps = function()
-		local raw = type(settings.lsp_deps) == "table" and settings.lsp_deps or {}
 		local immediate = {}
 		deferred_by_ft = {}
 		handed_off = {}
-		for index = 1, table.maxn(raw) do
-			local entry = raw[index]
-			if type(entry) ~= "string" or entry == "" then
-				if entry ~= nil then
-					immediate[#immediate + 1] = entry
-				end
-			else
-				local fts = nil
-				local user_hooked = tools.module_path(server_modules(entry)[1]) ~= nil
-					or (user_lsp_configs[entry] and #user_lsp_configs[entry] > 0)
-				if not eager_ft_override_modules[entry] and not user_hooked then
-					local ok, config = pcall(function()
-						return vim.lsp.config[entry]
-					end)
-					if ok and type(config) == "table" and type(config.filetypes) == "table" then
-						fts = config.filetypes
-					end
-				end
-				local placed = false
-				if fts then
-					for _, ft in ipairs(fts) do
-						if type(ft) == "string" and ft ~= "" then
-							local bucket = deferred_by_ft[ft] or {}
-							bucket[#bucket + 1] = entry
-							deferred_by_ft[ft] = bucket
-							placed = true
-						end
-					end
-				end
-				if not placed then
-					immediate[#immediate + 1] = entry
+		-- Container-shape policy stays here (a non-table lsp_deps is dropped
+		-- whole, exactly as before — split_dep_names would treat a bare string
+		-- as a singleton dep); only the per-entry valid/invalid rule is
+		-- delegated to the one definition (tools.split_dep_names).
+		local valid, invalid = tools.split_dep_names(type(settings.lsp_deps) == "table" and settings.lsp_deps or {})
+		for _, entry in ipairs(valid) do
+			local fts = nil
+			local user_hooked = tools.module_path(server_modules(entry)[1]) ~= nil
+				or (user_lsp_configs[entry] and #user_lsp_configs[entry] > 0)
+			if not eager_ft_override_modules[entry] and not user_hooked then
+				local ok, config = pcall(function()
+					return vim.lsp.config[entry]
+				end)
+				if ok and type(config) == "table" and type(config.filetypes) == "table" then
+					fts = config.filetypes
 				end
 			end
+			local placed = false
+			if fts then
+				for _, ft in ipairs(fts) do
+					if type(ft) == "string" and ft ~= "" then
+						local bucket = deferred_by_ft[ft] or {}
+						bucket[#bucket + 1] = entry
+						deferred_by_ft[ft] = bucket
+						placed = true
+					end
+				end
+			end
+			if not placed then
+				immediate[#immediate + 1] = entry
+			end
+		end
+		-- Entries split_dep_names drops (non-string / empty) are config
+		-- mistakes: forward them raw so the resolver's own re-scan reports
+		-- them in the unknown bucket — same pattern as nvim-lint.
+		for _, entry in ipairs(invalid) do
+			immediate[#immediate + 1] = entry
 		end
 
 		-- Immediate batch first: same-tick semantics identical to the old
