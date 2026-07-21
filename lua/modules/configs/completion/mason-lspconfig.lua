@@ -104,8 +104,8 @@ function M.resolve_deps()
 	end
 end
 
----Resolve every per-filetype batch still deferred (the parity sweep calls
----this once per session; also a manual escape hatch and the harness hook).
+---Resolve every per-filetype batch still deferred. Manual escape hatch and
+---the harness hook (the in-file parity sweep calls the LOCAL directly).
 function M.resolve_remaining()
 	if resolve_remaining then
 		resolve_remaining()
@@ -164,6 +164,8 @@ M.setup = function()
 		tflint = true,
 		tombi = true,
 	}
+	-- Test hook: read by the ft_override_consistency harness scenario
+	-- (anti-rot); no runtime reader.
 	M.eager_ft_override_modules = eager_ft_override_modules
 
 	-- Late parity sweep: every lsp_deps entry is classified at most this long
