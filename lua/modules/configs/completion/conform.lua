@@ -207,12 +207,23 @@ return function()
 			return { broken = tostring(config) }
 		end
 		if config then
-			-- A function-form command resolves per buffer at format time (e.g. the
-			-- builtin from_node_modules): treat it as self-resolving rather than
-			-- evaluating it for a representative binary — a node_modules command
-			-- shouldn't map to a Mason install anyway.
+			-- A function-form command (the builtin from_node_modules) resolves per
+			-- buffer at format time, so evaluate it against the probe-time buffer
+			-- the same way conform will: a project-local node_modules bin passes
+			-- the $PATH check as-is, and the bare-name FALLBACK ("prettier") keeps
+			-- the dep inside the install/warn contract — trusting the function
+			-- blindly would let a fresh machine with no copy anywhere silently
+			-- skip both the Mason install and the aggregated warning. A failed or
+			-- non-string evaluation degrades to self-resolving (no install/warn),
+			-- never to a typo report.
 			if type(config.command) == "function" then
-				return { binary = nil }
+				local fname = vim.api.nvim_buf_get_name(0)
+				local cmd_ok, cmd = pcall(config.command, config, {
+					buf = vim.api.nvim_get_current_buf(),
+					filename = fname,
+					dirname = fname ~= "" and vim.fs.dirname(fname) or vim.fn.getcwd(),
+				})
+				return { binary = (cmd_ok and type(cmd) == "string" and cmd ~= "") and cmd or nil }
 			end
 			return { binary = config.command }
 		end
