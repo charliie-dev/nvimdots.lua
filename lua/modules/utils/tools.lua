@@ -712,9 +712,15 @@ local function retry_pending(eligible)
 	end
 end
 
--- Attached once per session lifetime; pcall guards mason-registry API drift
--- (no events = status quo: the tool is picked up on the next launch).
-local registry_events_attached = false
+-- Attached once per session lifetime; each subscription pcall'd SEPARATELY
+-- and flagged SEPARATELY (mason-registry API-drift guard): with one shared
+-- flag, a throw from the second subscription after the first registered
+-- would leave the flag unset, and the next attach would register the install
+-- handler TWICE — duplicate retry_pending walks on every later install. A
+-- still-false half retries on the next attach; no events at all = status
+-- quo: the tool is picked up on the next launch.
+local install_events_attached = false
+local update_events_attached = false
 
 ---Subscribe to Mason install successes so a package installed mid-session by
 ---ANY means (resolver-started, :MasonInstall, the :Mason UI) finishes the
@@ -723,44 +729,52 @@ local registry_events_attached = false
 ---"a fully-provisioned setup never loads Mason" intact.
 ---@param registry table|nil @The mason-registry module (or nil).
 function M.attach_registry_events(registry)
-	if registry_events_attached or type(registry) ~= "table" or type(registry.on) ~= "function" then
+	if install_events_attached and update_events_attached then
 		return
 	end
-	local attached = pcall(function()
-		registry:on(
-			"package:install:success",
-			-- The emitter fires from the install handle's lifecycle (fast event
-			-- context): hop to the main loop before touching consumer configs.
-			vim.schedule_wrap(function(pkg)
-				local pkg_name = type(pkg) == "table" and type(pkg.name) == "string" and pkg.name or nil
-				if not pkg_name then
-					return
-				end
-				retry_pending(function(session, name)
-					-- An install still in flight is owned by its closed callback.
-					if session.is_unsettled(name) then
-						return false
+	if type(registry) ~= "table" or type(registry.on) ~= "function" then
+		return
+	end
+	if not install_events_attached then
+		install_events_attached = pcall(function()
+			registry:on(
+				"package:install:success",
+				-- The emitter fires from the install handle's lifecycle (fast event
+				-- context): hop to the main loop before touching consumer configs.
+				vim.schedule_wrap(function(pkg)
+					local pkg_name = type(pkg) == "table" and type(pkg.name) == "string" and pkg.name or nil
+					if not pkg_name then
+						return
 					end
-					local ok, mapped = pcall(session.spec.package_of, name, registry)
-					if ok and mapped == pkg_name then
-						return true
-					end
-					local bins_ok, bins = pcall(session.spec.binaries_of, name, nil)
-					return bins_ok and M.find_executable(bins) ~= nil
+					retry_pending(function(session, name)
+						-- An install still in flight is owned by its closed callback.
+						if session.is_unsettled(name) then
+							return false
+						end
+						local ok, mapped = pcall(session.spec.package_of, name, registry)
+						if ok and mapped == pkg_name then
+							return true
+						end
+						local bins_ok, bins = pcall(session.spec.binaries_of, name, nil)
+						return bins_ok and M.find_executable(bins) ~= nil
+					end)
 				end)
-			end)
-		)
-		registry:on("update:success", function()
-			-- SYNCHRONOUS on purpose: mason emits this inside the update
-			-- success path, before callers' callbacks run — a scheduled clear
-			-- would leave a same-tick window still reading the stale frozen
-			-- index. Clearing two locals is pure Lua, fast-event-safe; the
-			-- next lookup rebuilds (and re-freezes on a bootstrapped registry).
-			bin_to_package = nil
-			unfrozen_index = nil
+			)
 		end)
-	end)
-	registry_events_attached = attached
+	end
+	if not update_events_attached then
+		update_events_attached = pcall(function()
+			registry:on("update:success", function()
+				-- SYNCHRONOUS on purpose: mason emits this inside the update
+				-- success path, before callers' callbacks run — a scheduled clear
+				-- would leave a same-tick window still reading the stale frozen
+				-- index. Clearing two locals is pure Lua, fast-event-safe; the
+				-- next lookup rebuilds (and re-freezes on a bootstrapped registry).
+				bin_to_package = nil
+				unfrozen_index = nil
+			end)
+		end)
+	end
 end
 
 ---Re-attempt every pending dep whose tool has since appeared — the manual
