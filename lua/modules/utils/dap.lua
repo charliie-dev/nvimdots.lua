@@ -34,17 +34,38 @@ function M.attach_endpoint(config, opts)
 	-- (this helper's whole purpose): guard the two shapes it dereferences.
 	assert(type(config) == "table", "attach_endpoint: config must be a table")
 	assert(type(opts) == "table" and type(opts.label) == "string", "attach_endpoint: opts.label (string) is required")
-	local port = opts.default_port
-	if config.port ~= nil then
-		local n = tonumber(config.port)
+	-- config.port and opts.default_port share the 1-65535 integer contract, so
+	-- validate them the same way — an invalid default (0, 70000, "abc") must not
+	-- slip through to the return.
+	local function coerce_port(v)
+		local n = tonumber(v)
 		if not n or n ~= math.floor(n) or n < 1 or n > 65535 then
+			return nil
+		end
+		return n
+	end
+	local port
+	if config.port ~= nil then
+		port = coerce_port(config.port)
+		if not port then
 			error(
 				string.format("%s: invalid `port` %s (want an integer 1-65535)", opts.label, vim.inspect(config.port)),
 				0
 			)
 		end
-		port = n
-	elseif port == nil then
+	elseif opts.default_port ~= nil then
+		port = coerce_port(opts.default_port)
+		if not port then
+			error(
+				string.format(
+					"%s: invalid `default_port` %s (want an integer 1-65535)",
+					opts.label,
+					vim.inspect(opts.default_port)
+				),
+				0
+			)
+		end
+	else
 		error(string.format("%s: `port` is required", opts.label), 0)
 	end
 	local host = "127.0.0.1"
