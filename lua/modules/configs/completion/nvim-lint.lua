@@ -422,4 +422,29 @@ return function()
 		})
 		vim.defer_fn(fire, SWEEP_FALLBACK_MS)
 	end, SWEEP_DELAY_MS)
+
+	-- The buffer that loaded this plugin (lazy triggers: BufReadPost / BufWritePost)
+	-- can slip through the initial lint in ONE case: a BufReadPost load, where
+	-- lazy.nvim replays BufReadPost BEFORE ftdetect (ft="", a no-op lint) and the
+	-- FileType handler above is resolve-only — so this buffer alone would wait for
+	-- the next InsertLeave/save. When ft is ALREADY set at config time (a
+	-- BufWritePost load, or any ft-set load), the replayed trigger event lints via
+	-- the main handler, so NO help is needed — registering a one-shot there would
+	-- double-lint (the round-1 O1 defect). Hence: only the ft="" case, and only
+	-- once, in the NvimLint group so a config re-source's clear=true wipes a stale
+	-- copy instead of stacking.
+	local load_buf = vim.api.nvim_get_current_buf()
+	if vim.bo[load_buf].filetype == "" then
+		vim.api.nvim_create_autocmd("FileType", {
+			group = "NvimLint",
+			buffer = load_buf,
+			once = true,
+			callback = function()
+				ensure_resolved(vim.bo[load_buf].filetype)
+				vim.api.nvim_buf_call(load_buf, function()
+					lint.try_lint(nil, { ignore_errors = true })
+				end)
+			end,
+		})
+	end
 end
