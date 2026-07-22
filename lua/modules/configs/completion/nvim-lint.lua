@@ -280,9 +280,7 @@ return function()
 	-- Entries split_dep_names drops (non-string / empty) are config mistakes:
 	-- forward them raw so the resolver's own sweep reports them in the unknown
 	-- bucket, identically to the other consumers.
-	for _, entry in ipairs(invalid_deps) do
-		immediate[#immediate + 1] = entry
-	end
+	vim.list_extend(immediate, invalid_deps)
 	if #immediate > 0 then
 		vim.schedule(function()
 			resolve_batch(immediate)
@@ -348,10 +346,7 @@ return function()
 		-- Snapshot WITHOUT draining: `pending` stays owned by ensure_resolved
 		-- until the moment of resolution, so a filetype opened mid-warm still
 		-- takes its normal first-event path (resolve before its first lint).
-		local names = {}
-		for name in pairs(pending) do
-			names[#names + 1] = name
-		end
+		local names = vim.tbl_keys(pending)
 		if #names == 0 then
 			return
 		end

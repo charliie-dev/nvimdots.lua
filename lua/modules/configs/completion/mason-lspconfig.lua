@@ -669,9 +669,7 @@ M.setup = function()
 		-- Entries split_dep_names drops (non-string / empty) are config
 		-- mistakes: forward them raw so the resolver's own re-scan reports
 		-- them in the unknown bucket — same pattern as nvim-lint.
-		for _, entry in ipairs(invalid) do
-			immediate[#immediate + 1] = entry
-		end
+		vim.list_extend(immediate, invalid)
 
 		-- Immediate batch first: same-tick semantics identical to the old
 		-- whole-list resolve for everything that must not defer.
