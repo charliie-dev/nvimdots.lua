@@ -118,6 +118,15 @@ end
 function M.resolve_deps()
 	if resolve_deps then
 		resolve_deps()
+	else
+		-- Fail loudly, matching run_user_lsp_overrides' convention: a
+		-- pre-setup call means every lsp_deps entry would silently stay
+		-- unconfigured (pcall(LspStart) masks the aftermath).
+		vim.notify(
+			"mason-lspconfig setup() has not run; lsp_deps were not resolved",
+			vim.log.levels.WARN,
+			{ title = "nvim-lspconfig" }
+		)
 	end
 end
 
@@ -126,6 +135,12 @@ end
 function M.resolve_remaining()
 	if resolve_remaining then
 		resolve_remaining()
+	else
+		vim.notify(
+			"mason-lspconfig setup() has not run; nothing to resolve",
+			vim.log.levels.WARN,
+			{ title = "nvim-lspconfig" }
+		)
 	end
 end
 
