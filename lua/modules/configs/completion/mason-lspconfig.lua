@@ -103,8 +103,8 @@ function M.run_user_lsp_overrides()
 	window_open = false
 end
 
----Test hook (anti-rot, same pattern as M.eager_ft_override_modules): recorded
----user-op count for a server — the override window's observable. No runtime reader.
+---Test hook (anti-rot): recorded user-op count for a server — the override
+---window's observable. No runtime reader.
 ---@param name string
 ---@return integer
 function M._recorded_ops_count(name)
@@ -195,27 +195,6 @@ M.setup = function()
 		end)
 		return (ok and type(config) == "table") and config or nil
 	end
-
-	-- Repo server modules that OVERRIDE `filetypes`: their ft semantics live in
-	-- the module, not in lspconfig defaults, so the per-filetype partition must
-	-- resolve them on the load tick (shuck adds ksh — deferring it by
-	-- lspconfig's bash/sh/zsh would strand a ksh-only session until the sweep).
-	-- This declares a property of OUR OWN modules; the export below is the
-	-- anti-rot hook that keeps it honest against servers/*.lua.
-	local eager_ft_override_modules = {
-		gh_actions_ls = true,
-		gopls = true,
-		harper_ls = true,
-		ruff = true,
-		shuck = true,
-		terraformls = true,
-		tflint = true,
-		tombi = true,
-		yamlls = true,
-	}
-	-- Test hook: read by the ft_override_consistency harness scenario
-	-- (anti-rot); no runtime reader.
-	M.eager_ft_override_modules = eager_ft_override_modules
 
 	-- Late parity sweep: every lsp_deps entry is classified at most this long
 	-- after resolve_deps even if its filetype never opens (missing-tool
@@ -586,11 +565,29 @@ M.setup = function()
 		})
 	end
 
-	-- Per-filetype deferral state, (re)built by each resolve_deps run:
-	-- ft -> names still waiting, plus a hand-off set so a multi-ft name
-	-- resolves exactly once.
+	-- Per-filetype deferral state, (re)built by each resolve_deps run. Three
+	-- tables, three DISTINCT questions — the first shrinks as work completes,
+	-- the other two only grow within a generation:
+	--   deferred_by_ft  ft   -> names STILL waiting under it (the live queue;
+	--                           resolve_ft nils an entry once resolved, so the
+	--                           augroup can tear down when it empties).
+	--   handed_off      name -> already handed to the resolver. A server listed
+	--                           under several filetypes (gopls: go/gomod/gowork/
+	--                           gotmpl) sits in several buckets; this makes the
+	--                           2nd..Nth bucket a no-op so it resolves ONCE.
+	--   bucketed_fts    ft   -> was EVER a bucket key this generation, kept even
+	--                           after resolve_ft nils the live entry. Needed
+	--                           because a resolved bucket ft and a never-bucketed
+	--                           ft both read nil in deferred_by_ft, yet on_filetype
+	--                           must treat them oppositely: a re-fired resolved ft
+	--                           (FileType re-fires per :edit / every later buffer
+	--                           of that ft) must NO-OP, while a truly unlisted ft
+	--                           may drain. Without this tombstone, reopening a
+	--                           resolved `.lua`/`.go` would fall through to the
+	--                           drain and pull in the still-deferred yaml servers.
 	local deferred_by_ft = {}
 	local handed_off = {}
+	local bucketed_fts = {}
 	local perft_group = nil
 
 	---Hand a filetype's bucket to the resolver (no-op when already consumed).
@@ -633,19 +630,76 @@ M.setup = function()
 		end
 	end
 
+	---Route a filetype event to the right deferred resolution. The bucket only
+	---controls WHEN a server loads (enable() attaches by the module's real
+	---filetypes), so this only affects load timing, never attach correctness.
+	---@param buf integer
+	---@param ft string
+	local function on_filetype(buf, ft)
+		if ft == "" then
+			return
+		end
+		if deferred_by_ft[ft] then
+			resolve_ft(ft) -- 1. listed bucket: targeted, loads only that ft's servers
+			return
+		end
+		if next(deferred_by_ft) == nil then
+			return
+		end
+		-- An ft that WAS a listed bucket, already resolved on an earlier fire
+		-- (FileType re-fires per :edit / modeline, and every later buffer of the
+		-- same ft): nothing left for it — never mistake it for an unlisted ft and
+		-- drain the rest. This is what keeps reopening a `.lua`/`.go`/… file from
+		-- pulling in the still-deferred yaml servers.
+		if bucketed_fts[ft] then
+			return
+		end
+		local base = ft:match("^([^.]+)%.")
+		if base and deferred_by_ft[base] then
+			resolve_ft(base) -- 2. dotted variant (yaml.github → yaml): resolve the base bucket only
+			return
+		end
+		-- A dotted ft whose base WAS a bucket but is already consumed (plain
+		-- .yaml resolved yamlls/gh_actions_ls, then a yaml.github opens): the
+		-- base bucket's servers already resolved and — since a repo module's
+		-- real filetypes include its dotted variants — already attached to this
+		-- buffer via enable(). No drain needed. ASSUMPTION this rests on: the
+		-- server that owns a dotted variant is in its base's bucket (true for
+		-- every current dep — yaml.github is declared only by yamlls/gh_actions_ls,
+		-- both in the `yaml` bucket). A future server declaring `foo.bar` while NOT
+		-- listing `foo` would instead wait for the 120s sweep here rather than an
+		-- early drain — bounded, still resolves.
+		if base and bucketed_fts[base] then
+			return
+		end
+		-- 3. An unlisted REAL-file filetype: a repo module may declare it beyond
+		-- lspconfig's defaults (shuck→ksh, harper_ls→text) and we cannot know which
+		-- without loading, so drain the rest now — the 120s sweep, triggered early.
+		-- buftype guard keeps help/quickfix/dashboard/terminal/prompt buffers from
+		-- tripping it; a real file whose ft has no server just pays one early drain
+		-- (identical work the sweep would do), one-shot. Residual, bounded and
+		-- one-shot (never worse than the pre-refactor eager load): an unlisted
+		-- real-file ft (a module-added plain ft like text/ksh, or a serverless ft
+		-- like csv) drains all remaining deferred servers early.
+		if vim.bo[buf].buftype == "" then
+			resolve_remaining()
+		end
+	end
+
 	-- The discovery pass itself runs via M.resolve_deps() AFTER
 	-- run_user_lsp_overrides() (see lsp.lua): user runtime registrations must
 	-- exist before the unknown/binary classification. It partitions the RAW
 	-- dep list: invalid entries stay in the immediate batch verbatim (the
 	-- resolver's own re-scan reports them); user-overridden names (either
-	-- hook) and ft-override modules keep today's load-tick semantics; only
-	-- names whose filetypes come from NON-user sources (rtp lsp/ files,
-	-- default registrations) defer to their filetype's first buffer, with the
-	-- sweep as the parity backstop.
+	-- hook) keep today's load-tick semantics; only names whose filetypes come
+	-- from NON-user sources (rtp lsp/ files, default registrations) defer to
+	-- their filetype's first buffer, resolved by on_filetype, with the sweep as
+	-- the parity backstop.
 	resolve_deps = function()
 		local immediate = {}
 		deferred_by_ft = {}
 		handed_off = {}
+		bucketed_fts = {}
 		-- Re-source/generation token for the sweep timer, same pattern as
 		-- nvim-lint's parity sweep (vim.g survives both re-source flavors): a
 		-- stale timer from a previous run — or a previous module instance —
@@ -661,7 +715,7 @@ M.setup = function()
 			local fts = nil
 			local user_hooked = tools.module_path(server_modules(entry)[1]) ~= nil
 				or (user_lsp_configs[entry] and #user_lsp_configs[entry] > 0)
-			if not eager_ft_override_modules[entry] and not user_hooked then
+			if not user_hooked then
 				local config = resolved_config(entry)
 				if config and type(config.filetypes) == "table" then
 					fts = config.filetypes
@@ -674,6 +728,7 @@ M.setup = function()
 						local bucket = deferred_by_ft[ft] or {}
 						bucket[#bucket + 1] = entry
 						deferred_by_ft[ft] = bucket
+						bucketed_fts[ft] = true
 						placed = true
 					end
 				end
@@ -697,9 +752,9 @@ M.setup = function()
 			perft_group = vim.api.nvim_create_augroup("MasonLspPerFtResolve", { clear = true })
 			vim.api.nvim_create_autocmd("FileType", {
 				group = perft_group,
-				pattern = vim.tbl_keys(deferred_by_ft),
+				pattern = "*",
 				callback = function(args)
-					resolve_ft(args.match)
+					on_filetype(args.buf, args.match)
 				end,
 				desc = "lsp: resolve this filetype's language servers",
 			})
@@ -708,10 +763,7 @@ M.setup = function()
 			-- resolve their filetypes on this same tick.
 			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 				if vim.api.nvim_buf_is_loaded(buf) then
-					local ft = vim.bo[buf].filetype
-					if ft ~= "" and deferred_by_ft[ft] then
-						resolve_ft(ft)
-					end
+					on_filetype(buf, vim.bo[buf].filetype)
 				end
 			end
 			if next(deferred_by_ft) ~= nil then

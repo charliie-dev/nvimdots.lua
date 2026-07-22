@@ -221,8 +221,7 @@ return {
 	-- workflow filetype from ftdetect/github.lua must be claimed explicitly.
 	-- Upstream's list (nvim-lspconfig lsp/yamlls.lua) plus our yaml.github;
 	-- accepted trade-off: a dotted variant upstream adds later must be
-	-- mirrored here (same rot class as any repo filetypes override — tracked
-	-- by eager_ft_override_modules' anti-rot hook).
+	-- mirrored here (the same rot class as any repo filetypes override).
 	filetypes = { "yaml", "yaml.docker-compose", "yaml.github", "yaml.gitlab", "yaml.helm-values" },
 	settings = {
 		-- https://github.com/redhat-developer/vscode-redhat-telemetry#how-to-disable-telemetry-reporting
