@@ -27,7 +27,7 @@ end
 ---(tonumber-coerced). `opts.default_port` fills an absent port; nil means the
 ---port is required. An absent host defaults to "127.0.0.1".
 ---@param config table @The table carrying .host/.port (caller resolves any connect indirection).
----@param opts { label: string, default_port: integer|nil }
+---@param opts { label: string, default_port?: integer } @default_port omitted = port required.
 ---@return string host, integer port
 function M.attach_endpoint(config, opts)
 	local port = opts.default_port
