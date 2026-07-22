@@ -166,6 +166,21 @@ M.setup = function()
 		return type(cmd) == "table" and cmd[1] or nil
 	end
 
+	---THE guarded truth-source read (vim.lsp.config resolves '*', rtp lsp/
+	---files and stored registrations exactly the way enable() consumes them):
+	---one implementation for every consulting site. Deliberately NOT memoized —
+	---unknown_of re-consults after a cached negative and server_info rebuilds
+	---after invalidation, both of which need fresh reads. Per-purpose field
+	---checks stay at the call sites.
+	---@param name string
+	---@return table|nil
+	local function resolved_config(name)
+		local ok, config = pcall(function()
+			return vim.lsp.config[name]
+		end)
+		return (ok and type(config) == "table") and config or nil
+	end
+
 	-- Repo server modules that OVERRIDE `filetypes`: their ft semantics live in
 	-- the module, not in lspconfig defaults, so the per-filetype partition must
 	-- resolve them on the load tick (shuck adds ksh — deferring it by
@@ -296,12 +311,7 @@ M.setup = function()
 		---them; nil = no name-specific source at all (a pure '*' config cannot
 		---make a name known). The per-name rtp rescan only happens for names
 		---this cache hasn't answered yet — bounded by lsp_deps.
-		local function resolved_config()
-			local ok, config = pcall(function()
-				return vim.lsp.config[name]
-			end)
-			return (ok and type(config) == "table") and config or nil
-		end
+		-- (Reads go through the shared resolved_config above.)
 		---Whether the recorded user ops explicitly set a cmd: the replay
 		---guarantees that cmd is the enable-time winner.
 		local user_sets_cmd = false
@@ -315,7 +325,7 @@ M.setup = function()
 			-- enable() will spawn — it outranks the module-derived binary. A
 			-- non-table cmd (function) means the config owns its own launch:
 			-- flag it so Mason never classifies/installs against it.
-			local config = resolved_config()
+			local config = resolved_config(name)
 			if config and config.cmd ~= nil then
 				info.known_lspconfig = true
 				info.binary = binary_of_cmd(config.cmd)
@@ -329,7 +339,7 @@ M.setup = function()
 			-- shadow a module's custom path); consult the truth source only for
 			-- what the modules couldn't answer. Any cmd (even a function)
 			-- proves the name real (keeps jsonls out of the unknown bucket).
-			local config = resolved_config()
+			local config = resolved_config(name)
 			if config and config.cmd ~= nil then
 				info.known_lspconfig = true
 				if info.binary == nil then
@@ -446,10 +456,8 @@ M.setup = function()
 		-- A runtime registration may have landed after the probe cached its
 		-- negative (the user read the name first, then wrote a cmd): re-consult
 		-- the truth source before the typo verdict, upgrading the cache in place.
-		local ok, config = pcall(function()
-			return vim.lsp.config[name]
-		end)
-		if ok and type(config) == "table" and config.cmd ~= nil then
+		local config = resolved_config(name)
+		if config and config.cmd ~= nil then
 			info.known_lspconfig = true
 			if info.binary == nil then
 				info.binary = binary_of_cmd(config.cmd)
@@ -644,10 +652,8 @@ M.setup = function()
 			local user_hooked = tools.module_path(server_modules(entry)[1]) ~= nil
 				or (user_lsp_configs[entry] and #user_lsp_configs[entry] > 0)
 			if not eager_ft_override_modules[entry] and not user_hooked then
-				local ok, config = pcall(function()
-					return vim.lsp.config[entry]
-				end)
-				if ok and type(config) == "table" and type(config.filetypes) == "table" then
+				local config = resolved_config(entry)
+				if config and type(config.filetypes) == "table" then
 					fts = config.filetypes
 				end
 			end
