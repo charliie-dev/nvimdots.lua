@@ -164,6 +164,22 @@ return function()
 		end
 		return mason_maps_cache
 	end
+	---The eager 4-field handler opts, built from mason_maps() at the CALL
+	---site so drift recording keeps its ordering relative to each branch's
+	---error/WARN reads. (The zero-arg repo clients' lazy proxy stays separate:
+	---currently unexercised future-proofing that keeps Mason off the :Dap tick
+	---should a repo client ever start reading opts.)
+	---@param dap_name string
+	---@return { name: string, adapters: any, configurations: any, filetypes: any }
+	local function eager_opts(dap_name)
+		local map = mason_maps()
+		return {
+			name = dap_name,
+			adapters = map.adapters[dap_name],
+			configurations = map.configurations[dap_name],
+			filetypes = map.filetypes[dap_name],
+		}
+	end
 
 	---A handler to setup all clients defined under `tool/dap/clients/*.lua`.
 	---The factory branch and a user override's opts materialization load
@@ -194,13 +210,7 @@ return function()
 					0
 				)
 			end
-			local map = mason_maps()
-			local config = {
-				name = dap_name,
-				adapters = map.adapters[dap_name],
-				configurations = map.configurations[dap_name],
-				filetypes = map.filetypes[dap_name],
-			}
+			local config = eager_opts(dap_name)
 			-- default_setup silently no-ops on a nil adapter config: error instead.
 			-- No drift CLAIM on the nil lookup itself — upstream legitimately
 			-- ships source-only names (js/javadbg/elixir…) with no default
@@ -247,13 +257,7 @@ return function()
 				-- which a lazy __index proxy cannot provide (LuaJIT has no
 				-- __pairs). Costs an eager mason_maps() load only for adapters
 				-- the user explicitly overrode.
-				local map = mason_maps()
-				local opts = {
-					name = dap_name,
-					adapters = map.adapters[dap_name],
-					configurations = map.configurations[dap_name],
-					filetypes = map.filetypes[dap_name],
-				}
+				local opts = eager_opts(dap_name)
 				-- Module-level drift would vanish here: the override "succeeds",
 				-- so neither the factory error nor the resolver's missing path
 				-- runs. One WARN per session, only with Mason evidence (absence
