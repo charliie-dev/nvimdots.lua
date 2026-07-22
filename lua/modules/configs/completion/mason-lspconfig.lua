@@ -603,23 +603,18 @@ M.setup = function()
 	end
 
 	resolve_remaining = function()
-		local fts = vim.tbl_keys(deferred_by_ft)
-		local batch = {}
-		for _, ft in ipairs(fts) do
-			for _, name in ipairs(deferred_by_ft[ft]) do
-				if not handed_off[name] then
-					handed_off[name] = true
-					batch[#batch + 1] = name
-				end
-			end
-			deferred_by_ft[ft] = nil
-		end
-		if perft_group then
-			pcall(vim.api.nvim_del_augroup_by_id, perft_group)
-			perft_group = nil
-		end
-		if #batch > 0 then
-			resolve_batch(batch)
+		-- Drain through resolve_ft — the ONE copy of the hand-off invariant
+		-- (handed_off gate, bucket clear, augroup teardown on emptiness).
+		-- Per-ft batches are the designed-for shape: the collector aggregates
+		-- one warning per title across batches, and retry_pending walks every
+		-- session. Divergences from the old inlined single-batch drain, both
+		-- favorable: an already-empty map no longer force-deletes a leftover
+		-- augroup (that state only arises if a batch threw mid-drain — where
+		-- this form also keeps the remaining fts deferred with a live
+		-- FileType recovery path instead of draining them into the throwing
+		-- batch; the next resolve_deps' clear = true recreates the group).
+		for _, ft in ipairs(vim.tbl_keys(deferred_by_ft)) do
+			resolve_ft(ft)
 		end
 	end
 
