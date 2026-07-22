@@ -1191,7 +1191,7 @@ function M.resolve(spec)
 			local reason
 			if type(spec.missing_reason_of) == "function" then
 				local hook_ok, hook_reason = pcall(spec.missing_reason_of, name)
-				reason = (hook_ok and type(hook_reason) == "string") and hook_reason or nil
+				reason = hook_ok and str_or_nil(hook_reason) or nil
 			end
 			collector.mark(name, reason)
 		end
@@ -1222,7 +1222,7 @@ function M.resolve(spec)
 				local unresolvable = nil
 				if spec.unresolvable_of then
 					local ok, reason = pcall(spec.unresolvable_of, name)
-					unresolvable = (ok and type(reason) == "string") and reason or nil
+					unresolvable = ok and str_or_nil(reason) or nil
 				end
 				if unresolvable then
 					collector.mark(name, unresolvable)
