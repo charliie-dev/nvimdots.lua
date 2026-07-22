@@ -30,6 +30,10 @@ end
 ---@param opts { label: string, default_port?: integer } @default_port omitted = port required.
 ---@return string host, integer port
 function M.attach_endpoint(config, opts)
+	-- Actionable config-time errors beat an opaque "attempt to index" deeper in
+	-- (this helper's whole purpose): guard the two shapes it dereferences.
+	assert(type(config) == "table", "attach_endpoint: config must be a table")
+	assert(type(opts) == "table" and type(opts.label) == "string", "attach_endpoint: opts.label (string) is required")
 	local port = opts.default_port
 	if config.port ~= nil then
 		local n = tonumber(config.port)
