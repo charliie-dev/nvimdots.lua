@@ -80,7 +80,7 @@ return function()
 			},
 			chunk = { enabled = false },
 			---@param buf number
-			---@param win number
+			---@param _ number @Window handle (unused).
 			filter = function(buf, _)
 				local excluded_ft = {
 					[""] = true,

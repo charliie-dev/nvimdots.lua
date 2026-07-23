@@ -1,4 +1,5 @@
 ---@module 'blink.cmp'
+---@diagnostic disable-next-line: undefined-doc-name
 ---@type blink.cmp.Config
 local opts = {
 	-- 'default' for mappings similar to built-in completion
@@ -19,6 +20,7 @@ local opts = {
 		["<C-l>"] = { "scroll_documentation_down", "fallback" },
 		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 	},
+	---@diagnostic disable-next-line: undefined-doc-name
 	---@type blink.cmp.CmdlineConfig
 	cmdline = {
 		enabled = true,
@@ -176,6 +178,7 @@ local opts = {
 				module = "blink-ripgrep",
 				name = "Ripgrep",
 				---@module "blink-ripgrep"
+				---@diagnostic disable-next-line: undefined-doc-name
 				---@type blink-ripgrep.Options
 				opts = {
 					prefix_min_len = 3,
