@@ -15,25 +15,17 @@ return function()
 				"-",
 			}
 		end,
-		-- markdownlint-cli2: file-based mode + stderr parser date from the bun
-		-- node-shim era (stdin's for-await yielded empty); mise ships real node
-		-- now, so stdin likely works again — kept pending re-evaluation.
-		-- NOTE (known limitation): the pattern requires "path:line:col", but
-		-- upstream omits the column when unknown (e.g. MD012), so those
-		-- findings are silently dropped.
+		-- markdownlint-cli2: only add the global config — it discovers configs
+		-- upward from the linted file, so projects without their own would
+		-- otherwise fall back to factory defaults. stdin mode and the parser
+		-- stay upstream's; its errorformat fallback ("stdin:%l %m") keeps
+		-- findings whose column is unknown (e.g. MD012).
 		["markdownlint-cli2"] = function(linter)
-			linter.stdin = false
 			linter.args = {
 				"--config",
 				vim.fn.stdpath("config") .. "/.markdownlint.yml",
+				"-",
 			}
-			linter.stream = "stderr"
-			linter.parser = require("lint.parser").from_pattern(
-				"[^:]+:(%d+):(%d+) (%a+) (.+)",
-				{ "lnum", "col", "severity", "message" },
-				{ ["error"] = vim.diagnostic.severity.ERROR, ["warning"] = vim.diagnostic.severity.WARN },
-				{ source = "markdownlint" }
-			)
 		end,
 	}
 	---@param name string
