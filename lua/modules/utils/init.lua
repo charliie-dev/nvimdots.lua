@@ -269,19 +269,6 @@ function M.get_lsp_capabilities()
 	)
 end
 
----Setup and enable a language server in one call.
----@param server string @Name of the language server
----@param config? vim.lsp.Config @Optional config to apply
-function M.register_server(server, config)
-	vim.validate("server", server, "string", false)
-	vim.validate("config", config, "table", true)
-
-	if config then
-		vim.lsp.config(server, config)
-	end
-	vim.lsp.enable(server)
-end
-
 ---Convert number (0/1) to boolean
 ---@param value number @The value to check
 ---@return boolean|nil @Returns nil if failed
@@ -325,15 +312,9 @@ end
 ---@param user_config string @The module name used to require user config
 ---@return table @Extended config
 function M.extend_config(config, user_config)
-	local ok, extras = pcall(require, user_config)
+	local ok, extras = require("modules.utils.tools").load_module_or_report(user_config, "[utils] Runtime Error")
 	if ok and type(extras) == "table" then
 		config = tbl_recursive_merge(config, extras)
-	elseif not ok and type(extras) == "string" and not extras:find("module .* not found") then
-		vim.notify(
-			string.format("[utils] Error loading %s: %s", user_config, extras),
-			vim.log.levels.ERROR,
-			{ title = "[utils] Runtime Error" }
-		)
 	end
 	return config
 end
@@ -375,7 +356,7 @@ function M.load_plugin(plugin_name, opts, vim_plugin, setup_callback)
 			if ok then
 				-- Extend base config if the returned user config is a table
 				if type(user_config) == "table" then
-					opts = tbl_recursive_merge(opts, user_config)
+					opts = tbl_recursive_merge(opts or {}, user_config)
 					setup_callback(opts)
 				-- Replace base config if the returned user config is a function
 				elseif type(user_config) == "function" then
