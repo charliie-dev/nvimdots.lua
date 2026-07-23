@@ -101,10 +101,11 @@ end
 ---@param opts? table @Additional keymap options
 function M.amend(cond, global_flag, mode, lhs, rhs, opts)
 	local modes = type(mode) == "table" and mode or { mode }
+	---@cast modes string[]
 	for _, m in ipairs(modes) do
 		local map = get_map(m, lhs)
 		local fallback = get_fallback(map)
-		local options = vim.deepcopy(opts) or {}
+		local options = vim.deepcopy(opts or {})
 		options.desc = table.concat({
 			"[" .. cond,
 			(options.desc and ": " .. options.desc or ""),
