@@ -4,17 +4,15 @@ return function()
 	-- Compile-once cache per configured dir: entries are user input that may
 	-- throw at vim.regex compile time (settings.lua blesses vim-regex strings),
 	-- so compilation stays lazy — on the save path, exactly where it fails today —
-	-- and only SUCCESSFUL compiles are cached. The normalized string rides along
-	-- for the notify below.
+	-- and only SUCCESSFUL compiles are cached.
 	local disabled_dir_cache = {}
 	local function disabled_matcher(dir)
-		local hit = disabled_dir_cache[dir]
-		if not hit then
-			local normalized = vim.fs.normalize(dir)
-			hit = { regex = vim.regex(normalized), normalized = normalized }
-			disabled_dir_cache[dir] = hit
+		local regex = disabled_dir_cache[dir]
+		if not regex then
+			regex = vim.regex(vim.fs.normalize(dir))
+			disabled_dir_cache[dir] = regex
 		end
-		return hit
+		return regex
 	end
 	local format_on_save_enabled = settings.format_on_save
 	local format_notify = settings.format_notify
@@ -41,11 +39,10 @@ return function()
 	local function is_disabled_workspace(bufnr)
 		local filedir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
 		for _, dir in ipairs(disabled_workspaces) do
-			local matcher = disabled_matcher(dir)
-			if matcher.regex:match_str(filedir) ~= nil then
+			if disabled_matcher(dir):match_str(filedir) ~= nil then
 				if format_notify then
 					vim.notify(
-						string.format("[Conform] Formatting disabled for files under [%s].", matcher.normalized),
+						string.format("[Conform] Formatting disabled for files under [%s].", vim.fs.normalize(dir)),
 						vim.log.levels.WARN,
 						{ title = "Conform" }
 					)
