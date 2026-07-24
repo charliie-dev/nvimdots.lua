@@ -348,19 +348,18 @@ local function missing_collector(title, timeout_ms)
 		-- (generic timeout/refresh note, or a reason-less mark) and re-notify —
 		-- also for a name sitting in the UNKNOWN bucket, where the reason is
 		-- unread but the re-emission stands ("unknown wins once assigned": the
-		-- bucket never flips back). The first REAL reason wins; later ones
-		-- never overwrite it.
-		if
-			type(reason) == "string"
-			and reason ~= ""
-			and reason ~= entry.reason
-			and (entry.reason == nil or entry.provisional)
-		then
-			entry.reason = reason
-			entry.provisional = is_provisional or nil
-			entry.emitted = nil
-			flush()
+		-- bucket never flips back).
+		if type(reason) ~= "string" or reason == "" or reason == entry.reason then
+			return
 		end
+		-- The first REAL reason wins; later ones never overwrite it.
+		if entry.reason ~= nil and not entry.provisional then
+			return
+		end
+		entry.reason = reason
+		entry.provisional = is_provisional or nil
+		entry.emitted = nil
+		flush()
 	end
 	local function add_unknown(name)
 		name = normalize(name)
@@ -1169,19 +1168,23 @@ function M.resolve(spec)
 			end
 			return true
 		end
-		-- "resolves" only: a binary-less LSP server (jsonls) still maps to a
-		-- package by NAME and must reach phase 2 to install. A FAILURE here is
-		-- deliberately NOT parked: every retry gate is structurally closed for
-		-- a binary-less "resolves" name (no bins for pending_bins_available,
-		-- no package_of mapping for the install event, validates gate closed
-		-- by mode), so parking it would leak the session until restart.
-		if spec.local_config_mode == "resolves" and spec.has_local_config and spec.has_local_config(name) then
-			do_configure(name)
-			return true
-		end
-		-- A "validates" config is its own resolver: let it try; remember a
-		-- failure for phase 2 instead of re-running it there.
-		if spec.local_config_mode == "validates" and spec.has_local_config and spec.has_local_config(name) then
+		-- Both local-config modes gate on the same lookup: evaluate it once and
+		-- let the mutually-exclusive mode pick the branch.
+		local mode = spec.local_config_mode
+		if (mode == "resolves" or mode == "validates") and spec.has_local_config and spec.has_local_config(name) then
+			if mode == "resolves" then
+				-- A binary-less LSP server (jsonls) still maps to a package by
+				-- NAME and must reach phase 2 to install. A FAILURE here is
+				-- deliberately NOT parked: every retry gate is structurally
+				-- closed for a binary-less "resolves" name (no bins for
+				-- pending_bins_available, no package_of mapping for the install
+				-- event, validates gate closed by mode), so parking it would
+				-- leak the session until restart.
+				do_configure(name)
+				return true
+			end
+			-- A "validates" config is its own resolver: let it try; remember a
+			-- failure for phase 2 instead of re-running it there.
 			local ok, reason, config_error = try_configure(name)
 			if ok then
 				-- try_configure bypasses do_configure here, so a stale emitted entry
