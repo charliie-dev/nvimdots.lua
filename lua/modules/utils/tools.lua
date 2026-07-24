@@ -1233,6 +1233,12 @@ function M.resolve(spec)
 				-- The "validates" configure ran and failed: attempted-and-failed,
 				-- never typo-migratable.
 				collector.mark(name, validate_reason(name), nil, true)
+				-- A config-layer error is unfixable by install or retry (phase 1's
+				-- $PATH branch never parks these — see configure_available): unpark
+				-- it so the retry gates skip it and the session can drain.
+				if validates[name].config_error then
+					session.pending[name] = nil
+				end
 			end
 			return
 		end
