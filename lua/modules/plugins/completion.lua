@@ -18,10 +18,21 @@ completion["neovim/nvim-lspconfig"] = {
 	event = { "BufReadPre", "BufNewFile" },
 	config = require("completion.lsp"),
 	dependencies = {
-		{ "mason-org/mason.nvim" },
-		{ "mason-org/mason-lspconfig.nvim" },
 		{ "b0o/schemastore.nvim" },
 	},
+}
+-- mason-lspconfig only supplies the lspconfig -> package mappings; the LSP
+-- resolver degrades to $PATH discovery when it (or mason.nvim) is absent.
+-- Deliberately NOT a dependency of nvim-lspconfig: lazy.nvim loads dependencies
+-- together with the parent, and a fully provisioned session must not pay Mason
+-- on the BufReadPre tick — the resolver requires it on demand (module loader).
+-- The cmd trigger restores :LspInstall/:LspUninstall (registered only inside
+-- setup(), which nothing reaches on the BufReadPre/load tick); both load paths
+-- funnel through the config below exactly once.
+completion["mason-org/mason-lspconfig.nvim"] = {
+	lazy = true,
+	cmd = { "LspInstall", "LspUninstall" },
+	config = require("completion.mason-lspconfig-setup"),
 }
 completion["nvimdev/lspsaga.nvim"] = {
 	lazy = true,

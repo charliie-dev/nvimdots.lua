@@ -76,18 +76,6 @@ tool["aaronhallaert/advanced-git-search.nvim"] = {
 	},
 }
 
--- tool["amitds1997/remote-nvim.nvim"] = {
--- 	lazy = true,
--- 	version = "*",
--- 	cmd = { "RemoteStart", "RemoteStop", "RemoteInfo", "RemoteCleanup", "RemoteConfigDel", "RemoteLog" },
--- 	dependencies = {
--- 		"nvim-lua/plenary.nvim",
--- 		"MunifTanjim/nui.nvim",
--- 		"nvim-telescope/telescope.nvim",
--- 	},
--- 	config = true,
--- }
-
 ----------------------------------------------------------------------
 --                           DAP Plugins                            --
 ----------------------------------------------------------------------
@@ -106,13 +94,28 @@ tool["mfussenegger/nvim-dap"] = {
 	},
 	config = require("tool.dap"),
 	dependencies = {
-		{ "jay-babu/mason-nvim-dap.nvim" },
 		{
 			"rcarriga/nvim-dap-ui",
 			dependencies = "nvim-neotest/nvim-nio",
 			config = require("tool.dap.dapui"),
 		},
 	},
+}
+
+-- mason-nvim-dap only supplies the adapter -> package mappings; the DAP resolver
+-- degrades to $PATH discovery when it (or mason.nvim) is absent. Deliberately
+-- NOT a dependency of nvim-dap: lazy.nvim loads dependencies together with the
+-- parent, and a fully provisioned session must not pay Mason on the :Dap*
+-- tick — the DAP config requires it on demand (module loader) instead.
+tool["jay-babu/mason-nvim-dap.nvim"] = {
+	lazy = true,
+	-- The cmd trigger restores :DapInstall/:DapUninstall (registered only inside
+	-- setup(), which nothing reaches when every dap_deps adapter has a repo
+	-- client config); require-path loading and the cmd trigger both funnel
+	-- through the config below exactly once (lazy marks the plugin loaded
+	-- before running it).
+	cmd = { "DapInstall", "DapUninstall" },
+	config = require("tool.mason-nvim-dap"),
 }
 
 tool["trixnz/sops.nvim"] = {

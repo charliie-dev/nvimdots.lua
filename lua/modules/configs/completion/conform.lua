@@ -1,6 +1,19 @@
 return function()
 	local settings = require("core.settings")
 	local disabled_workspaces = settings.format_disabled_dirs
+	-- Compile-once cache per configured dir: entries are user input that may
+	-- throw at vim.regex compile time (settings.lua blesses vim-regex strings),
+	-- so compilation stays lazy — on the save path, exactly where it fails today —
+	-- and only SUCCESSFUL compiles are cached.
+	local disabled_dir_cache = {}
+	local function disabled_matcher(dir)
+		local regex = disabled_dir_cache[dir]
+		if not regex then
+			regex = vim.regex(vim.fs.normalize(dir))
+			disabled_dir_cache[dir] = regex
+		end
+		return regex
+	end
 	local format_on_save_enabled = settings.format_on_save
 	local format_notify = settings.format_notify
 	local format_modifications_only = settings.format_modifications_only
@@ -26,7 +39,7 @@ return function()
 	local function is_disabled_workspace(bufnr)
 		local filedir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
 		for _, dir in ipairs(disabled_workspaces) do
-			if vim.regex(vim.fs.normalize(dir)):match_str(filedir) ~= nil then
+			if disabled_matcher(dir):match_str(filedir) ~= nil then
 				if format_notify then
 					vim.notify(
 						string.format("[Conform] Formatting disabled for files under [%s].", vim.fs.normalize(dir)),
@@ -38,6 +51,19 @@ return function()
 			end
 		end
 		return false
+	end
+
+	---The gates a buffer must pass before an automatic format, grouped into one
+	---named predicate for the format_on_save callback's readability. The
+	---format_on_save SETTING is not re-checked here: its gate lives at the
+	---single place the callback is installed (format_on_save = enabled and …).
+	---@param bufnr integer
+	---@return boolean
+	local function autoformat_allowed(bufnr)
+		return block_list[vim.bo[bufnr].filetype] ~= true
+			and not is_disabled_workspace(bufnr)
+			and not vim.g.disable_autoformat
+			and not vim.b[bufnr].disable_autoformat
 	end
 
 	---Format only git-modified lines using gitsigns hunks + conform range format
@@ -87,6 +113,8 @@ return function()
 		return true
 	end
 
+	local tools = require("modules.utils.tools")
+
 	require("modules.utils").load_plugin("conform", {
 		default_format_opts = {
 			timeout_ms = format_timeout,
@@ -132,8 +160,11 @@ return function()
 				args = { "fix", "--stdin" },
 				stdin = true,
 			},
-			-- prettier: stdin mode does not work under bun's node shim,
-			-- so use --write (file-based) mode instead.
+			-- prettier: the --write-on-temp-copy shape dates from the bun
+			-- node-shim era (stdin was broken); mise ships real node now, so
+			-- stdin likely works again — kept pending re-evaluation. `stdin =
+			-- false` points $FILENAME at a `.conform.$RANDOM.*` copy; the real
+			-- file is never touched.
 			prettier = {
 				command = "prettier",
 				args = { "--write", "$FILENAME" },
@@ -141,22 +172,10 @@ return function()
 			},
 		},
 		format_on_save = format_on_save_enabled and function(bufnr)
-			-- Check disabled filetypes
-			if block_list[vim.bo[bufnr].filetype] == true then
+			if not autoformat_allowed(bufnr) then
 				return
 			end
 
-			-- Check disabled workspaces
-			if is_disabled_workspace(bufnr) then
-				return
-			end
-
-			-- Check global toggle
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-				return
-			end
-
-			-- Format only modified lines if enabled
 			if format_modifications_only then
 				if format_modifications(bufnr) then
 					return
@@ -167,6 +186,60 @@ return function()
 			return {}
 		end or false,
 	})
+
+	-- Resolve `formatter_deps` (conform formatter names) discovery-first against
+	-- conform's own registry, so a missing formatter is installed / reported.
+	-- The probe only drives install/warn — nothing on the save path reads it —
+	-- so `defer` moves the resolve off the BufWritePre tick that lazy-loaded
+	-- conform; the resolver itself keeps the same-tick guarantee that Mason's
+	-- bin dir is on $PATH before the replayed save's spawns.
+	-- Superseded sessions from a previous run of this consumer must not be retried (re-source guard).
+	tools.drop_sessions("conform.nvim")
+	tools.resolve_runtime_tools("conform.nvim", settings.formatter_deps, function(name)
+		-- get_formatter_config is conform's @private API; if it vanishes, every
+		-- formatter is UNVERIFIABLE — report unresolved with the reason (missing
+		-- bucket, immediate flush) instead of silently classifying them all as
+		-- self-resolving, which would turn off installs and warnings wholesale.
+		local conform = require("conform")
+		if type(conform.get_formatter_config) ~= "function" then
+			return {
+				unresolved = true,
+				reason = "conform.get_formatter_config is unavailable (conform API drift?) — formatters cannot be verified",
+			}
+		end
+		-- get_formatter_config runs a function-form override directly, so pcall keeps a
+		-- throwing override (a broken config) from being misread as an unknown name.
+		local ok, config, err = pcall(conform.get_formatter_config, name)
+		if not ok then
+			return { broken = tostring(config) }
+		end
+		if config then
+			-- A function-form command resolves per buffer at format time (e.g. the
+			-- builtin from_node_modules): treat it as self-resolving rather than
+			-- evaluating it for a representative binary — a node_modules command
+			-- shouldn't map to a Mason install anyway.
+			if type(config.command) == "function" then
+				return { binary = nil }
+			end
+			return { binary = config.command }
+		end
+		-- (nil, err) is a real formatter with a broken config; bare nil is an unknown name.
+		if type(err) == "string" then
+			return { broken = err }
+		end
+		-- A function-form override may legitimately return nil for the
+		-- probe-time buffer (this probe runs on a scheduled tick against
+		-- whatever buffer happens to be current): its existence proves the
+		-- name real, but nothing is verifiable — report it unresolved
+		-- (missing bucket, tailored reason) instead of a typo or a silent pass.
+		local overrides = conform.formatters
+		if type(overrides) == "table" and type(overrides[name]) == "function" then
+			-- The reason rides on the probe result: the phrasing is conform's,
+			-- not the shared resolver's (nvim-lint shares resolve_runtime_tools).
+			return { unresolved = true, reason = "config resolves per buffer and could not be verified at startup" }
+		end
+		return nil
+	end, nil, { defer = true })
 
 	-- User commands
 	vim.api.nvim_create_user_command("Format", function(args)
@@ -226,7 +299,7 @@ return function()
 		end
 	end, { nargs = 1, complete = "filetype" })
 
-	-- Auto stop shell LSPs for .env files (migrated from null-ls config).
+	-- Auto stop shell LSPs for .env files.
 	-- Both bashls and shuck attach to .env's `sh` filetype and only add noise there.
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(event)

@@ -1,17 +1,11 @@
 -- shuck: Rust shell linter/formatter/language server.
 -- https://ewhauser.github.io/shuck/docs/lsp/
---
--- Installed via mise (`cargo:shuck-cli`), not Mason, so it is wired through
--- `settings.external_lsp_deps` rather than `lsp_deps`. shuck is not shipped in
--- nvim-lspconfig either, so cmd/filetypes/root_markers must be declared here.
---
--- Provides live diagnostics, code actions (incl. `source.fixAll.shuck`),
--- suppression-code hover, and document/range formatting over LSP.
---
--- `zsh` is intentionally excluded: shuck's zsh dialect still misparses some
--- zsh-isms (e.g. path literals inside `[(I)...]` subscripts) and emits false
--- positives, so zsh files are left to `zsh -n` (nvim-lint). Re-add "zsh" here
--- once shuck's zsh support is solid.
+-- Installed via mise (`cargo:shuck-cli`) by choice — Mason ships a shuck
+-- package now, but under discovery-first the $PATH copy wins, so the
+-- resolver enables it from the `shuck` binary (fix = `mise install`).
+-- `zsh` is intentionally excluded: shuck's zsh dialect (as of v0.0.4x,
+-- 2026-07) still misparses some zsh-isms and emits false positives, so zsh
+-- stays on `zsh -n` (nvim-lint).
 return {
 	cmd = { "shuck", "server" },
 	filetypes = { "sh", "bash", "ksh" },
