@@ -1046,6 +1046,29 @@ end
 ---lose the same-tick guarantee that a replayed trigger's bare Mason spawns
 ---can resolve — and phase-1 configures inside the scheduled run still count
 ---as trigger-backed (`late = false`).
+---
+---Shape (Template Method, with the steps injected as a spec table instead of by
+---inheritance): run() below owns the algorithm and the invariants no consumer
+---should have to re-derive — dep normalization and dedup, per-dep pcall
+---isolation, the configure-once race gate, the aggregated report, and the "no
+---leftovers means mason-registry is never loaded" guarantee. Consumers fill
+---named steps only: `configure` is the single required one, the rest are hooks
+---with skeleton-side defaults. Three deviations from that shape are accepted
+---while the consumer count stays this small:
+---  * Variant FLAGS instead of steps — `local_config_mode`, `static_binaries`
+---    and `defer_phase2` branch INSIDE the skeleton (marked at each site), so
+---    run() carries a taxonomy of its own callers. Consequence: a fourth
+---    local-config semantic means editing run() rather than writing a new
+---    spec, which is the signal to push the modes down into hooks.
+---  * `local_config_mode` leaks skeleton state — choosing it correctly needs
+---    knowledge of which retry gates a name can still reach (see the
+---    "resolves" branch in configure_available); that contract lives in a
+---    comment, not in the type.
+---  * Mason is hardwired, not a step — get_package / is_installed / refresh /
+---    get_all_package_specs are called straight from the skeleton. This is
+---    deliberately a Mason-specific resolver with pluggable per-subsystem
+---    judgment, not a generic provisioning one; a SECOND registry-like backend
+---    is what would justify an interface here, not the possibility of one.
 function M.resolve(spec)
 	-- Every call site owns a configure (the resolver's whole job funnels into
 	-- it): a missing one is a programmer error — fail at the call site instead
@@ -1170,6 +1193,8 @@ function M.resolve(spec)
 		end
 		-- Both local-config modes gate on the same lookup: evaluate it once and
 		-- let the mutually-exclusive mode pick the branch.
+		-- Flag-shaped variant (see the shape note on M.resolve): the skeleton
+		-- switches on WHICH KIND of consumer this is instead of calling a step.
 		local mode = spec.local_config_mode
 		if (mode == "resolves" or mode == "validates") and spec.has_local_config and spec.has_local_config(name) then
 			if mode == "resolves" then
@@ -1179,7 +1204,9 @@ function M.resolve(spec)
 				-- closed for a binary-less "resolves" name (no bins for
 				-- pending_bins_available, no package_of mapping for the install
 				-- event, validates gate closed by mode), so parking it would
-				-- leak the session until restart.
+				-- leak the session until restart. This reasoning is the leaked
+				-- contract the shape note names: a consumer cannot pick
+				-- "resolves" correctly without knowing these gates exist.
 				do_configure(name)
 				return true
 			end
@@ -1203,6 +1230,11 @@ function M.resolve(spec)
 
 	---Phase 2 — resolve a dep against the now-ready registry: configure an
 	---installed package, install a missing one, or mark it missing/unknown.
+	---Mason's API (get_package / is_installed, plus refresh and
+	---get_all_package_specs upstream of it) is called from the skeleton rather
+	---than from behind a step — the hardwired-backend deviation in the shape
+	---note on M.resolve. Swapping in another provisioning backend means editing
+	---this function, not supplying a different spec.
 	---@param name string
 	---@param registry table|nil
 	local function resolve_missing(name, registry)
@@ -1258,6 +1290,7 @@ function M.resolve(spec)
 		-- the probe would be identical to phase 1's. Accepted delta: an external
 		-- install landing inside the phase-2 window proceeds to a redundant
 		-- (self-healing) Mason install instead of being caught here.
+		-- Second flag-shaped variant (see the shape note on M.resolve).
 		if pkg ~= nil and not spec.static_binaries and M.find_executable(spec.binaries_of(name, pkg)) ~= nil then
 			do_configure(name)
 			return
@@ -1417,6 +1450,8 @@ function M.resolve(spec)
 			-- decode off the lazy-load trigger's tick; their late configures
 			-- have their own catch-up paths (enable() attaches open buffers,
 			-- lint re-runs itself).
+			-- Third flag-shaped variant (see the shape note on M.resolve): the
+			-- skeleton, not a step, decides scheduling per consumer kind.
 			vim.schedule(finish)
 		else
 			-- DAP configures IN phase 2, and a cmd-triggered lazy-load replays
