@@ -57,7 +57,8 @@ settings["disabled_plugins"] = {}
 -- These settings will override the defaults during initialization.
 -- Parameters will auto-complete as you type.
 -- Example: { sky = "#04A5E5" }
----@type palette[]
+---@type palette
+---@diagnostic disable-next-line: missing-fields
 settings["palette_overwrite"] = {}
 
 -- Set the colorscheme here.
@@ -84,23 +85,19 @@ settings["external_browser"] = "chrome-cli open"
 ---@type boolean
 settings["lsp_inlayhints"] = false
 
--- LSPs installed outside Mason (e.g. via system package manager).
--- These will be configured but not installed by Mason.
--- Key: lspconfig server name, Value: executable name to check availability.
----@type table<string, string>
-settings["external_lsp_deps"] = {
-	nixd = "nixd",
-	nil_ls = "nil",
-	shuck = "shuck", -- shell linter/formatter/LSP (Rust); installed via mise, not Mason
-	-- dartls = "dart",
-}
-
--- LSPs to install during bootstrap.
+-- Language servers to enable, resolved discovery-first at runtime: binary on $PATH is
+-- used as-is; else Mason installs it when it ships a package; else an aggregated warning
+-- asks you to provision it. Names whose filetypes lspconfig knows resolve on that
+-- filetype's FIRST buffer (a late sweep classifies the rest once per session); names
+-- with user overrides, repo modules that override filetypes, or no filetype data
+-- resolve on the first file open. See `modules.utils.tools` and
+-- `completion/mason-lspconfig.lua`.
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lsp
 ---@type string[]
 settings["lsp_deps"] = {
 	"bashls",
 	"clangd",
+	-- "dartls", -- Dart LSP (ships with the Dart SDK)
 	"dockerls",
 	"gh_actions_ls",
 	-- "gitlab_ci_ls",
@@ -111,7 +108,10 @@ settings["lsp_deps"] = {
 	"lua_ls",
 	"marksman",
 	"neocmake",
+	"nil_ls", -- Nix LSP; the Nix-provisioned $PATH binary is preferred
+	"nixd", -- Nix LSP (Rust); provisioned from Nix ($PATH)
 	"ruff",
+	"shuck", -- shell linter/formatter/LSP (Rust); installed via mise by choice ($PATH wins)
 	"systemd_lsp",
 	"terraformls",
 	"tflint",
@@ -120,39 +120,56 @@ settings["lsp_deps"] = {
 	"zuban",
 }
 
--- Formatters to install during bootstrap (Mason package names).
--- These are managed by Mason and used by conform.nvim.
+-- Formatters to resolve when conform.nvim lazy-loads (first BufWritePre /
+-- :Format). conform formatter names, resolved discovery-first like lsp_deps.
 ---@type string[]
 settings["formatter_deps"] = {
 	"beautysh",
 	"clang-format",
-	"cmakelang",
+	"cmake_format",
 	"fixjson",
 	"gofumpt",
 	"goimports",
 	"mdsf",
+	"nixfmt", -- Nix formatter; prefer the $PATH binary (Nix)
 	"prettier",
 	"superhtml",
 	"shellharden",
+	"statix", -- Nix linter, its `fix` mode doubles as a conform formatter; from Nix ($PATH)
 	"stylua",
 }
 
--- Linters to install during bootstrap (Mason package names).
--- These are managed by Mason and used by nvim-lint.
+-- Linters to resolve discovery-first (nvim-lint linter names). A name mapped
+-- to a filetype resolves on that filetype's FIRST matching event after
+-- nvim-lint lazy-loads (the resolve-only FileType autocmd or a lint event) —
+-- nothing is installed or warned about before such a buffer opens; unmapped
+-- names (typos, manual-only linters) get an immediate deferred pass instead.
 ---@type string[]
 settings["linter_deps"] = {
 	"actionlint",
+	"deadnix", -- Nix dead-code linter; prefer the $PATH binary (Nix)
 	"hadolint",
 	"markdownlint-cli2",
 	"oxlint",
 	-- "rumdl", -- markdownlint Rust rewrite; waiting for rule coverage to mature
-	"golangci-lint",
+	"golangcilint",
 	"selene",
 	"shellcheck",
+	"shuck", -- shell linter for yaml.github `run:` blocks; installed via mise by choice
+	"statix", -- Nix linter; prefer the $PATH binary (Nix)
 	"systemdlint",
+	"zsh", -- `zsh -n` syntax check via the system shell itself
 }
 
--- Debug Adapter Protocol (DAP) clients to install and configure during bootstrap.
+-- Deadline (ms) for background Mason work before the aggregated missing-tool warning
+-- flushes anyway. Gates each tracked install (its own window) AND the registry refresh
+-- wait; late completions still recover. Missing or non-positive values fall back to
+-- the resolver's DEFAULT_TOOL_INSTALL_TIMEOUT_MS in `modules/utils/tools.lua`.
+---@type number
+settings["tool_install_timeout"] = 300000
+
+-- DAP adapters to enable (mason-nvim-dap adapter names), resolved
+-- discovery-first when nvim-dap lazy-loads (first :Dap* command or debug keymap).
 -- Supported DAPs: https://github.com/jay-babu/mason-nvim-dap.nvim/blob/main/lua/mason-nvim-dap/mappings/source.lua
 ---@type string[]
 settings["dap_deps"] = {
@@ -242,4 +259,10 @@ settings["dashboard_image"] = {
 	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⠿⢿⠿⠷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
 }
 
-return require("modules.utils").extend_config(settings, "user.settings")
+local merged = require("modules.utils").extend_config(settings, "user.settings")
+
+-- Removed-key migration guards live in core/migrations.lua, keeping this file
+-- declarative; they only read `merged` and notify.
+require("core.migrations").check(merged)
+
+return merged

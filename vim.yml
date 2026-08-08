@@ -6,3 +6,13 @@ globals:
     any: true
   _debugging:
     any: true
+  # LuaJIT ships the Lua 5.2 extension package.searchpath; the lua51 base
+  # selene std lib doesn't know it.
+  package.searchpath:
+    args:
+      - type: string
+      - type: string
+      - type: string
+        required: false
+      - type: string
+        required: false
