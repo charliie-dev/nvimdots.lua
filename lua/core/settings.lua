@@ -193,7 +193,6 @@ settings["treesitter_deps"] = {
 	rust = true,
 	ssh_config = true,
 	terraform = true,
-	tmux = true,
 	toml = true,
 	tsx = true,
 	typescript = true,
