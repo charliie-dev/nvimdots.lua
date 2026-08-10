@@ -11,20 +11,16 @@ return function()
 		"-",
 	}
 
-	-- markdownlint-cli2: stdin broken under bun's node shim (for-await yields empty).
-	-- Override to file-based mode and update parser for "path:line:col severity message" format.
-	lint.linters["markdownlint-cli2"].stdin = false
+	-- markdownlint-cli2: only add the global config — in stdin mode it discovers
+	-- configs upward from the process CWD, so buffers outside a project carrying
+	-- its own would otherwise fall back to factory defaults (e.g. MD013 at 80).
+	-- stdin mode and the parser stay upstream's; its errorformat fallback
+	-- ("stdin:%l %m") keeps findings whose column is unknown (e.g. MD012).
 	lint.linters["markdownlint-cli2"].args = {
 		"--config",
 		vim.fn.stdpath("config") .. "/.markdownlint.yml",
+		"-",
 	}
-	lint.linters["markdownlint-cli2"].stream = "stderr"
-	lint.linters["markdownlint-cli2"].parser = require("lint.parser").from_pattern(
-		"[^:]+:(%d+):(%d+) (%a+) (.+)",
-		{ "lnum", "col", "severity", "message" },
-		{ ["error"] = vim.diagnostic.severity.ERROR, ["warning"] = vim.diagnostic.severity.WARN },
-		{ source = "markdownlint" }
-	)
 
 	-- shuck: lints shell embedded in GitHub Actions workflows (the `run:` blocks).
 	-- Complements actionlint, which validates workflow syntax/expressions but not
