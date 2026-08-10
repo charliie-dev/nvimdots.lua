@@ -8,6 +8,11 @@ stylua = "latest"
 # Treesitter CLI (required by nvim-treesitter for parser compilation)
 tree-sitter = "latest"
 
+# Node.js — the runtime every node-based tool here resolves against (prettier,
+# markdownlint-cli2, fixjson, npx). Real node, not a bun shim: those tools rely
+# on node's stdin handling, which the shim broke.
+node = "latest"
+
 # ------------------------------------------------------------------------------
 [env]
 
@@ -17,7 +22,7 @@ tree-sitter = "latest"
 # ==============================================================================
 [tasks.ruler]  # command: mise run ruler
 description = "Compile ruler to AGENTS.md"
-run = "bunx @intellectronica/ruler apply"
+run = "npx --yes @intellectronica/ruler apply"
 
 [tasks.clean-unsupported-ts-parsers]  # command: mise run clean-unsupported-ts-parsers
 description = "Remove installed nvim-treesitter parsers that are no longer supported"
