@@ -62,11 +62,19 @@ return function()
 			if hunk.added and hunk.added.count > 0 then
 				local start_line = hunk.added.start
 				local end_line = start_line + hunk.added.count - 1
+				-- End the range at the last line's byte length, not math.huge: conform adds
+				-- this column to nvim_buf_get_offset() verbatim (no clamping), so math.huge
+				-- yields an `inf` offset that range-capable formatters (prettier, stylua,
+				-- clang-format) silently no-op on. Byte length matches conform's byte-based
+				-- offsets; conform then hands those bytes to prettier, which counts
+				-- characters, so a hunk preceded by non-ASCII text can pull in one adjacent
+				-- node — an upstream mismatch no column choice here can fix.
+				local last_line = vim.api.nvim_buf_get_lines(bufnr, end_line - 1, end_line, false)[1] or ""
 				local ok_fmt, err = pcall(require("conform").format, {
 					bufnr = bufnr,
 					range = {
 						start = { start_line, 0 },
-						["end"] = { end_line, math.huge },
+						["end"] = { end_line, #last_line },
 					},
 					quiet = true,
 				})
