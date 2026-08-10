@@ -132,13 +132,6 @@ return function()
 				args = { "fix", "--stdin" },
 				stdin = true,
 			},
-			-- prettier: stdin mode does not work under bun's node shim,
-			-- so use --write (file-based) mode instead.
-			prettier = {
-				command = "prettier",
-				args = { "--write", "$FILENAME" },
-				stdin = false,
-			},
 		},
 		format_on_save = format_on_save_enabled and function(bufnr)
 			-- Check disabled filetypes
