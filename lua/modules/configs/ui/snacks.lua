@@ -178,4 +178,8 @@ return function()
 		words = { enabled = false },
 		zen = { enabled = false },
 	})
+
+	vim.api.nvim_create_user_command("SnacksNotifier", function()
+		require("snacks").notifier.show_history()
+	end, { desc = "Show notification history" })
 end
