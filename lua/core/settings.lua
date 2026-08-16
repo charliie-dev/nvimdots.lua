@@ -84,81 +84,79 @@ settings["external_browser"] = "chrome-cli open"
 ---@type boolean
 settings["lsp_inlayhints"] = false
 
--- LSPs installed outside Mason (e.g. via system package manager).
--- These will be configured but not installed by Mason.
--- Key: lspconfig server name, Value: executable name to check availability.
----@type table<string, string>
-settings["external_lsp_deps"] = {
-	nixd = "nixd",
-	nil_ls = "nil",
-	shuck = "shuck", -- shell linter/formatter/LSP (Rust); installed via mise, not Mason
-	-- dartls = "dart",
-}
-
--- LSPs to install during bootstrap.
+-- LSP server names expected by the config and Muster.
+-- Install packages manually with :MasonInstall or another package manager.
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lsp
----@type string[]
+---@type (string|{ name: string, command: string })[]
 settings["lsp_deps"] = {
 	"bashls",
 	"clangd",
+	-- "dart",
 	"dockerls",
 	"gh_actions_ls",
-	-- "gitlab_ci_ls",
 	"gopls",
-	-- "harper_ls", # too noisy
-	"superhtml",
-	"jsonls",
+	-- "harper_ls", -- too noisy
+	{ name = "jsonls", command = "vscode-json-language-server" },
 	"lua_ls",
 	"marksman",
 	"neocmake",
+	"nil_ls",
+	"nixd",
 	"ruff",
+	"shuck", -- shell linter/formatter/LSP (Rust)
+	"superhtml",
 	"systemd_lsp",
 	"terraformls",
 	"tflint",
 	"tombi",
-	"yamlls",
+	{ name = "yamlls", command = "yaml-language-server" },
 	"zuban",
 }
 
--- Formatters to install during bootstrap (Mason package names).
--- These are managed by Mason and used by conform.nvim.
+-- Conform formatter names expected by the config and Muster.
+-- Install their executables manually with :MasonInstall or another package manager.
 ---@type string[]
 settings["formatter_deps"] = {
 	"beautysh",
 	"clang-format",
-	"cmakelang",
+	"cmake_format",
 	"fixjson",
 	"gofumpt",
 	"goimports",
 	"mdsf",
+	"nixfmt",
 	"prettier",
-	"superhtml",
 	"shellharden",
+	"statix",
 	"stylua",
+	"superhtml",
 }
 
--- Linters to install during bootstrap (Mason package names).
--- These are managed by Mason and used by nvim-lint.
----@type string[]
+-- nvim-lint names expected by the config and Muster.
+-- Install their executables manually with :MasonInstall or another package manager.
+---@type (string|{ name: string, command: string })[]
 settings["linter_deps"] = {
 	"actionlint",
+	"deadnix",
+	"golangcilint",
 	"hadolint",
 	"markdownlint-cli2",
-	"oxlint",
+	{ name = "oxlint", command = "oxlint" },
 	-- "rumdl", -- markdownlint Rust rewrite; waiting for rule coverage to mature
-	"golangci-lint",
 	"selene",
 	"shellcheck",
+	"shuck",
+	"statix",
 	"systemdlint",
+	"zsh",
 }
 
--- Debug Adapter Protocol (DAP) clients to install and configure during bootstrap.
--- Supported DAPs: https://github.com/jay-babu/mason-nvim-dap.nvim/blob/main/lua/mason-nvim-dap/mappings/source.lua
+-- DAP adapter names Muster can safely verify. Go and Python are plugin-owned
+-- callback factories, so they remain configured but are omitted from Muster to
+-- avoid unverifiable startup notifications.
 ---@type string[]
 settings["dap_deps"] = {
 	"codelldb", -- C-Family
-	"delve", -- Go
-	"python", -- Python (debugpy)
 }
 
 -- Treesitter parsers to install during bootstrap.

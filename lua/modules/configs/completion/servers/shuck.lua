@@ -1,9 +1,10 @@
 -- shuck: Rust shell linter/formatter/language server.
 -- https://ewhauser.github.io/shuck/docs/lsp/
 --
--- Installed via mise (`cargo:shuck-cli`), not Mason, so it is wired through
--- `settings.external_lsp_deps` rather than `lsp_deps`. shuck is not shipped in
--- nvim-lspconfig either, so cmd/filetypes/root_markers must be declared here.
+-- Installed via mise (`cargo:shuck-cli`), not Mason. It remains in the shared
+-- `settings.lsp_deps` list; completion/lsp-server.lua resolves this `cmd` from
+-- PATH. shuck is not shipped in nvim-lspconfig either, so
+-- cmd/filetypes/root_markers must be declared here.
 --
 -- Provides live diagnostics, code actions (incl. `source.fixAll.shuck`),
 -- suppression-code hover, and document/range formatting over LSP.

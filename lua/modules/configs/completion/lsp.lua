@@ -1,31 +1,21 @@
 return function()
-	require("completion.mason-lspconfig").setup()
+	vim.diagnostic.config({
+		signs = true,
+		underline = true,
+		virtual_text = false,
+		update_in_insert = false,
+	})
 
-	local opts = {
-		capabilities = require("modules.utils").get_lsp_capabilities(),
-	}
-	-- Configure LSPs that are not managed by Mason but are available in `nvim-lspconfig`.
-	-- Servers are defined in `settings.external_lsp_deps` as { server_name = "executable" }.
-	for lsp_name, exe in pairs(require("core.settings").external_lsp_deps) do
-		if vim.fn.executable(exe) == 1 then
-			local ok, _opts = pcall(require, "user.configs.lsp-servers." .. lsp_name)
-			if not ok then
-				local default_ok, default_opts = pcall(require, "completion.servers." .. lsp_name)
-				if default_ok then
-					_opts = default_opts
-				end
-			end
-			if type(_opts) == "table" then
-				local final_opts = vim.tbl_deep_extend("keep", _opts, opts)
-				require("modules.utils").register_server(lsp_name, final_opts)
-			else
-				require("modules.utils").register_server(lsp_name, opts)
-			end
-		end
+	local server = require("completion.lsp-server")
+	local lsp_deps = require("core.settings").lsp_deps
+	for _, entry in ipairs(lsp_deps) do
+		server.register(entry)
 	end
 
 	pcall(require, "user.configs.lsp")
+	require("completion.mason-registry").setup()
 
-	-- Start LSPs
-	pcall(vim.cmd.LspStart)
+	for _, entry in ipairs(lsp_deps) do
+		server.enable(entry)
+	end
 end

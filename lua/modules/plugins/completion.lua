@@ -19,7 +19,6 @@ completion["neovim/nvim-lspconfig"] = {
 	config = require("completion.lsp"),
 	dependencies = {
 		{ "mason-org/mason.nvim" },
-		{ "mason-org/mason-lspconfig.nvim" },
 		{ "b0o/schemastore.nvim" },
 	},
 }
@@ -45,6 +44,17 @@ completion["mfussenegger/nvim-lint"] = {
 	lazy = true,
 	event = { "BufWritePost", "BufReadPost" },
 	config = require("completion.nvim-lint"),
+}
+completion["charliie-dev/muster.nvim"] = {
+	event = { "BufReadPost", "BufNewFile" },
+	cmd = "Muster",
+	dependencies = {
+		"neovim/nvim-lspconfig",
+		"stevearc/conform.nvim",
+		"mfussenegger/nvim-lint",
+		"mfussenegger/nvim-dap",
+	},
+	config = require("completion.muster"),
 }
 
 completion["saghen/blink.cmp"] = {

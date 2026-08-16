@@ -1,10 +1,6 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/nixd.lua
 return {
-	cmd = {
-		"nixd",
-		"--inlay-hints=false",
-		"--semantic-tokens=false",
-	},
+	cmd = { "nixd" },
 	single_file_support = true,
 	on_init = function(client, _)
 		if client.server_capabilities then

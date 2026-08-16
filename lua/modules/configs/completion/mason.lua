@@ -7,6 +7,7 @@ M.setup = function()
 	}
 
 	require("modules.utils").load_plugin("mason", {
+		PATH = "append",
 		ui = {
 			border = "single",
 			icons = {
@@ -26,36 +27,6 @@ M.setup = function()
 			},
 		},
 	})
-
-	-- Ensure formatters and linters are installed (only if mason loaded)
-	local ok, registry = pcall(require, "mason-registry")
-	if not ok then
-		return
-	end
-
-	local settings = require("core.settings")
-	local ensure_installed = vim.list_extend(vim.deepcopy(settings.formatter_deps), settings.linter_deps)
-
-	for _, pkg_name in ipairs(ensure_installed) do
-		local pkg_ok, pkg = pcall(registry.get_package, pkg_name)
-		if not pkg_ok then
-			vim.notify(
-				string.format("[Mason] Package '%s' not found in registry", pkg_name),
-				vim.log.levels.WARN,
-				{ title = "Mason" }
-			)
-		elseif not pkg:is_installed() then
-			pkg:install():once("closed", function()
-				if not pkg:is_installed() then
-					vim.notify(
-						string.format("[Mason] Failed to install '%s'", pkg_name),
-						vim.log.levels.WARN,
-						{ title = "Mason" }
-					)
-				end
-			end)
-		end
-	end
 end
 
 return M
