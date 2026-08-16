@@ -8,7 +8,7 @@ return function()
 		type = "server",
 		port = "${port}",
 		executable = {
-			command = vim.fn.exepath("codelldb"), -- Find codelldb on $PATH
+			command = "codelldb", -- Resolve from Mason or another PATH provider at probe/run time
 			args = { "--port", "${port}" },
 			detached = is_windows and false or true,
 		},

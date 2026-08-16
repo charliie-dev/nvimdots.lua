@@ -50,10 +50,17 @@ return function()
 	)
 	vim.fn.sign_define("DapLogPoint", { text = icons.dap.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
 
+	local configured = {}
 	---A handler to setup all clients defined under `tool/dap/clients/*.lua`
 	---@param config table
 	local function mason_dap_handler(config)
+		if config.name == "delve" or config.name == "python" then
+			return
+		end
 		local dap_name = config.name
+		if configured[dap_name] then
+			return
+		end
 		local ok, custom_handler = pcall(require, "user.configs.dap-clients." .. dap_name)
 		if not ok then
 			-- Use preset if there is no user definition
@@ -62,6 +69,7 @@ return function()
 		if not ok then
 			-- Default to use factory config for clients(s) that doesn't include a spec
 			mason_dap.default_setup(config)
+			configured[dap_name] = true
 			return
 		elseif type(custom_handler) == "function" then
 			-- Case where the protocol requires its own setup
@@ -70,6 +78,7 @@ return function()
 			-- * dap.configurations.<lang> = { your config }
 			-- See `codelldb.lua` for a concrete example.
 			custom_handler(config)
+			configured[dap_name] = true
 		else
 			vim.notify(
 				string.format(
@@ -83,8 +92,16 @@ return function()
 		end
 	end
 
+	-- Register the verifiable adapter even when its executable is supplied outside Mason or currently missing.
+	mason_dap_handler({
+		name = "codelldb",
+		adapters = require("mason-nvim-dap.mappings.adapters").codelldb,
+		configurations = require("mason-nvim-dap.mappings.configurations").codelldb,
+		filetypes = require("mason-nvim-dap.mappings.filetypes").codelldb,
+	})
+
 	require("modules.utils").load_plugin("mason-nvim-dap", {
-		ensure_installed = require("core.settings").dap_deps,
+		ensure_installed = {},
 		automatic_installation = false,
 		handlers = { mason_dap_handler },
 	})

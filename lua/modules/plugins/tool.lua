@@ -91,6 +91,16 @@ tool["aaronhallaert/advanced-git-search.nvim"] = {
 ----------------------------------------------------------------------
 --                           DAP Plugins                            --
 ----------------------------------------------------------------------
+tool["leoluz/nvim-dap-go"] = {
+	ft = "go",
+	config = require("tool.dap.dap-go"),
+	dependencies = { "mfussenegger/nvim-dap" },
+}
+tool["mfussenegger/nvim-dap-python"] = {
+	ft = "python",
+	config = require("tool.dap.dap-python"),
+	dependencies = { "mfussenegger/nvim-dap" },
+}
 tool["mfussenegger/nvim-dap"] = {
 	lazy = true,
 	cmd = {
