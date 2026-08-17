@@ -2,6 +2,7 @@
 return {
 	single_file_support = true,
 	debounce_text_changes = 150,
+	filetypes = { "yaml", "yaml.docker-compose", "yaml.github", "yaml.gitlab", "yaml.helm-values" },
 	settings = {
 		-- https://github.com/redhat-developer/vscode-redhat-telemetry#how-to-disable-telemetry-reporting
 		redhat = { telemetry = { enabled = false } },
@@ -19,6 +20,7 @@ return {
 				url = "",
 			},
 			schemas = require("schemastore").yaml.schemas({
+				ignore = { "Traefik v2" },
 				extra = {
 					{
 						name = "azure-pipelines",
@@ -27,25 +29,23 @@ return {
 						url = "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json",
 					},
 					{
-						name = "gh-dash config",
-						description = "gh-dash config YAML schema",
-						fileMatch = "*/gh-dash/config.yml",
-						url = "https://dlvdhr.github.io/gh-dash/configuration/gh-dash/schema.json",
-					},
-					{
 						name = "Traefik v3",
 						description = "Traefik v3 static configuration",
 						fileMatch = { "traefik.yml", "traefik.yaml" },
 						url = "https://www.schemastore.org/traefik-v3.json",
 					},
 				},
-				-- Override built-in Traefik v2 with v3
 				replace = {
-					["Traefik v2"] = {
-						name = "Traefik v3",
-						description = "Traefik v3 static configuration",
-						fileMatch = { "traefik.yml", "traefik.yaml" },
-						url = "https://www.schemastore.org/traefik-v3.json",
+					["gh-dash"] = {
+						name = "gh-dash",
+						description = "Configuration for the gh-dash GitHub CLI dashboard",
+						fileMatch = {
+							".gh-dash.yml",
+							".gh-dash.yaml",
+							"**/gh-dash/config.yml",
+							"**/gh-dash/config.yaml",
+						},
+						url = "https://gh-dash.dev/schema.json",
 					},
 				},
 			}),

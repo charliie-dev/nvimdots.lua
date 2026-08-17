@@ -1,0 +1,3 @@
+return {
+	filetypes = { "yaml.github" },
+}
