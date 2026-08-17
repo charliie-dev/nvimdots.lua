@@ -7,40 +7,20 @@
 }:
 let
   cfg = config.programs.neovim.nvimdots;
-  inherit (lib) flip warn const;
   inherit (lib.attrsets) optionalAttrs;
   inherit (lib.lists) optionals;
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkEnableOption mkOption literalExpression;
   inherit (lib.strings) concatStringsSep versionOlder versionAtLeast;
-  inherit (lib.types)
-    listOf
-    coercedTo
-    package
-    functionTo
-    ;
+  inherit (lib.types) listOf package;
 in
 {
   options = {
     programs.neovim = {
       nvimdots = {
         enable = mkEnableOption ''
-          Activate "ayamir/nvimdots".
-          Have a look at https://github.com/ayamir/nvimdots for details
-        '';
-        bindLazyLock = mkEnableOption ''
-          Bind lazy-lock.json in your repository to $XDG_CONFIG_HOME/nvim.
-          Very powerful in terms of keeping the environment consistent, but has the following side effects.
-          You cannot update it even if you run the Lazy command, because it binds read-only.
-          You need to remove lazy-lock.json before enabling this option if `mergeLazyLock` is set.
-        '';
-        mergeLazyLock = mkEnableOption ''
-          Merges the managed lazy-lock.json with the existing one under $XDG_CONFIG_HOME/nvim if its hash has changed on activation.
-          Upstream package version changes have high priority.
-          This means changes to lazy-lock.json in the config directory (likely due to installing package) will be preserved.
-          In other words, it achieves environment consistency while remaining adaptable to changes.
-          You need to unlink lazy-lock.json before enabling this option if `bindLazyLock` is set.
-          Please refer to the wiki for details on the behavior.
+          Activate the charliie-dev/nvimdots.lua Neovim configuration.
+          See https://github.com/charliie-dev/nvimdots.lua for details.
         '';
         setBuildEnv = mkEnableOption ''
           Sets environment variables that resolve build dependencies as required by `mason.nvim` and `nvim-treesitter`
@@ -51,32 +31,6 @@ in
           Include basic build tools like `gcc` and `pkg-config`.
           Required for NixOS.
         '';
-        withHaskell = mkEnableOption ''
-          Enable the Haskell compiler. Set to `true` to
-          use Haskell plugins.
-        '';
-        extraHaskellPackages = mkOption {
-          type =
-            let
-              fromType = listOf package;
-            in
-            coercedTo fromType (flip warn const ''
-              Assigning a plain list to extraHaskellPackages is deprecated.
-                     Please assign a function taking a package set as argument, so
-                       extraHaskellPackages = [ pkgs.haskellPackages.xxx ];
-                     should become
-                       extraHaskellPackages = ps: [ ps.xxx ];
-            '') (functionTo fromType);
-          default = _: [ ];
-          defaultText = literalExpression "ps: [ ]";
-          example = literalExpression "hsPkgs: with hsPkgs; [ mtl ]";
-          description = ''
-            The extra Haskell packages required for your plugins to work.
-            This option accepts a function that takes a Haskell package set as an argument,
-            and selects the required Haskell packages from this package set.
-            See the example for more info.
-          '';
-        };
         extraDependentPackages = mkOption {
           type = listOf package;
           default = [ ];
@@ -135,36 +89,10 @@ in
       ];
     in
     mkIf cfg.enable {
-      assertions = [
-        {
-          assertion = !(cfg.bindLazyLock && cfg.mergeLazyLock);
-          message = "bindLazyLock and mergeLazyLock cannot be enabled at the same time.";
-        }
-      ];
       xdg.configFile = {
         "nvim/init.lua".source = ../../init.lua;
         "nvim/lua".source = ../../lua;
         "nvim/snips".source = ../../snips;
-      }
-      // optionalAttrs cfg.bindLazyLock {
-        "nvim/lazy-lock.json".source = ../../lazy-lock.json;
-      }
-      // optionalAttrs cfg.mergeLazyLock {
-        "nvim/lazy-lock.nix.json" = {
-          source = ../../lazy-lock.json;
-          onChange = ''
-            if [ -f ${config.xdg.configHome}/nvim/lazy-lock.json ]; then
-              tmp=$(mktemp)
-              ${pkgs.jq}/bin/jq -r -s '.[0] * .[1]' ${config.xdg.configHome}/nvim/lazy-lock.json ${
-                config.xdg.configFile."nvim/lazy-lock.nix.json".source
-              } > "''${tmp}" && mv "''${tmp}" ${config.xdg.configHome}/nvim/lazy-lock.json
-            else
-              ${pkgs.rsync}/bin/rsync --chmod 644 ${
-                config.xdg.configFile."nvim/lazy-lock.nix.json".source
-              } ${config.xdg.configHome}/nvim/lazy-lock.json
-            fi
-          '';
-        };
       };
       home = {
         packages = [
@@ -191,25 +119,10 @@ in
           pkgs.gcc
           pkgs.gnumake
           pkgs.go
-          pkgs.lua51Packages.luarocks
           pkgs.ninja
           pkgs.pkg-config
           pkgs.yarn
-        ]
-        ++ optionals cfg.withHaskell [
-          (pkgs.writeShellApplication {
-            name = "stack";
-            text = ''
-              exec "${pkgs.stack}/bin/stack" "--extra-include-dirs=${config.home.profileDirectory}/lib/nvim-depends/include" "--extra-lib-dirs=${config.home.profileDirectory}/lib/nvim-depends/lib" "$@"
-            '';
-          })
-          (pkgs.haskellPackages.ghcWithPackages (ps: cfg.extraHaskellPackages ps))
         ];
-
-        extraPython3Packages =
-          ps: with ps; [
-            pynvim
-          ];
       }
       // optionalAttrs (versionAtLeast config.home.stateVersion "24.05") {
         extraWrapperArgs = optionals cfg.setBuildEnv [

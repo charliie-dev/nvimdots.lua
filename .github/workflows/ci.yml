@@ -12,6 +12,7 @@ on:
       - "vim.yml"
       - "flake.nix"
       - "flake.lock"
+      - "nixos/**"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
@@ -21,6 +22,7 @@ on:
       - "vim.yml"
       - "flake.nix"
       - "flake.lock"
+      - "nixos/**"
       - ".github/workflows/ci.yml"
 
 # id-token: write omitted — not using FlakeHub cache
@@ -83,6 +85,9 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@v3
+
+      - name: Run flake checks without building
+        run: nix flake check --no-build --all-systems
 
       - name: Run flake checks
         run: nix flake check

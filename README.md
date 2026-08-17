@@ -90,21 +90,49 @@ For prerequisites and dependencies, see [Wiki: Prerequisite](https://github.com/
 
 ### Nix (via home-manager)
 
-This config ships with a `flake.nix` for reproducible setup. Add it to your home-manager configuration:
+This config ships with a Home Manager module. Add the input and module to your `flake.nix`:
 
 ```nix
 {
   inputs.nvimdots.url = "github:charliie-dev/nvimdots.lua";
 
-  # In your home-manager module:
-  programs.neovim = {
+  outputs =
+    {
+      home-manager,
+      nixpkgs,
+      nvimdots,
+      ...
+    }:
+    let
+      # Choose one: x86_64-linux, aarch64-linux, aarch64-darwin
+      system = "x86_64-linux";
+    in
+    {
+      homeConfigurations.user = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
+        modules = [
+          nvimdots.homeManagerModules.default
+          ./home.nix
+        ];
+      };
+    };
+}
+```
+
+Configure nvimdots separately in `home.nix`:
+
+```nix
+{
+  programs.neovim.nvimdots = {
     enable = true;
-    package = inputs.nvimdots.packages.${system}.default;
+    setBuildEnv = true;
+    withBuildTools = true;
   };
 }
 ```
 
-See `nixos/` and `flake.nix` for details.
+The build environment and tools mainly support native plugin and parser builds on NixOS. See `nixos/` and
+`flake.nix` for details.
 
 ## ⚙️ Configuration & Usage
 

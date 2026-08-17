@@ -1,4 +1,4 @@
-# NOTE: to add more language support, make a directory under `nixos`, followed by the language name and `default.nix`. See `dotnet/default.nix` for example.
+# Home Manager module for charliie-dev/nvimdots.lua.
 {
   imports = [
     ./neovim

@@ -7,9 +7,6 @@ let
   testSettings =
     { config, ... }:
     {
-      warnings = [
-        "home-manager version: ${config.home.version.release}"
-      ];
       home = {
         username = "hm-user";
         homeDirectory = "/home/hm-user";
@@ -19,14 +16,10 @@ let
       programs = {
         home-manager.enable = true;
         git.enable = true;
-        neovim = {
+        neovim.nvimdots = {
           enable = true;
-          nvimdots = {
-            enable = true;
-            setBuildEnv = true;
-            withBuildTools = true;
-            withHaskell = true;
-          };
+          setBuildEnv = true;
+          withBuildTools = true;
         };
       };
     };

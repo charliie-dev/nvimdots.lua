@@ -1,6 +1,5 @@
 {
-  # This provides only NixOS module
-  description = "Provide nixosModules for CharlesChiuGit/nvimdots.lua";
+  description = "Home Manager module for charliie-dev/nvimdots.lua";
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -26,7 +25,6 @@
       systems = [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darwin"
         "aarch64-darwin"
       ];
       perSystem =
@@ -36,6 +34,7 @@
           ...
         }:
         {
+          formatter = pkgs.nixfmt;
           packages = {
             testEnv = (import ./nixos/testEnv.nix { inherit inputs pkgs; }).activationPackage;
             check-linker = pkgs.writeShellApplication {
@@ -87,7 +86,7 @@
                 mkNvimDir = {
                   text = ''
                     mkdir -p "''${XDG_CONFIG_HOME}"/nvimdots
-                    for path in lazy-lock.json init.lua lua snips tutor; do
+                    for path in lazy-lock.json init.lua lua snips; do
                       ln -sf "''${PWD}/''${path}" "''${XDG_CONFIG_HOME}"/nvimdots/
                     done
                   '';
@@ -106,7 +105,7 @@
             ];
             packages = with pkgs; [
               nixd
-              nixfmt-rfc-style
+              nixfmt
             ];
           };
         };
