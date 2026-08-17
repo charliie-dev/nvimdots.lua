@@ -1,5 +1,6 @@
 return function()
-	local transparent_background = require("core.settings").transparent_background
+	local settings = require("core.settings")
+	local transparent_background = settings.transparent_background
 	local clear = {}
 
 	require("modules.utils").load_plugin("catppuccin", {
@@ -122,4 +123,5 @@ return function()
 			end,
 		},
 	})
+	vim.cmd.colorscheme(settings.colorscheme)
 end

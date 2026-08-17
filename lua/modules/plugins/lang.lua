@@ -29,8 +29,7 @@ lang["bullets-vim/bullets.vim"] = {
 -- 	},
 -- }
 lang["OXY2DEV/markview.nvim"] = {
-	lazy = true,
-	ft = { "markdown", "Avante", "codecompanion" },
+	lazy = false,
 	config = require("lang.markview"),
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
@@ -46,6 +45,9 @@ lang["iamcco/markdown-preview.nvim"] = {
 lang["lervag/vimtex"] = {
 	lazy = true,
 	ft = "tex",
+	init = function()
+		vim.g.tex_flavor = "latex"
+	end,
 	config = require("lang.vimtex"),
 }
 lang["ranelpadon/python-copy-reference.vim"] = {
