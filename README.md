@@ -73,8 +73,6 @@
 │       ├── bash/injections.scm    bash injection queries
 │       └── toml/injections.scm    toml injection queries
 ├── nixos/                         NixOS/home-manager integration
-├── scripts/
-│   └── update_lockfile.sh         script for updating lazy-lock.json
 ├── snips/
 │   ├── package.json               how LuaSnip reads snippets, vscode-style
 │   └── snippets/                  snippet definitions (c, cpp, global, go, lua,

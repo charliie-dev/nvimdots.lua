@@ -50,9 +50,10 @@ jobs:
         timeout-minutes: 5
         run: |
           set -euo pipefail
-          ./scripts/update_lockfile.sh
           cp lazy-lock.json lazy-lock.json.before
-          nvim --headless "+Lazy! update" +qa
+          XDG_CONFIG_HOME="$(dirname "$GITHUB_WORKSPACE")" \
+          NVIM_APPNAME="$(basename "$GITHUB_WORKSPACE")" \
+            nvim --headless "+Lazy! update" +qa
 
       - name: Log lockfile changes
         if: ${{ steps.check_lockfile.outputs.files_exists == 'true' }}
