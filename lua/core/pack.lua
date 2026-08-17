@@ -4,6 +4,7 @@ local is_mac = global.is_mac
 local vim_path = global.vim_path
 local data_dir = global.data_dir
 local lazy_path = data_dir .. "lazy/lazy.nvim"
+local lazy_init = lazy_path .. "/lua/lazy/init.lua"
 local modules_dir = vim_path .. "/lua/modules"
 local user_config_dir = vim_path .. "/lua/user"
 
@@ -64,15 +65,12 @@ function Lazy:load_plugins()
 end
 
 function Lazy:load_lazy()
-	if not vim.uv.fs_stat(lazy_path) then
+	if not vim.uv.fs_stat(lazy_init) then
 		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git" or "https://github.com/folke/lazy.nvim.git"
 		local result = vim.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazy_repo, lazy_path })
 			:wait()
 		if result.code ~= 0 then
-			vim.api.nvim_echo({
-				{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-				{ result.stderr or "", "WarningMsg" },
-			}, true, {})
+			error("Failed to clone lazy.nvim:\n" .. (result.stderr or "unknown error"), 0)
 		end
 	end
 	self:load_plugins()
