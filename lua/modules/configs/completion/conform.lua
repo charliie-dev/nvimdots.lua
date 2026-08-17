@@ -65,6 +65,8 @@ return function()
 		end
 
 		-- Format hunks in reverse to avoid line offset issues
+		local conform = require("conform")
+		local attempted = false
 		local has_error = false
 		for i = #hunks, 1, -1 do
 			local hunk = hunks[i]
@@ -79,18 +81,31 @@ return function()
 				-- characters, so a hunk preceded by non-ASCII text can pull in one adjacent
 				-- node — an upstream mismatch no column choice here can fix.
 				local last_line = vim.api.nvim_buf_get_lines(bufnr, end_line - 1, end_line, false)[1] or ""
-				local ok_fmt, err = pcall(require("conform").format, {
+				local format_error
+				local call_ok, did_attempt = pcall(conform.format, {
 					bufnr = bufnr,
 					range = {
 						start = { start_line, 0 },
 						["end"] = { end_line, #last_line },
 					},
 					quiet = true,
-				})
-				if not ok_fmt then
+				}, function(err)
+					format_error = err
+				end)
+				if not call_ok then
 					has_error = true
+					format_error = did_attempt
+				elseif format_error then
+					has_error = true
+				elseif not did_attempt then
+					has_error = true
+					format_error = "no formatter was available"
+				else
+					attempted = true
+				end
+				if format_error then
 					vim.notify(
-						string.format("[Conform] Failed to format hunk at line %d: %s", start_line, err),
+						string.format("[Conform] Failed to format hunk at line %d: %s", start_line, format_error),
 						vim.log.levels.WARN,
 						{ title = "Conform" }
 					)
@@ -98,10 +113,10 @@ return function()
 			end
 		end
 
-		if format_notify and not has_error then
+		if format_notify and attempted and not has_error then
 			vim.notify("[Conform] Formatted changed lines successfully!", vim.log.levels.INFO, { title = "Conform" })
 		end
-		return true
+		return attempted and not has_error
 	end
 
 	require("modules.utils").load_plugin("conform", {
