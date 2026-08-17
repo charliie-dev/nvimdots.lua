@@ -9,7 +9,6 @@ return function()
 
 	require("modules.utils").load_plugin("snacks", {
 		bigfile = { enabled = true },
-		bufdelete = { enabled = true },
 		dashboard = {
 			enabled = true,
 			preset = {
