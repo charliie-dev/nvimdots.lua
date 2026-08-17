@@ -51,53 +51,64 @@ return function()
 	vim.fn.sign_define("DapLogPoint", { text = icons.dap.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
 
 	local configured = {}
+	local function optional_module(module)
+		local ok, value = pcall(require, module)
+		if ok then
+			return true, value
+		end
+		local load_error = tostring(value)
+		if load_error:find("module '" .. module .. "' not found:", 1, true) then
+			return false, nil
+		end
+		error(string.format("Failed to load DAP client module [%s]: %s", module, load_error), 0)
+	end
+
 	---A handler to setup all clients defined under `tool/dap/clients/*.lua`
 	---@param config table
 	local function mason_dap_handler(config)
-		if config.name == "delve" or config.name == "python" then
+		assert(type(config) == "table", "mason-nvim-dap handler config must be a table")
+		assert(type(config.name) == "string" and config.name ~= "", "mason-nvim-dap handler requires a name")
+		if config.name == "delve" or config.name == "python" or config.name == "lldb" then
 			return
 		end
 		local dap_name = config.name
 		if configured[dap_name] then
 			return
 		end
-		local ok, custom_handler = pcall(require, "user.configs.dap-clients." .. dap_name)
-		if not ok then
-			-- Use preset if there is no user definition
-			ok, custom_handler = pcall(require, "tool.dap.clients." .. dap_name)
+		local user_present, custom_handler = optional_module("user.configs.dap-clients." .. dap_name)
+		if not user_present then
+			custom_handler = select(2, optional_module("tool.dap.clients." .. dap_name))
 		end
-		if not ok then
-			-- Default to use factory config for clients(s) that doesn't include a spec
+		if custom_handler == nil then
 			mason_dap.default_setup(config)
-			configured[dap_name] = true
-			return
 		elseif type(custom_handler) == "function" then
-			-- Case where the protocol requires its own setup
-			-- Make sure to set
-			-- * dap.adpaters.<dap_name> = { your config }
-			-- * dap.configurations.<lang> = { your config }
-			-- See `codelldb.lua` for a concrete example.
 			custom_handler(config)
-			configured[dap_name] = true
 		else
-			vim.notify(
+			error(
 				string.format(
-					"Failed to setup [%s].\n\nClient definition under `tool/dap/clients` must return\na fun(opts) (got '%s' instead)",
-					config.name,
+					"DAP client definition for [%s] must return a function (got '%s')",
+					dap_name,
 					type(custom_handler)
 				),
-				vim.log.levels.ERROR,
-				{ title = "nvim-dap" }
+				0
 			)
+		end
+		configured[dap_name] = true
+	end
+
+	local function codelldb_mapping(module)
+		local ok, mapping = pcall(require, module)
+		if ok and type(mapping) == "table" then
+			return mapping.codelldb
 		end
 	end
 
 	-- Register the verifiable adapter even when its executable is supplied outside Mason or currently missing.
 	mason_dap_handler({
 		name = "codelldb",
-		adapters = require("mason-nvim-dap.mappings.adapters").codelldb,
-		configurations = require("mason-nvim-dap.mappings.configurations").codelldb,
-		filetypes = require("mason-nvim-dap.mappings.filetypes").codelldb,
+		adapters = codelldb_mapping("mason-nvim-dap.mappings.adapters"),
+		configurations = codelldb_mapping("mason-nvim-dap.mappings.configurations"),
+		filetypes = codelldb_mapping("mason-nvim-dap.mappings.filetypes"),
 	})
 
 	require("modules.utils").load_plugin("mason-nvim-dap", {
