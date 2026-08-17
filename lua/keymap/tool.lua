@@ -35,8 +35,7 @@ set("n", "<leader>r", "<Cmd>%SnipRun<CR>", { silent = true, desc = "tool: Run co
 -- Plugin: overseer.nvim
 set("n", "<leader>or", "<Cmd>OverseerRun<CR>", { silent = true, desc = "tool: Overseer run" })
 set("n", "<leader>ot", "<Cmd>OverseerToggle<CR>", { silent = true, desc = "tool: Overseer toggle" })
-set("n", "<leader>oa", "<Cmd>OverseerQuickAction<CR>", { silent = true, desc = "tool: Overseer quick action" })
-set("n", "<leader>oi", "<Cmd>OverseerInfo<CR>", { silent = true, desc = "tool: Overseer info" })
+set("n", "<leader>oa", "<Cmd>OverseerTaskAction<CR>", { silent = true, desc = "tool: Overseer task action" })
 
 -- Plugin: markview.nvim
 set("n", "<F1>", "<Cmd>Markview toggle<CR>", { silent = true, desc = "tool: Toggle markdown preview within nvim" })
