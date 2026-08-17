@@ -5,12 +5,6 @@ local editor = {}
 -- 	event = "InsertEnter",
 -- 	config = require("editor.autoclose"),
 -- }
--- editor["s1n7ax/nvim-comment-frame"] = {
--- 	lazy = true,
--- 	event = { "CursorHold", "CursorHoldI" },
--- 	config = require("editor.comment-frame"),
--- 	dependencies = "nvim-treesitter/nvim-treesitter",
--- }
 editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
@@ -32,13 +26,6 @@ editor["echasnovski/mini.surround"] = {
 	version = false,
 	config = require("editor.surround"),
 }
--- NOTE: `flash.nvim` is a powerful plugin that can be used as partial or complete replacements for:
---  > `hop.nvim`,
---  > `wilder.nvim`
---  > `nvim-treehopper`
--- Considering its steep learning curve as well as backward compatibility issues...
---  > We have no plan to remove the above plugins for the time being.
--- But as usual, you can always tweak the plugin to your liking.
 editor["folke/flash.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
@@ -112,13 +99,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	lazy = false,
 	-- event = "BufReadPre",
 	branch = "main",
-	init = function()
-		require("vim.treesitter.query").add_predicate("is-mise?", function(_, _, bufnr, _)
-			local filepath = vim.api.nvim_buf_get_name(tonumber(bufnr) or 0)
-			local filename = vim.fn.fnamemodify(filepath, ":t")
-			return string.match(filename, ".*mise.*%.toml$") ~= nil
-		end, { force = true, all = false })
-	end,
 	build = function()
 		if #vim.api.nvim_list_uis() > 0 then
 			local parsers = vim.tbl_keys(require("core.settings").treesitter_deps)
