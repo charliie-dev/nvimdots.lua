@@ -1,13 +1,11 @@
 return function()
-	local rd = require("rainbow-delimiters")
-
 	---@param threshold number @Use global strategy if nr of lines exceeds this value
 	local function init_strategy(threshold)
-		return function()
-			if vim.api.nvim_buf_line_count(0) > threshold then
-				return rd.strategy["global"]
+		return function(buf)
+			if vim.api.nvim_buf_line_count(buf) > threshold then
+				return "rainbow-delimiters.strategy.global"
 			end
-			return rd.strategy["local"]
+			return "rainbow-delimiters.strategy.local"
 		end
 	end
 

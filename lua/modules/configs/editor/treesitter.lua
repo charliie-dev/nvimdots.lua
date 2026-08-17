@@ -1,6 +1,4 @@
 return vim.schedule_wrap(function()
-	vim.api.nvim_set_option_value("indentexpr", "v:lua.require'nvim-treesitter'.indentexpr()", {})
-
 	require("modules.utils").load_plugin("nvim-treesitter", {})
 
 	vim.api.nvim_create_autocmd("FileType", {
@@ -18,6 +16,9 @@ return vim.schedule_wrap(function()
 			end
 			if not vim.treesitter.query.get(lang, "highlights") then
 				return
+			end
+			if vim.treesitter.query.get(lang, "indents") then
+				vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 			end
 			pcall(vim.treesitter.start, args.buf, lang)
 		end,
