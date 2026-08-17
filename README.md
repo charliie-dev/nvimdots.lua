@@ -60,73 +60,16 @@
 
 ## 🧱 Structure
 
-`${HOME}/.config/nvim`
-
-```txt
-├── Applications/                  macOS application shortcuts
-├── after/
-│   ├── ftplugin/                  filetype-based rules (c, cpp, dockerfile, go, json,
-│   │                              jsonc, make, markdown, nix, python, rust)
-│   ├── plugin/
-│   │   └── mise.lua               mise integration (after plugin)
-│   └── queries/                   custom treesitter queries
-│       ├── bash/injections.scm    bash injection queries
-│       └── toml/injections.scm    toml injection queries
-├── nixos/                         NixOS/home-manager integration
-├── snips/
-│   ├── package.json               how LuaSnip reads snippets, vscode-style
-│   └── snippets/                  snippet definitions (c, cpp, global, go, lua,
-│                                  markdown, python/, rust)
-├── spell/                         custom spelling correction
-├── flake.nix                      Nix flake for reproducible environment
-├── flake.lock                     Nix flake lock file
-├── lazy-lock.json                 lazy.nvim plugin lock file
-├── mise.toml                      mise task runner config
-├── stylua.toml                    stylua settings
-├── tombi.toml                     TOML LSP settings
-├── init.lua
-└── lua/
-    ├── core/
-    │   ├── event.lua              event-based autocommands
-    │   ├── global.lua             global/platform variables
-    │   ├── init.lua               bootstrap sequence
-    │   ├── options.lua            neovim options
-    │   ├── pack.lua               lazy.nvim bootstrap & plugin loader
-    │   └── settings.lua           user-customizable settings
-    ├── hm-generated.lua           home-manager generated config (NixOS)
-    ├── keymap/                    keymaps organized by category
-    │   ├── init.lua               package keymaps + requires all categories
-    │   ├── viewport.lua           buffer, window, tab keymaps
-    │   ├── edit.lua               editing, motion, text objects, session
-    │   ├── lsp.lua                LSP, trouble, formatter keymaps
-    │   ├── git.lua                gitsigns, diffview, git picker
-    │   ├── fuzzy.lua              snacks.nvim picker keymaps
-    │   ├── debug.lua              DAP keymaps
-    │   ├── terminal.lua           terminal, TUI tools (lazygit, btop, yazi)
-    │   ├── tool.lua               overseer, sniprun, sidebar, markview
-    │   └── helpers.lua            keymap helper functions
-    └── modules/
-        ├── plugins/               lazy.nvim plugin specs
-        │   ├── completion.lua     LSP, completion, formatting, linting
-        │   ├── editor.lua         editing enhancements
-        │   ├── lang.lua           language-specific plugins
-        │   ├── tool.lua           tools (DAP, search, file explorer, etc.)
-        │   └── ui.lua             UI & appearance
-        ├── configs/               plugin configurations
-        │   ├── completion/        LSP, blink.cmp, conform, nvim-lint configs
-        │   │   ├── formatters/    per-formatter configurations
-        │   │   └── servers/       per-LSP server configurations
-        │   ├── editor/            editor plugin configs
-        │   ├── lang/              language plugin configs
-        │   ├── tool/              tool configs
-        │   │   └── dap/           DAP settings & per-language debug clients
-        │   └── ui/                UI plugin configs
-        └── utils/                 utility functions
-            ├── init.lua           general utilities
-            ├── icons.lua          icon definitions
-            ├── keymap.lua         keymap utilities (amend/replace)
-            └── dap.lua            DAP utilities
-```
+- `lua/core/` — core initialization, options, events, and settings
+- `lua/modules/plugins/` — lazy.nvim plugin specifications
+- `lua/modules/configs/` — plugin configurations
+- `lua/keymap/` — keymaps organized by category
+- `after/queries/` — custom Treesitter queries
+- `ftdetect/` — filetype detection rules
+- `ftplugin/` — filetype-specific settings
+- `syntax/` — custom syntax definitions
+- `snips/` — snippet definitions
+- `nixos/` — NixOS and Home Manager integration
 
 ## ⚙️ Installation
 
