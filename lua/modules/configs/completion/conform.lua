@@ -6,6 +6,15 @@ return function()
 	local format_modifications_only = settings.format_modifications_only
 	local format_timeout = settings.format_timeout
 	local block_list = settings.formatter_block_list
+	local disabled_dir_cache = {}
+	local function disabled_matcher(dir)
+		local regex = disabled_dir_cache[dir]
+		if not regex then
+			regex = vim.regex(vim.fs.normalize(dir))
+			disabled_dir_cache[dir] = regex
+		end
+		return regex
+	end
 
 	-- Load clang_format extra_args from user or default config
 	local function clang_format_args()
@@ -26,7 +35,7 @@ return function()
 	local function is_disabled_workspace(bufnr)
 		local filedir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
 		for _, dir in ipairs(disabled_workspaces) do
-			if vim.regex(vim.fs.normalize(dir)):match_str(filedir) ~= nil then
+			if disabled_matcher(dir):match_str(filedir) ~= nil then
 				if format_notify then
 					vim.notify(
 						string.format("[Conform] Formatting disabled for files under [%s].", vim.fs.normalize(dir)),
