@@ -30,11 +30,24 @@
       perSystem =
         {
           pkgs,
+          self',
           system,
           ...
         }:
         {
           formatter = pkgs.nixfmt;
+          checks.nvim-build-env = pkgs.runCommand "check-nvim-build-env" { } ''
+            export HOME="$TMPDIR/home"
+            export XDG_CONFIG_HOME="$TMPDIR/config"
+            export XDG_DATA_HOME="$TMPDIR/data"
+            export XDG_STATE_HOME="$TMPDIR/state"
+            export XDG_CACHE_HOME="$TMPDIR/cache"
+            mkdir -p "$HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"
+            ${self'.packages.testEnv}/home-path/bin/nvim -u NONE -i NONE --headless \
+              '+lua local function check(ok,msg) if not ok then vim.api.nvim_err_writeln(msg); vim.cmd("cquit 1") end end; local values={CPATH="neovim-build-deps/include",LIBRARY_PATH="neovim-build-deps/lib"}; for name,needle in pairs(values) do check((vim.env[name] or ""):find(needle,1,true),name .. " missing " .. needle) end; local pkg=vim.env.PKG_CONFIG_PATH or ""; local root=vim.iter(vim.split(pkg,":",{plain=true})):find(function(path) return path:find("neovim-build-deps/lib/pkgconfig",1,true) ~= nil end); check(root and vim.fn.isdirectory(root)==1,"pkg-config metadata root missing"); check(vim.fn.executable("pkg-config")==1,"pkg-config executable missing"); local result=vim.system({"pkg-config","--exists","openssl"}):wait(); check(result.code==0,"pkg-config cannot resolve openssl: " .. (result.stderr or ""))' \
+              '+qa!'
+            touch "$out"
+          '';
           packages = {
             testEnv = (import ./nixos/testEnv.nix { inherit inputs pkgs; }).activationPackage;
             check-linker = pkgs.writeShellApplication {

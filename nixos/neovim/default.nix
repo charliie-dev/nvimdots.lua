@@ -78,6 +78,7 @@ in
         ];
         ignoreCollisions = true;
       };
+      pkgConfigPath = "${neovim-build-deps}/lib/pkgconfig";
 
       buildEnv = [
         "CPATH=\${CPATH:+\${CPATH}:}${neovim-build-deps}/include"
@@ -85,7 +86,7 @@ in
         "LD_LIBRARY_PATH=\${LD_LIBRARY_PATH:+\${LD_LIBRARY_PATH}:}${neovim-build-deps}/lib"
         "LIBRARY_PATH=\${LIBRARY_PATH:+\${LIBRARY_PATH}:}${neovim-build-deps}/lib"
         "NIX_LD_LIBRARY_PATH=\${NIX_LD_LIBRARY_PATH:+\${NIX_LD_LIBRARY_PATH}:}${neovim-build-deps}/lib"
-        "PKG_CONFIG_PATH=\${PKG_CONFIG_PATH:+\${PKG_CONFIG_PATH}:}${neovim-build-deps}/include/pkgconfig"
+        "PKG_CONFIG_PATH=\${PKG_CONFIG_PATH:+\${PKG_CONFIG_PATH}:}${pkgConfigPath}"
       ];
     in
     mkIf cfg.enable {
@@ -145,7 +146,7 @@ in
           "--suffix"
           "PKG_CONFIG_PATH"
           ":"
-          "${neovim-build-deps}/include/pkgconfig"
+          "${pkgConfigPath}"
           "--suffix"
           "NIX_LD_LIBRARY_PATH"
           ":"
