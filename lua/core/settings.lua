@@ -91,7 +91,7 @@ settings["lsp_inlayhints"] = false
 settings["lsp_deps"] = {
 	"bashls",
 	"clangd",
-	-- "dart",
+	-- "dartls",
 	"dockerls",
 	"gh_actions_ls",
 	"gopls",

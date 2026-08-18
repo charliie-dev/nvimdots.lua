@@ -18,7 +18,6 @@ return {
 			},
 			hint = { enable = true, setType = true },
 			format = { enable = false },
-			telemetry = { enable = false },
 			-- Do not override treesitter lua highlighting with lua_ls's highlighting
 			semantic = { enable = false },
 		},

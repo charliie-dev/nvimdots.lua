@@ -2,7 +2,6 @@ return function()
 	require("modules.utils").load_plugin("tiny-inline-diagnostic", {
 		preset = "modern",
 		transparent_bg = false,
-		transparent_cursorline = true,
 		options = {
 			show_source = {
 				enabled = true,

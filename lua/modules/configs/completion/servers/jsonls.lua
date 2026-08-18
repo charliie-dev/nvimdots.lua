@@ -5,7 +5,6 @@ return {
 		json = {
 			validate = { enable = true },
 			format = { enable = true },
-			hover = true,
 			schemaDownload = { enable = true },
 			schemas = require("schemastore").json.schemas(),
 		},

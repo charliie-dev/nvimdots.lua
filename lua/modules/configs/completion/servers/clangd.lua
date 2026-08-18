@@ -64,8 +64,10 @@ end
 return function(defaults)
 	vim.lsp.config("clangd", {
 		capabilities = vim.tbl_deep_extend("keep", { offsetEncoding = { "utf-16", "utf-8" } }, defaults.capabilities),
-		single_file_support = true,
-		on_init = function(client, _)
+		on_init = function(client, init_result)
+			if init_result.offsetEncoding then
+				client.offset_encoding = init_result.offsetEncoding
+			end
 			if client.server_capabilities then
 				client.server_capabilities.semanticTokensProvider = nil
 			end

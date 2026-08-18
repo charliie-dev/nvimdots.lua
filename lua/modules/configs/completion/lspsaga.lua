@@ -81,12 +81,9 @@ return function()
 		},
 		-- Diagnostics: https://nvimdev.github.io/lspsaga/diagnostic/
 		diagnostic = {
-			show_code_action = true,
 			jump_num_shortcut = true,
 			max_width = 0.5,
 			max_height = 0.6,
-			text_hl_follow = true,
-			border_follow = true,
 			extend_relatedInformation = true,
 			show_layout = "float",
 			show_normal_height = 10,
@@ -147,7 +144,6 @@ return function()
 			expand = icons.ui.ArrowClosed,
 			collapse = icons.ui.ArrowOpen,
 			code_action = icons.ui.CodeAction,
-			actionfix = icons.ui.Spell,
 			lines = { "┗", "┣", "┃", "━", "┏" },
 			imp_sign = icons.kind.Implementation,
 			kind = {
