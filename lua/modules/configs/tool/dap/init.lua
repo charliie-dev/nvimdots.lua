@@ -69,7 +69,7 @@ return function()
 	local function mason_dap_handler(config)
 		assert(type(config) == "table", "mason-nvim-dap handler config must be a table")
 		assert(type(config.name) == "string" and config.name ~= "", "mason-nvim-dap handler requires a name")
-		if config.name == "delve" or config.name == "python" or config.name == "lldb" then
+		if config.name == "delve" or config.name == "python" then
 			return
 		end
 		local dap_name = config.name
