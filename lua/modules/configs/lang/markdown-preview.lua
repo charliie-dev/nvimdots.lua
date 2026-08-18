@@ -10,8 +10,7 @@ return function()
 	vim.g.mkdp_refresh_slow = true
 
 	-- If true, preview server will be available to others in the same network.
-	-- Set it to true if using WSL.
-	vim.g.mkdp_open_to_the_world = true
+	vim.g.mkdp_open_to_the_world = false
 
 	-- Use custom IP to open preview page.
 	-- Useful when you work in remote nvim and want to preview on local browser.
@@ -67,7 +66,7 @@ return function()
 	vim.g.mkdp_highlight_css = ""
 
 	-- Custom port to start server. Leave it empty for random port.
-	vim.g.mkdp_port = "6464"
+	vim.g.mkdp_port = ""
 
 	-- Preview page title. ${name} is the filename.
 	vim.g.mkdp_page_title = "「${name}」"

@@ -19,15 +19,6 @@ lang["bullets-vim/bullets.vim"] = {
 	lazy = true,
 	ft = { "markdown", "text", "gitcommit" },
 }
--- lang["MeanderingProgrammer/render-markdown.nvim"] = {
--- 	lazy = true,
--- 	ft = "markdown",
--- 	config = require("lang.render-markdown"),
--- 	dependencies = {
--- 		"nvim-tree/nvim-web-devicons",
--- 		"nvim-treesitter/nvim-treesitter",
--- 	},
--- }
 lang["OXY2DEV/markview.nvim"] = {
 	lazy = false,
 	config = require("lang.markview"),
@@ -40,15 +31,7 @@ lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
 	ft = { "markdown" },
 	build = ":call mkdp#util#install()",
-	config = require("lang.markdown-preview"),
-}
-lang["lervag/vimtex"] = {
-	lazy = true,
-	ft = "tex",
-	init = function()
-		vim.g.tex_flavor = "latex"
-	end,
-	config = require("lang.vimtex"),
+	init = require("lang.markdown-preview"),
 }
 lang["ranelpadon/python-copy-reference.vim"] = {
 	lazy = true,
