@@ -1,28 +1,23 @@
 local editor = {}
 
--- editor["m4xshen/autoclose.nvim"] = {
--- 	lazy = true,
--- 	event = "InsertEnter",
--- 	config = require("editor.autoclose"),
--- }
 editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
 	config = require("editor.diffview"),
 }
-editor["echasnovski/mini.align"] = {
+editor["nvim-mini/mini.align"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.align"),
 }
-editor["echasnovski/mini.cursorword"] = {
+editor["nvim-mini/mini.cursorword"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("editor.cursorword"),
 }
-editor["echasnovski/mini.surround"] = {
+editor["nvim-mini/mini.surround"] = {
 	lazy = true,
-	event = "BufReadPost",
+	event = { "BufReadPost", "BufNewFile" },
 	version = false,
 	config = require("editor.surround"),
 }
@@ -33,16 +28,7 @@ editor["folke/flash.nvim"] = {
 }
 editor["olimorris/persisted.nvim"] = {
 	lazy = true,
-	cmd = {
-		"SessionToggle",
-		"SessionStart",
-		"SessionStop",
-		"SessionSave",
-		"SessionLoad",
-		"SessionLoadLast",
-		"SessionLoadFromFile",
-		"SessionDelete",
-	},
+	cmd = "Persisted",
 	config = require("editor.persisted"),
 }
 editor["lambdalisue/suda.vim"] = {
@@ -60,15 +46,6 @@ editor["MagicDuck/grug-far.nvim"] = {
 	cmd = "GrugFar",
 	config = require("editor.grug-far"),
 }
--- editor["joshuadanpeterson/typewriter.nvim"] = {
--- 	lazy = true,
--- 	event = "BufReadPre",
--- 	dependencies = "nvim-treesitter/nvim-treesitter",
--- 	config = require("editor.typewriter"),
--- 	init = function()
--- 		require("typewriter.commands").enable_typewriter_mode()
--- 	end,
--- }
 
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
@@ -94,23 +71,53 @@ editor["nemanjamalesija/smart-paste.nvim"] = {
 	config = require("editor.smart-paste"),
 }
 
+editor["charliie-dev/hmts.nvim"] = {
+	lazy = true,
+	branch = "combined-fixes",
+	ft = "nix",
+	dependencies = "nvim-treesitter/nvim-treesitter",
+}
+
+editor["ravsii/tree-sitter-d2"] = {
+	lazy = true,
+	ft = "d2",
+	build = "make nvim-install",
+	dependencies = "nvim-treesitter/nvim-treesitter",
+	init = function()
+		vim.filetype.add({
+			extension = {
+				d2 = function()
+					return "d2", function(bufnr)
+						vim.bo[bufnr].commentstring = "# %s"
+					end
+				end,
+			},
+		})
+	end,
+}
+
+editor["bezhermoso/tree-sitter-ghostty"] = {
+	lazy = true,
+	ft = "ghostty",
+	build = "make nvim_install",
+	dependencies = "nvim-treesitter/nvim-treesitter",
+}
+
+editor["danymat/neogen"] = {
+	lazy = true,
+	cmd = "Neogen",
+	dependencies = "nvim-treesitter/nvim-treesitter",
+	config = require("editor.neogen"),
+}
+
 editor["nvim-treesitter/nvim-treesitter"] = {
 	-- lazy = true,
 	lazy = false,
 	-- event = "BufReadPre",
 	branch = "main",
-	build = function()
-		if #vim.api.nvim_list_uis() > 0 then
-			local parsers = vim.tbl_keys(require("core.settings").treesitter_deps)
-			table.sort(parsers)
-			require("nvim-treesitter").update(parsers, { summary = true })
-		end
-	end,
+	build = ":TSUpdate",
 	config = require("editor.treesitter"),
 	dependencies = {
-		{ "charliie-dev/hmts.nvim", branch = "combined-fixes", ft = "nix" },
-		{ "ravsii/tree-sitter-d2", ft = "d2", build = "make nvim-install" },
-		{ "bezhermoso/tree-sitter-ghostty", ft = "ghostty", build = "make nvim_install" },
 		{
 			"Hdoc1509/gh-actions.nvim",
 			config = function()
@@ -122,10 +129,6 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			branch = "main",
 			config = require("editor.ts-textobjects"),
 		},
-		-- {
-		-- 	"andymass/vim-matchup",
-		-- 	init = require("editor.matchup"),
-		-- },
 		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.ts-autotag"),
@@ -139,14 +142,9 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 			config = require("editor.ts-context"),
 		},
 		{
-			"echasnovski/mini.ai",
+			"nvim-mini/mini.ai",
 			version = "*",
 			config = require("editor.ai_textobj"),
-		},
-		{
-			"danymat/neogen",
-			cmd = "Neogen",
-			config = require("editor.neogen"),
 		},
 	},
 }

@@ -115,7 +115,7 @@ set("n", "<leader>a", function()
 	ts_to_swap().swap_next("@parameter.inner")
 end, { silent = true, desc = "edit: Swap parameter forward" })
 set("n", "<leader>A", function()
-	ts_to_swap().swap_next("@parameter.outer")
+	ts_to_swap().swap_previous("@parameter.outer")
 end, { silent = true, desc = "edit: Swap parameter backward" })
 
 -- Plugin: nvim-treesitter-textobjects (move)
@@ -150,6 +150,6 @@ set({ "n", "x", "o" }, ";", function()
 end, { silent = true, desc = "edit: Repeat last move" })
 
 -- Plugin: persisted.nvim
-set("n", "<leader>ss", "<Cmd>SessionSave<CR>", { silent = true, desc = "session: Save" })
-set("n", "<leader>sl", "<Cmd>SessionLoad<CR>", { silent = true, desc = "session: Load current" })
-set("n", "<leader>sd", "<Cmd>SessionDelete<CR>", { silent = true, desc = "session: Delete" })
+set("n", "<leader>ss", "<Cmd>Persisted save<CR>", { silent = true, desc = "session: Save" })
+set("n", "<leader>sl", "<Cmd>Persisted load<CR>", { silent = true, desc = "session: Load current" })
+set("n", "<leader>sd", "<Cmd>Persisted delete<CR>", { silent = true, desc = "session: Delete" })

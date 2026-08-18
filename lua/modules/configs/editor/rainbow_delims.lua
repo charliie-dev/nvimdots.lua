@@ -28,17 +28,35 @@ return function()
 			if not ok or not parser then
 				return false
 			end
-			local errors = 200
-			parser:for_each_tree(function(lt)
-				if lt:root():has_error() and errors >= 0 then
-					errors = errors - 1
+			local parse_ok, trees = pcall(parser.parse, parser, true)
+			if not parse_ok or not trees then
+				return false
+			end
+			local error_limit = 200
+			local error_count = 0
+			local function count_errors(node)
+				if node:type() == "ERROR" or node:missing() then
+					error_count = error_count + 1
+					if error_count > error_limit then
+						return
+					end
+				end
+				for child in node:iter_children() do
+					count_errors(child)
+					if error_count > error_limit then
+						return
+					end
+				end
+			end
+			parser:for_each_tree(function(tree)
+				if error_count <= error_limit then
+					count_errors(tree:root())
 				end
 			end)
-			return errors >= 0
+			return error_count <= error_limit
 		end,
 		query = {
 			[""] = "rainbow-delimiters",
-			latex = "rainbow-blocks",
 			javascript = "rainbow-delimiters-react",
 		},
 		highlight = {
