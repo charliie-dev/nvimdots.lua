@@ -79,6 +79,7 @@ editor["charliie-dev/hmts.nvim"] = {
 }
 
 editor["ravsii/tree-sitter-d2"] = {
+	version = "*",
 	lazy = true,
 	ft = "d2",
 	build = "make nvim-install",
