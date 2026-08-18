@@ -31,7 +31,6 @@ completion["nvimdev/lspsaga.nvim"] = {
 completion["rachartier/tiny-inline-diagnostic.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
-	priority = 1000,
 	config = require("completion.tiny-inline-diagnostic"),
 }
 completion["stevearc/conform.nvim"] = {
@@ -60,9 +59,13 @@ completion["charliie-dev/muster.nvim"] = {
 completion["saghen/blink.cmp"] = {
 	lazy = true,
 	event = { "VeryLazy", "InsertEnter", "CmdlineEnter" },
+	branch = "main",
+	build = function()
+		require("blink.cmp").build():pwait()
+	end,
 	config = require("completion.blink"),
-	version = "*",
 	dependencies = {
+		"saghen/blink.lib",
 		{
 			"L3MON4D3/LuaSnip",
 			build = "make install_jsregexp",
@@ -76,11 +79,6 @@ completion["saghen/blink.cmp"] = {
 	},
 	opts_extend = { "sources.default" },
 }
-
--- completion["barreiroleo/ltex_extra.nvim"] = {
--- 	lazy = true,
--- 	ft = "tex",
--- }
 
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get
 -- hover docs and function signatures, but it takes too much time to load all dirs, use it if needed.

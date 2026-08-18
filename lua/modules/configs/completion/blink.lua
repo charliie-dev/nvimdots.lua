@@ -1,10 +1,6 @@
----@module 'blink.cmp'
+---@module "blink.cmp"
 ---@type blink.cmp.Config
 local opts = {
-	-- 'default' for mappings similar to built-in completion
-	-- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
-	-- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
-	-- See the full "keymap" documentation for information on defining your own keymap.
 	keymap = {
 		preset = "default",
 		["<C-n>"] = { "select_next", "fallback" },
@@ -13,31 +9,32 @@ local opts = {
 		["<Tab>"] = { "snippet_forward", "fallback" },
 		["<S-Tab>"] = { "snippet_backward", "fallback" },
 		["<C-c>"] = { "cancel", "hide", "fallback" },
-
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
 		["<C-h>"] = { "scroll_documentation_up", "fallback" },
 		["<C-l>"] = { "scroll_documentation_down", "fallback" },
 		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
 	},
-	---@type blink.cmp.CmdlineConfig
+
 	cmdline = {
 		enabled = true,
-		sources = function()
-			local type = vim.fn.getcmdtype()
-			if type == "/" or type == "?" then
-				return { "buffer" }
-			end
-			if type == ":" or type == "@" then
-				return { "cmdline", "path" }
-			end
-			return {}
-		end,
 		keymap = {
 			preset = "cmdline",
 			["<Tab>"] = { "select_next", "fallback" },
 			["<S-Tab>"] = { "select_prev", "fallback" },
 			["<CR>"] = { "accept_and_enter", "fallback" },
 			["<C-c>"] = { "cancel", "hide", "fallback" },
+		},
+		sources = {
+			default = function()
+				local cmdtype = vim.fn.getcmdtype()
+				if cmdtype == "/" or cmdtype == "?" then
+					return { "buffer" }
+				end
+				if cmdtype == ":" or cmdtype == "@" then
+					return { "cmdline", "path" }
+				end
+				return {}
+			end,
 		},
 		completion = {
 			list = { selection = { preselect = true, auto_insert = true } },
@@ -54,24 +51,19 @@ local opts = {
 			ghost_text = { enabled = false },
 		},
 	},
-	term = {
-		enabled = false,
-	},
+
+	term = { enabled = false },
 
 	appearance = {
 		nerd_font_variant = "normal",
 	},
 
 	completion = {
-		keyword = {
-			range = "full",
-		},
+		keyword = { range = "full" },
 		accept = {
 			auto_brackets = {
 				enabled = true,
-				kind_resolution = {
-					enabled = true,
-				},
+				kind_resolution = { enabled = true },
 				semantic_token_resolution = {
 					enabled = true,
 					blocked_filetypes = { "java" },
@@ -91,7 +83,7 @@ local opts = {
 			draw = {
 				treesitter = { "lsp" },
 				columns = {
-					{ "label", "label_description", gap = 1 },
+					{ "label", gap = 1 },
 					{ "kind_icon", "kind", gap = 1 },
 					{ "source_name" },
 				},
@@ -111,9 +103,7 @@ local opts = {
 			auto_show = true,
 			auto_show_delay_ms = 200,
 			treesitter_highlighting = true,
-			window = {
-				border = "single",
-			},
+			window = { border = "single" },
 		},
 		ghost_text = {
 			enabled = true,
@@ -146,9 +136,6 @@ local opts = {
 				},
 			},
 			path = {
-				-- When typing a path, I would get snippets and text in the
-				-- suggestions, I want those to show only if there are no path
-				-- suggestions
 				fallbacks = { "snippets", "buffer" },
 				opts = {
 					trailing_slash = false,
@@ -180,10 +167,10 @@ local opts = {
 				opts = {
 					prefix_min_len = 3,
 					backend = {
+						context_size = 3,
 						use = "gitgrep-or-ripgrep",
 						ripgrep = {
 							max_filesize = "200K",
-							context_size = 3,
 							additional_rg_options = { "--max-count=5" },
 						},
 					},
@@ -193,17 +180,12 @@ local opts = {
 			},
 		},
 	},
-	snippets = {
-		preset = "luasnip",
-	},
-	fuzzy = {
-		implementation = "prefer_rust_with_warning",
-	},
+
+	snippets = { preset = "luasnip" },
+	fuzzy = { implementation = "prefer_rust_with_warning" },
 	signature = {
 		enabled = true,
-		trigger = {
-			show_on_insert = true,
-		},
+		trigger = { show_on_insert = true },
 		window = {
 			border = "single",
 			treesitter_highlighting = true,
