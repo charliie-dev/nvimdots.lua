@@ -53,6 +53,7 @@ tool["mikavilpas/yazi.nvim"] = {
 	version = "*",
 	lazy = true,
 	cmd = { "Yazi" },
+	config = require("tool.yazi"),
 	dependencies = {
 		{ "nvim-lua/plenary.nvim", lazy = true },
 	},

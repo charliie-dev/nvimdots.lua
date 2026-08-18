@@ -55,4 +55,16 @@ set("n", "<leader>qc", function()
 end, { silent = true, desc = "tool: Collapse quickfix context" })
 
 -- Plugin: markdown-preview.nvim
-set("n", "<F12>", "<Cmd>MarkdownPreviewToggle<CR>", { silent = true, desc = "tool: Preview markdown" })
+-- `MarkdownPreviewToggle` is created with `-buffer` and only for the filetypes in
+-- `g:mkdp_filetypes`, so the mapping has to be buffer-local as well.
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("MarkdownPreviewKeymap", { clear = true }),
+	pattern = "markdown",
+	callback = function(event)
+		set("n", "<F12>", "<Cmd>MarkdownPreviewToggle<CR>", {
+			silent = true,
+			buf = event.buf,
+			desc = "tool: Preview markdown",
+		})
+	end,
+})
