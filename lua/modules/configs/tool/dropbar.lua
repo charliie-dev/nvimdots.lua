@@ -5,6 +5,7 @@ return function()
 		misc = require("modules.utils.icons").get("misc", true),
 		ui = require("modules.utils.icons").get("ui", true),
 	}
+	local api = require("dropbar.api")
 	local utils = require("dropbar.utils")
 	local sources = require("dropbar.sources")
 	-- Custom source to display only the leaf filename in the dropbar
@@ -21,10 +22,9 @@ return function()
 		},
 		fzf = {
 			keymaps = {
-				["<Up>"] = "api.fuzzy_find_prev",
-				["<Down>"] = "api.fuzzy_find_next",
-				["<CR>"] = "api.fuzzy_find_click",
-				["<Esc>"] = "api.fuzzy_find_close",
+				["<Up>"] = api.fuzzy_find_prev,
+				["<Down>"] = api.fuzzy_find_next,
+				["<CR>"] = api.fuzzy_find_click,
 			},
 			char_pattern = "[%w%p]",
 			retain_inner_spaces = true,

@@ -14,21 +14,22 @@ return function()
 		mappings.load_extras()
 		dapui.open({ reset = true })
 	end
-	local function debug_terminate_cb()
-		if _debugging then
-			_G._debugging = false
+	local teardown_pending = false
+	local function debug_session_cb(old_session, new_session)
+		if new_session ~= nil or old_session == nil or teardown_pending then
+			return
 		end
-	end
-	local function debug_disconnect_cb()
-		if _debugging then
-			_G._debugging = false
-			dapui.close()
-		end
+		teardown_pending = true
+		vim.schedule(function()
+			teardown_pending = false
+			if dap.session() == nil then
+				_G._debugging = false
+				dapui.close()
+			end
+		end)
 	end
 	dap.listeners.after.event_initialized["dapui_config"] = debug_init_cb
-	dap.listeners.before.event_terminated["dapui_config"] = debug_terminate_cb
-	dap.listeners.before.event_exited["dapui_config"] = debug_terminate_cb
-	dap.listeners.before.disconnect["dapui_config"] = debug_disconnect_cb
+	dap.listeners.on_session["dapui_config"] = debug_session_cb
 
 	-- We need to override nvim-dap's default highlight groups, AFTER requiring nvim-dap for catppuccin.
 	vim.api.nvim_set_hl(0, "DapStopped", { fg = colors.green })

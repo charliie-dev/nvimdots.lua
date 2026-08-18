@@ -5,26 +5,24 @@ local helpers = require("keymap.helpers")
 set("t", "<Esc><Esc>", [[<C-\><C-n>]], { silent = true })
 
 -- Plugin: snacks.nvim
-set("n", "<C-\\>", function()
-	require("snacks").terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
-end, { silent = true, desc = "terminal: Toggle horizontal" })
+local function toggle_horizontal_terminal()
+	require("snacks").terminal.toggle(nil, { count = 1, win = { position = "bottom", height = 0.3 } })
+end
+
+local function toggle_floating_terminal()
+	require("snacks").terminal.toggle(nil, { count = 2, win = { style = "float" } })
+end
+
+set({ "n", "t" }, "<C-\\>", toggle_horizontal_terminal, { silent = true, desc = "terminal: Toggle horizontal" })
 set("i", "<C-\\>", function()
 	vim.cmd("stopinsert")
-	require("snacks").terminal.toggle(nil, { win = { position = "bottom", height = 0.3 } })
-end, { silent = true, desc = "terminal: Toggle horizontal" })
-set("t", "<C-\\>", function()
-	require("snacks").terminal.toggle()
+	toggle_horizontal_terminal()
 end, { silent = true, desc = "terminal: Toggle horizontal" })
 
-set("n", "<A-d>", function()
-	require("snacks").terminal.toggle(nil, { win = { style = "float" } })
-end, { silent = true, desc = "terminal: Toggle float" })
+set({ "n", "t" }, "<A-d>", toggle_floating_terminal, { silent = true, desc = "terminal: Toggle float" })
 set("i", "<A-d>", function()
 	vim.cmd("stopinsert")
-	require("snacks").terminal.toggle(nil, { win = { style = "float" } })
-end, { silent = true, desc = "terminal: Toggle float" })
-set("t", "<A-d>", function()
-	require("snacks").terminal.toggle()
+	toggle_floating_terminal()
 end, { silent = true, desc = "terminal: Toggle float" })
 
 set("n", "lg", function()

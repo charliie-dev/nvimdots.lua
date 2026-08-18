@@ -37,9 +37,7 @@ return function()
 			name = "Attach to a running process",
 			type = "codelldb",
 			request = "attach",
-			program = utils.input_exec_path(),
-			stopOnEntry = false,
-			waitFor = true,
+			pid = require("dap.utils").pick_process,
 		},
 	}
 	dap.configurations.cpp = dap.configurations.c

@@ -29,7 +29,7 @@ function M.gitsigns(bufnr)
 
 	set("n", "]g", function()
 		if vim.wo.diff then
-			return "]g"
+			return "]c"
 		end
 		vim.schedule(function()
 			gitsigns.nav_hunk("next")
@@ -39,7 +39,7 @@ function M.gitsigns(bufnr)
 
 	set("n", "[g", function()
 		if vim.wo.diff then
-			return "[g"
+			return "[c"
 		end
 		vim.schedule(function()
 			gitsigns.nav_hunk("prev")
