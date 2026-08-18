@@ -166,6 +166,9 @@ return function()
 		},
 		-- Disable unused setup modules
 		explorer = { enabled = false },
+		-- Already inert (never enabled implicitly), stated so the intent is explicit.
+		-- Its health checks probe for `gs`/`mmdc`/`tectonic` regardless of this flag.
+		image = { enabled = false },
 		input = { enabled = false },
 		scope = { enabled = false },
 		statuscolumn = { enabled = false },
