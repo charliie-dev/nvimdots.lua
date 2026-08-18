@@ -35,7 +35,7 @@ function M.gitsigns(bufnr)
 			gitsigns.nav_hunk("next")
 		end)
 		return "<Ignore>"
-	end, { buffer = bufnr, expr = true, desc = "git: Next hunk" })
+	end, { buf = bufnr, expr = true, desc = "git: Next hunk" })
 
 	set("n", "[g", function()
 		if vim.wo.diff then
@@ -45,40 +45,40 @@ function M.gitsigns(bufnr)
 			gitsigns.nav_hunk("prev")
 		end)
 		return "<Ignore>"
-	end, { buffer = bufnr, expr = true, desc = "git: Prev hunk" })
+	end, { buf = bufnr, expr = true, desc = "git: Prev hunk" })
 
 	set("n", "<leader>gs", function()
 		gitsigns.stage_hunk()
-	end, { buffer = bufnr, desc = "git: Stage hunk" })
+	end, { buf = bufnr, desc = "git: Stage hunk" })
 
 	set("v", "<leader>gs", function()
 		gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-	end, { buffer = bufnr, desc = "git: Stage hunk" })
+	end, { buf = bufnr, desc = "git: Stage hunk" })
 
 	set("n", "<leader>gr", function()
 		gitsigns.reset_hunk()
-	end, { buffer = bufnr, desc = "git: Reset hunk" })
+	end, { buf = bufnr, desc = "git: Reset hunk" })
 
 	set("v", "<leader>gr", function()
 		gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-	end, { buffer = bufnr, desc = "git: Reset hunk" })
+	end, { buf = bufnr, desc = "git: Reset hunk" })
 
 	set("n", "<leader>gR", function()
 		gitsigns.reset_buffer()
-	end, { buffer = bufnr, desc = "git: Reset buffer" })
+	end, { buf = bufnr, desc = "git: Reset buffer" })
 
 	set("n", "<leader>gp", function()
 		gitsigns.preview_hunk()
-	end, { buffer = bufnr, desc = "git: Preview hunk" })
+	end, { buf = bufnr, desc = "git: Preview hunk" })
 
 	set("n", "<leader>gb", function()
 		gitsigns.blame_line({ full = true })
-	end, { buffer = bufnr, desc = "git: Blame line" })
+	end, { buf = bufnr, desc = "git: Blame line" })
 
 	-- Text objects
 	set({ "o", "x" }, "ih", function()
 		gitsigns.select_hunk()
-	end, { buffer = bufnr })
+	end, { buf = bufnr })
 end
 
 return M

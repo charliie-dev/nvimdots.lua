@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
-		vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = event.buf, silent = true })
+		vim.keymap.set("n", "q", "<Cmd>close<CR>", { buf = event.buf, silent = true })
 	end,
 })
 
@@ -27,14 +27,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)
 		if not _G._debugging then
-			-- Remove Neovim 0.11 default LSP keymaps that conflict with our setup
-			-- grn/gra: we override with Lspsaga rename / Lspsaga code_action
-			-- <C-s> (insert): we use it for saving files
-			pcall(vim.keymap.del, "n", "grn", { buffer = event.buf })
-			pcall(vim.keymap.del, { "n", "v" }, "gra", { buffer = event.buf })
-			pcall(vim.keymap.del, { "i", "s" }, "<C-s>", { buffer = event.buf })
-
-			-- LSP Keymaps (after clearing defaults so our mappings aren't deleted)
+			-- LSP Keymaps
+			-- Neovim's own `grn`/`gra` defaults are global, so the
+			-- buffer-local mappings below shadow them without needing a delete.
 			mapping.lsp(event.buf)
 
 			-- LSP Inlay Hints
@@ -209,7 +204,7 @@ function autocmd.load_autocmds()
 						"n",
 						"<leader>h",
 						"<Cmd>ClangdSwitchSourceHeader<CR>",
-						{ buffer = event.buf, silent = true }
+						{ buf = event.buf, silent = true }
 					)
 				end,
 			},
