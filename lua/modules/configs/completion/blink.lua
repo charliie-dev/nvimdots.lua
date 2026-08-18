@@ -52,6 +52,10 @@ local opts = {
 		},
 	},
 
+	-- Command-line window (`q:` / `q?`). Only `enabled` is configurable; its
+	-- sources and menu behavior are fixed by blink.cmp's own `cmdwin` override.
+	cmdwin = { enabled = true },
+
 	term = { enabled = false },
 
 	appearance = {
