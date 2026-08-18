@@ -18,7 +18,7 @@ return function()
 		keys = {
 			q = false,
 			Q = false,
-			["<C-q>"] = false,
+			["<c-q>"] = false,
 			["<A-j>"] = function(win)
 				win:resize("height", -2)
 			end,
