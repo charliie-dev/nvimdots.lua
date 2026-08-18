@@ -41,8 +41,6 @@ vim.api.nvim_create_autocmd("LspProgress", {
 })
 
 return function()
-	local has_catppuccin = (vim.g.colors_name or ""):find("catppuccin") ~= nil
-	local colors = require("modules.utils").get_palette()
 	local icons = {
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
 		git = require("modules.utils.icons").get("git", true),
@@ -53,48 +51,40 @@ return function()
 	}
 
 	local function custom_theme()
-		vim.api.nvim_create_autocmd("ColorScheme", {
-			group = vim.api.nvim_create_augroup("LualineColorScheme", { clear = true }),
-			pattern = "*",
-			callback = function()
-				has_catppuccin = (vim.g.colors_name or ""):find("catppuccin") ~= nil
-				require("lualine").setup({ options = { theme = custom_theme() } })
-			end,
-		})
-
-		if has_catppuccin then
-			colors = require("modules.utils").get_palette()
-			local universal_bg = require("core.settings").transparent_background and "NONE" or colors.mantle
-			return {
-				normal = {
-					a = { fg = colors.lavender, bg = colors.surface0, gui = "bold" },
-					b = { fg = colors.text, bg = universal_bg },
-					c = { fg = colors.text, bg = universal_bg },
-				},
-				command = {
-					a = { fg = colors.peach, bg = colors.surface0, gui = "bold" },
-				},
-				insert = {
-					a = { fg = colors.green, bg = colors.surface0, gui = "bold" },
-				},
-				visual = {
-					a = { fg = colors.flamingo, bg = colors.surface0, gui = "bold" },
-				},
-				terminal = {
-					a = { fg = colors.teal, bg = colors.surface0, gui = "bold" },
-				},
-				replace = {
-					a = { fg = colors.red, bg = colors.surface0, gui = "bold" },
-				},
-				inactive = {
-					a = { fg = colors.subtext0, bg = universal_bg, gui = "bold" },
-					b = { fg = colors.subtext0, bg = universal_bg },
-					c = { fg = colors.subtext0, bg = universal_bg },
-				},
-			}
-		else
+		local current_colorscheme = vim.g.colors_name or ""
+		if not current_colorscheme:find("catppuccin") then
 			return "auto"
 		end
+
+		local current_colors = require("modules.utils").get_palette()
+		local universal_bg = require("core.settings").transparent_background and "NONE" or current_colors.mantle
+		return {
+			normal = {
+				a = { fg = current_colors.lavender, bg = current_colors.surface0, gui = "bold" },
+				b = { fg = current_colors.text, bg = universal_bg },
+				c = { fg = current_colors.text, bg = universal_bg },
+			},
+			command = {
+				a = { fg = current_colors.peach, bg = current_colors.surface0, gui = "bold" },
+			},
+			insert = {
+				a = { fg = current_colors.green, bg = current_colors.surface0, gui = "bold" },
+			},
+			visual = {
+				a = { fg = current_colors.flamingo, bg = current_colors.surface0, gui = "bold" },
+			},
+			terminal = {
+				a = { fg = current_colors.teal, bg = current_colors.surface0, gui = "bold" },
+			},
+			replace = {
+				a = { fg = current_colors.red, bg = current_colors.surface0, gui = "bold" },
+			},
+			inactive = {
+				a = { fg = current_colors.subtext0, bg = universal_bg, gui = "bold" },
+				b = { fg = current_colors.subtext0, bg = universal_bg },
+				c = { fg = current_colors.subtext0, bg = universal_bg },
+			},
+		}
 	end
 
 	local conditionals = {
@@ -105,13 +95,7 @@ return function()
 			return vim.bo.filetype ~= ""
 		end,
 		has_git = function()
-			local gitdir = vim.fs.find(".git", {
-				limit = 1,
-				upward = true,
-				type = "directory",
-				path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
-			})
-			return #gitdir > 0
+			return vim.b.gitsigns_status_dict ~= nil
 		end,
 	}
 
@@ -136,21 +120,21 @@ return function()
 		---@param special_nobg boolean @Disable guibg for transparent backgrounds?
 		---@param bg string? @Background hl group
 		---@param gui string? @GUI highlight arguments
-		---@return nil|fun():lualine_hlgrp
+		---@return fun():lualine_hlgrp?
 		gen_hl = function(fg, gen_bg, special_nobg, bg, gui)
-			if has_catppuccin then
-				return function()
-					local guifg = colors[fg]
-					local nobg = special_nobg and require("core.settings").transparent_background
-					return {
-						fg = guifg and guifg or colors.none,
-						bg = nobg and colors.none or (not gen_bg and colors[bg] or nil),
-						gui = gui and gui or nil,
-					}
+			return function()
+				if not (vim.g.colors_name or ""):find("catppuccin") then
+					return nil
 				end
-			else
-				-- Return `nil` if the theme is user-defined
-				return nil
+
+				local current_colors = require("modules.utils").get_palette()
+				local guifg = current_colors[fg]
+				local nobg = special_nobg and require("core.settings").transparent_background
+				return {
+					fg = guifg and guifg or current_colors.none,
+					bg = nobg and current_colors.none or (not gen_bg and current_colors[bg] or nil),
+					gui = gui and gui or nil,
+				}
 			end
 		end,
 	}
@@ -299,7 +283,7 @@ return function()
 	require("modules.utils").load_plugin("lualine", {
 		options = {
 			icons_enabled = true,
-			theme = custom_theme(),
+			theme = custom_theme,
 			disabled_filetypes = { statusline = { "snacks_dashboard" } },
 			component_separators = "",
 			section_separators = { left = "", right = "" },

@@ -36,15 +36,13 @@ return function()
 			},
 		},
 		-- Change bufferline's highlights here! See `:h bufferline-highlights` for detailed explanation.
-		-- Note: If you use catppuccin then modify the colors below!
-		highlights = {},
-	}
+		highlights = function()
+			if not (vim.g.colors_name or ""):find("catppuccin") then
+				return {}
+			end
 
-	if (vim.g.colors_name or ""):find("catppuccin") then
-		local cp = require("modules.utils").get_palette() -- Get the palette.
-
-		local catppuccin_hl_overwrite = {
-			highlights = require("catppuccin.special.bufferline").get_theme({
+			local cp = require("modules.utils").get_palette()
+			return require("catppuccin.special.bufferline").get_theme({
 				custom = {
 					all = {
 						hint = { fg = cp.rosewater },
@@ -55,11 +53,9 @@ return function()
 						hint_diagnostic_selected = { fg = cp.rosewater },
 					},
 				},
-			})(),
-		}
-
-		opts = vim.tbl_deep_extend("force", opts, catppuccin_hl_overwrite)
-	end
+			})()
+		end,
+	}
 
 	require("modules.utils").load_plugin("bufferline", opts)
 end

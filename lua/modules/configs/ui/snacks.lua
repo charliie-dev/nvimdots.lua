@@ -106,7 +106,6 @@ return function()
 					and not excluded_ft[vim.bo[buf].filetype]
 			end,
 		},
-		lazygit = { enabled = true },
 		notifier = {
 			enabled = true,
 			timeout = 2000,
@@ -130,7 +129,6 @@ return function()
 				easing = "linear",
 			},
 		},
-		terminal = { enabled = true },
 		quickfile = { enabled = true },
 		picker = {
 			enabled = true,
@@ -166,16 +164,12 @@ return function()
 				end,
 			},
 		},
-		-- Disable unused modules
-		animate = { enabled = false },
-		dim = { enabled = false },
+		-- Disable unused setup modules
 		explorer = { enabled = false },
 		input = { enabled = false },
 		scope = { enabled = false },
 		statuscolumn = { enabled = false },
-		toggle = { enabled = false },
 		words = { enabled = false },
-		zen = { enabled = false },
 	})
 
 	vim.api.nvim_create_user_command("SnacksNotifier", function()
