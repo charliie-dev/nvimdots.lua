@@ -49,6 +49,10 @@ tool["folke/which-key.nvim"] = {
 	event = "VeryLazy",
 	config = require("tool.which-key"),
 }
+tool["charliie-dev/leaf.nvim"] = {
+	cmd = { "Leaf" },
+	dependencies = { "folke/snacks.nvim" },
+}
 tool["mikavilpas/yazi.nvim"] = {
 	version = "*",
 	lazy = true,

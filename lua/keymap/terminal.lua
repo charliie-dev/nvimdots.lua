@@ -39,5 +39,8 @@ set("n", "nvsmi", function()
 	helpers.toggle_float_term("watch -n 1 nvidia-smi", "nvidia-smi")
 end, { silent = true, desc = "terminal: Toggle nvidia-smi" })
 
+-- Plugin: leaf.nvim
+set("n", "lf", "<Cmd>Leaf<CR>", { silent = true, desc = "terminal: Toggle leaf markdown preview" })
+
 -- Plugin: yazi.nvim
 set("n", "yz", "<Cmd>Yazi<CR>", { silent = true, desc = "terminal: Toggle yazi" })

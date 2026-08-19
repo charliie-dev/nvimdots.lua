@@ -46,7 +46,6 @@ return function()
 			mini = { enabled = true },
 			snacks = true,
 			rainbow_delimiters = true,
-			markview = true,
 			overseer = true,
 			treesitter_context = true,
 			which_key = true,

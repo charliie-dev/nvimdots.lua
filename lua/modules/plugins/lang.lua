@@ -19,20 +19,6 @@ lang["bullets-vim/bullets.vim"] = {
 	lazy = true,
 	ft = { "markdown", "text", "gitcommit" },
 }
-lang["OXY2DEV/markview.nvim"] = {
-	lazy = false,
-	config = require("lang.markview"),
-	dependencies = {
-		"nvim-tree/nvim-web-devicons",
-		"nvim-treesitter/nvim-treesitter",
-	},
-}
-lang["iamcco/markdown-preview.nvim"] = {
-	lazy = true,
-	ft = { "markdown" },
-	build = ":call mkdp#util#install()",
-	init = require("lang.markdown-preview"),
-}
 lang["ranelpadon/python-copy-reference.vim"] = {
 	lazy = true,
 	ft = "python",

@@ -37,9 +37,6 @@ set("n", "<leader>or", "<Cmd>OverseerRun<CR>", { silent = true, desc = "tool: Ov
 set("n", "<leader>ot", "<Cmd>OverseerToggle<CR>", { silent = true, desc = "tool: Overseer toggle" })
 set("n", "<leader>oa", "<Cmd>OverseerTaskAction<CR>", { silent = true, desc = "tool: Overseer task action" })
 
--- Plugin: markview.nvim
-set("n", "<F1>", "<Cmd>Markview toggle<CR>", { silent = true, desc = "tool: Toggle markdown preview within nvim" })
-
 -- Plugin: quicker.nvim
 set("n", "<leader>q", function()
 	require("quicker").toggle()
@@ -53,18 +50,3 @@ end, { silent = true, desc = "tool: Expand quickfix context" })
 set("n", "<leader>qc", function()
 	require("quicker").collapse()
 end, { silent = true, desc = "tool: Collapse quickfix context" })
-
--- Plugin: markdown-preview.nvim
--- `MarkdownPreviewToggle` is created with `-buffer` and only for the filetypes in
--- `g:mkdp_filetypes`, so the mapping has to be buffer-local as well.
-vim.api.nvim_create_autocmd("FileType", {
-	group = vim.api.nvim_create_augroup("MarkdownPreviewKeymap", { clear = true }),
-	pattern = "markdown",
-	callback = function(event)
-		set("n", "<F12>", "<Cmd>MarkdownPreviewToggle<CR>", {
-			silent = true,
-			buf = event.buf,
-			desc = "tool: Preview markdown",
-		})
-	end,
-})
