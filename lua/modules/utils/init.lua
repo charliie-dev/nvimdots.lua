@@ -320,20 +320,29 @@ local function tbl_recursive_merge(dst, src)
 	return dst
 end
 
+---@param module_name string
+---@return boolean present
+---@return any value
+local function optional_require(module_name)
+	local runtime_name = "lua/" .. module_name:gsub("%.", "/")
+	local has_loader = package.loaded[module_name] ~= nil
+		or package.preload[module_name] ~= nil
+		or #vim.api.nvim_get_runtime_file(runtime_name .. ".lua", false) > 0
+		or #vim.api.nvim_get_runtime_file(runtime_name .. "/init.lua", false) > 0
+	if not has_loader then
+		return false, nil
+	end
+	return true, require(module_name)
+end
+
 -- Function to extend existing core configs (settings, events, etc.)
 ---@param config table @The default config to be merged with
 ---@param user_config string @The module name used to require user config
 ---@return table @Extended config
 function M.extend_config(config, user_config)
-	local ok, extras = pcall(require, user_config)
-	if ok and type(extras) == "table" then
+	local present, extras = optional_require(user_config)
+	if present and type(extras) == "table" then
 		config = tbl_recursive_merge(config, extras)
-	elseif not ok and type(extras) == "string" and not extras:find("module .* not found") then
-		vim.notify(
-			string.format("[utils] Error loading %s: %s", user_config, extras),
-			vim.log.levels.ERROR,
-			{ title = "[utils] Runtime Error" }
-		)
 	end
 	return config
 end
@@ -347,8 +356,8 @@ function M.load_plugin(plugin_name, opts, vim_plugin, setup_callback)
 
 	-- Get the file name of the default config
 	local fname = debug.getinfo(2, "S").source:match("[^@/\\]*.lua$")
-	local ok, user_config = pcall(require, "user.configs." .. fname:sub(0, #fname - 4))
-	if ok and vim_plugin then
+	local has_user_config, user_config = optional_require("user.configs." .. fname:sub(0, #fname - 4))
+	if has_user_config and vim_plugin then
 		if user_config == false then
 			-- Return early if the user explicitly requires disabling plugin setup
 			return
@@ -372,7 +381,7 @@ function M.load_plugin(plugin_name, opts, vim_plugin, setup_callback)
 		else
 			setup_callback = setup_callback or require(plugin_name).setup
 			-- User config exists?
-			if ok then
+			if has_user_config then
 				-- Extend base config if the returned user config is a table
 				if type(user_config) == "table" then
 					opts = tbl_recursive_merge(opts, user_config)

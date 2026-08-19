@@ -18,6 +18,16 @@ node = "latest"
 
 # ------------------------------------------------------------------------------
 # ==============================================================================
+#  Tests
+# ==============================================================================
+[tasks.test]  # command: mise run test
+description = "Run Neovim config regression tests"
+run = '''
+nvim --clean -u NONE -i NONE --headless -l tests/utils_spec.lua
+nvim -i NONE --headless "+luafile tests/dap_python_spec.lua" +qa
+'''
+
+# ==============================================================================
 #  Compile Ruler
 # ==============================================================================
 [tasks.ruler]  # command: mise run ruler

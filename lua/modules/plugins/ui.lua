@@ -9,6 +9,7 @@ ui["akinsho/bufferline.nvim"] = {
 	lazy = true,
 	event = { "BufReadPre", "BufAdd", "BufNewFile" },
 	config = require("ui.bufferline"),
+	dependencies = "nvim-tree/nvim-web-devicons",
 }
 ui["catppuccin/nvim"] = {
 	lazy = false,
@@ -25,6 +26,7 @@ ui["nvim-lualine/lualine.nvim"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.lualine"),
+	dependencies = "nvim-tree/nvim-web-devicons",
 }
 -- ui["sphamba/smear-cursor.nvim"] = {
 -- 	lazy = true,

@@ -8,24 +8,7 @@ end, { silent = true, desc = "tool: Command panel" })
 
 -- Plugin: edgy.nvim
 set("n", "<C-n>", function()
-	local edgy_config = require("edgy.config")
-	local edgebar = edgy_config.layout and edgy_config.layout.left
-	if edgebar then
-		local has_visible = false
-		for _, win in ipairs(edgebar.wins) do
-			if vim.api.nvim_win_is_valid(win.win) then
-				has_visible = true
-				break
-			end
-		end
-		if has_visible then
-			require("edgy").close("left")
-		else
-			require("edgy").open("left")
-		end
-	else
-		require("edgy").open("left")
-	end
+	require("edgy").toggle("left")
 end, { silent = true, desc = "tool: Toggle sidebar" })
 
 -- Plugin: sniprun

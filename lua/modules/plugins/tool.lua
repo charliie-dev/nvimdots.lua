@@ -74,6 +74,7 @@ tool["aaronhallaert/advanced-git-search.nvim"] = {
 		})
 	end,
 	dependencies = {
+		"folke/snacks.nvim",
 		"tpope/vim-fugitive",
 		"sindrets/diffview.nvim",
 	},

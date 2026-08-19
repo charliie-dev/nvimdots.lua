@@ -75,9 +75,8 @@ local function current_project_python()
 	for _, root in ipairs(roots) do
 		for _, folder in ipairs({ "venv", ".venv", "env", ".env" }) do
 			local venv = root .. "/" .. folder
-			local stat = vim.uv.fs_stat(venv)
-			if stat and stat.type == "directory" then
-				local python = is_windows and venv .. "/Scripts/python.exe" or venv .. "/bin/python"
+			local python = is_windows and venv .. "/Scripts/python.exe" or venv .. "/bin/python"
+			if vim.fn.executable(python) == 1 then
 				return python_executable(python, "project Python interpreter")
 			end
 		end
