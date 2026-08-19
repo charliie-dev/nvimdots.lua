@@ -78,25 +78,6 @@ editor["charliie-dev/hmts.nvim"] = {
 	dependencies = "nvim-treesitter/nvim-treesitter",
 }
 
-editor["ravsii/tree-sitter-d2"] = {
-	version = "*",
-	lazy = true,
-	ft = "d2",
-	build = "make nvim-install",
-	dependencies = "nvim-treesitter/nvim-treesitter",
-	init = function()
-		vim.filetype.add({
-			extension = {
-				d2 = function()
-					return "d2", function(bufnr)
-						vim.bo[bufnr].commentstring = "# %s"
-					end
-				end,
-			},
-		})
-	end,
-}
-
 editor["bezhermoso/tree-sitter-ghostty"] = {
 	lazy = true,
 	ft = "ghostty",

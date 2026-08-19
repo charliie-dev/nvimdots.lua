@@ -8,7 +8,7 @@ return vim.schedule_wrap(function()
 			local ft = vim.bo[args.buf].filetype
 			local lang = vim.treesitter.language.get_lang(ft) or ft
 			-- Gate on what is actually available rather than on `treesitter_deps`, which only
-			-- drives install()/update(): parsers shipped by external grammars (d2, ghostty)
+			-- drives install()/update(): parsers shipped by external grammars (such as ghostty)
 			-- are never listed there, and parsers dropped upstream keep their stale .so.
 			local ok, added = pcall(vim.treesitter.language.add, lang)
 			if not ok or added == false then
