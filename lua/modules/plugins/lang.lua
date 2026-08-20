@@ -7,8 +7,12 @@ lang["kevinhwang91/nvim-bqf"] = {
 	config = require("lang.bqf"),
 	dependencies = {
 		{ "junegunn/fzf", build = ":call fzf#install()" },
-		{ "stevearc/quicker.nvim", opts = {} },
 	},
+}
+lang["stevearc/quicker.nvim"] = {
+	lazy = true,
+	ft = "qf",
+	opts = {},
 }
 lang["ray-x/go.nvim"] = {
 	lazy = true,

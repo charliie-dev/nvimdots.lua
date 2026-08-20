@@ -18,15 +18,15 @@ completion["neovim/nvim-lspconfig"] = {
 	event = { "BufReadPre", "BufNewFile" },
 	config = require("completion.lsp"),
 	dependencies = {
-		{ "mason-org/mason.nvim" },
-		{ "b0o/schemastore.nvim" },
+		"mason-org/mason.nvim",
+		"b0o/schemastore.nvim",
 	},
 }
 completion["nvimdev/lspsaga.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
 	config = require("completion.lspsaga"),
-	dependencies = "nvim-tree/nvim-web-devicons",
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 completion["rachartier/tiny-inline-diagnostic.nvim"] = {
 	lazy = true,
@@ -70,7 +70,7 @@ completion["saghen/blink.cmp"] = {
 			"L3MON4D3/LuaSnip",
 			build = "make install_jsregexp",
 			config = require("completion.luasnip"),
-			dependencies = "rafamadriz/friendly-snippets",
+			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		"mikavilpas/blink-ripgrep.nvim",
 		"bydlw98/blink-cmp-env",

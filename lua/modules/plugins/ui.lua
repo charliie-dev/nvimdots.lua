@@ -9,7 +9,7 @@ ui["akinsho/bufferline.nvim"] = {
 	lazy = true,
 	event = { "BufReadPre", "BufAdd", "BufNewFile" },
 	config = require("ui.bufferline"),
-	dependencies = "nvim-tree/nvim-web-devicons",
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 ui["catppuccin/nvim"] = {
 	lazy = false,
@@ -26,7 +26,7 @@ ui["nvim-lualine/lualine.nvim"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.lualine"),
-	dependencies = "nvim-tree/nvim-web-devicons",
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 -- ui["sphamba/smear-cursor.nvim"] = {
 -- 	lazy = true,
@@ -50,7 +50,7 @@ ui["folke/todo-comments.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
 	config = require("ui.todo"),
-	dependencies = "nvim-lua/plenary.nvim",
+	dependencies = { "nvim-lua/plenary.nvim" },
 }
 ui["dstein64/nvim-scrollview"] = {
 	lazy = true,

@@ -4,6 +4,7 @@ editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
 	config = require("editor.diffview"),
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 editor["nvim-mini/mini.align"] = {
 	lazy = true,
@@ -53,7 +54,7 @@ editor["MagicDuck/grug-far.nvim"] = {
 editor["jmbuhr/otter.nvim"] = {
 	lazy = true,
 	ft = { "toml", "markdown", "quarto", "org", "norg" },
-	dependencies = "nvim-treesitter/nvim-treesitter",
+	dependencies = { "nvim-treesitter/nvim-treesitter" },
 	config = function()
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = { "toml", "markdown", "quarto", "org", "norg" },
@@ -75,20 +76,18 @@ editor["charliie-dev/hmts.nvim"] = {
 	lazy = true,
 	branch = "combined-fixes",
 	ft = "nix",
-	dependencies = "nvim-treesitter/nvim-treesitter",
+	dependencies = { "nvim-treesitter/nvim-treesitter" },
 }
 
 editor["bezhermoso/tree-sitter-ghostty"] = {
 	lazy = true,
 	ft = "ghostty",
 	build = "make nvim_install",
-	dependencies = "nvim-treesitter/nvim-treesitter",
 }
 
 editor["danymat/neogen"] = {
 	lazy = true,
 	cmd = "Neogen",
-	dependencies = "nvim-treesitter/nvim-treesitter",
 	config = require("editor.neogen"),
 }
 
@@ -106,29 +105,34 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 				require("gh-actions.tree-sitter").setup()
 			end,
 		},
-		{
-			"nvim-treesitter/nvim-treesitter-textobjects",
-			branch = "main",
-			config = require("editor.ts-textobjects"),
-		},
-		{
-			"windwp/nvim-ts-autotag",
-			config = require("editor.ts-autotag"),
-		},
-		{
-			"HiPhish/rainbow-delimiters.nvim",
-			config = require("editor.rainbow_delims"),
-		},
-		{
-			"nvim-treesitter/nvim-treesitter-context",
-			config = require("editor.ts-context"),
-		},
-		{
-			"nvim-mini/mini.ai",
-			version = "*",
-			config = require("editor.ai_textobj"),
-		},
 	},
+}
+
+editor["nvim-mini/mini.ai"] = {
+	lazy = false,
+	version = "*",
+	config = require("editor.ai_textobj"),
+}
+
+editor["nvim-treesitter/nvim-treesitter-textobjects"] = {
+	lazy = false,
+	branch = "main",
+	config = require("editor.ts-textobjects"),
+}
+
+editor["windwp/nvim-ts-autotag"] = {
+	lazy = false,
+	config = require("editor.ts-autotag"),
+}
+
+editor["HiPhish/rainbow-delimiters.nvim"] = {
+	lazy = false,
+	config = require("editor.rainbow_delims"),
+}
+
+editor["nvim-treesitter/nvim-treesitter-context"] = {
+	lazy = false,
+	config = require("editor.ts-context"),
 }
 
 return editor
