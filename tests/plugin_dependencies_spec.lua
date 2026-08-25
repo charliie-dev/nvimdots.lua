@@ -283,10 +283,19 @@ test("droast linter parses structured findings", function()
 		},
 	}))
 	assert(#diagnostics == 2, "unexpected droast diagnostic count")
-	assert(diagnostics[1].lnum == 1 and diagnostics[1].col == 2 and diagnostics[1].end_col == 7)
-	assert(diagnostics[1].severity == vim.diagnostic.severity.WARN and diagnostics[1].code == "DF001")
-	assert(diagnostics[2].lnum == 0 and diagnostics[2].col == 0)
-	assert(diagnostics[2].severity == vim.diagnostic.severity.INFO and diagnostics[2].source == "droast")
+	assert(
+		diagnostics[1].lnum == 1 and diagnostics[1].col == 2 and diagnostics[1].end_col == 7,
+		"unexpected droast diagnostic range"
+	)
+	assert(
+		diagnostics[1].severity == vim.diagnostic.severity.WARN and diagnostics[1].code == "DF001",
+		"unexpected droast warning mapping"
+	)
+	assert(diagnostics[2].lnum == 0 and diagnostics[2].col == 0, "unexpected global droast diagnostic range")
+	assert(
+		diagnostics[2].severity == vim.diagnostic.severity.INFO and diagnostics[2].source == "droast",
+		"unexpected global droast diagnostic mapping"
+	)
 end)
 
 test("GitHub Actions lint includes zizmor", function()
