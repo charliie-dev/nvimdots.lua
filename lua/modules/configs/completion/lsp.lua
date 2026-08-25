@@ -17,8 +17,6 @@ return function()
 	if not ok and not tostring(err):find("module '" .. user_config .. "' not found:", 1, true) then
 		error("Failed to load global LSP config: " .. tostring(err), 0)
 	end
-	require("completion.mason-registry").setup()
-
 	for _, entry in ipairs(lsp_deps) do
 		server.enable(entry)
 	end

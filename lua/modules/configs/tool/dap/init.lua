@@ -1,7 +1,6 @@
 return function()
 	local dap = require("dap")
 	local dapui = require("dapui")
-	local mason_dap = require("mason-nvim-dap")
 
 	local icons = { dap = require("modules.utils.icons").get("dap") }
 	local colors = require("modules.utils").get_palette()
@@ -51,70 +50,15 @@ return function()
 	)
 	vim.fn.sign_define("DapLogPoint", { text = icons.dap.LogPoint, texthl = "DapLogPoint", linehl = "", numhl = "" })
 
-	local configured = {}
-	local function optional_module(module)
-		local ok, value = pcall(require, module)
-		if ok then
-			return true, value
+	local module = "user.configs.dap-clients.codelldb"
+	local ok, codelldb = pcall(require, module)
+	if not ok then
+		local load_error = tostring(codelldb)
+		if not load_error:find("module '" .. module .. "' not found:", 1, true) then
+			error(string.format("Failed to load DAP client module [%s]: %s", module, load_error), 0)
 		end
-		local load_error = tostring(value)
-		if load_error:find("module '" .. module .. "' not found:", 1, true) then
-			return false, nil
-		end
-		error(string.format("Failed to load DAP client module [%s]: %s", module, load_error), 0)
+		codelldb = require("tool.dap.clients.codelldb")
 	end
-
-	---A handler to setup all clients defined under `tool/dap/clients/*.lua`
-	---@param config table
-	local function mason_dap_handler(config)
-		assert(type(config) == "table", "mason-nvim-dap handler config must be a table")
-		assert(type(config.name) == "string" and config.name ~= "", "mason-nvim-dap handler requires a name")
-		if config.name == "delve" or config.name == "python" then
-			return
-		end
-		local dap_name = config.name
-		if configured[dap_name] then
-			return
-		end
-		local user_present, custom_handler = optional_module("user.configs.dap-clients." .. dap_name)
-		if not user_present then
-			custom_handler = select(2, optional_module("tool.dap.clients." .. dap_name))
-		end
-		if custom_handler == nil then
-			mason_dap.default_setup(config)
-		elseif type(custom_handler) == "function" then
-			custom_handler(config)
-		else
-			error(
-				string.format(
-					"DAP client definition for [%s] must return a function (got '%s')",
-					dap_name,
-					type(custom_handler)
-				),
-				0
-			)
-		end
-		configured[dap_name] = true
-	end
-
-	local function codelldb_mapping(module)
-		local ok, mapping = pcall(require, module)
-		if ok and type(mapping) == "table" then
-			return mapping.codelldb
-		end
-	end
-
-	-- Register the verifiable adapter even when its executable is supplied outside Mason or currently missing.
-	mason_dap_handler({
-		name = "codelldb",
-		adapters = codelldb_mapping("mason-nvim-dap.mappings.adapters"),
-		configurations = codelldb_mapping("mason-nvim-dap.mappings.configurations"),
-		filetypes = codelldb_mapping("mason-nvim-dap.mappings.filetypes"),
-	})
-
-	require("modules.utils").load_plugin("mason-nvim-dap", {
-		ensure_installed = {},
-		automatic_installation = false,
-		handlers = { mason_dap_handler },
-	})
+	assert(type(codelldb) == "function", "DAP client definition for [codelldb] must return a function")
+	codelldb({ name = "codelldb" })
 end

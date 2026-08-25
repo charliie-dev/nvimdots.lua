@@ -1,26 +1,10 @@
 local completion = {}
 
-completion["mason-org/mason.nvim"] = {
-	lazy = true,
-	cmd = {
-		"Mason",
-		"MasonInstall",
-		"MasonUninstall",
-		"MasonUninstallAll",
-		"MasonUpdate",
-		"MasonLog",
-	},
-	config = require("completion.mason").setup,
-}
-
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
 	event = { "BufReadPre", "BufNewFile" },
 	config = require("completion.lsp"),
-	dependencies = {
-		"mason-org/mason.nvim",
-		"b0o/schemastore.nvim",
-	},
+	dependencies = { "b0o/schemastore.nvim" },
 }
 completion["nvimdev/lspsaga.nvim"] = {
 	lazy = true,

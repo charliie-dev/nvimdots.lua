@@ -23,7 +23,7 @@ in
           See https://github.com/charliie-dev/nvimdots.lua for details.
         '';
         setBuildEnv = mkEnableOption ''
-          Sets environment variables that resolve build dependencies as required by `mason.nvim` and `nvim-treesitter`
+          Sets environment variables that resolve build dependencies for native plugins and `nvim-treesitter`.
           Environment variables are only visible to `nvim` and have no effect on any parent sessions.
           Required for NixOS.
         '';

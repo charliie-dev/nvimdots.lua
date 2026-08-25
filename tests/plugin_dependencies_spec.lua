@@ -115,10 +115,10 @@ test("complete raw plugin manifest", function()
 	assert_manifest(
 		"top-level manifest",
 		top_level,
-		59,
-		"2ddaf3f5eb1a05821ba6694a6a64316c54b64026f830899f1119c3c6c05335bf"
+		58,
+		"8f82e2240249fbb598985ca303a36cff2795f679fc887d28f63ecbc417dbc82d"
 	)
-	assert_manifest("nested manifest", nested, 36, "6799ed5d32cbf0b04c487fd95d990173b91c30d42b4828ba15c64c5c681693ac")
+	assert_manifest("nested manifest", nested, 33, "5ed59063d68276fb264b8d34a01572bb7cd866d77df40e1283177f2d92844530")
 end)
 
 local function dependency(spec, name)
@@ -173,8 +173,7 @@ test("approved dependency relationships are explicit", function()
 	end
 	assert(guihua.build == expected_build, "Guihua platform build: " .. vim.inspect(guihua.build))
 	local dap = specs["mfussenegger/nvim-dap"]
-	assert_dependencies(dap, { "jay-babu/mason-nvim-dap.nvim", "rcarriga/nvim-dap-ui" })
-	assert_dependencies(dependency(dap, "jay-babu/mason-nvim-dap.nvim"), { "mason-org/mason.nvim" })
+	assert_dependencies(dap, { "rcarriga/nvim-dap-ui" })
 	assert_dependencies(dependency(dap, "rcarriga/nvim-dap-ui"), { "nvim-neotest/nvim-nio" })
 end)
 
@@ -242,8 +241,56 @@ test("complete resolved lazy graph is acyclic", function()
 	end
 end)
 
+test("codelldb is registered without Mason", function()
+	assert(specs["mason-org/mason.nvim"] == nil, "mason.nvim remains in the plugin manifest")
+	assert(specs["jay-babu/mason-nvim-dap.nvim"] == nil, "mason-nvim-dap remains in the plugin manifest")
+	require("lazy.core.loader").load("nvim-dap", { cmd = "test" }, { force = true })
+	local adapter = assert(require("dap").adapters.codelldb, "codelldb adapter was not registered")
+	assert(adapter.executable.command == "codelldb", "unexpected codelldb command")
+end)
+
+test("GitHub Actions LSP uses the npm executable", function()
+	local config = require("completion.servers.gh_actions_ls")
+	assert(vim.deep_equal(config.cmd, { "actions-languageserver", "--stdio" }), "unexpected gh_actions_ls command")
+	local entry = vim.iter(require("core.settings").lsp_deps):find(function(item)
+		return type(item) == "table" and item.name == "gh_actions_ls"
+	end)
+	assert(entry and entry.command == "actions-languageserver", "Muster executable mapping is missing")
+end)
+
+test("droast linter parses structured findings", function()
+	require("lazy.core.loader").load("nvim-lint", { cmd = "test" }, { force = true })
+	local lint = require("lint")
+	assert(vim.tbl_contains(lint.linters_by_ft.dockerfile, "droast"), "droast is not enabled for Dockerfiles")
+	assert(vim.tbl_contains(require("core.settings").linter_deps, "droast"), "Muster does not declare droast")
+	local diagnostics = lint.linters.droast.parser(vim.json.encode({
+		findings = {
+			{
+				rule = "DF001",
+				severity = "WARN",
+				line = 2,
+				column = 3,
+				end_line = 2,
+				end_column = 8,
+				message = "pin the image tag",
+			},
+			{
+				rule = "DF036",
+				severity = "INFO",
+				line = 0,
+				message = "declare CMD or ENTRYPOINT",
+			},
+		},
+	}))
+	assert(#diagnostics == 2, "unexpected droast diagnostic count")
+	assert(diagnostics[1].lnum == 1 and diagnostics[1].col == 2 and diagnostics[1].end_col == 7)
+	assert(diagnostics[1].severity == vim.diagnostic.severity.WARN and diagnostics[1].code == "DF001")
+	assert(diagnostics[2].lnum == 0 and diagnostics[2].col == 0)
+	assert(diagnostics[2].severity == vim.diagnostic.severity.INFO and diagnostics[2].source == "droast")
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
 end
-print("plugin_dependencies_spec: 6 tests passed")
+print("plugin_dependencies_spec: 9 tests passed")

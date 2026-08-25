@@ -48,30 +48,7 @@
               '+qa!'
             touch "$out"
           '';
-          packages = {
-            testEnv = (import ./nixos/testEnv.nix { inherit inputs pkgs; }).activationPackage;
-            check-linker = pkgs.writeShellApplication {
-              name = "check-linker";
-              text =
-                let
-                  ldd_cmd = if pkgs.stdenv.isDarwin then "xcrun otool -L" else "${pkgs.glibc.bin}/bin/ldd";
-                in
-                ''
-                  #shellcheck disable=SC1090
-                  source <(sed -ne :1 -e 'N;1,1b1' -e 'P;D' "${self.packages.${system}.testEnv}/home-path/bin/nvim")
-                  echo "Checking files under ''${XDG_DATA_HOME}/''${NVIM_APPNAME:-nvim}/mason/bin..."
-                  find "''${XDG_DATA_HOME}/''${NVIM_APPNAME:-nvim}/mason/bin" -type l | while read -r link; do
-                    "${ldd_cmd}" "$(readlink -f "$link")" > /dev/zero 2>&1 || continue
-                    linkers=$("${ldd_cmd}" "$(readlink -f "$link")" | tail -n+2)
-                    echo "$linkers" | while read -r line; do
-                      [ -z "$line" ] && continue
-                      echo "$line" | grep -q "/nix/store" || printf '%s: %s does not link to /nix/store \n' "$(basename "$link")" "$line"
-                    done
-                  done
-                  echo "*** Done ***"
-                '';
-            };
-          };
+          packages.testEnv = (import ./nixos/testEnv.nix { inherit inputs pkgs; }).activationPackage;
           devshells.default = {
             commands = [
               {
@@ -80,10 +57,6 @@
                 command = ''
                   ${self.packages.${system}.testEnv}/home-path/bin/nvim
                 '';
-              }
-              {
-                help = "check-linker";
-                package = self.packages.${system}.check-linker;
               }
             ];
             devshell = {

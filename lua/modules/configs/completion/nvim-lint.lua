@@ -69,8 +69,51 @@ return function()
 		end,
 	}
 
+	-- droast needs a real file to inspect the Docker build context.
+	lint.linters.droast = {
+		name = "droast",
+		cmd = "droast",
+		stdin = false,
+		append_fname = true,
+		args = { "--no-roast", "--no-fail", "--format", "json" },
+		stream = "stdout",
+		parser = function(output)
+			if output == nil or output == "" then
+				return {}
+			end
+			local ok, decoded = pcall(vim.json.decode, output)
+			if not ok or type(decoded) ~= "table" or type(decoded.findings) ~= "table" then
+				return {}
+			end
+			local severities = {
+				ERROR = vim.diagnostic.severity.ERROR,
+				WARN = vim.diagnostic.severity.WARN,
+				WARNING = vim.diagnostic.severity.WARN,
+				INFO = vim.diagnostic.severity.INFO,
+			}
+			local diagnostics = {}
+			for _, item in ipairs(decoded.findings) do
+				local line = math.max(tonumber(item.line) or 1, 1)
+				local column = math.max(tonumber(item.column) or 1, 1)
+				local end_line = math.max(tonumber(item.end_line) or line, line)
+				local end_column = math.max(tonumber(item.end_column) or (column + 1), column + 1)
+				table.insert(diagnostics, {
+					lnum = line - 1,
+					col = column - 1,
+					end_lnum = end_line - 1,
+					end_col = end_column - 1,
+					severity = severities[tostring(item.severity):upper()] or vim.diagnostic.severity.WARN,
+					code = item.rule,
+					message = item.message or item.roast or "droast finding",
+					source = "droast",
+				})
+			end
+			return diagnostics
+		end,
+	}
+
 	lint.linters_by_ft = {
-		dockerfile = { "hadolint" },
+		dockerfile = { "hadolint", "droast" },
 		go = { "golangcilint" },
 		lua = { "selene" },
 		markdown = { "markdownlint-cli2" },

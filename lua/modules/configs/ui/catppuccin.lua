@@ -42,7 +42,6 @@ return function()
 			grug_far = true,
 			lsp_saga = true,
 			lsp_trouble = true,
-			mason = true,
 			mini = { enabled = true },
 			snacks = true,
 			rainbow_delimiters = true,
@@ -69,9 +68,6 @@ return function()
 					DiagnosticVirtualTextInfo = { bg = "#496A7A" },
 					DiagnosticVirtualTextHint = { bg = "#746C74" },
 					LspInfoBorder = { link = "FloatBorder" },
-
-					-- For mason.nvim
-					MasonNormal = { link = "NormalFloat" },
 
 					-- For snacks.indent
 					SnacksIndent = { fg = cp.surface0 },

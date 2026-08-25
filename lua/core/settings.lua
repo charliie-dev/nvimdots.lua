@@ -85,15 +85,14 @@ settings["external_browser"] = "chrome-cli open"
 settings["lsp_inlayhints"] = false
 
 -- LSP server names expected by the config and Muster.
--- Install packages manually with :MasonInstall or another package manager.
+-- Install their executables with mise or another package manager.
 -- Full list: https://github.com/neovim/nvim-lspconfig/tree/master/lsp
 ---@type (string|{ name: string, command: string })[]
 settings["lsp_deps"] = {
-	"bashls",
 	"clangd",
 	-- "dartls",
 	"dockerls",
-	"gh_actions_ls",
+	{ name = "gh_actions_ls", command = "actions-languageserver" },
 	"gopls",
 	-- "harper_ls", -- too noisy
 	{ name = "jsonls", command = "vscode-json-language-server" },
@@ -114,7 +113,7 @@ settings["lsp_deps"] = {
 }
 
 -- Conform formatter names expected by the config and Muster.
--- Install their executables manually with :MasonInstall or another package manager.
+-- Install their executables with mise or another package manager.
 ---@type string[]
 settings["formatter_deps"] = {
 	"beautysh",
@@ -133,11 +132,12 @@ settings["formatter_deps"] = {
 }
 
 -- nvim-lint names expected by the config and Muster.
--- Install their executables manually with :MasonInstall or another package manager.
+-- Install their executables with mise or another package manager.
 ---@type (string|{ name: string, command: string })[]
 settings["linter_deps"] = {
 	"actionlint",
 	"deadnix",
+	"droast",
 	"golangcilint",
 	"hadolint",
 	"markdownlint-cli2",
