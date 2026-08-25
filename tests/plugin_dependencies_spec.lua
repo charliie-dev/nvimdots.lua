@@ -289,8 +289,17 @@ test("droast linter parses structured findings", function()
 	assert(diagnostics[2].severity == vim.diagnostic.severity.INFO and diagnostics[2].source == "droast")
 end)
 
+test("GitHub Actions lint includes zizmor", function()
+	local lint = require("lint")
+	assert(vim.tbl_contains(lint.linters_by_ft["yaml.github"], "zizmor"), "zizmor is not enabled for workflows")
+	assert(vim.tbl_contains(require("core.settings").linter_deps, "zizmor"), "Muster does not declare zizmor")
+	local adapter = lint.linters.zizmor
+	assert(adapter.cmd == "zizmor" and adapter.stdin == true, "unexpected zizmor command contract")
+	assert(vim.deep_equal(adapter.args, { "--format", "json-v1", "-" }), "unexpected zizmor arguments")
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
 end
-print("plugin_dependencies_spec: 9 tests passed")
+print("plugin_dependencies_spec: 10 tests passed")

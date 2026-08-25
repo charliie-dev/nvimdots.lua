@@ -124,7 +124,7 @@ return function()
 		typescript = { "oxlint" },
 		typescriptreact = { "oxlint" },
 		systemd = { "systemdlint" },
-		["yaml.github"] = { "actionlint", "shuck" },
+		["yaml.github"] = { "actionlint", "shuck", "zizmor" },
 		zsh = { "zsh" },
 	}
 

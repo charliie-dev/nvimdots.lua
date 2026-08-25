@@ -148,6 +148,7 @@ settings["linter_deps"] = {
 	"shuck",
 	"statix",
 	"systemdlint",
+	"zizmor",
 	"zsh",
 }
 
