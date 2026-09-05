@@ -21,11 +21,20 @@ return function()
 		local dap = require("dap")
 		local dlv = trusted_executable("dlv")
 
-		require("dap-go").setup({
+		local dap_go = require("dap-go")
+		local existing = #(dap.configurations.go or {})
+		dap_go.setup({
 			delve = {
 				path = dlv,
 			},
 		})
+		for i = existing + 1, #dap.configurations.go do
+			local config = dap.configurations.go[i]
+			if config.name == "Debug (Arguments & Build Flags)" then
+				-- DAP evaluates option callbacks without arguments.
+				config.buildFlags = dap_go.get_build_flags
+			end
+		end
 
 		local upstream = assert(dap.adapters.go, "dap-go did not register its adapter")
 		assert(type(upstream) == "function", "dap-go adapter must be a factory")
