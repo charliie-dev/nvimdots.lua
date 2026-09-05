@@ -8,7 +8,8 @@ M.flash_esc_or_noh = function()
 	local flash_active, state = pcall(function()
 		return require("flash.plugins.char").state
 	end)
-	if flash_active and state then
+	-- Mapped Esc reaches on_key as a Lua callback, so Flash has not hidden this state yet.
+	if flash_active and state and state.visible then
 		state:hide()
 	else
 		pcall(vim.cmd.noh)
