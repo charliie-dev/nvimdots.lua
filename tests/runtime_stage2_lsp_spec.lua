@@ -32,8 +32,8 @@ local function open(source, ft)
 	vim.bo.filetype = ft
 	return vim.api.nvim_get_current_buf()
 end
-local function start(buf, name)
-	local opts = vim.tbl_deep_extend("force", {}, config, { name = name, root_dir = dir })
+local function start(buf, name, project)
+	local opts = vim.tbl_deep_extend("force", {}, config, { name = name, root_dir = project or dir })
 	local id = assert(vim.lsp.start(opts, { bufnr = buf }))
 	assert(
 		vim.wait(10000, function()
@@ -95,37 +95,106 @@ test("LSP info mapping opens the native health report", function()
 	assert(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"):find("vim.lsp", 1, true), "wrong report")
 end)
 vim.api.nvim_set_current_buf(buf)
-local other_buf = vim.api.nvim_create_buf(true, false)
-local other_id = start(other_buf, "stage2_other")
-test("native restart mapping restarts attached clients without restarting unrelated buffers", function()
-	keys(",lr")
-	assert(
-		vim.wait(10000, function()
-			local clients = vim.lsp.get_clients({ bufnr = buf, name = "stage2_current" })
-			return #clients == 1 and clients[1].id ~= client_id and clients[1].initialized
-		end, 20),
-		"attached client was not restarted"
-	)
-	assert(vim.lsp.get_client_by_id(other_id), "unrelated buffer's client was restarted")
+local original_mapping = vim.fn.maparg(",lr", "n", false, true)
+local active = { { buf = buf, id = client_id, name = "stage2_current", root_dir = dir } }
+for _, entry in ipairs({
+	{ project = "other", name = "stage2_other" },
+	{ project = "same_name", name = "stage2_current" },
+	{ project = "late", name = 'stage2_late%#|quoted"' },
+}) do
+	local project = dir .. "/" .. entry.project
+	vim.fn.mkdir(project, "p")
+	local source = project .. "/main.c"
+	vim.fn.writefile({ "int main(void) { return 0; }" }, source)
+	local project_buf = vim.fn.bufadd(source)
+	vim.fn.bufload(project_buf)
+	vim.bo[project_buf].filetype = "c"
+	active[#active + 1] = {
+		buf = project_buf,
+		id = start(project_buf, entry.name, project),
+		name = entry.name,
+		root_dir = project,
+	}
+end
+
+local function restart_commands()
+	local commands = {}
+	local nvim_cmd = vim.api.nvim_cmd
+	-- Observe command dispatch while still executing the real native/legacy command.
+	vim.api.nvim_cmd = function(command, opts)
+		if command.cmd == "lsp" or command.cmd == "LspRestart" then
+			commands[#commands + 1] = vim.deepcopy(command)
+		end
+		return nvim_cmd(command, opts)
+	end
+	vim.v.errmsg = ""
+	local ok, err = pcall(keys, ",lr")
+	vim.api.nvim_cmd = nvim_cmd
+	assert(ok, err)
+	assert(vim.v.errmsg == "", vim.v.errmsg)
+	return commands
+end
+
+local commands
+test("native restart covers all projects and clients added after mapping installation", function()
+	assert(vim.deep_equal(original_mapping, vim.fn.maparg(",lr", "n", false, true)), "mapping was reinstalled")
+	assert(#vim.lsp.get_clients() == #active, "expected four distinct clients")
+	commands = restart_commands()
+	for _, entry in ipairs(active) do
+		assert(
+			vim.wait(10000, function()
+				local clients = vim.lsp.get_clients({ bufnr = entry.buf, name = entry.name })
+				return #clients == 1
+					and clients[1].id ~= entry.id
+					and clients[1].initialized
+					and clients[1].config.root_dir == entry.root_dir
+			end, 20),
+			"client was not restarted: " .. entry.name .. " in " .. entry.root_dir
+		)
+	end
+	assert(#vim.lsp.get_clients() == #active, "restart changed the number of clients")
 end)
 
-test("legacy restart command is selected when the native command is unavailable", function()
-	local exists = vim.fn.exists
-	vim.fn.exists = function(name)
-		return name == ":lsp" and 0 or exists(name)
-	end
-	local ok, err = pcall(require("keymap.lsp").lsp, buf)
-	vim.fn.exists = exists
-	assert(ok, err)
-	assert(vim.fn.maparg(",lr", "n", false, true).rhs == "<Cmd>LspRestart<CR>", "legacy fallback missing")
-	require("keymap.lsp").lsp(buf)
+test("native restart sends deduplicated literal names in one structured command", function()
+	assert(commands and #commands == 1, "expected one structured restart command")
+	assert(
+		vim.deep_equal(commands[1].args, { "restart", "stage2_current", 'stage2_late%#|quoted"', "stage2_other" }),
+		vim.inspect(commands[1])
+	)
+	assert(commands[1].magic.file == false and commands[1].magic.bar == false, "names are not literal")
 end)
 
 for _, client in ipairs(vim.lsp.get_clients()) do
 	client:stop()
 end
-vim.wait(2000, function()
-	return #vim.lsp.get_clients() == 0
+assert(
+	vim.wait(2000, function()
+		return #vim.lsp.get_clients() == 0
+	end),
+	"test clients did not stop"
+)
+
+test("restart with no active clients is a no-op", function()
+	assert(#restart_commands() == 0, "empty client list dispatched a restart command")
+	assert(#vim.lsp.get_clients() == 0, "restart unexpectedly started a client")
+end)
+
+test("legacy restart command executes when the native command is unavailable", function()
+	local exists = vim.fn.exists
+	vim.fn.exists = function(name)
+		return name == ":lsp" and 0 or exists(name)
+	end
+	local ok, err = xpcall(function()
+		vim.g.lspconfig = nil
+		vim.cmd("runtime plugin/lspconfig.lua")
+		assert(exists(":LspRestart") == 2, "upstream legacy command was not registered")
+		require("keymap.lsp").lsp(buf)
+		local legacy = restart_commands()
+		assert(#legacy == 1 and legacy[1].cmd == "LspRestart", "legacy fallback was not dispatched")
+	end, debug.traceback)
+	vim.fn.exists = exists
+	require("keymap.lsp").lsp(buf)
+	assert(ok, err)
 end)
 vim.fn.delete(dir, "rf")
 if #failures > 0 then

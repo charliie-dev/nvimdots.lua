@@ -81,8 +81,24 @@ function M.lsp(buf)
 
 	-- LSP settings
 	set("n", "<leader>li", "<Cmd>checkhealth vim.lsp<CR>", { silent = true, buf = buf, desc = "lsp: Info" })
-	local restart = vim.fn.exists(":lsp") == 2 and "<Cmd>lsp restart<CR>" or "<Cmd>LspRestart<CR>"
-	set("n", "<leader>lr", restart, { silent = true, nowait = true, buf = buf, desc = "lsp: Restart" })
+	set("n", "<leader>lr", function()
+		if vim.fn.exists(":lsp") ~= 2 then
+			vim.cmd.LspRestart()
+			return
+		end
+		-- Native restart without names is buffer-local.
+		local names = {}
+		for _, client in ipairs(vim.lsp.get_clients()) do
+			names[client.name] = true
+		end
+		local args = vim.tbl_keys(names)
+		if #args == 0 then
+			return
+		end
+		table.sort(args)
+		table.insert(args, 1, "restart")
+		vim.cmd({ cmd = "lsp", args = args, magic = { file = false, bar = false } })
+	end, { silent = true, nowait = true, buf = buf, desc = "lsp: Restart" })
 	set(
 		"n",
 		"<leader>lx",
