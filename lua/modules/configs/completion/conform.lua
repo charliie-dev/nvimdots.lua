@@ -16,6 +16,8 @@ return function()
 		return regex
 	end
 
+	local default_clang_args, default_clang_style
+
 	-- Load clang_format extra_args from user or default config
 	local function clang_format_args()
 		local ok, args = pcall(require, "user.configs.formatters.clang_format")
@@ -24,9 +26,33 @@ return function()
 			if type(args) == "string" and not args:find("module .* not found") then
 				vim.notify("[Conform] Error loading user clang_format config: " .. args, vim.log.levels.ERROR)
 			end
-			args = require("completion.formatters.clang_format")
+			args = vim.deepcopy(require("completion.formatters.clang_format"))
+			default_clang_args, default_clang_style = args, args[1]
 		end
 		return args
+	end
+
+	local function setup_conform(opts)
+		local formatter = opts.formatters and opts.formatters["clang-format"]
+		-- Merge user list additions/mutators before turning the default list into a callback.
+		if default_clang_args and type(formatter) == "table" and formatter.prepend_args == default_clang_args then
+			formatter.prepend_args = function(_, ctx)
+				local args = vim.deepcopy(default_clang_args)
+				-- clang-format's fallback-style accepts presets, not the LLVM/4 inline style.
+				if args[1] == default_clang_style then
+					local config = vim.fs.find({ ".clang-format", "_clang-format" }, {
+						path = ctx.dirname,
+						upward = true,
+						type = "file",
+					})[1]
+					if config then
+						args[1] = "-style=file"
+					end
+				end
+				return args
+			end
+		end
+		require("conform").setup(opts)
 	end
 
 	---Check if the current file is in a disabled workspace
@@ -191,7 +217,7 @@ return function()
 
 			return {}
 		end or false,
-	})
+	}, false, setup_conform)
 
 	-- User commands
 	vim.api.nvim_create_user_command("Format", function(args)
