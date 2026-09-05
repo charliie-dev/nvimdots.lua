@@ -12,7 +12,7 @@ set("n", "<C-n>", function()
 end, { silent = true, desc = "tool: Toggle sidebar" })
 
 -- Plugin: sniprun
-set("v", "<leader>r", "<Cmd>SnipRun<CR>", { silent = true, desc = "tool: Run code by range" })
+set("v", "<leader>r", ":SnipRun<CR>", { silent = true, desc = "tool: Run code by range" })
 set("n", "<leader>r", "<Cmd>%SnipRun<CR>", { silent = true, desc = "tool: Run code by file" })
 
 -- Plugin: overseer.nvim
