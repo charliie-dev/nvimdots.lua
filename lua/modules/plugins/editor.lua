@@ -3,49 +3,49 @@ local editor = {}
 editor["sindrets/diffview.nvim"] = {
 	lazy = true,
 	cmd = { "DiffviewOpen", "DiffviewClose" },
-	config = require("editor.diffview"),
+	config = require("modules.configs.editor.diffview"),
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 editor["nvim-mini/mini.align"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
-	config = require("editor.align"),
+	config = require("modules.configs.editor.align"),
 }
 editor["nvim-mini/mini.cursorword"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
-	config = require("editor.cursorword"),
+	config = require("modules.configs.editor.cursorword"),
 }
 editor["nvim-mini/mini.surround"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufNewFile" },
 	version = false,
-	config = require("editor.surround"),
+	config = require("modules.configs.editor.surround"),
 }
 editor["folke/flash.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
-	config = require("editor.flash"),
+	config = require("modules.configs.editor.flash"),
 }
 editor["olimorris/persisted.nvim"] = {
 	lazy = true,
 	cmd = "Persisted",
-	config = require("editor.persisted"),
+	config = require("modules.configs.editor.persisted"),
 }
 editor["lambdalisue/suda.vim"] = {
 	lazy = true,
 	cmd = { "SudaRead", "SudaWrite" },
-	init = require("editor.suda"),
+	init = require("modules.configs.editor.suda"),
 }
 editor["brenoprata10/nvim-highlight-colors"] = {
 	lazy = true,
 	event = "VeryLazy",
-	config = require("editor.highlight-colors"),
+	config = require("modules.configs.editor.highlight-colors"),
 }
 editor["MagicDuck/grug-far.nvim"] = {
 	lazy = true,
 	cmd = "GrugFar",
-	config = require("editor.grug-far"),
+	config = require("modules.configs.editor.grug-far"),
 }
 
 ----------------------------------------------------------------------
@@ -69,7 +69,7 @@ editor["jmbuhr/otter.nvim"] = {
 editor["nemanjamalesija/smart-paste.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
-	config = require("editor.smart-paste"),
+	config = require("modules.configs.editor.smart-paste"),
 }
 
 editor["charliie-dev/hmts.nvim"] = {
@@ -88,7 +88,7 @@ editor["bezhermoso/tree-sitter-ghostty"] = {
 editor["danymat/neogen"] = {
 	lazy = true,
 	cmd = "Neogen",
-	config = require("editor.neogen"),
+	config = require("modules.configs.editor.neogen"),
 }
 
 editor["nvim-treesitter/nvim-treesitter"] = {
@@ -97,7 +97,7 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	-- event = "BufReadPre",
 	branch = "main",
 	build = ":TSUpdate",
-	config = require("editor.treesitter"),
+	config = require("modules.configs.editor.treesitter"),
 	dependencies = {
 		{
 			"Hdoc1509/gh-actions.nvim",
@@ -111,28 +111,28 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 editor["nvim-mini/mini.ai"] = {
 	lazy = false,
 	version = "*",
-	config = require("editor.ai_textobj"),
+	config = require("modules.configs.editor.ai_textobj"),
 }
 
 editor["nvim-treesitter/nvim-treesitter-textobjects"] = {
 	lazy = false,
 	branch = "main",
-	config = require("editor.ts-textobjects"),
+	config = require("modules.configs.editor.ts-textobjects"),
 }
 
 editor["windwp/nvim-ts-autotag"] = {
 	lazy = false,
-	config = require("editor.ts-autotag"),
+	config = require("modules.configs.editor.ts-autotag"),
 }
 
 editor["HiPhish/rainbow-delimiters.nvim"] = {
 	lazy = false,
-	config = require("editor.rainbow_delims"),
+	config = require("modules.configs.editor.rainbow_delims"),
 }
 
 editor["nvim-treesitter/nvim-treesitter-context"] = {
 	lazy = false,
-	config = require("editor.ts-context"),
+	config = require("modules.configs.editor.ts-context"),
 }
 
 return editor

@@ -14,8 +14,13 @@ node = "latest"
 description = "Run Neovim config regression tests"
 run = '''
 nvim --clean -u NONE -i NONE --headless -l tests/utils_spec.lua
-nvim -i NONE --headless "+luafile tests/dap_python_spec.lua" +qa
-nvim -i NONE --headless "+luafile tests/plugin_dependencies_spec.lua" "+if v:errmsg !=# '' | cquit 1 | endif" +qa
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/dap_python_spec.lua" +qa
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/plugin_dependencies_spec.lua" "+if v:errmsg !=# '' | cquit 1 | endif" +qa
+for run in 1 2; do
+  nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/startup_spec.lua" -i NONE --headless
+  nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/startup_spec.lua" -i NONE --headless lua/core/options.lua
+done
+NVIM_TEST_OVERRIDES=1 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/startup_spec.lua" -i NONE --headless
 '''
 
 # ==============================================================================

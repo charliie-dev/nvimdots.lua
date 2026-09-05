@@ -3,7 +3,7 @@ local tool = {}
 tool["monaqa/dial.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
-	config = require("tool.dial"),
+	config = require("modules.configs.tool.dial"),
 }
 tool["tpope/vim-fugitive"] = {
 	lazy = true,
@@ -11,12 +11,12 @@ tool["tpope/vim-fugitive"] = {
 }
 tool["Bekaboo/dropbar.nvim"] = {
 	lazy = false,
-	config = require("tool.dropbar"),
+	config = require("modules.configs.tool.dropbar"),
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 tool["stevearc/oil.nvim"] = {
 	lazy = false,
-	config = require("tool.oil"),
+	config = require("modules.configs.tool.oil"),
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 tool["michaelb/sniprun"] = {
@@ -25,7 +25,7 @@ tool["michaelb/sniprun"] = {
 	-- run `bash ./install.sh` inside `~/.local/share/nvim/lazy/sniprun/`.
 	build = "bash ./install.sh",
 	cmd = { "SnipRun", "SnipReset", "SnipInfo" },
-	config = require("tool.sniprun"),
+	config = require("modules.configs.tool.sniprun"),
 }
 tool["stevearc/overseer.nvim"] = {
 	lazy = true,
@@ -37,17 +37,17 @@ tool["stevearc/overseer.nvim"] = {
 		"OverseerClose",
 		"OverseerTaskAction",
 	},
-	config = require("tool.overseer"),
+	config = require("modules.configs.tool.overseer"),
 }
 tool["folke/trouble.nvim"] = {
 	lazy = true,
 	cmd = { "Trouble" },
-	config = require("tool.trouble"),
+	config = require("modules.configs.tool.trouble"),
 }
 tool["folke/which-key.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
-	config = require("tool.which-key"),
+	config = require("modules.configs.tool.which-key"),
 }
 tool["charliie-dev/leaf.nvim"] = {
 	cmd = { "Leaf" },
@@ -57,7 +57,7 @@ tool["mikavilpas/yazi.nvim"] = {
 	version = "*",
 	lazy = true,
 	cmd = { "Yazi" },
-	config = require("tool.yazi"),
+	config = require("modules.configs.tool.yazi"),
 	dependencies = {
 		{ "nvim-lua/plenary.nvim", lazy = true },
 	},
@@ -97,12 +97,12 @@ tool["aaronhallaert/advanced-git-search.nvim"] = {
 ----------------------------------------------------------------------
 tool["leoluz/nvim-dap-go"] = {
 	ft = "go",
-	config = require("tool.dap.dap-go"),
+	config = require("modules.configs.tool.dap.dap-go"),
 	dependencies = { "mfussenegger/nvim-dap" },
 }
 tool["mfussenegger/nvim-dap-python"] = {
 	ft = "python",
-	config = require("tool.dap.dap-python"),
+	config = require("modules.configs.tool.dap.dap-python"),
 	dependencies = { "mfussenegger/nvim-dap" },
 }
 tool["mfussenegger/nvim-dap"] = {
@@ -118,12 +118,12 @@ tool["mfussenegger/nvim-dap"] = {
 		"DapStepOut",
 		"DapTerminate",
 	},
-	config = require("tool.dap"),
+	config = require("modules.configs.tool.dap"),
 	dependencies = {
 		{
 			"rcarriga/nvim-dap-ui",
 			dependencies = { "nvim-neotest/nvim-nio" },
-			config = require("tool.dap.dapui"),
+			config = require("modules.configs.tool.dap.dapui"),
 		},
 	},
 }

@@ -3,30 +3,30 @@ local completion = {}
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
 	event = { "BufReadPre", "BufNewFile" },
-	config = require("completion.lsp"),
+	config = require("modules.configs.completion.lsp"),
 	dependencies = { "b0o/schemastore.nvim" },
 }
 completion["nvimdev/lspsaga.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
-	config = require("completion.lspsaga"),
+	config = require("modules.configs.completion.lspsaga"),
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 }
 completion["rachartier/tiny-inline-diagnostic.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
-	config = require("completion.tiny-inline-diagnostic"),
+	config = require("modules.configs.completion.tiny-inline-diagnostic"),
 }
 completion["stevearc/conform.nvim"] = {
 	lazy = true,
 	event = "BufWritePre",
 	cmd = { "ConformInfo", "Format", "FormatToggle", "FormatterToggleFt" },
-	config = require("completion.conform"),
+	config = require("modules.configs.completion.conform"),
 }
 completion["mfussenegger/nvim-lint"] = {
 	lazy = true,
 	event = { "BufWritePost", "BufReadPost" },
-	config = require("completion.nvim-lint"),
+	config = require("modules.configs.completion.nvim-lint"),
 }
 completion["charliie-dev/muster.nvim"] = {
 	event = { "BufReadPost", "BufNewFile" },
@@ -37,7 +37,7 @@ completion["charliie-dev/muster.nvim"] = {
 		"mfussenegger/nvim-lint",
 		"mfussenegger/nvim-dap",
 	},
-	config = require("completion.muster"),
+	config = require("modules.configs.completion.muster"),
 }
 
 completion["saghen/blink.cmp"] = {
@@ -47,13 +47,13 @@ completion["saghen/blink.cmp"] = {
 	build = function()
 		require("blink.cmp").build():pwait()
 	end,
-	config = require("completion.blink"),
+	config = require("modules.configs.completion.blink"),
 	dependencies = {
 		"saghen/blink.lib",
 		{
 			"L3MON4D3/LuaSnip",
 			build = "make install_jsregexp",
-			config = require("completion.luasnip"),
+			config = require("modules.configs.completion.luasnip"),
 			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		"mikavilpas/blink-ripgrep.nvim",
@@ -69,7 +69,7 @@ completion["saghen/blink.cmp"] = {
 completion["folke/lazydev.nvim"] = {
 	lazy = true,
 	ft = "lua",
-	config = require("completion.lazydev"),
+	config = require("modules.configs.completion.lazydev"),
 }
 
 return completion

@@ -4,7 +4,7 @@ local lang = {}
 lang["kevinhwang91/nvim-bqf"] = {
 	lazy = true,
 	ft = "qf",
-	config = require("lang.bqf"),
+	config = require("modules.configs.lang.bqf"),
 	dependencies = {
 		{ "junegunn/fzf", build = ":call fzf#install()" },
 	},
@@ -17,7 +17,7 @@ lang["stevearc/quicker.nvim"] = {
 lang["ray-x/go.nvim"] = {
 	lazy = true,
 	ft = { "go", "gomod", "gosum" },
-	config = require("lang.go"),
+	config = require("modules.configs.lang.go"),
 	dependencies = {
 		{
 			"ray-x/guihua.lua",

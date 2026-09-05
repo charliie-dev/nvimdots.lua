@@ -144,11 +144,14 @@ test("approved dependency relationships are explicit", function()
 	assert_dependencies(specs["charliie-dev/hmts.nvim"], { "nvim-treesitter/nvim-treesitter" })
 	assert_dependencies(specs["nvim-treesitter/nvim-treesitter"], { "Hdoc1509/gh-actions.nvim" })
 	local moved = {
-		["nvim-mini/mini.ai"] = { config = require("editor.ai_textobj"), version = "*" },
-		["nvim-treesitter/nvim-treesitter-textobjects"] = { config = require("editor.ts-textobjects"), branch = "main" },
-		["windwp/nvim-ts-autotag"] = { config = require("editor.ts-autotag") },
-		["HiPhish/rainbow-delimiters.nvim"] = { config = require("editor.rainbow_delims") },
-		["nvim-treesitter/nvim-treesitter-context"] = { config = require("editor.ts-context") },
+		["nvim-mini/mini.ai"] = { config = require("modules.configs.editor.ai_textobj"), version = "*" },
+		["nvim-treesitter/nvim-treesitter-textobjects"] = {
+			config = require("modules.configs.editor.ts-textobjects"),
+			branch = "main",
+		},
+		["windwp/nvim-ts-autotag"] = { config = require("modules.configs.editor.ts-autotag") },
+		["HiPhish/rainbow-delimiters.nvim"] = { config = require("modules.configs.editor.rainbow_delims") },
+		["nvim-treesitter/nvim-treesitter-context"] = { config = require("modules.configs.editor.ts-context") },
 	}
 	for name, contract in pairs(moved) do
 		assert(specs[name].lazy == false, name .. " move")
