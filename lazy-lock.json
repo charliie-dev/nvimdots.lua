@@ -23,7 +23,7 @@
   "go.nvim": { "branch": "master", "commit": "0768d79bbebdb1a112a845f9cd6293bfbd544dab" },
   "grug-far.nvim": { "branch": "main", "commit": "11595bf747edc270bce2069d1020502ad4ae56cf" },
   "guihua.lua": { "branch": "master", "commit": "4c513d5dac550af77034cced421967b393261509" },
-  "hmts.nvim": { "branch": "combined-fixes", "commit": "15afe9503a2884395f00d88ea697c88aadee8619" },
+  "hmts.nvim": { "branch": "main", "commit": "9564a869b8b2a22a52293500bbb089c048027076" },
   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
   "lazydev.nvim": { "branch": "main", "commit": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d" },
   "leaf.nvim": { "branch": "main", "commit": "4e0f8265059513789bd4e143091092d25ee60c47" },

@@ -21,6 +21,7 @@ for run in 1 2; do
   nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/startup_spec.lua" -i NONE --headless lua/core/options.lua
 done
 NVIM_TEST_OVERRIDES=1 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/startup_spec.lua" -i NONE --headless
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/hmts_spec.lua" -i NONE --headless tests/fixtures/hmts.nix
 '''
 
 # ==============================================================================

@@ -74,7 +74,7 @@ editor["nemanjamalesija/smart-paste.nvim"] = {
 
 editor["charliie-dev/hmts.nvim"] = {
 	lazy = true,
-	branch = "combined-fixes",
+	branch = "main",
 	ft = "nix",
 	dependencies = { "nvim-treesitter/nvim-treesitter" },
 }

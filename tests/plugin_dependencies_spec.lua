@@ -116,7 +116,7 @@ test("complete raw plugin manifest", function()
 		"top-level manifest",
 		top_level,
 		58,
-		"8f82e2240249fbb598985ca303a36cff2795f679fc887d28f63ecbc417dbc82d"
+		"7f2521321fdc081e08552948c9b09db200b8747b959218ab861745e18140ed04"
 	)
 	assert_manifest("nested manifest", nested, 33, "5ed59063d68276fb264b8d34a01572bb7cd866d77df40e1283177f2d92844530")
 end)
