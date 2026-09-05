@@ -21,6 +21,7 @@ end
 local dir = vim.env.NVIM_STAGE2_ARTIFACTS and (vim.env.NVIM_STAGE2_ARTIFACTS .. "/lsp%fixtures")
 	or (vim.fn.tempname() .. "%fixtures")
 vim.fn.mkdir(dir, "p")
+dir = assert(vim.uv.fs_realpath(dir), "cannot resolve fixture directory")
 local sources = { dir .. "/stage2.c", dir .. "/stage2.cpp" }
 local header = dir .. "/stage2.h"
 vim.fn.writefile({ "int stage2(void);" }, header)
@@ -77,7 +78,7 @@ for i, ft in ipairs({ "c", "cpp" }) do
 			vim.wait(5000, function()
 				return vim.api.nvim_buf_get_name(0) == header
 			end),
-			"source/header mapping did not open the corresponding header"
+			string.format("source/header mapping: expected %s, got %s", header, vim.api.nvim_buf_get_name(0))
 		)
 	end)
 end
