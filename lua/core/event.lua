@@ -196,7 +196,7 @@ function autocmd.load_autocmds()
 					vim.keymap.set(
 						"n",
 						"<leader>h",
-						"<Cmd>ClangdSwitchSourceHeader<CR>",
+						"<Cmd>LspClangdSwitchSourceHeader<CR>",
 						{ buf = event.buf, silent = true }
 					)
 				end,

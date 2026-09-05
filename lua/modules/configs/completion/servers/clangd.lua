@@ -19,7 +19,7 @@ local function switch_source_header_splitcmd(bufnr, splitcmd, client)
 			vim.notify("corresponding file cannot be determined")
 			return
 		end
-		vim.cmd({ cmd = splitcmd, args = { vim.uri_to_fname(result) } })
+		vim.cmd({ cmd = splitcmd, args = { vim.uri_to_fname(result) }, magic = { file = false } })
 	end, bufnr)
 end
 
@@ -83,7 +83,7 @@ return function(defaults)
 			"--clang-tidy",
 			"--completion-parse=auto",
 			"--completion-style=bundled",
-			"--function-arg-placeholders",
+			"--function-arg-placeholders=1",
 			"--header-insertion-decorators",
 			"--header-insertion=iwyu",
 			"--limit-references=1000",

@@ -80,8 +80,9 @@ function M.lsp(buf)
 	set("n", "gco", "<Cmd>Lspsaga outgoing_calls<CR>", { silent = true, buf = buf, desc = "lsp: Outgoing calls" })
 
 	-- LSP settings
-	set("n", "<leader>li", "<Cmd>LspInfo<CR>", { silent = true, buf = buf, desc = "lsp: Info" })
-	set("n", "<leader>lr", "<Cmd>LspRestart<CR>", { silent = true, nowait = true, buf = buf, desc = "lsp: Restart" })
+	set("n", "<leader>li", "<Cmd>checkhealth vim.lsp<CR>", { silent = true, buf = buf, desc = "lsp: Info" })
+	local restart = vim.fn.exists(":lsp") == 2 and "<Cmd>lsp restart<CR>" or "<Cmd>LspRestart<CR>"
+	set("n", "<leader>lr", restart, { silent = true, nowait = true, buf = buf, desc = "lsp: Restart" })
 	set(
 		"n",
 		"<leader>lx",
