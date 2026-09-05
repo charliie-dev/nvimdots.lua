@@ -97,6 +97,85 @@ for _, ft in ipairs({ "python", "go" }) do
 	end)
 end
 
+local user_runtime = vim.fn.tempname()
+vim.fn.mkdir(user_runtime .. "/ftplugin", "p")
+local user_ftplugin = [[
+vim.b.stage2_user_ftplugin_loaded = true
+local native_maps = {}
+for _, mode in ipairs({ "n", "x", "o" }) do
+	native_maps[mode] = {}
+	for _, lhs in ipairs(vim.b.stage2_motion_keys) do
+		local native = vim.fn.maparg(lhs, mode, false, true)
+		native_maps[mode][lhs] = native
+		local rhs
+		if vim.b.stage2_motion_kind == "callback" then
+			rhs = function()
+				vim.b.stage2_user_calls = vim.b.stage2_user_calls + 1
+				vim.api.nvim_win_set_cursor(0, { 2, 0 })
+			end
+		elseif vim.b.stage2_motion_kind == "rhs" then
+			rhs = "<Cmd>let b:stage2_user_calls += 1<CR>j"
+		else
+			rhs = native.rhs:gsub("<SID>", "<SNR>" .. native.sid .. "_")
+		end
+		vim.keymap.set(mode, lhs, rhs, { buffer = true, desc = "user motion override" })
+	end
+end
+vim.b.stage2_native_maps = native_maps
+]]
+for _, ft in ipairs({ "python", "go" }) do
+	vim.fn.writefile(vim.split(user_ftplugin, "\n"), user_runtime .. "/ftplugin/" .. ft .. "_review.lua")
+end
+-- Ordinary user ftplugin extensions run after native ftplugins and before after/ftplugin.
+vim.opt.runtimepath:remove(root .. "/after")
+vim.opt.runtimepath:append(user_runtime)
+vim.opt.runtimepath:append(root .. "/after")
+for _, ft in ipairs({ "python", "go" }) do
+	for _, kind in ipairs({ "callback", "rhs", "native delegation" }) do
+		test(ft .. " FileType preserves same-key user " .. kind .. " mappings", function()
+			vim.cmd.enew({ bang = true })
+			vim.api.nvim_buf_set_lines(0, 0, -1, false, fixtures[ft])
+			vim.b.stage2_motion_kind = kind
+			vim.b.stage2_motion_keys = vim.tbl_keys(targets[ft])
+			vim.b.stage2_user_calls = 0
+			vim.bo.filetype = ft
+			assert(vim.b.stage2_user_ftplugin_loaded, "user ftplugin extension did not run")
+			for _, mode in ipairs({ "n", "x", "o" }) do
+				for lhs in pairs(targets[ft]) do
+					local native = vim.b.stage2_native_maps[mode][lhs]
+					assert(native.buffer == 1 and native.rhs, "native ftplugin did not install " .. lhs)
+					local mapping = vim.fn.maparg(lhs, mode, false, true)
+					assert(
+						mapping.buffer == 1 and mapping.desc == "user motion override",
+						mode .. " " .. lhs .. " lost"
+					)
+					if kind == "native delegation" then
+						assert(
+							mapping.rhs == native.rhs:gsub("<SID>", "<SNR>" .. native.sid .. "_"),
+							"native delegation changed"
+						)
+					else
+						vim.api.nvim_win_set_cursor(0, { 1, 0 })
+						local count = vim.b.stage2_user_calls
+						keys((mode == "x" and "v" or mode == "o" and "y" or "") .. lhs)
+						keys("<Esc>")
+						assert(vim.b.stage2_user_calls == count + 1, mode .. " " .. lhs .. " did not call user mapping")
+					end
+				end
+			end
+			if kind == "native delegation" then
+				vim.api.nvim_win_set_cursor(0, { 1, 0 })
+				vim.v.errmsg = ""
+				keys("]]")
+				assert(vim.v.errmsg == "", vim.v.errmsg)
+				assert(vim.api.nvim_win_get_cursor(0)[1] == (ft == "python" and 2 or 3), "native delegation failed")
+			end
+		end)
+	end
+end
+vim.opt.runtimepath:remove(user_runtime)
+vim.fn.delete(user_runtime, "rf")
+
 test("unrelated native mappings and user motion overrides survive", function()
 	vim.cmd.enew({ bang = true })
 	vim.bo.filetype = "go"
