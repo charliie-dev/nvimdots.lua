@@ -22,6 +22,17 @@ for run in 1 2; do
 done
 NVIM_TEST_OVERRIDES=1 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/startup_spec.lua" -i NONE --headless
 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/hmts_spec.lua" -i NONE --headless tests/fixtures/hmts.nix
+nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage1_dashboard_spec.lua
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/runtime_stage1_persisted_spec.lua" -i NONE --headless
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/runtime_stage1_sniprun_spec.lua" -i NONE --headless
+nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage2_syntax_spec.lua
+nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage2_motions_spec.lua
+nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage2_lsp_spec.lua
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/runtime_stage2_startup_spec.lua" -i NONE --headless mise.toml
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage3_flash_spec.lua" "+qa!"
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage3_dap_go_spec.lua" "+qa!"
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage3_dap_keys_spec.lua" "+qa!"
+nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage4_spec.lua
 '''
 
 # ==============================================================================
