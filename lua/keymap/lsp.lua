@@ -51,7 +51,16 @@ function M.lsp(buf)
 	)
 	set("n", "g[", "<Cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true, buf = buf, desc = "lsp: Prev diagnostic" })
 	set("n", "g]", "<Cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true, buf = buf, desc = "lsp: Next diagnostic" })
-	set("n", "K", "<Cmd>Lspsaga hover_doc<CR>", { silent = true, buf = buf, desc = "lsp: Show doc" })
+	local custom_hover = false
+	for _, map in ipairs(vim.api.nvim_buf_get_keymap(buf, "n")) do
+		if map.lhs == "K" and map.callback ~= vim.lsp.buf.hover then
+			custom_hover = true
+			break
+		end
+	end
+	if not custom_hover then
+		set("n", "K", helpers.lsp_hover_or_dap, { silent = true, buf = buf, desc = "lsp: Show doc / debug: Evaluate" })
+	end
 
 	-- LSP actions
 	set({ "n", "v" }, "gra", "<Cmd>Lspsaga code_action<CR>", { silent = true, buf = buf, desc = "lsp: Code action" })

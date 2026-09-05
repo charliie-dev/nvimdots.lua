@@ -23,6 +23,7 @@ return function()
 			teardown_pending = false
 			if dap.session() == nil then
 				_G._debugging = false
+				mappings.unload_extras()
 				dapui.close()
 			end
 		end)

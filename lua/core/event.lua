@@ -26,12 +26,12 @@ local mapping = require("keymap.lsp")
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)
-		if not _G._debugging then
-			-- LSP Keymaps
-			-- Neovim's own `grn`/`gra` defaults are global, so the
-			-- buffer-local mappings below shadow them without needing a delete.
-			mapping.lsp(event.buf)
+		-- LSP Keymaps
+		-- Neovim's own `grn`/`gra` defaults are global, so the
+		-- buffer-local mappings below shadow them without needing a delete.
+		mapping.lsp(event.buf)
 
+		if not _G._debugging then
 			-- LSP Inlay Hints
 			local inlayhints_enabled = require("core.settings").lsp_inlayhints
 			local client = vim.lsp.get_client_by_id(event.data.client_id)

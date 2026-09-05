@@ -16,6 +16,14 @@ M.flash_esc_or_noh = function()
 	end
 end
 
+M.lsp_hover_or_dap = function()
+	if _G._debugging then
+		require("dapui").eval()
+	else
+		vim.cmd.Lspsaga("hover_doc")
+	end
+end
+
 M.toggle_inlayhint = function()
 	local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
 
