@@ -184,13 +184,6 @@ function autocmd.load_autocmds()
 			},
 			{
 				"FileType",
-				"snacks_dashboard",
-				function()
-					vim.wo.showtabline = 0
-				end,
-			},
-			{
-				"FileType",
 				"dap-repl",
 				function()
 					require("dap.ext.autocompl").attach()
