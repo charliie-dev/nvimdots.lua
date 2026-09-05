@@ -16,7 +16,8 @@ return function()
 		return regex
 	end
 
-	local default_clang_args, default_clang_style
+	local clang_args_marker = {}
+	local default_clang_style
 
 	-- Load clang_format extra_args from user or default config
 	local function clang_format_args()
@@ -26,18 +27,20 @@ return function()
 			if type(args) == "string" and not args:find("module .* not found") then
 				vim.notify("[Conform] Error loading user clang_format config: " .. args, vim.log.levels.ERROR)
 			end
-			args = vim.deepcopy(require("completion.formatters.clang_format"))
-			default_clang_args, default_clang_style = args, args[1]
+			-- deepcopy preserves this marker without tagging explicit replacement lists.
+			args = setmetatable(vim.deepcopy(require("completion.formatters.clang_format")), clang_args_marker)
+			default_clang_style = args[1]
 		end
 		return args
 	end
 
 	local function setup_conform(opts)
 		local formatter = opts.formatters and opts.formatters["clang-format"]
+		local prepend_args = type(formatter) == "table" and formatter.prepend_args
 		-- Merge user list additions/mutators before turning the default list into a callback.
-		if default_clang_args and type(formatter) == "table" and formatter.prepend_args == default_clang_args then
+		if type(prepend_args) == "table" and getmetatable(prepend_args) == clang_args_marker then
 			formatter.prepend_args = function(_, ctx)
-				local args = vim.deepcopy(default_clang_args)
+				local args = vim.deepcopy(prepend_args)
 				-- clang-format's fallback-style accepts presets, not the LLVM/4 inline style.
 				if args[1] == default_clang_style then
 					local config = vim.fs.find({ ".clang-format", "_clang-format" }, {

@@ -253,6 +253,77 @@ test("user conform full override can replace the formatter", function()
 	format(styled_buf, 8, style)
 end)
 
+test("copying user conform options retains dynamic inherited style", function()
+	setup(styled, nil, function(opts)
+		local copy = vim.deepcopy(opts)
+		copy.default_format_opts.timeout_ms = 1500
+		return copy
+	end)
+	assert(conform.default_format_opts.timeout_ms == 1500, "copied timeout override was lost")
+	format(styled_buf, 2, "-style=file")
+	format(plain_buf, 4, fallback)
+	format(nested_buf, 6, "-style=file")
+end)
+
+test("copying inherited prepend arguments retains style and non-style additions", function()
+	setup(styled, nil, {
+		formatters = {
+			["clang-format"] = {
+				prepend_args = function(args)
+					return vim.list_extend(vim.deepcopy(args), { "--sort-includes=false" })
+				end,
+			},
+		},
+	})
+	local cmd = format(styled_buf, 2, "-style=file")
+	assert(cmd[3] == "--sort-includes=false", "copied argument addition was lost")
+	format(plain_buf, 4, fallback)
+	format(nested_buf, 6, "-style=file")
+end)
+
+test("copied inherited arguments can explicitly change the style", function()
+	local style = "-style={BasedOnStyle: LLVM, IndentWidth: 7}"
+	setup(styled, nil, {
+		formatters = {
+			["clang-format"] = {
+				prepend_args = function(args)
+					local copy = vim.deepcopy(args)
+					copy[1] = style
+					return copy
+				end,
+			},
+		},
+	})
+	format(styled_buf, 7, style)
+end)
+
+test("explicit LLVM four-space replacement is not an inherited default", function()
+	setup(styled, nil, function(opts)
+		local copy = vim.deepcopy(opts)
+		copy.formatters["clang-format"].prepend_args = { fallback }
+		return copy
+	end)
+	format(styled_buf, 4, fallback)
+	setup(styled, nil, {
+		formatters = {
+			["clang-format"] = {
+				prepend_args = function()
+					return { fallback }
+				end,
+			},
+		},
+	})
+	format(styled_buf, 4, fallback)
+	setup(styled, { fallback })
+	format(styled_buf, 4, fallback)
+end)
+
+test("explicit LLVM four-space list addition keeps last-style precedence", function()
+	setup(styled, nil, { formatters = { ["clang-format"] = { prepend_args = { fallback } } } })
+	local cmd = format(styled_buf, 4, "-style=file")
+	assert(cmd[3] == fallback, "explicit equal-looking style argument was replaced")
+end)
+
 test("save formats the disposable file with its project style", function()
 	setup(plain)
 	vim.api.nvim_buf_set_lines(styled_buf, 0, -1, false, input)
