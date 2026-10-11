@@ -148,6 +148,7 @@ settings["linter_deps"] = {
 	"shuck",
 	"statix",
 	"systemdlint",
+	{ name = "terraform_validate", command = "terraform" },
 	"zizmor",
 	"zsh",
 }

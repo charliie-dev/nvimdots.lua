@@ -124,6 +124,7 @@ return function()
 		typescript = { "oxlint" },
 		typescriptreact = { "oxlint" },
 		systemd = { "systemdlint" },
+		terraform = { "terraform_validate" },
 		["yaml.github"] = { "actionlint", "shuck", "zizmor" },
 		zsh = { "zsh" },
 	}
