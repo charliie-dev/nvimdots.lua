@@ -106,7 +106,7 @@ settings["lsp_deps"] = {
 	"superhtml",
 	"systemd_lsp",
 	"terraformls",
-	"tflint",
+	{ name = "tflint", command = "tflint" }, -- cmd is a function; name the executable for Muster
 	"tombi",
 	{ name = "yamlls", command = "yaml-language-server" },
 	"zuban",
