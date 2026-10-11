@@ -172,6 +172,7 @@ return function()
 			nix = { "nixfmt", "statix" },
 			objc = { "clang-format" },
 			objcpp = { "clang-format" },
+			pkl = { "pkl" },
 			proto = { "clang-format" },
 			sh = { "shellharden" },
 			angular = { "prettier" },
