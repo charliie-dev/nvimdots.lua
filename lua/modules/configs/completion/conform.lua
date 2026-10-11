@@ -34,6 +34,44 @@ return function()
 		return args
 	end
 
+	---hclfmt keeps blank lines by design. Drop the ones just inside brackets and squeeze runs of
+	---blank lines into one; heredoc bodies and block comments are content, so pass them through.
+	---@param lines string[]
+	---@return string[]
+	local function hcl_blank_lines(lines)
+		local out = {}
+		local last_code ---@type string?
+		local heredoc ---@type string?
+		local in_comment, pending_blank = false, false
+		for _, line in ipairs(lines) do
+			if heredoc then
+				out[#out + 1] = line
+				if vim.trim(line) == heredoc then
+					heredoc, last_code = nil, line
+				end
+			elseif in_comment then
+				out[#out + 1] = line
+				if line:find("*/", 1, true) then
+					in_comment, last_code = false, line
+				end
+			elseif line:match("^%s*$") then
+				pending_blank = true
+			else
+				-- Ignore string literals and line comments when looking for brackets, heredocs and /*.
+				local code = line:gsub('"[^"]*"', '""'):gsub("%s*#.*$", ""):gsub("%s*//.*$", "")
+				if pending_blank and last_code and not last_code:match("[{%[]%s*$") and not code:match("^%s*[}%]]") then
+					out[#out + 1] = ""
+				end
+				pending_blank = false
+				out[#out + 1] = line
+				last_code = code
+				heredoc = code:match("<<%-?([%w_]+)%s*$")
+				in_comment = not heredoc and code:find("/*", 1, true) ~= nil and not code:find("*/", 1, true)
+			end
+		end
+		return out
+	end
+
 	local function setup_conform(opts)
 		local formatter = opts.formatters and opts.formatters["clang-format"]
 		local prepend_args = type(formatter) == "table" and formatter.prepend_args
@@ -162,7 +200,7 @@ return function()
 			go = { "goimports", "gofumpt" },
 			cuda = { "clang-format" },
 			graphql = { "prettier" },
-			hcl = { "hcl" },
+			hcl = { "hcl", "hcl_blank_lines" },
 			html = { "superhtml" },
 			javascript = { "prettier" },
 			javascriptreact = { "prettier" },
@@ -189,6 +227,12 @@ return function()
 		formatters = {
 			["clang-format"] = {
 				prepend_args = clang_format_args(),
+			},
+			hcl_blank_lines = {
+				meta = { description = "Trim blank lines just inside HCL brackets and squeeze blank runs." },
+				format = function(_, _, lines, callback)
+					callback(nil, hcl_blank_lines(lines))
+				end,
 			},
 			statix = {
 				command = "statix",
