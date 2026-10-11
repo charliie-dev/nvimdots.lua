@@ -122,6 +122,7 @@ settings["formatter_deps"] = {
 	"fixjson",
 	"gofumpt",
 	"goimports",
+	"hcl",
 	"mdsf",
 	"nixfmt",
 	"pkl",

@@ -162,6 +162,7 @@ return function()
 			go = { "goimports", "gofumpt" },
 			cuda = { "clang-format" },
 			graphql = { "prettier" },
+			hcl = { "hcl" },
 			html = { "superhtml" },
 			javascript = { "prettier" },
 			javascriptreact = { "prettier" },
