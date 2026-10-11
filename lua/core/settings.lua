@@ -131,6 +131,7 @@ settings["formatter_deps"] = {
 	"statix",
 	"stylua",
 	"superhtml",
+	"terraform_fmt",
 }
 
 -- nvim-lint names expected by the config and Muster.

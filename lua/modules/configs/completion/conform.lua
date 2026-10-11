@@ -214,6 +214,10 @@ return function()
 			pkl = { "pkl" },
 			proto = { "clang-format" },
 			sh = { "shellharden" },
+			-- terraform fmt (same as hk's terraform step) so saving doesn't wait on terraform-ls;
+			-- hcl_blank_lines then trims the blank lines terraform fmt keeps.
+			terraform = { "terraform_fmt", "hcl_blank_lines" },
+			["terraform-vars"] = { "terraform_fmt", "hcl_blank_lines" },
 			angular = { "prettier" },
 			handlebars = { "prettier" },
 			less = { "prettier" },
