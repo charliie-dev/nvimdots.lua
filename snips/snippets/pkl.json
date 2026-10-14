@@ -1,0 +1,136 @@
+{
+  "hk config header": {
+    "prefix": "hk-header",
+    "body": [
+      "amends \"package://github.com/jdx/hk/releases/download/v${1:2.6.0}/hk@$1#/Config.pkl\"",
+      "",
+      "import \"package://github.com/jdx/hk/releases/download/v$1/hk@$1#/Builtins.pkl\"",
+      "$0"
+    ],
+    "description": "hk: amend Config.pkl and import Builtins.pkl for one hk version"
+  },
+  "hk config file": {
+    "prefix": "hk-init",
+    "body": [
+      "amends \"package://github.com/jdx/hk/releases/download/v${1:2.6.0}/hk@$1#/Config.pkl\"",
+      "",
+      "import \"package://github.com/jdx/hk/releases/download/v$1/hk@$1#/Builtins.pkl\"",
+      "",
+      "steps {",
+      "  [\"${2:shellcheck}\"] = Builtins.$2",
+      "}",
+      "",
+      "hooks {",
+      "  [\"commit-msg\"] {",
+      "    steps {",
+      "      [\"conventional-commit\"] = Builtins.check_conventional_commit",
+      "    }",
+      "  }",
+      "}"
+    ],
+    "description": "hk: starter hk.pkl (top-level steps create check, fix and pre-commit)"
+  },
+  "hk exclude": {
+    "prefix": "hk-exclude",
+    "body": ["exclude = List(\"${1:archive/**}\")"],
+    "description": "hk: globs excluded from every step"
+  },
+  "hk builtin step": {
+    "prefix": "hk-builtin",
+    "body": ["[\"${1:shellcheck}\"] = Builtins.$1"],
+    "description": "hk: use a builtin linter as a step"
+  },
+  "hk builtin override": {
+    "prefix": "hk-override",
+    "body": ["[\"${1:shellcheck}\"] = (Builtins.$1) {", "  $0", "}"],
+    "description": "hk: customize a builtin (glob, check, fix, ...)"
+  },
+  "hk check step": {
+    "prefix": "hk-step",
+    "body": [
+      "[\"${1:name}\"] {",
+      "  glob = List(\"${2:**/*.ext}\")",
+      "  check = new CommandSpec {",
+      "    command = \"${3:tool --check} {{files}}\"",
+      "    effect = \"read\"",
+      "  }",
+      "}"
+    ],
+    "description": "hk: custom step with a read-only check"
+  },
+  "hk check and fix step": {
+    "prefix": "hk-step-fix",
+    "body": [
+      "[\"${1:name}\"] {",
+      "  glob = List(\"${2:**/*.ext}\")",
+      "  check = new CommandSpec {",
+      "    command = \"${3:tool --check} {{files}}\"",
+      "    effect = \"read\"",
+      "  }",
+      "  fix = new CommandSpec {",
+      "    command = \"${4:tool --write} {{files}}\"",
+      "    effect = \"write\"",
+      "  }",
+      "}"
+    ],
+    "description": "hk: custom step with a check and a writing fix"
+  },
+  "hk argv command": {
+    "prefix": "hk-argv",
+    "body": [
+      "${1|check,fix|} = new CommandSpec {",
+      "  command = new Command { argv = List(\"${2:tool}\", \"{{files}}\") }",
+      "  effect = \"${3|read,write,destructive|}\"",
+      "}"
+    ],
+    "description": "hk: structured command (no shell; {{files}} expands to one argument per file)"
+  },
+  "hk mise task step": {
+    "prefix": "hk-mise-task",
+    "body": [
+      "[\"${1:ci}\"] {",
+      "  check = new CommandSpec {",
+      "    command = \"mise run ${2:ci}\"",
+      "    effect = \"read\"",
+      "  }",
+      "}"
+    ],
+    "description": "hk: run a mise task as a step"
+  },
+  "hk hook": {
+    "prefix": "hk-hook",
+    "body": [
+      "[\"${1|pre-push,commit-msg,pre-commit,check,fix|}\"] {",
+      "  steps {",
+      "    $0",
+      "  }",
+      "}"
+    ],
+    "description": "hk: hook with its own steps (inside hooks)"
+  },
+  "hk pre-commit hook": {
+    "prefix": "hk-pre-commit",
+    "body": [
+      "[\"pre-commit\"] {",
+      "  fix = true",
+      "  stash = \"${1|git,patch-file,none|}\"",
+      "  steps {",
+      "    $0",
+      "  }",
+      "}"
+    ],
+    "description": "hk: explicit pre-commit hook that fixes and stashes unstaged work"
+  },
+  "hk group": {
+    "prefix": "hk-group",
+    "body": [
+      "[\"${1:frontend}\"] = new Group {",
+      "  dir = \"${2:frontend}\"",
+      "  steps {",
+      "    $0",
+      "  }",
+      "}"
+    ],
+    "description": "hk: group of steps sharing dir/prefix/exclude (inside steps)"
+  }
+}

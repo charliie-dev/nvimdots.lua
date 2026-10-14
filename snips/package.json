@@ -65,6 +65,10 @@
       {
         "language": "hcl",
         "path": "./snippets/hcl.json"
+      },
+      {
+        "language": "pkl",
+        "path": "./snippets/pkl.json"
       }
     ]
   }
