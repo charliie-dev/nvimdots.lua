@@ -195,4 +195,47 @@ return function()
 		},
 		request_timeout = 3000,
 	})
+
+	-- While a hover or diagnostic float is open, Saga maps the scroll keys on the source buffer and
+	-- deletes them on close, which loses a buffer-local mapping the keys had before. Remember that
+	-- mapping when Saga maps the keys and put it back after Saga deletes its own.
+	local util = require("lspsaga.util")
+	local scroll = require("lspsaga").config.scroll_preview
+	local scroll_keys = { [scroll.scroll_down] = true, [scroll.scroll_up] = true }
+	local map_keys, delete_scroll_map = util.map_keys, util.delete_scroll_map
+	-- active[buf][lhs]: the buffer's own mapping while Saga's is in place, or false if it had none
+	local active = {}
+	util.map_keys = function(buf, keys, rhs, modes, opts)
+		if vim.tbl_contains(util.as_table(modes or "n"), "n") then
+			for _, lhs in ipairs(util.as_table(keys)) do
+				if scroll_keys[lhs] and (active[buf] or {})[lhs] == nil then
+					local previous = vim.api.nvim_buf_call(buf, function()
+						return vim.fn.maparg(lhs, "n", false, true)
+					end)
+					active[buf] = active[buf] or {}
+					active[buf][lhs] = previous.buffer == 1 and previous or false
+				end
+			end
+		end
+		return map_keys(buf, keys, rhs, modes, opts)
+	end
+	util.delete_scroll_map = function(buf)
+		local previous = active[buf]
+		if not previous then
+			-- Already cleaned up: deleting again would remove the restored mapping
+			return
+		end
+		active[buf] = nil
+		pcall(delete_scroll_map, buf)
+		if not vim.api.nvim_buf_is_valid(buf) then
+			return
+		end
+		for _, map in pairs(previous) do
+			if map then
+				vim.api.nvim_buf_call(buf, function()
+					vim.fn.mapset("n", false, map)
+				end)
+			end
+		end
+	end
 end

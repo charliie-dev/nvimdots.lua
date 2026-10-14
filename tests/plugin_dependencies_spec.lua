@@ -519,6 +519,41 @@ test("BufReadPost handlers act on the event buffer, not the current one", functi
 	assert(ok, err)
 end)
 
+-- Attach an in-process LSP client to buf. Its server answers initialize with `capabilities` and any
+-- other request with results[method], or an empty table.
+local function attach_fake_client(buf, name, root_dir, capabilities, results)
+	local function server()
+		local closing, id = false, 0
+		return {
+			request = function(method, _, callback)
+				id = id + 1
+				callback(
+					nil,
+					method == "initialize" and { capabilities = capabilities } or (results or {})[method] or {}
+				)
+				return true, id
+			end,
+			notify = function(method)
+				closing = closing or method == "exit"
+				return true
+			end,
+			is_closing = function()
+				return closing
+			end,
+			terminate = function()
+				closing = true
+			end,
+		}
+	end
+	local id = assert(vim.lsp.start({ name = name, cmd = server, root_dir = root_dir }, { bufnr = buf }))
+	assert(
+		vim.wait(2000, function()
+			return vim.lsp.buf_is_attached(buf, id)
+		end),
+		name .. " did not attach"
+	)
+end
+
 test("a later LspAttach keeps the buffer's inlay hint state", function()
 	local settings = require("core.settings")
 	local default = settings.lsp_inlayhints
@@ -526,35 +561,8 @@ test("a later LspAttach keeps the buffer's inlay hint state", function()
 	vim.fn.mkdir(dir, "p")
 	vim.cmd.edit(dir .. "/a.txt")
 	local buf = vim.api.nvim_get_current_buf()
-	-- In-process server that only answers initialize with the given inlayHintProvider
 	local function attach(name, provider)
-		local function server()
-			local closing, id = false, 0
-			return {
-				request = function(method, _, callback)
-					id = id + 1
-					callback(nil, method == "initialize" and { capabilities = { inlayHintProvider = provider } } or {})
-					return true, id
-				end,
-				notify = function(method)
-					closing = closing or method == "exit"
-					return true
-				end,
-				is_closing = function()
-					return closing
-				end,
-				terminate = function()
-					closing = true
-				end,
-			}
-		end
-		local id = assert(vim.lsp.start({ name = name, cmd = server, root_dir = dir }, { bufnr = buf }))
-		assert(
-			vim.wait(2000, function()
-				return vim.lsp.buf_is_attached(buf, id)
-			end),
-			name .. " did not attach"
-		)
+		attach_fake_client(buf, name, dir, { inlayHintProvider = provider })
 	end
 	local function enabled()
 		return vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
@@ -573,6 +581,63 @@ test("a later LspAttach keeps the buffer's inlay hint state", function()
 	settings.lsp_inlayhints = default
 	for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
 		client:stop(true)
+	end
+	vim.api.nvim_buf_delete(buf, { force = true })
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
+test("Saga's scroll keys give a buffer's own <C-d>/<C-u> back when the hover closes", function()
+	require("lazy.core.loader").load("lspsaga.nvim", { cmd = "test" }, { force = true })
+	local scroll = require("lspsaga").config.scroll_preview
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	vim.fn.writefile({ "word" }, dir .. "/a.txt")
+	vim.cmd.edit(dir .. "/a.txt")
+	local buf = vim.api.nvim_get_current_buf()
+	local owned = 0
+	vim.keymap.set("n", scroll.scroll_down, function()
+		owned = owned + 1
+	end, { buf = buf, desc = "own scroll down" })
+	local function mapping(lhs)
+		return vim.fn.maparg(lhs, "n", false, true)
+	end
+	local function hover_open()
+		for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+			if vim.api.nvim_win_get_config(win).relative ~= "" then
+				return true
+			end
+		end
+		return false
+	end
+	local ok, err = pcall(function()
+		attach_fake_client(buf, "hover", dir, { hoverProvider = true }, {
+			["textDocument/hover"] = { contents = { kind = "markdown", value = "doc" } },
+		})
+		vim.api.nvim_win_set_cursor(0, { 1, 0 })
+		vim.cmd("Lspsaga hover_doc")
+		assert(vim.wait(2000, hover_open), "the hover did not open")
+		assert(mapping(scroll.scroll_down).desc ~= "own scroll down", "Saga did not map scroll down")
+		assert(mapping(scroll.scroll_up).buffer == 1, "Saga did not map scroll up")
+		-- Moving the cursor closes the hover
+		vim.api.nvim_exec_autocmds("CursorMoved", { buffer = buf })
+		local restored = mapping(scroll.scroll_down)
+		assert(restored.desc == "own scroll down", "scroll down was not restored: " .. vim.inspect(restored))
+		assert(mapping(scroll.scroll_up).buffer ~= 1, "Saga left its scroll up mapping behind")
+		-- A second cleanup (WinClosed, diagnostic clean_data) must not delete the restored mapping.
+		require("lspsaga.util").delete_scroll_map(buf)
+		restored = mapping(scroll.scroll_down)
+		assert(restored.desc == "own scroll down", "a second cleanup deleted the restored mapping")
+		restored.callback()
+		assert(owned == 1, "the restored mapping does not run the buffer's callback")
+	end)
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+		client:stop(true)
+	end
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_win_get_config(win).relative ~= "" then
+			vim.api.nvim_win_close(win, true)
+		end
 	end
 	vim.api.nvim_buf_delete(buf, { force = true })
 	vim.fn.delete(dir, "rf")
