@@ -94,7 +94,7 @@ set("n", "<leader>Sf", function()
 	require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } })
 end, { silent = true, desc = "edit: Search & replace current word (file)" })
 
--- Plugin: suda.vim
+-- Plugin: vim-suda
 set("n", "<A-s>", "<Cmd>SudaWrite<CR>", { silent = true, desc = "edit: Save file using sudo" })
 
 -- Plugin: nvim-treesitter-textobjects (select)

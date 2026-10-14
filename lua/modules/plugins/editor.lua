@@ -38,7 +38,7 @@ editor["olimorris/persisted.nvim"] = {
 	cmd = "Persisted",
 	config = require("modules.configs.editor.persisted"),
 }
-editor["lambdalisue/suda.vim"] = {
+editor["lambdalisue/vim-suda"] = {
 	lazy = true,
 	cmd = { "SudaRead", "SudaWrite" },
 	init = require("modules.configs.editor.suda"),
