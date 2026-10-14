@@ -131,8 +131,14 @@ return function()
 
 	vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
 		group = vim.api.nvim_create_augroup("NvimLint", { clear = true }),
-		callback = function()
-			lint.try_lint(nil, { ignore_errors = true })
+		-- try_lint lints the current buffer; run it in the event buffer, since async loaders such as
+		-- sops.nvim fire BufReadPost while another buffer is current.
+		callback = function(args)
+			if vim.api.nvim_buf_is_valid(args.buf) then
+				vim.api.nvim_buf_call(args.buf, function()
+					lint.try_lint(nil, { ignore_errors = true })
+				end)
+			end
 		end,
 	})
 end

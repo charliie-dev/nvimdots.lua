@@ -469,6 +469,55 @@ test("VimResized equalizes every tab without leaving the current one", function(
 	assert(ok, err)
 end)
 
+test("BufReadPost handlers act on the event buffer, not the current one", function()
+	require("lazy.core.loader").load("nvim-lint", { cmd = "test" }, { force = true })
+	local lint = require("lint")
+	local try_lint, linted = lint.try_lint, {}
+	lint.try_lint = function()
+		linted[#linted + 1] = vim.api.nvim_get_current_buf()
+	end
+	local lines = vim.tbl_map(tostring, vim.fn.range(1, 10))
+	local function buffer()
+		local buf = vim.api.nvim_create_buf(true, false)
+		vim.api.nvim_buf_set_name(buf, vim.fn.tempname())
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+		vim.bo[buf].modified = false
+		return buf
+	end
+	local a, b = buffer(), buffer()
+	vim.api.nvim_buf_set_mark(a, '"', 5, 0, {})
+	vim.api.nvim_buf_set_mark(b, '"', 8, 0, {})
+	local ok, err = pcall(function()
+		vim.cmd("silent! only")
+		local current = vim.api.nvim_get_current_win()
+		vim.api.nvim_win_set_buf(current, b)
+		vim.api.nvim_win_set_cursor(current, { 1, 0 })
+		-- An async loader (e.g. sops.nvim) finishes A while the user is on B.
+		vim.api.nvim_exec_autocmds("BufReadPost", { buffer = a, modeline = false })
+		assert(vim.api.nvim_win_get_cursor(current)[1] == 1, "B's cursor followed A's last-edit mark")
+		assert(vim.deep_equal(linted, { a }), "lint ran for buffer " .. vim.inspect(linted))
+		-- A visible in another window jumps there; the current window stays put.
+		vim.cmd("vsplit")
+		local other = vim.api.nvim_get_current_win()
+		vim.api.nvim_win_set_buf(other, a)
+		vim.api.nvim_win_set_cursor(other, { 1, 0 })
+		vim.api.nvim_set_current_win(current)
+		vim.api.nvim_exec_autocmds("BufReadPost", { buffer = a, modeline = false })
+		assert(vim.api.nvim_win_get_cursor(other)[1] == 5, "A's window did not jump to the last edit")
+		assert(vim.api.nvim_win_get_cursor(current)[1] == 1, "current window moved")
+		-- Ordinary reads into the current window still jump.
+		vim.api.nvim_set_current_win(other)
+		vim.api.nvim_win_set_cursor(other, { 1, 0 })
+		vim.api.nvim_exec_autocmds("BufReadPost", { buffer = a, modeline = false })
+		assert(vim.api.nvim_win_get_cursor(other)[1] == 5, "current window did not jump to the last edit")
+	end)
+	lint.try_lint = try_lint
+	vim.cmd("silent! only")
+	vim.api.nvim_buf_delete(a, { force = true })
+	vim.api.nvim_buf_delete(b, { force = true })
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
