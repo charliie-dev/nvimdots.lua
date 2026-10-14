@@ -3,7 +3,6 @@ return function()
 	local dapui = require("dapui")
 
 	local icons = { dap = require("modules.utils.icons").get("dap") }
-	local colors = require("modules.utils").get_palette()
 	local mappings = require("tool.dap.dap-keymap")
 
 	-- Initialize debug hooks
@@ -31,8 +30,16 @@ return function()
 	dap.listeners.after.event_initialized["dapui_config"] = debug_init_cb
 	dap.listeners.on_session["dapui_config"] = debug_session_cb
 
-	-- We need to override nvim-dap's default highlight groups, AFTER requiring nvim-dap for catppuccin.
-	vim.api.nvim_set_hl(0, "DapStopped", { fg = colors.green })
+	-- We need to override nvim-dap's default highlight groups, AFTER requiring nvim-dap for catppuccin,
+	-- and again after every theme change (the palette is refreshed by an earlier ColorScheme handler).
+	local function set_stopped_hl()
+		vim.api.nvim_set_hl(0, "DapStopped", { fg = require("modules.utils").get_palette().green })
+	end
+	set_stopped_hl()
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		group = vim.api.nvim_create_augroup("DapStoppedHl", { clear = true }),
+		callback = set_stopped_hl,
+	})
 
 	-- TODO: nvim-dap still uses vim.fn.sign_define (no new API yet).
 	-- Revisit when nvim-dap adopts vim.diagnostic.config-style signs.

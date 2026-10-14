@@ -269,6 +269,32 @@ test("codelldb runs attached only on Windows", function()
 	assert(ok, err)
 end)
 
+test("custom highlights survive a colorscheme reload", function()
+	require("lazy.core.loader").load(
+		{ "flash.nvim", "mini.cursorword", "nvim-dap" },
+		{ cmd = "test" },
+		{ force = true }
+	)
+	local groups = { "FlashLabel", "DapStopped", "MiniCursorword", "MiniCursorwordCurrent" }
+	local function snapshot()
+		local hl = {}
+		for _, name in ipairs(groups) do
+			hl[name] = vim.api.nvim_get_hl(0, { name = name, link = true })
+		end
+		return hl
+	end
+	local before = snapshot()
+	assert(before.FlashLabel.fg == 0xFFA500 and before.FlashLabel.underline, vim.inspect(before.FlashLabel))
+	vim.cmd.colorscheme(vim.g.colors_name)
+	local after = snapshot()
+	for _, name in ipairs(groups) do
+		assert(
+			vim.deep_equal(before[name], after[name]),
+			("%s: %s -> %s"):format(name, vim.inspect(before[name]), vim.inspect(after[name]))
+		)
+	end
+end)
+
 test("project diagnostics stay inside the cwd path boundary", function()
 	require("lazy.core.loader").load("trouble.nvim", { cmd = "test" }, { force = true })
 	local opts = require("trouble.config").get("project_diagnostics")

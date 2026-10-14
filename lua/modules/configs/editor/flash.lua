@@ -1,9 +1,12 @@
 return function()
-	vim.api.nvim_set_hl(
-		0,
-		"FlashLabel",
-		{ underline = true, bold = true, fg = "Orange", bg = "NONE", ctermfg = "Red", ctermbg = "NONE" }
-	)
+	local function set_label_hl()
+		vim.api.nvim_set_hl(
+			0,
+			"FlashLabel",
+			{ underline = true, bold = true, fg = "Orange", bg = "NONE", ctermfg = "Red", ctermbg = "NONE" }
+		)
+	end
+	set_label_hl()
 
 	require("modules.utils").load_plugin("flash", {
 		labels = "asdfghjklqwertyuiopzxcvbnm",
@@ -42,5 +45,11 @@ return function()
 				keys = { "f", "F", "t", "T" },
 			},
 		},
+	})
+
+	-- Registered after flash's own ColorScheme handler so the override wins after a theme change
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		group = vim.api.nvim_create_augroup("FlashLabelHl", { clear = true }),
+		callback = set_label_hl,
 	})
 end
