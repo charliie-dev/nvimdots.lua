@@ -59,8 +59,18 @@ set("x", "<C-a>", "<Esc>gg0vG$", { silent = true, desc = "edit: Select all" })
 set("n", "<leader><leader>x", "<Cmd>!chmod +x %<CR>", { silent = true, desc = "edit: chmod +x current file" })
 
 -- Plugin: dial
-set({ "n", "v" }, "<leader>=", "<Plug>(dial-increment)", { desc = "edit: Increment" })
-set({ "n", "v" }, "<leader>-", "<Plug>(dial-decrement)", { desc = "edit: Decrement" })
+-- dial's visual <Plug> mappings use the default group; route Visual mode to the "visual" group and
+-- reselect afterwards like the <Plug> mappings do.
+local function dial_visual(direction)
+	return function()
+		require("dial.map").manipulate(direction, "visual", "visual")
+		vim.cmd.normal({ "gv", bang = true })
+	end
+end
+set("n", "<leader>=", "<Plug>(dial-increment)", { desc = "edit: Increment" })
+set("n", "<leader>-", "<Plug>(dial-decrement)", { desc = "edit: Decrement" })
+set("v", "<leader>=", dial_visual("increment"), { desc = "edit: Increment" })
+set("v", "<leader>-", dial_visual("decrement"), { desc = "edit: Decrement" })
 
 -- Plugin: flash
 set({ "n", "x", "o" }, "s", function()

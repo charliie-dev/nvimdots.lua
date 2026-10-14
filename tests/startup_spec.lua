@@ -124,6 +124,12 @@ local function run_tests()
 		assert(vim.api.nvim_get_current_line() == "or", "configured word increment did not run")
 		keys(",-")
 		assert(vim.api.nvim_get_current_line() == "and", "configured word decrement did not run")
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, { "a" })
+		vim.api.nvim_win_set_cursor(0, { 1, 0 })
+		keys("v,=<Esc>")
+		assert(vim.api.nvim_get_current_line() == "b", "visual increment ignored the visual augend group")
+		keys("v,-<Esc>")
+		assert(vim.api.nvim_get_current_line() == "a", "visual decrement ignored the visual augend group")
 		vim.bo.modified = false
 	end)
 
