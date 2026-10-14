@@ -75,10 +75,10 @@ settings["transparent_background"] = true
 ---@type "dark"|"light"
 settings["background"] = "dark"
 
--- Set the command for opening external URLs.
--- This is ignored on Windows and macOS, which use built-in handlers.
+-- Set the command for opening external URLs from Lspsaga hover.
+-- Used only when no system handler is available (`open` on macOS, `explorer` on Windows, `wslview`, `xdg-open`).
 ---@type string
-settings["external_browser"] = "chrome-cli open"
+settings["lspsaga_browser"] = "chrome-cli open"
 
 -- Set to false to disable LSP inlay hints.
 ---@type boolean

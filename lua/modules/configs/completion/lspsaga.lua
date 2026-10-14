@@ -102,7 +102,8 @@ return function()
 			max_width = 0.45,
 			max_height = 0.7,
 			open_link = "gl",
-			open_cmd = "silent !" .. require("core.settings").external_browser,
+			-- Undocumented: read only when none of open/explorer/wslview/xdg-open is available
+			open_browser = "silent !" .. require("core.settings").lspsaga_browser,
 		},
 		-- Impl: https://nvimdev.github.io/lspsaga/implement/
 		implement = {

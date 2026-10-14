@@ -295,6 +295,34 @@ test("custom highlights survive a colorscheme reload", function()
 	end
 end)
 
+test("Saga hover links fall back to the configured external browser", function()
+	require("lazy.core.loader").load("lspsaga.nvim", { cmd = "test" }, { force = true })
+	local hover = require("lspsaga.hover")
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "[docs](https://example.com/a)" })
+	vim.api.nvim_win_set_buf(0, buf)
+	vim.api.nvim_win_set_cursor(0, { 1, 1 })
+	vim.treesitter.get_parser(buf, "markdown"):parse(true)
+	local fn, executed = { has = vim.fn.has, executable = vim.fn.executable, execute = vim.fn.execute }, nil
+	vim.fn.has = function(feature)
+		return (feature == "mac" or feature == "win32") and 0 or fn.has(feature)
+	end
+	vim.fn.executable = function(name)
+		return (name == "wslview" or name == "xdg-open") and 0 or fn.executable(name)
+	end
+	vim.fn.execute = function(cmd)
+		executed = cmd
+	end
+	hover.bufnr = buf
+	local ok, err = pcall(hover.open_link, hover)
+	hover.bufnr = nil
+	vim.fn.has, vim.fn.executable, vim.fn.execute = fn.has, fn.executable, fn.execute
+	vim.api.nvim_buf_delete(buf, { force = true })
+	assert(ok, err)
+	local expected = "silent !" .. require("core.settings").lspsaga_browser .. " https://example.com/a"
+	assert(executed == expected, vim.inspect(executed))
+end)
+
 test("project diagnostics stay inside the cwd path boundary", function()
 	require("lazy.core.loader").load("trouble.nvim", { cmd = "test" }, { force = true })
 	local opts = require("trouble.config").get("project_diagnostics")
