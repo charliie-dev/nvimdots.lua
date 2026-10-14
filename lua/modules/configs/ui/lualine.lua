@@ -285,6 +285,9 @@ return function()
 			icons_enabled = true,
 			theme = custom_theme,
 			disabled_filetypes = { statusline = { "snacks_dashboard" } },
+			-- Match `laststatus = 3` in core.options; lualine's default reads the live value, which the
+			-- startup dashboard has temporarily set to 0.
+			globalstatus = true,
 			component_separators = "",
 			section_separators = { left = "", right = "" },
 		},

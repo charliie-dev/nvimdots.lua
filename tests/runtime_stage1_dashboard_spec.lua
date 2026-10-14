@@ -92,6 +92,23 @@ vim.api.nvim_create_autocmd("UIEnter", {
 				)
 			end)
 
+			test("leaving startup dashboard keeps the global statusline", function()
+				assert(
+					vim.wait(1000, function()
+						return package.loaded.lualine ~= nil
+					end),
+					"lualine did not load after leaving the dashboard"
+				)
+				local globalstatus = require("lualine").get_config().options.globalstatus
+				assert(globalstatus == true, "lualine inferred globalstatus=" .. tostring(globalstatus))
+				assert(
+					vim.wait(1000, function()
+						return vim.o.laststatus == options.laststatus
+					end),
+					"laststatus=" .. vim.o.laststatus
+				)
+			end)
+
 			for _, floating in ipairs({ true, false }) do
 				test("manual dashboard preserves tabline (floating=" .. tostring(floating) .. ")", function()
 					local tabline, laststatus = vim.o.showtabline, vim.o.laststatus
