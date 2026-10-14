@@ -117,7 +117,7 @@ test("complete raw plugin manifest", function()
 		"top-level manifest",
 		top_level,
 		58,
-		"50a859d73769fb7e261a111ed44cdc17b589f321b0b2064c3be318bed8d558f7"
+		"add33493761773247ed917a78564ef1ed904b67df8d073d42f2a65d889972a1d"
 	)
 	assert_manifest("nested manifest", nested, 34, "66129903f71d0e88c910c68630b2407d6cb32df3da81adf3a23932e23559c474")
 end)
@@ -883,6 +883,38 @@ test("GitHub Actions lint includes zizmor", function()
 	local adapter = lint.linters.zizmor
 	assert(adapter.cmd == "zizmor" and adapter.stdin == true, "unexpected zizmor command contract")
 	assert(vim.deep_equal(adapter.args, { "--format", "json-v1", "-" }), "unexpected zizmor arguments")
+end)
+
+-- Runs before anything else loads fugitive, so :GBrowse goes through the lazy command stub
+test(":GBrowse loads fugitive and opens GitHub commits before any :Git", function()
+	assert(not require("lazy.core.config").plugins["vim-fugitive"]._.loaded, "fugitive is already loaded")
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	vim.fn.writefile({ "x" }, dir .. "/a.txt")
+	local git = { "git", "-C", dir, "-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false" }
+	local function run(...)
+		local result = vim.system(vim.list_extend(vim.deepcopy(git), { ... }), { text = true }):wait()
+		assert(result.code == 0, table.concat({ ... }, " ") .. ": " .. result.stderr)
+		return vim.trim(result.stdout)
+	end
+	local browsed
+	-- fugitive hands the URL to :Browse when one exists; record it instead of opening a browser
+	vim.api.nvim_create_user_command("Browse", function(args)
+		browsed = args.args
+	end, { nargs = 1 })
+	local ok, err = pcall(function()
+		run("init", "-q")
+		run("remote", "add", "origin", "git@github.com:owner/repo.git")
+		run("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "--allow-empty", "--no-verify", "-m", "x")
+		local commit = run("rev-parse", "HEAD")
+		vim.cmd.edit(dir .. "/a.txt")
+		vim.cmd.GBrowse(commit)
+		assert(browsed == "https://github.com/owner/repo/commit/" .. commit, vim.inspect(browsed))
+	end)
+	vim.api.nvim_del_user_command("Browse")
+	vim.cmd("silent! bwipeout! " .. vim.fn.fnameescape(dir .. "/a.txt"))
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
 end)
 
 test("AdvancedGitSearch opens GitHub commits through a GBrowse handler", function()
