@@ -68,6 +68,7 @@ return function()
 			{ "<leader>b", group = icons.ui.Buffer .. " Buffer" },
 			{ "<leader>S", group = icons.ui.Search .. " Search" },
 			{ "<leader>W", group = icons.ui.Window .. " Window" },
+			{ "<leader>t", group = icons.ui.Tab .. " Tab" },
 			{ "<leader>p", group = icons.ui.Package .. " Package" },
 			{ "<leader>l", group = icons.misc.LspAvailable .. " Lsp" },
 			{ "<leader>f", group = icons.ui.Telescope .. " Fuzzy Find" },

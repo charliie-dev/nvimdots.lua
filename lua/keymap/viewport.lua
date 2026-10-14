@@ -26,10 +26,11 @@ set("n", "<A-8>", "<Cmd>BufferLineGoToBuffer 8<CR>", { silent = true, desc = "bu
 set("n", "<A-9>", "<Cmd>BufferLineGoToBuffer 9<CR>", { silent = true, desc = "buffer: Goto 9" })
 
 -- Builtin: Tab
-set("n", "tn", "<Cmd>tabnew<CR>", { silent = true, desc = "tab: New" })
-set("n", "tk", "<Cmd>tabnext<CR>", { silent = true, desc = "tab: Next" })
-set("n", "tj", "<Cmd>tabprevious<CR>", { silent = true, desc = "tab: Prev" })
-set("n", "to", "<Cmd>tabonly<CR>", { silent = true, desc = "tab: Only keep current" })
+-- Under <leader>: a bare `t` prefix made Flash's `t` motion wait and turned a quick `tn` into :tabnew.
+set("n", "<leader>tn", "<Cmd>tabnew<CR>", { silent = true, desc = "tab: New" })
+set("n", "<leader>tk", "<Cmd>tabnext<CR>", { silent = true, desc = "tab: Next" })
+set("n", "<leader>tj", "<Cmd>tabprevious<CR>", { silent = true, desc = "tab: Prev" })
+set("n", "<leader>to", "<Cmd>tabonly<CR>", { silent = true, desc = "tab: Only keep current" })
 
 -- Builtin: Window focus (terminal mode)
 set("t", "<C-w>h", "<Cmd>wincmd h<CR>", { silent = true, desc = "window: Focus left" })
