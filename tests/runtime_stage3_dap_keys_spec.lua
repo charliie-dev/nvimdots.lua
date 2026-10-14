@@ -282,6 +282,42 @@ test("real dapui evaluation receives normal and visual expressions from differen
 	stop()
 end)
 
+test("visual line, block and select K evaluate the selected text", function()
+	dapui.eval = originals.eval
+	start(first)
+	local session = dap.session()
+	session.seq = 0
+	session.current_frame = { id = 1 }
+	local expressions = {}
+	session.request = function(_, command, args, callback)
+		assert(command == "evaluate", "unexpected adapter request: " .. command)
+		expressions[#expressions + 1] = args.expression
+		vim.schedule(function()
+			callback(nil, { result = "1", type = "int", variablesReference = 0 })
+		end)
+	end
+	vim.api.nvim_set_current_buf(fresh)
+	vim.api.nvim_buf_set_lines(fresh, 0, -1, false, { "alpha_one", "beta_two", "gamma" })
+	for _, case in ipairs({
+		{ "1G0vllK<Esc>", "alp" },
+		{ "1G0VK<Esc>", "alpha_one" },
+		{ "1G0VjK<Esc>", "alpha_one\nbeta_two" },
+		{ "1G0<C-v>jlK<Esc>", "al\nbe" },
+		{ "3G0gHK<Esc>", "gamma" },
+	}) do
+		local count = #expressions
+		keys(case[1])
+		assert(
+			vim.wait(1000, function()
+				return #expressions > count
+			end),
+			"no evaluation for " .. case[1]
+		)
+		assert(expressions[#expressions] == case[2], ("%s evaluated %q"):format(case[1], expressions[#expressions]))
+	end
+	stop()
+end)
+
 for key, value in pairs(originals) do
 	dapui[key] = value
 end
