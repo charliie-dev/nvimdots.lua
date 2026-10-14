@@ -672,6 +672,39 @@ test("treesitter installs missing parser files and starts buffers opened before"
 	assert(ok, err)
 end)
 
+test(".env.* files stay dotenv before and after go.nvim loads", function()
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	local expected = {
+		[".env.tmpl"] = "dotenv",
+		[".env.mod"] = "dotenv",
+		[".env.gohtml"] = "dotenv",
+		[".env.audit"] = "dotenv",
+		["page.tmpl"] = "gotexttmpl",
+		["go.mod"] = "gomod",
+	}
+	local function check(phase)
+		for name, ft in pairs(expected) do
+			vim.cmd.edit(dir .. "/" .. name)
+			local got = vim.bo.filetype
+			vim.cmd("bwipeout!")
+			-- Before go.nvim loads, page.tmpl gets Neovim's own detection, not go.nvim's.
+			if phase == "after" or name ~= "page.tmpl" then
+				assert(got == ft, ("%s (%s go.nvim): filetype=%q, expected %q"):format(name, phase, got, ft))
+			end
+		end
+	end
+	local ok, err = pcall(function()
+		if not require("lazy.core.config").plugins["go.nvim"]._.loaded then
+			check("before")
+		end
+		require("lazy.core.loader").load("go.nvim", { cmd = "test" }, { force = true })
+		check("after")
+	end)
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

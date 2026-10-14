@@ -49,6 +49,18 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 		vim.bo.filetype = "dotenv"
 	end,
 })
+-- go.nvim's ftdetect (sourced by lazy.nvim at startup) runs `set filetype=` for *.tmpl, *.gotext,
+-- *.gohtml and *.mod after the autocmd above, so .env.tmpl or .env.mod ended up as Go files. Put
+-- dotenv back; `nested` lets dotenv's own FileType handlers run.
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "gotexttmpl", "gohtmltmpl", "gomod" },
+	nested = true,
+	callback = function(args)
+		if vim.fs.basename(vim.api.nvim_buf_get_name(args.buf)):match("^%.env%.") then
+			vim.bo[args.buf].filetype = "dotenv"
+		end
+	end,
+})
 
 -- Autojump to and center the last edit. Act on the event buffer and a window showing it: async
 -- loaders such as sops.nvim fire BufReadPost after the user may have moved to another buffer.
