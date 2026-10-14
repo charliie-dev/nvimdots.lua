@@ -117,9 +117,9 @@ test("complete raw plugin manifest", function()
 		"top-level manifest",
 		top_level,
 		58,
-		"bd649e56a5a86f13a98f061c2016bc104dccae0cddfae4429a69946a7d9d2abe"
+		"50a859d73769fb7e261a111ed44cdc17b589f321b0b2064c3be318bed8d558f7"
 	)
-	assert_manifest("nested manifest", nested, 33, "5ed59063d68276fb264b8d34a01572bb7cd866d77df40e1283177f2d92844530")
+	assert_manifest("nested manifest", nested, 34, "66129903f71d0e88c910c68630b2407d6cb32df3da81adf3a23932e23559c474")
 end)
 
 local function dependency(spec, name)
@@ -883,6 +883,27 @@ test("GitHub Actions lint includes zizmor", function()
 	local adapter = lint.linters.zizmor
 	assert(adapter.cmd == "zizmor" and adapter.stdin == true, "unexpected zizmor command contract")
 	assert(vim.deep_equal(adapter.args, { "--format", "json-v1", "-" }), "unexpected zizmor arguments")
+end)
+
+test("AdvancedGitSearch opens GitHub commits through a GBrowse handler", function()
+	require("lazy.core.loader").load("advanced-git-search.nvim", { cmd = "test" }, { force = true })
+	local commit = string.rep("0123456789", 4)
+	local browse = require("advanced_git_search.utils.config").get_browse_command(commit)
+	assert(browse == "GBrowse " .. commit and vim.fn.exists(":GBrowse") == 2, "unexpected browse command: " .. browse)
+	-- Resolve the URL the way :GBrowse does, without opening a browser or touching the clipboard
+	local opts = vim.fn.string({
+		remote = "git@github.com:owner/repo.git",
+		commit = commit,
+		path = "",
+		type = "commit",
+		line1 = 0,
+		line2 = 0,
+	})
+	local urls = {}
+	for i = 0, vim.fn.eval("len(get(g:, 'fugitive_browse_handlers', []))") - 1 do
+		urls[#urls + 1] = vim.fn.eval(("call(g:fugitive_browse_handlers[%d], [%s])"):format(i, opts))
+	end
+	assert(vim.tbl_contains(urls, "https://github.com/owner/repo/commit/" .. commit), vim.inspect(urls))
 end)
 
 if #failures > 0 then

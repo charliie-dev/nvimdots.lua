@@ -8,6 +8,8 @@ tool["monaqa/dial.nvim"] = {
 tool["tpope/vim-fugitive"] = {
 	lazy = true,
 	cmd = { "Git", "G" },
+	-- GitHub handler for :GBrowse, which AdvancedGitSearch's <C-o> runs
+	dependencies = { "tpope/vim-rhubarb" },
 }
 tool["Bekaboo/dropbar.nvim"] = {
 	lazy = false,
