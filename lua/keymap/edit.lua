@@ -8,9 +8,6 @@ end
 local ts_to_swap = function()
 	return require("nvim-treesitter-textobjects.swap")
 end
-local ts_to_move = function()
-	return require("nvim-treesitter-textobjects.move")
-end
 local ts_to_repeat_move = function()
 	return require("nvim-treesitter-textobjects.repeatable_move")
 end
@@ -134,30 +131,24 @@ set("n", "<leader>A", function()
 end, { silent = true, desc = "edit: Swap parameter backward" })
 
 -- Plugin: nvim-treesitter-textobjects (move)
-set({ "n", "x", "o" }, "][", function()
-	ts_to_move().goto_next_start("@function.outer", "textobjects")
-end, { silent = true, desc = "edit: Next function start" })
-set({ "n", "x", "o" }, "]m", function()
-	ts_to_move().goto_next_start("@class.outer", "textobjects")
-end, { silent = true, desc = "edit: Next class start" })
-set({ "n", "x", "o" }, "]]", function()
-	ts_to_move().goto_next_end("@function.outer", "textobjects")
-end, { silent = true, desc = "edit: Next function end" })
-set({ "n", "x", "o" }, "]M", function()
-	ts_to_move().goto_next_end("@class.outer", "textobjects")
-end, { silent = true, desc = "edit: Next class end" })
-set({ "n", "x", "o" }, "[[", function()
-	ts_to_move().goto_previous_start("@function.outer", "textobjects")
-end, { silent = true, desc = "edit: Prev function start" })
-set({ "n", "x", "o" }, "[m", function()
-	ts_to_move().goto_previous_start("@class.outer", "textobjects")
-end, { silent = true, desc = "edit: Prev class start" })
-set({ "n", "x", "o" }, "[]", function()
-	ts_to_move().goto_previous_end("@function.outer", "textobjects")
-end, { silent = true, desc = "edit: Prev function end" })
-set({ "n", "x", "o" }, "[M", function()
-	ts_to_move().goto_previous_end("@class.outer", "textobjects")
-end, { silent = true, desc = "edit: Prev class end" })
+-- Without a parser the move functions raise (their range lookup returns an empty table), so the
+-- keys fall back to Vim's motion of the same name, keeping counts, Visual mode and operators.
+local function ts_move(lhs, fn, query, desc)
+	set({ "n", "x", "o" }, lhs, function()
+		if not vim.treesitter.get_parser(0, nil, { error = false }) then
+			return lhs
+		end
+		return ("<Cmd>lua require('nvim-treesitter-textobjects.move').%s(%q, 'textobjects')<CR>"):format(fn, query)
+	end, { expr = true, silent = true, desc = desc })
+end
+ts_move("][", "goto_next_start", "@function.outer", "edit: Next function start")
+ts_move("]m", "goto_next_start", "@class.outer", "edit: Next class start")
+ts_move("]]", "goto_next_end", "@function.outer", "edit: Next function end")
+ts_move("]M", "goto_next_end", "@class.outer", "edit: Next class end")
+ts_move("[[", "goto_previous_start", "@function.outer", "edit: Prev function start")
+ts_move("[m", "goto_previous_start", "@class.outer", "edit: Prev class start")
+ts_move("[]", "goto_previous_end", "@function.outer", "edit: Prev function end")
+ts_move("[M", "goto_previous_end", "@class.outer", "edit: Prev class end")
 
 -- Plugin: nvim-treesitter-textobjects (repeat)
 set({ "n", "x", "o" }, ";", function()

@@ -176,6 +176,35 @@ end
 vim.opt.runtimepath:remove(user_runtime)
 vim.fn.delete(user_runtime, "rf")
 
+test("without a parser the move keys behave like Vim's motions", function()
+	local lines = { "intro", "{", "  body", "}", "middle", "{", "  more", "}", "end" }
+	vim.cmd.enew({ bang = true })
+	assert(vim.treesitter.get_parser(0, nil, { error = false }) == nil, "fixture buffer has a parser")
+	local function run(input, start, native)
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+		vim.api.nvim_win_set_cursor(0, { start, 0 })
+		vim.fn.setreg('"', "")
+		if native then
+			vim.cmd("normal! " .. input)
+		else
+			local ok, err = pcall(keys, input)
+			assert(ok, input .. ": " .. tostring(err))
+		end
+		return { vim.api.nvim_win_get_cursor(0)[1], vim.fn.getreg('"'), vim.api.nvim_buf_line_count(0) }
+	end
+	for _, lhs in ipairs({ "][", "]]", "]m", "]M", "[[", "[]", "[m", "[M" }) do
+		local start = lhs:sub(1, 1) == "]" and 1 or #lines
+		for _, input in ipairs({ lhs, "2" .. lhs, "y" .. lhs, "d" .. lhs, "v" .. lhs .. "y" }) do
+			local got, expected = run(input, start), run(input, start, true)
+			assert(
+				vim.deep_equal(got, expected),
+				("%s: got %s, native %s"):format(input, vim.inspect(got), vim.inspect(expected))
+			)
+		end
+	end
+	vim.bo.modified = false
+end)
+
 test("unrelated native mappings and user motion overrides survive", function()
 	vim.cmd.enew({ bang = true })
 	vim.bo.filetype = "go"
