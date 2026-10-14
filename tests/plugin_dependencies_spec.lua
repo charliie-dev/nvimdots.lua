@@ -907,6 +907,44 @@ test("mini.ai f and c select the Treesitter nodes behind af/if/ac/ic", function(
 	assert(ok, err)
 end)
 
+-- Mappings whose lhs starts with `key` but is longer: they make `key` wait 'timeoutlen' and take
+-- over what is typed right after it.
+local function extending(key, modes)
+	local found = {}
+	for _, mode in ipairs(modes) do
+		for _, map in ipairs(vim.list_extend(vim.api.nvim_get_keymap(mode), vim.api.nvim_buf_get_keymap(0, mode))) do
+			if #map.lhs > #key and map.lhs:sub(1, #key) == key then
+				found[#found + 1] = mode .. ":" .. map.lhs
+			end
+		end
+	end
+	return found
+end
+
+local function feed(input)
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(input, true, false, true), "xt", false)
+end
+
+test("Flash's s starts a jump at once; surround lives under gz", function()
+	require("lazy.core.loader").load("mini.surround", { cmd = "test" }, { force = true })
+	local buf = vim.api.nvim_create_buf(true, false)
+	vim.api.nvim_set_current_buf(buf)
+	local ok, err = pcall(function()
+		local taken = extending("s", { "n", "x", "o" })
+		assert(#taken == 0, "mappings extend Flash's s: " .. table.concat(taken, " "))
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "word" })
+		vim.api.nvim_win_set_cursor(0, { 1, 0 })
+		feed("gzaiw)")
+		assert(vim.api.nvim_get_current_line() == "(word)", "gza: " .. vim.api.nvim_get_current_line())
+		feed("gzr)]")
+		assert(vim.api.nvim_get_current_line() == "[word]", "gzr: " .. vim.api.nvim_get_current_line())
+		feed("gzd]")
+		assert(vim.api.nvim_get_current_line() == "word", "gzd: " .. vim.api.nvim_get_current_line())
+	end)
+	vim.api.nvim_buf_delete(buf, { force = true })
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
