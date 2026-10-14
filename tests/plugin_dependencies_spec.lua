@@ -705,6 +705,51 @@ test(".env.* files stay dotenv before and after go.nvim loads", function()
 	assert(ok, err)
 end)
 
+test("tiny-inline-diagnostic renders buffers without an LspAttach after its setup", function()
+	require("lazy.core.loader").load("tiny-inline-diagnostic.nvim", { cmd = "test" }, { force = true })
+	local tiny_ns = vim.api.nvim_create_namespace("TinyInlineDiagnostic")
+	local lint_ns = vim.api.nvim_create_namespace("tiny_spec_lint")
+	local buffers = {}
+	local function buffer()
+		local buf = vim.api.nvim_create_buf(true, false)
+		vim.api.nvim_buf_set_name(buf, vim.fn.tempname() .. ".txt")
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "one", "two" })
+		vim.api.nvim_set_current_buf(buf)
+		buffers[#buffers + 1] = buf
+		return buf
+	end
+	local function diagnose(buf)
+		vim.diagnostic.set(lint_ns, buf, {
+			{ lnum = 0, col = 0, message = "lint finding", severity = vim.diagnostic.severity.ERROR },
+		})
+	end
+	local function assert_rendered(buf, case)
+		assert(require("tiny-inline-diagnostic.autocmds").is_attached(buf), case .. ": buffer not attached")
+		assert(
+			vim.wait(1000, function()
+				return #vim.api.nvim_buf_get_extmarks(buf, tiny_ns, 0, -1, {}) > 0
+			end),
+			case .. ": no inline diagnostic rendered"
+		)
+	end
+	local ok, err = pcall(function()
+		-- Diagnostics that exist before tiny is set up (it loads on VeryLazy, after the first file).
+		local early = buffer()
+		diagnose(early)
+		require("modules.configs.completion.tiny-inline-diagnostic")()
+		assert_rendered(early, "earlier diagnostics")
+		-- A buffer whose diagnostics come from a linter only, with no LSP client ever attaching.
+		local linted = buffer()
+		diagnose(linted)
+		assert_rendered(linted, "linter-only buffer")
+	end)
+	for _, buf in ipairs(buffers) do
+		vim.diagnostic.reset(lint_ns, buf)
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

@@ -3,6 +3,8 @@ return function()
 		preset = "modern",
 		transparent_bg = false,
 		options = {
+			-- Attach on DiagnosticChanged too: buffers linted by nvim-lint alone never see LspAttach.
+			overwrite_events = { "LspAttach", "DiagnosticChanged" },
 			show_source = {
 				enabled = true,
 				if_many = true,
@@ -62,6 +64,20 @@ return function()
 			"vimwiki",
 		},
 	})
+
+	-- tiny loads on VeryLazy, after the first buffer's LspAttach and maybe its diagnostics. Run its
+	-- attach handler for loaded buffers that already have a client or diagnostics.
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+		if
+			vim.api.nvim_buf_is_loaded(buf)
+			and (#vim.lsp.get_clients({ bufnr = buf }) > 0 or #vim.diagnostic.get(buf) > 0)
+		then
+			vim.api.nvim_exec_autocmds(
+				"DiagnosticChanged",
+				{ buffer = buf, group = "TinyInlineDiagnosticAutocmds", modeline = false }
+			)
+		end
+	end
 
 	-- After setup, turn inline diagnostics on or off based on the `diagnostics_virtual_lines` setting
 	require("tiny-inline-diagnostic")[require("core.settings").diagnostics_virtual_lines and "enable" or "disable"]()
