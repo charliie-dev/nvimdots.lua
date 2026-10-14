@@ -13,11 +13,12 @@ local function test(name, callback)
 end
 
 local ts = require("nvim-treesitter")
-local installed, install_calls = {}, 0
+local installed, install_calls, install_options = {}, 0, nil
 -- Installation is the only I/O boundary replaced; parsers and queries are real.
-ts.install = function(parsers)
-	installed = parsers
+ts.install = function(parsers, options)
+	installed, install_options = parsers, options
 	install_calls = install_calls + 1
+	return { await = function() end }
 end
 local notifications = {}
 vim.notify = function(message, level)
@@ -47,10 +48,18 @@ test("FileType registration and loaded-buffer catch-up are synchronous", functio
 end)
 
 vim.wait(100)
-test("parser installation remains deferred with the configured sorted list", function()
-	local expected = vim.tbl_keys(require("core.settings").treesitter_deps)
+test("deferred parser installation covers only missing parser files", function()
+	local parser_files = ts.get_installed("parsers")
+	local expected = vim.tbl_filter(function(lang)
+		return not vim.list_contains(parser_files, lang)
+	end, vim.tbl_keys(require("core.settings").treesitter_deps))
 	table.sort(expected)
-	assert(install_calls == 1 and vim.deep_equal(installed, expected), "installation contract changed")
+	if #expected == 0 then
+		assert(install_calls == 0, "installation ran although every parser file exists")
+	else
+		assert(install_calls == 1 and vim.deep_equal(installed, expected), "installed " .. vim.inspect(installed))
+		assert(install_options and install_options.force, "missing parsers are not forced past leftover queries")
+	end
 end)
 
 test("a missing parser with a stale query is quietly skipped", function()

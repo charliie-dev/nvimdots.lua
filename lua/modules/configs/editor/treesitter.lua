@@ -42,9 +42,27 @@ return function()
 		end
 	end
 
+	-- Install missing parser files. get_installed() without a type also counts leftover query
+	-- directories, so a parser whose .so is gone was never reinstalled; check parser files only and
+	-- force those. Buffers opened before the install finished get Treesitter once it completes.
 	vim.schedule(function()
-		local parsers = vim.tbl_keys(require("core.settings").treesitter_deps)
-		table.sort(parsers)
-		require("nvim-treesitter").install(parsers)
+		local ts = require("nvim-treesitter")
+		local installed = ts.get_installed("parsers")
+		local missing = vim.tbl_filter(function(lang)
+			return not vim.list_contains(installed, lang)
+		end, vim.tbl_keys(require("core.settings").treesitter_deps))
+		if #missing == 0 then
+			return
+		end
+		table.sort(missing)
+		ts.install(missing, { force = true }):await(function()
+			vim.schedule(function()
+				for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+					if vim.api.nvim_buf_is_loaded(buf) and not vim.treesitter.highlighter.active[buf] then
+						start(buf)
+					end
+				end
+			end)
+		end)
 	end)
 end

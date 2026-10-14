@@ -623,6 +623,55 @@ test("otter picks up embedded languages added after the buffer opened", function
 	assert(ok, err)
 end)
 
+test("treesitter installs missing parser files and starts buffers opened before", function()
+	local ts = require("nvim-treesitter")
+	local install, get_installed = ts.install, ts.get_installed
+	local requested, options, finish
+	-- toml's parser file is gone (its leftover queries must not count) and installs later.
+	ts.get_installed = function(kind)
+		assert(kind == "parsers", "installed set must come from parser files, got " .. tostring(kind))
+		return vim.tbl_filter(function(lang)
+			return lang ~= "toml"
+		end, get_installed("parsers"))
+	end
+	ts.install = function(langs, opts)
+		requested, options = langs, opts
+		return {
+			await = function(_, callback)
+				finish = callback
+			end,
+		}
+	end
+	-- A filetype with no parser yet stands in for a buffer opened before its parser was installed;
+	-- registering it to the toml parser stands in for the install finishing.
+	local buf = vim.api.nvim_create_buf(true, false)
+	local ok, err = pcall(function()
+		require("modules.configs.editor.treesitter")()
+		assert(
+			vim.wait(1000, function()
+				return requested ~= nil
+			end),
+			"install was not requested"
+		)
+		assert(vim.deep_equal(requested, { "toml" }), "requested " .. vim.inspect(requested))
+		assert(options and options.force, "missing parsers are not forced past leftover queries")
+		vim.api.nvim_set_current_buf(buf)
+		vim.bo[buf].filetype = "c12probe"
+		assert(not vim.treesitter.highlighter.active[buf], "started before a parser was available")
+		vim.treesitter.language.register("toml", "c12probe")
+		finish(nil, true)
+		assert(
+			vim.wait(1000, function()
+				return vim.treesitter.highlighter.active[buf] ~= nil
+			end),
+			"buffer opened before the install did not start Treesitter"
+		)
+	end)
+	ts.install, ts.get_installed = install, get_installed
+	vim.api.nvim_buf_delete(buf, { force = true })
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
