@@ -323,6 +323,25 @@ test("Saga hover links fall back to the configured external browser", function()
 	assert(executed == expected, vim.inspect(executed))
 end)
 
+test("new and existing .tf files are Terraform", function()
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	vim.fn.writefile({ 'resource "null_resource" "x" {}' }, dir .. "/main.tf")
+	local ok, err = pcall(function()
+		for name, expected in pairs({
+			["new.tf"] = "terraform",
+			["main.tf"] = "terraform",
+			["vars.tfvars"] = "terraform-vars",
+		}) do
+			vim.cmd.edit(dir .. "/" .. name)
+			assert(vim.bo.filetype == expected, ("%s: filetype=%q"):format(name, vim.bo.filetype))
+			vim.cmd("bwipeout!")
+		end
+	end)
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 test("project diagnostics stay inside the cwd path boundary", function()
 	require("lazy.core.loader").load("trouble.nvim", { cmd = "test" }, { force = true })
 	local opts = require("trouble.config").get("project_diagnostics")
