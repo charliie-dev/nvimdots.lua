@@ -1,0 +1,118 @@
+{
+  "mise min version": {
+    "prefix": "mise-min-version",
+    "body": ["min_version = \"${1:2026.10.9}\""],
+    "description": "mise: oldest mise allowed to load this config"
+  },
+  "mise tools": {
+    "prefix": "mise-tools",
+    "body": ["[tools]", "${1:node} = \"${2:latest}\""],
+    "description": "mise: [tools] with one tool version"
+  },
+  "mise tool with options": {
+    "prefix": "mise-tool-opts",
+    "body": [
+      "${1:node} = { version = \"${2:24}\", postinstall = \"${3:corepack enable}\" }"
+    ],
+    "description": "mise: tool with an options table (inside [tools])"
+  },
+  "mise backend tool": {
+    "prefix": "mise-tool-backend",
+    "body": [
+      "\"${1|aqua,github,npm,cargo,go,pipx|}:${2:owner/repo}\" = \"${3:latest}\""
+    ],
+    "description": "mise: tool from an explicit backend (inside [tools])"
+  },
+  "mise env": {
+    "prefix": "mise-env",
+    "body": ["[env]", "${1:NAME} = \"${2:value}\""],
+    "description": "mise: [env] with one variable"
+  },
+  "mise env dotenv": {
+    "prefix": "mise-env-file",
+    "body": ["_.file = \"${1:.env}\""],
+    "description": "mise: load a dotenv file (inside [env])"
+  },
+  "mise env path": {
+    "prefix": "mise-env-path",
+    "body": ["_.path = [\"{{config_root}}/${1:bin}\"]"],
+    "description": "mise: prepend project directories to PATH (inside [env])"
+  },
+  "mise env required": {
+    "prefix": "mise-env-required",
+    "body": ["${1:NAME} = { required = \"${2:Why it must be set}\" }"],
+    "description": "mise: fail when a variable is not set (inside [env])"
+  },
+  "mise python venv": {
+    "prefix": "mise-venv",
+    "body": ["_.python.venv = { path = \"${1:.venv}\", create = true }"],
+    "description": "mise: create and activate a Python venv (inside [env])"
+  },
+  "mise task": {
+    "prefix": "mise-task",
+    "body": [
+      "[tasks.${1:name}]",
+      "description = \"${2:What it does}\"",
+      "run = \"${3:command}\""
+    ],
+    "description": "mise: task with a one-line command"
+  },
+  "mise task script": {
+    "prefix": "mise-task-script",
+    "body": [
+      "[tasks.${1:name}]",
+      "description = \"${2:What it does}\"",
+      "run = '''",
+      "${3:command}",
+      "'''"
+    ],
+    "description": "mise: task with a multi-line script"
+  },
+  "mise task depends": {
+    "prefix": "mise-task-depends",
+    "body": [
+      "[tasks.${1:check}]",
+      "description = \"${2:Run every check}\"",
+      "depends = [${3:\"lint\", \"test\"}]"
+    ],
+    "description": "mise: task that only runs other tasks"
+  },
+  "mise task sources": {
+    "prefix": "mise-task-sources",
+    "body": [
+      "[tasks.${1:build}]",
+      "description = \"${2:Build}\"",
+      "run = \"${3:command}\"",
+      "sources = [\"${4:src/**/*}\"]",
+      "outputs = [\"${5:dist/**/*}\"]"
+    ],
+    "description": "mise: task skipped when outputs are newer than sources"
+  },
+  "mise task usage": {
+    "prefix": "mise-task-usage",
+    "body": [
+      "[tasks.${1:deploy}]",
+      "description = \"${2:Deploy one app}\"",
+      "usage = 'arg \"<${3:app}>\"'",
+      "run = 'echo \"${4:deploying} {{ usage.$3 }}\"'"
+    ],
+    "description": "mise: task with a usage-spec argument ({{ usage.<name> }})"
+  },
+  "mise hook": {
+    "prefix": "mise-hook",
+    "body": [
+      "[hooks]",
+      "${1|enter,leave,cd,preinstall,postinstall|} = \"${2:command}\""
+    ],
+    "description": "mise: hook (enter, leave and cd need mise activate)"
+  },
+  "mise watch files": {
+    "prefix": "mise-watch",
+    "body": [
+      "[[watch_files]]",
+      "patterns = [\"${1:src/**/*}\"]",
+      "run = \"${2:command}\""
+    ],
+    "description": "mise: run a command when files change (needs mise activate)"
+  }
+}

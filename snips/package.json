@@ -69,6 +69,10 @@
       {
         "language": "pkl",
         "path": "./snippets/pkl.json"
+      },
+      {
+        "language": "toml",
+        "path": "./snippets/toml.json"
       }
     ]
   }
