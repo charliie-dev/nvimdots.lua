@@ -518,6 +518,35 @@ test("BufReadPost handlers act on the event buffer, not the current one", functi
 	assert(ok, err)
 end)
 
+test("InsertLeave runs only stdin linters; reads and writes run every linter", function()
+	require("lazy.core.loader").load("nvim-lint", { cmd = "test" }, { force = true })
+	local lint = require("lint")
+	local run, ran = lint.lint, {}
+	lint.lint = function(linter)
+		ran[#ran + 1] = linter.name
+	end
+	local buf = vim.api.nvim_create_buf(true, false)
+	vim.api.nvim_buf_set_name(buf, vim.fn.tempname() .. "/Dockerfile")
+	local ok, err = pcall(function()
+		vim.api.nvim_set_current_buf(buf)
+		vim.bo[buf].filetype = "dockerfile"
+		local expected = {
+			InsertLeave = { "hadolint" },
+			BufWritePost = { "droast", "hadolint" },
+			BufReadPost = { "droast", "hadolint" },
+		}
+		for event, names in pairs(expected) do
+			ran = {}
+			vim.api.nvim_exec_autocmds(event, { buffer = buf, modeline = false })
+			table.sort(ran)
+			assert(vim.deep_equal(ran, names), event .. " ran " .. vim.inspect(ran))
+		end
+	end)
+	lint.lint = run
+	vim.api.nvim_buf_delete(buf, { force = true })
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

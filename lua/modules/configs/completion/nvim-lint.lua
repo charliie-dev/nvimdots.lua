@@ -132,11 +132,14 @@ return function()
 	vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
 		group = vim.api.nvim_create_augroup("NvimLint", { clear = true }),
 		-- try_lint lints the current buffer; run it in the event buffer, since async loaders such as
-		-- sops.nvim fire BufReadPost while another buffer is current.
+		-- sops.nvim fire BufReadPost while another buffer is current. On InsertLeave the buffer can
+		-- differ from the file, so only stdin linters run; linters that read the file from disk
+		-- (terraform_validate, golangcilint, ...) wait for the next read or write.
 		callback = function(args)
 			if vim.api.nvim_buf_is_valid(args.buf) then
+				local filter = args.event == "InsertLeave" and "stdin" or nil
 				vim.api.nvim_buf_call(args.buf, function()
-					lint.try_lint(nil, { ignore_errors = true })
+					lint.try_lint(nil, { ignore_errors = true, filter = filter })
 				end)
 			end
 		end,
