@@ -165,12 +165,18 @@ function autocmd.load_autocmds()
 					vim.cmd.checktime()
 				end,
 			},
-			-- Maintain uniform window dimensions when resizing Vim windows
+			-- Maintain uniform window dimensions when resizing Vim windows. Equalize each tab through
+			-- nvim_win_call instead of `tabdo`, which left the last tab current and fired TabEnter and
+			-- DirChanged (switching tab-local cwd) on the way.
 			{
 				"VimResized",
 				"*",
 				function()
-					vim.cmd("tabdo wincmd =")
+					for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
+						vim.api.nvim_win_call(vim.api.nvim_tabpage_get_win(tab), function()
+							vim.cmd("wincmd =")
+						end)
+					end
 				end,
 			},
 		},

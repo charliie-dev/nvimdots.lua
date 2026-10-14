@@ -432,6 +432,43 @@ test("local snippet manifest entries point to valid snippet files", function()
 	end
 end)
 
+test("VimResized equalizes every tab without leaving the current one", function()
+	local base = vim.fn.tempname()
+	local dir_a, dir_b = base .. "/a", base .. "/b"
+	vim.fn.mkdir(dir_a, "p")
+	vim.fn.mkdir(dir_b, "p")
+	local start_tab, events = vim.api.nvim_get_current_tabpage(), {}
+	local group = vim.api.nvim_create_augroup("VimResizedSpec", { clear = true })
+	local ok, err = pcall(function()
+		vim.cmd.tabnew()
+		vim.cmd.tcd(dir_a)
+		local tab_a = vim.api.nvim_get_current_tabpage()
+		vim.cmd.tabnew()
+		vim.cmd.tcd(dir_b)
+		vim.cmd.vsplit()
+		vim.cmd("vertical resize 10")
+		local wins_b = vim.api.nvim_tabpage_list_wins(0)
+		vim.api.nvim_set_current_tabpage(tab_a)
+		vim.api.nvim_create_autocmd({ "TabEnter", "DirChanged" }, {
+			group = group,
+			callback = function(args)
+				events[#events + 1] = args.event
+			end,
+		})
+		vim.api.nvim_exec_autocmds("VimResized", {})
+		assert(vim.api.nvim_get_current_tabpage() == tab_a, "resize switched the current tab")
+		assert(vim.fn.getcwd() == vim.uv.fs_realpath(dir_a), "resize changed the cwd to " .. vim.fn.getcwd())
+		assert(#events == 0, "resize fired " .. table.concat(events, ", "))
+		local w1, w2 = vim.api.nvim_win_get_width(wins_b[1]), vim.api.nvim_win_get_width(wins_b[2])
+		assert(math.abs(w1 - w2) <= 1, ("other tab not equalized: %d vs %d"):format(w1, w2))
+	end)
+	vim.api.nvim_del_augroup_by_id(group)
+	vim.api.nvim_set_current_tabpage(start_tab)
+	vim.cmd("silent! tabonly!")
+	vim.fn.delete(base, "rf")
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
