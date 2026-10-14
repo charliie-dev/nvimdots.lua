@@ -383,6 +383,44 @@ test("yamlls maps unclaimed Kubernetes manifests to the kubernetes schema", func
 	assert(ok, err)
 end)
 
+test("Helm chart files get helm filetypes only inside a chart", function()
+	local dir = vim.fn.tempname()
+	for _, sub in ipairs({ "chart/templates/sub", "other/templates" }) do
+		vim.fn.mkdir(dir .. "/" .. sub, "p")
+	end
+	vim.fn.writefile({ "apiVersion: v2", "name: chart" }, dir .. "/chart/Chart.yaml")
+	local expected = {
+		["chart/templates/deploy.yaml"] = "helm",
+		["chart/templates/sub/svc.yml"] = "helm",
+		["chart/templates/_helpers.tpl"] = "helm",
+		["chart/templates/NOTES.txt"] = "helm",
+		["chart/values.yaml"] = "yaml.helm-values",
+		["chart/values-prod.yaml"] = "yaml.helm-values",
+		["chart/Chart.yaml"] = "yaml",
+		["other/templates/x.yaml"] = "yaml",
+		["other/values.yaml"] = "yaml",
+	}
+	local ok, err = pcall(function()
+		for name, ft in pairs(expected) do
+			vim.cmd.edit(dir .. "/" .. name)
+			assert(vim.bo.filetype == ft, ("%s: filetype=%q, expected %q"):format(name, vim.bo.filetype, ft))
+			vim.cmd("bwipeout!")
+		end
+	end)
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
+test("helm_ls serves Helm charts and yamlls stays off templates", function()
+	assert(vim.tbl_contains(require("core.settings").lsp_deps, "helm_ls"), "helm_ls is not in lsp_deps")
+	assert(require("core.settings").treesitter_deps.helm, "helm parser is not installed")
+	-- Servers are enabled only when their executable exists; Muster reports missing ones.
+	local installed = require("completion.lsp-server").is_executable("helm_ls")
+	assert(vim.lsp.is_enabled("helm_ls") == installed, "helm_ls enablement does not follow its executable")
+	assert(vim.tbl_contains(vim.lsp.config.helm_ls.filetypes, "helm"), "helm_ls does not cover templates")
+	assert(not vim.tbl_contains(vim.lsp.config.yamlls.filetypes, "helm"), "yamlls would parse Go templates")
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

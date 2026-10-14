@@ -95,6 +95,7 @@ settings["lsp_deps"] = {
 	{ name = "gh_actions_ls", command = "actions-languageserver" },
 	"gopls",
 	-- "harper_ls", -- too noisy
+	"helm_ls",
 	{ name = "jsonls", command = "vscode-json-language-server" },
 	"lua_ls",
 	"marksman",
@@ -184,6 +185,7 @@ settings["treesitter_deps"] = {
 	gotmpl = true,
 	gowork = true,
 	hcl = true,
+	helm = true,
 	html = true,
 	javascript = true,
 	json = true,
