@@ -1,0 +1,62 @@
+{
+  "tflint required version": {
+    "prefix": "tflint-version",
+    "body": ["tflint {", "  required_version = \">= ${1:0.64}\"", "}"],
+    "description": "TFLint: constrain the TFLint version"
+  },
+  "tflint config": {
+    "prefix": "tflint-config",
+    "body": [
+      "config {",
+      "  call_module_type    = \"${1|local,all,none|}\"",
+      "  disabled_by_default = ${2|false,true|}",
+      "}"
+    ],
+    "description": "TFLint: config block (module inspection, rules off unless enabled)"
+  },
+  "tflint ignore module": {
+    "prefix": "tflint-ignore-module",
+    "body": ["ignore_module = {", "  \"${1:module source}\" = true", "}"],
+    "description": "TFLint: skip modules by source (inside config)"
+  },
+  "tflint terraform ruleset": {
+    "prefix": "tflint-terraform",
+    "body": [
+      "plugin \"terraform\" {",
+      "  enabled = true",
+      "  preset  = \"${1|recommended,all|}\"",
+      "}"
+    ],
+    "description": "TFLint: bundled terraform ruleset with a preset"
+  },
+  "tflint ruleset plugin": {
+    "prefix": "tflint-plugin",
+    "body": [
+      "plugin \"${1|google,aws,azurerm|}\" {",
+      "  enabled = true",
+      "  version = \"${2:x.y.z}\"",
+      "  source  = \"github.com/terraform-linters/tflint-ruleset-$1\"",
+      "}"
+    ],
+    "description": "TFLint: external ruleset (version without a v prefix; run tflint --init)"
+  },
+  "tflint rule": {
+    "prefix": "tflint-rule",
+    "body": [
+      "rule \"${1:terraform_unused_declarations}\" {",
+      "  enabled = ${2|true,false|}",
+      "}"
+    ],
+    "description": "TFLint: enable or disable a rule"
+  },
+  "tflint naming convention": {
+    "prefix": "tflint-naming",
+    "body": [
+      "rule \"terraform_naming_convention\" {",
+      "  enabled = true",
+      "  format  = \"${1|snake_case,mixed_snake_case,none|}\"",
+      "}"
+    ],
+    "description": "TFLint: enforce a naming format for all blocks"
+  }
+}

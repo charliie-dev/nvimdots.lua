@@ -421,6 +421,17 @@ test("helm_ls serves Helm charts and yamlls stays off templates", function()
 	assert(not vim.tbl_contains(vim.lsp.config.yamlls.filetypes, "helm"), "yamlls would parse Go templates")
 end)
 
+test("local snippet manifest entries point to valid snippet files", function()
+	local root = vim.fn.stdpath("config") .. "/snips"
+	local manifest = vim.json.decode(table.concat(vim.fn.readfile(root .. "/package.json"), "\n"))
+	for _, entry in ipairs(manifest.contributes.snippets) do
+		local path = vim.fs.normalize(root .. "/" .. entry.path)
+		assert(vim.uv.fs_stat(path), "missing snippet file: " .. entry.path)
+		local ok, snippets = pcall(vim.json.decode, table.concat(vim.fn.readfile(path), "\n"))
+		assert(ok and type(snippets) == "table" and next(snippets), "invalid snippet file: " .. entry.path)
+	end
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

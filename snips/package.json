@@ -61,6 +61,10 @@
       {
         "language": "python",
         "path": "./snippets/python/unittest.json"
+      },
+      {
+        "language": "hcl",
+        "path": "./snippets/hcl.json"
       }
     ]
   }
