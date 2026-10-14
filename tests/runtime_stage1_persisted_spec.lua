@@ -73,6 +73,40 @@ vim.api.nvim_create_autocmd("VimEnter", {
 					local contents = table.concat(vim.fn.readfile(session), "\n")
 					assert(contents:find("SessionLoad", 1, true), "manual save no longer overrides dashboard exclusion")
 				end)
+
+				test("session load does not re-read a buffer switched to after the load", function()
+					local file_a, file_b = directory .. "/a.txt", directory .. "/b.txt"
+					vim.fn.writefile({ "a" }, file_a)
+					vim.fn.writefile({ "b" }, file_b)
+					vim.cmd.edit(file_a)
+					local restore = directory .. "/restore.vim"
+					persisted.save({ session = restore, force = true })
+					local reads = {}
+					local group = vim.api.nvim_create_augroup("PersistedSpecReads", { clear = true })
+					vim.api.nvim_create_autocmd("BufReadPost", {
+						group = group,
+						callback = function(args)
+							reads[#reads + 1] = vim.fs.basename(vim.api.nvim_buf_get_name(args.buf))
+						end,
+					})
+					-- Another LoadPost handler moves to B right after the session is restored. `nested` lets
+					-- that switch fire BufReadPost, so a later re-read of B shows up as a second read.
+					vim.api.nvim_create_autocmd("User", {
+						group = group,
+						pattern = "PersistedLoadPost",
+						nested = true,
+						callback = function()
+							vim.cmd.edit(file_b)
+						end,
+					})
+					persisted.load({ session = restore })
+					vim.wait(50)
+					vim.api.nvim_del_augroup_by_id(group)
+					local b_reads = #vim.tbl_filter(function(name)
+						return name == "b.txt"
+					end, reads)
+					assert(b_reads == 1, "b.txt was read " .. b_reads .. " times: " .. vim.inspect(reads))
+				end)
 				persisted.stop()
 			end, debug.traceback)
 			if not ok then
