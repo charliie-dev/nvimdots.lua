@@ -33,8 +33,19 @@ return function()
 				filter = {
 					any = {
 						{
+							-- Keep files under the cwd: compare whole path components, then retry with
+							-- symlinks resolved. Unnamed buffers ("[buffer:N]") are relative and never match;
+							-- relpath() would otherwise anchor them to the cwd.
 							function(item)
-								return item.filename:find(vim.uv.cwd(), 1, true)
+								local cwd = vim.uv.cwd()
+								if not cwd or vim.fn.isabsolutepath(item.filename) == 0 then
+									return false
+								end
+								if vim.fs.relpath(cwd, item.filename) then
+									return true
+								end
+								local real = vim.uv.fs_realpath(item.filename)
+								return real ~= nil and vim.fs.relpath(vim.uv.fs_realpath(cwd) or cwd, real) ~= nil
 							end,
 						},
 					},
