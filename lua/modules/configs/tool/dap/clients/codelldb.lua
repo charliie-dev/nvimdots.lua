@@ -10,7 +10,7 @@ return function()
 		executable = {
 			command = "codelldb", -- Resolve from PATH at probe/run time
 			args = { "--port", "${port}" },
-			detached = is_windows and false or true,
+			detached = not is_windows,
 		},
 	}
 	dap.configurations.c = {

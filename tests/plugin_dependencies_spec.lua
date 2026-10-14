@@ -252,6 +252,23 @@ test("codelldb is registered without Mason", function()
 	assert(adapter.executable.command == "codelldb", "unexpected codelldb command")
 end)
 
+test("codelldb runs attached only on Windows", function()
+	local global = require("core.global")
+	local register = require("tool.dap.clients.codelldb")
+	local original = global.is_windows
+	local ok, err = pcall(function()
+		for _, is_windows in ipairs({ true, false }) do
+			global.is_windows = is_windows
+			register()
+			local detached = require("dap").adapters.codelldb.executable.detached
+			assert(detached == not is_windows, ("is_windows=%s gave detached=%s"):format(is_windows, detached))
+		end
+	end)
+	global.is_windows = original
+	register()
+	assert(ok, err)
+end)
+
 test("GitHub Actions LSP uses the npm executable", function()
 	local config = require("completion.servers.gh_actions_ls")
 	assert(vim.deep_equal(config.cmd, { "actions-languageserver", "--stdio" }), "unexpected gh_actions_ls command")
