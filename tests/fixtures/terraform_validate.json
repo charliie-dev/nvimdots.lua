@@ -2,7 +2,7 @@
   "format_version": "1.0",
   "valid": false,
   "error_count": 3,
-  "warning_count": 0,
+  "warning_count": 1,
   "diagnostics": [
     {
       "severity": "error",
@@ -60,6 +60,32 @@
       "severity": "error",
       "summary": "Missing required provider",
       "detail": "This configuration requires provider registry.terraform.io/hashicorp/null, but that provider isn't available. You may be able to install it automatically by running:\n  terraform init"
+    },
+    {
+      "severity": "warning",
+      "summary": "Version constraints inside provider configuration blocks are deprecated",
+      "detail": "Terraform 0.13 and earlier allowed provider version constraints inside the provider configuration block, but that is now deprecated and will be removed in a future version of Terraform. To silence this warning, move the provider version constraint into the required_providers block.",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 2,
+          "column": 13,
+          "byte": 30
+        },
+        "end": {
+          "line": 2,
+          "column": 21,
+          "byte": 38
+        }
+      },
+      "snippet": {
+        "context": "provider \"null\"",
+        "code": "  version = \"~> 3.0\"",
+        "start_line": 2,
+        "highlight_start_offset": 12,
+        "highlight_end_offset": 20,
+        "values": []
+      }
     }
   ]
 }

@@ -1,7 +1,8 @@
 local modules = { "completion", "editor", "lang", "tool", "ui" }
-local failures, specs, lazy_plugins = {}, nil, nil
+local failures, specs, lazy_plugins, tests_run = {}, nil, nil, 0
 
 local function test(name, callback)
+	tests_run = tests_run + 1
 	local ok, err = xpcall(callback, debug.traceback)
 	if ok then
 		print("PASS " .. name)
@@ -551,20 +552,30 @@ test("terraform_validate leaves other files' diagnostics out of the buffer", fun
 	require("lazy.core.loader").load("nvim-lint", { cmd = "test" }, { force = true })
 	local linter = require("lint").linters.terraform_validate
 	linter = type(linter) == "function" and linter() or linter
-	-- Real `terraform validate -json` output: one error in main.tf, one in other.tf, one module-wide.
+	-- Diagnostics taken from real `terraform validate -json` runs (Terraform 1.16.5): an error in
+	-- other.tf, an error and a warning in main.tf, and a module-wide error without a range.
 	local fixture = vim.fn.stdpath("config") .. "/tests/fixtures/terraform_validate.json"
 	local output = table.concat(vim.fn.readfile(fixture), "\n")
 	local buf = vim.api.nvim_create_buf(true, false)
 	vim.api.nvim_buf_set_name(buf, vim.fn.tempname() .. "/main.tf")
 	local ok, err = pcall(function()
+		local severity = vim.diagnostic.severity
+		local diagnostics = linter.parser(output, buf)
 		local got = vim.tbl_map(function(d)
-			return { d.lnum, d.col, d.end_lnum, d.end_col, vim.split(d.message, " - ", { plain = true })[1] }
-		end, linter.parser(output, buf))
+			assert(d.source == "terraform validate", "unexpected source " .. tostring(d.source))
+			local summary = vim.split(d.message, " - ", { plain = true })[1]
+			return { d.lnum, d.col, d.end_lnum, d.end_col, d.severity, summary }
+		end, diagnostics)
 		local expected = {
-			{ 1, 10, 1, 21, "Reference to undeclared input variable" },
-			{ 0, 0, nil, nil, "Missing required provider" },
+			{ 1, 10, 1, 21, severity.ERROR, "Reference to undeclared input variable" },
+			{ 0, 0, nil, nil, severity.ERROR, "Missing required provider" },
+			{ 1, 12, 1, 20, severity.WARN, "Version constraints inside provider configuration blocks are deprecated" },
 		}
 		assert(vim.deep_equal(got, expected), vim.inspect(got))
+		-- Malformed output and unknown severities do not raise and stay visible as warnings.
+		assert(vim.deep_equal(linter.parser('{"diagnostics": null}', buf), {}), "null diagnostics raised")
+		local unknown = linter.parser('{"diagnostics": [{"severity": "fatal", "summary": "x"}]}', buf)
+		assert(#unknown == 1 and unknown[1].severity == severity.WARN, vim.inspect(unknown))
 	end)
 	vim.api.nvim_buf_delete(buf, { force = true })
 	assert(ok, err)
@@ -677,4 +688,4 @@ if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
 end
-print("plugin_dependencies_spec: 10 tests passed")
+print(string.format("plugin_dependencies_spec: %d tests passed", tests_run))

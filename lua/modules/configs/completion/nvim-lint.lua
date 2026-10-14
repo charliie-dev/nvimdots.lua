@@ -122,7 +122,7 @@ return function()
 			or vim.deepcopy(terraform_validate)
 		linter.parser = function(output, bufnr)
 			local ok, decoded = pcall(vim.json.decode, output)
-			if not ok or type(decoded) ~= "table" then
+			if not ok or type(decoded) ~= "table" or type(decoded.diagnostics) ~= "table" then
 				return {}
 			end
 			local severities = {
@@ -132,7 +132,7 @@ return function()
 			}
 			local file = vim.fs.basename(vim.api.nvim_buf_get_name(bufnr))
 			local diagnostics = {}
-			for _, item in ipairs(decoded.diagnostics or {}) do
+			for _, item in ipairs(decoded.diagnostics) do
 				local range = item.range
 				if range == nil or range.filename == file then
 					table.insert(diagnostics, {
@@ -140,7 +140,7 @@ return function()
 						col = range and range.start.column - 1 or 0,
 						end_lnum = range and range["end"].line - 1 or nil,
 						end_col = range and range["end"].column - 1 or nil,
-						severity = severities[item.severity],
+						severity = severities[item.severity] or vim.diagnostic.severity.WARN,
 						message = item.detail and (item.summary .. " - " .. item.detail) or item.summary,
 						source = "terraform validate",
 					})
