@@ -1,17 +1,6 @@
 local set = vim.keymap.set
 local helpers = require("keymap.helpers")
 
--- Lazy-require treesitter-textobjects
-local ts_to_select = function()
-	return require("nvim-treesitter-textobjects.select")
-end
-local ts_to_swap = function()
-	return require("nvim-treesitter-textobjects.swap")
-end
-local ts_to_repeat_move = function()
-	return require("nvim-treesitter-textobjects.repeatable_move")
-end
-
 -- Builtin: Save & Quit
 set("n", "<C-s>", "<Cmd>write<CR>", { silent = true, desc = "edit: Save file" })
 set("n", "<C-q>", "<Cmd>wq<CR>", { desc = "edit: Save file and quit" })
@@ -109,26 +98,25 @@ end, { silent = true, desc = "edit: Search & replace current word (file)" })
 set("n", "<A-s>", "<Cmd>SudaWrite<CR>", { silent = true, desc = "edit: Save file using sudo" })
 
 -- Plugin: nvim-treesitter-textobjects (select)
-set({ "x", "o" }, "af", function()
-	ts_to_select().select_textobject("@function.outer", "textobjects")
-end, { silent = true, desc = "edit: Select function.outer" })
-set({ "x", "o" }, "if", function()
-	ts_to_select().select_textobject("@function.inner", "textobjects")
-end, { silent = true, desc = "edit: Select function.inner" })
-set({ "x", "o" }, "ac", function()
-	ts_to_select().select_textobject("@class.outer", "textobjects")
-end, { silent = true, desc = "edit: Select class.outer" })
-set({ "x", "o" }, "ic", function()
-	ts_to_select().select_textobject("@class.inner", "textobjects")
-end, { silent = true, desc = "edit: Select class.inner" })
+-- The modules are required on first use, so mapping these keys does not load the plugin.
+local function ts_select(lhs, query, desc)
+	set({ "x", "o" }, lhs, function()
+		require("nvim-treesitter-textobjects.select").select_textobject(query, "textobjects")
+	end, { silent = true, desc = desc })
+end
+ts_select("af", "@function.outer", "edit: Select function.outer")
+ts_select("if", "@function.inner", "edit: Select function.inner")
+ts_select("ac", "@class.outer", "edit: Select class.outer")
+ts_select("ic", "@class.inner", "edit: Select class.inner")
 
 -- Plugin: nvim-treesitter-textobjects (swap)
-set("n", "<leader>a", function()
-	ts_to_swap().swap_next("@parameter.inner")
-end, { silent = true, desc = "edit: Swap parameter forward" })
-set("n", "<leader>A", function()
-	ts_to_swap().swap_previous("@parameter.outer")
-end, { silent = true, desc = "edit: Swap parameter backward" })
+local function ts_swap(lhs, fn, query, desc)
+	set("n", lhs, function()
+		require("nvim-treesitter-textobjects.swap")[fn](query)
+	end, { silent = true, desc = desc })
+end
+ts_swap("<leader>a", "swap_next", "@parameter.inner", "edit: Swap parameter forward")
+ts_swap("<leader>A", "swap_previous", "@parameter.outer", "edit: Swap parameter backward")
 
 -- Plugin: nvim-treesitter-textobjects (move)
 -- Without a parser the move functions raise (their range lookup returns an empty table), so the
@@ -152,7 +140,7 @@ ts_move("[M", "goto_previous_end", "@class.outer", "edit: Prev class end")
 
 -- Plugin: nvim-treesitter-textobjects (repeat)
 set({ "n", "x", "o" }, ";", function()
-	ts_to_repeat_move().repeat_last_move_next()
+	require("nvim-treesitter-textobjects.repeatable_move").repeat_last_move_next()
 end, { silent = true, desc = "edit: Repeat last move" })
 
 -- Plugin: persisted.nvim

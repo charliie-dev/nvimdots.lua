@@ -176,6 +176,34 @@ end
 vim.opt.runtimepath:remove(user_runtime)
 vim.fn.delete(user_runtime, "rf")
 
+test("select, swap and repeat keys drive Treesitter textobjects", function()
+	vim.cmd.enew({ bang = true })
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+		"def first(a, b):",
+		"    return a",
+		"",
+		"def second():",
+		"    return 2",
+	})
+	vim.bo.filetype = "python"
+	vim.api.nvim_win_set_cursor(0, { 2, 4 })
+	keys("yaf")
+	assert(vim.fn.getregtype('"') == "V", "function.outer is not linewise")
+	assert(vim.fn.getreg('"') == "def first(a, b):\n    return a\n", vim.inspect(vim.fn.getreg('"')))
+	vim.api.nvim_win_set_cursor(0, { 2, 4 })
+	keys("yif")
+	assert(vim.fn.getreg('"') == "return a", vim.inspect(vim.fn.getreg('"')))
+	vim.api.nvim_win_set_cursor(0, { 1, 10 })
+	keys((vim.g.mapleader or "\\") .. "a")
+	assert(vim.api.nvim_get_current_line() == "def first(b, a):", vim.api.nvim_get_current_line())
+	vim.api.nvim_win_set_cursor(0, { 1, 0 })
+	keys("]]")
+	assert(vim.api.nvim_win_get_cursor(0)[1] == 2, "]] did not reach the first function end")
+	keys(";")
+	assert(vim.api.nvim_win_get_cursor(0)[1] == 5, "; did not repeat the last move")
+	vim.bo.modified = false
+end)
+
 test("without a parser the move keys behave like Vim's motions", function()
 	local lines = { "intro", "{", "  body", "}", "middle", "{", "  more", "}", "end" }
 	vim.cmd.enew({ bang = true })
