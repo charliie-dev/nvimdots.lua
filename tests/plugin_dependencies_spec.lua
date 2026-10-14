@@ -750,6 +750,38 @@ test("tiny-inline-diagnostic renders buffers without an LspAttach after its setu
 	assert(ok, err)
 end)
 
+test("mini.ai f and c select the Treesitter nodes behind af/if/ac/ic", function()
+	local buffers = {}
+	local function buffer(ft, lines)
+		local buf = vim.api.nvim_create_buf(true, false)
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+		vim.api.nvim_set_current_buf(buf)
+		vim.bo[buf].filetype = ft
+		buffers[#buffers + 1] = buf
+	end
+	-- What mini.ai selects when `a`/`i` and the id are typed slower than 'timeoutlen'
+	local function selected(cursor, ai_type, id)
+		vim.api.nvim_win_set_cursor(0, cursor)
+		require("mini.ai").select_textobject(ai_type, id)
+		local from, to = vim.fn.getpos("v"), vim.fn.getpos(".")
+		vim.cmd("normal! \27")
+		return { from[2], from[3], to[2], to[3] }
+	end
+	local ok, err = pcall(function()
+		buffer("lua", { "local function outer()", "  return foo(bar)", "end" })
+		local call = { 2, 10 } -- on `foo(bar)`
+		assert(vim.deep_equal(selected(call, "a", "f"), { 1, 1, 3, 3 }), "a f is not the whole function")
+		assert(vim.deep_equal(selected(call, "i", "f"), { 2, 3, 2, 17 }), "i f is not the function body")
+		assert(vim.deep_equal(selected(call, "a", "F"), { 2, 10, 2, 17 }), "a F is not the function call")
+		buffer("python", { "class Box:", "    def size(self):", "        return 1" })
+		assert(vim.deep_equal(selected({ 3, 8 }, "a", "c"), { 1, 1, 3, 16 }), "a c is not the whole class")
+	end)
+	for _, buf in ipairs(buffers) do
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

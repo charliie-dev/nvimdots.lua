@@ -1,8 +1,16 @@
 return function()
+	local gen_spec = require("mini.ai").gen_spec
 	require("modules.utils").load_plugin("mini.ai", {
 		-- Table with textobject id as fields, textobject specification as values.
 		-- Also use this to disable builtin textobjects. See |MiniAi.config|.
-		custom_textobjects = nil,
+		-- The af/if/ac/ic mappings (keymap/edit.lua) select Treesitter functions and classes. Typing
+		-- `a`/`i` and the id slower than 'timeoutlen' lands here instead, so point f and c at the same
+		-- nodes; mini.ai's function call moves to F.
+		custom_textobjects = {
+			f = gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+			c = gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+			F = gen_spec.function_call(),
+		},
 
 		-- Module mappings. Use `''` (empty string) to disable one.
 		mappings = {
