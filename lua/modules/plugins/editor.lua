@@ -62,11 +62,59 @@ editor["jmbuhr/otter.nvim"] = {
 	ft = { "toml", "markdown", "quarto", "org", "norg" },
 	dependencies = { "nvim-treesitter/nvim-treesitter" },
 	config = function()
-		vim.api.nvim_create_autocmd("FileType", {
-			pattern = { "toml", "markdown", "quarto", "org", "norg" },
-			group = vim.api.nvim_create_augroup("EmbedToml", {}),
-			callback = function()
+		local filetypes = { "toml", "markdown", "quarto", "org", "norg" }
+		local group = vim.api.nvim_create_augroup("EmbedToml", {})
+		local function activate(buf)
+			vim.api.nvim_buf_call(buf, function()
 				require("otter").activate()
+			end)
+		end
+		-- Embedded languages otter supports, as Treesitter currently injects them
+		local function embedded_languages(buf)
+			local parser = vim.treesitter.get_parser(buf, nil, { error = false })
+			if not parser then
+				return {}
+			end
+			parser:parse(true)
+			local languages = {}
+			for lang in pairs(parser:children()) do
+				if lang ~= parser:lang() and _G.OtterConfig.extensions[lang] then
+					languages[#languages + 1] = lang
+				end
+			end
+			table.sort(languages)
+			return languages
+		end
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = filetypes,
+			group = group,
+			callback = function(args)
+				activate(args.buf)
+			end,
+		})
+		-- otter only covers the languages present when it activated; re-activate when an edit adds or
+		-- changes them. activate() reuses the buffer's otter-ls client but never deletes the otter
+		-- buffer of a language that is gone, so drop those first.
+		vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+			group = group,
+			callback = function(args)
+				if not vim.tbl_contains(filetypes, vim.bo[args.buf].filetype) then
+					return
+				end
+				local raft = require("otter.keeper").rafts[args.buf]
+				local active = raft and vim.deepcopy(raft.languages) or {}
+				table.sort(active)
+				local languages = embedded_languages(args.buf)
+				if vim.deep_equal(active, languages) then
+					return
+				end
+				for _, lang in ipairs(active) do
+					local otter_buf = raft.buffers[lang]
+					if not vim.tbl_contains(languages, lang) and otter_buf and vim.api.nvim_buf_is_valid(otter_buf) then
+						vim.api.nvim_buf_delete(otter_buf, { force = true })
+					end
+				end
+				activate(args.buf)
 			end,
 		})
 	end,

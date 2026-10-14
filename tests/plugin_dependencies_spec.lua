@@ -581,6 +581,48 @@ test("terraform_validate leaves other files' diagnostics out of the buffer", fun
 	assert(ok, err)
 end)
 
+test("otter picks up embedded languages added after the buffer opened", function()
+	local buf = vim.api.nvim_create_buf(true, false)
+	vim.api.nvim_buf_set_name(buf, vim.fn.tempname() .. ".md")
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "# notes" })
+	local ok, err = pcall(function()
+		vim.api.nvim_set_current_buf(buf)
+		vim.bo[buf].filetype = "markdown"
+		local function languages()
+			local raft = require("otter.keeper").rafts[buf]
+			local langs = raft and vim.deepcopy(raft.languages) or {}
+			table.sort(langs)
+			return langs
+		end
+		local function edit(lines)
+			vim.api.nvim_buf_set_lines(buf, -1, -1, false, lines)
+			vim.api.nvim_exec_autocmds("TextChanged", { buffer = buf, modeline = false })
+		end
+		assert(vim.deep_equal(languages(), {}), "otter activated without code: " .. vim.inspect(languages()))
+		edit({ "```lua", "local x = 1", "```" })
+		assert(vim.deep_equal(languages(), { "lua" }), "first language missed: " .. vim.inspect(languages()))
+		edit({ "```python", "y = 2", "```" })
+		assert(vim.deep_equal(languages(), { "lua", "python" }), "second language missed: " .. vim.inspect(languages()))
+		local lua_otter = require("otter.keeper").rafts[buf].buffers.lua
+		-- Remove the lua fence (lines 2-4): its language and otter buffer go away.
+		vim.api.nvim_buf_set_lines(buf, 1, 4, false, {})
+		vim.api.nvim_exec_autocmds("TextChanged", { buffer = buf, modeline = false })
+		assert(vim.deep_equal(languages(), { "python" }), "removed language kept: " .. vim.inspect(languages()))
+		assert(not vim.api.nvim_buf_is_valid(lua_otter), "the removed language's otter buffer was left behind")
+		local otterls = vim.lsp.get_clients({ name = "otter-ls[" .. buf .. "]" })
+		assert(#otterls == 1, "otter-ls clients for the buffer: " .. #otterls)
+	end)
+	vim.bo[buf].modified = false
+	vim.api.nvim_buf_delete(buf, { force = true })
+	-- nvim-ts-autotag detaches from every markdown buffer by deleting buffer maps it never set; the
+	-- caught "E31: No such mapping" still lands in v:errmsg. Clear only that so the spec-level errmsg
+	-- check keeps catching real errors.
+	if vim.v.errmsg == "E31: No such mapping" then
+		vim.v.errmsg = ""
+	end
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
