@@ -323,6 +323,66 @@ test("Saga hover links fall back to the configured external browser", function()
 	assert(executed == expected, vim.inspect(executed))
 end)
 
+test("yamlls maps unclaimed Kubernetes manifests to the kubernetes schema", function()
+	local config = require("completion.servers.yamlls")
+	local function fake_client(claimed)
+		local client = { settings = { yaml = { schemas = {} } }, requests = 0, notified = 0 }
+		function client:request(method, params, handler)
+			assert(method == "yaml/get/jsonSchema", method)
+			assert(type(params) == "string", "schema lookup expects the document URI")
+			self.requests = self.requests + 1
+			handler(nil, claimed and { { uri = "https://example.com/other.json" } } or {})
+			return true
+		end
+		function client:notify(method, params)
+			assert(method == "workspace/didChangeConfiguration", method)
+			assert(params.settings == self.settings, "notification did not carry the client settings")
+			self.notified = self.notified + 1
+		end
+		function client:is_stopped()
+			return false
+		end
+		return client
+	end
+	local buffers = {}
+	local function buffer(lines)
+		local buf = vim.api.nvim_create_buf(true, false)
+		vim.api.nvim_buf_set_name(buf, vim.fn.tempname() .. ".yaml")
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+		buffers[#buffers + 1] = buf
+		return buf
+	end
+	local manifest = { "apiVersion: apps/v1", "kind: Deployment", "metadata:", "  name: web" }
+	local ok, err = pcall(function()
+		local client, buf = fake_client(false), buffer(manifest)
+		config.on_attach(client, buf)
+		local mapped = client.settings.yaml.schemas.kubernetes
+		assert(vim.deep_equal(mapped, { vim.uri_from_bufnr(buf) }), vim.inspect(client.settings.yaml.schemas))
+		assert(client.notified == 1, "schema change was not sent")
+		vim.api.nvim_exec_autocmds("BufWritePost", { buffer = buf })
+		assert(client.requests == 1 and client.notified == 1, "an already mapped buffer was looked up again")
+
+		local claimed = fake_client(true)
+		config.on_attach(claimed, buffer({ "apiVersion: kustomize.config.k8s.io/v1beta1", "kind: Kustomization" }))
+		assert(claimed.requests == 1, "claimed manifest was not looked up")
+		assert(claimed.settings.yaml.schemas.kubernetes == nil and claimed.notified == 0, "claimed file was remapped")
+
+		local plain, later = fake_client(false), buffer({ "name: ci", "on: push" })
+		config.on_attach(plain, later)
+		assert(plain.requests == 0, "plain YAML was looked up")
+		vim.api.nvim_buf_set_lines(later, 0, -1, false, manifest)
+		vim.api.nvim_exec_autocmds("InsertLeave", { buffer = later })
+		assert(
+			vim.deep_equal(plain.settings.yaml.schemas.kubernetes, { vim.uri_from_bufnr(later) }),
+			"edit to a manifest was missed"
+		)
+	end)
+	for _, buf in ipairs(buffers) do
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
