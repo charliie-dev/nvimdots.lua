@@ -32,10 +32,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		mapping.lsp(event.buf)
 
 		if not _G._debugging then
-			-- LSP Inlay Hints
+			-- LSP Inlay Hints: apply the default once per buffer, at the first client that has them, so
+			-- a client attaching later keeps the state the user may have toggled with <leader>lh.
 			local inlayhints_enabled = require("core.settings").lsp_inlayhints
 			local client = vim.lsp.get_client_by_id(event.data.client_id)
-			if client and client.server_capabilities.inlayHintProvider ~= nil then
+			if
+				client
+				and client:supports_method("textDocument/inlayHint")
+				and not vim.b[event.buf].inlayhint_default_applied
+			then
+				vim.b[event.buf].inlayhint_default_applied = true
 				vim.lsp.inlay_hint.enable(inlayhints_enabled == true, { bufnr = event.buf })
 			end
 		end

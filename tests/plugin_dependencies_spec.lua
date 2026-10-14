@@ -519,6 +519,66 @@ test("BufReadPost handlers act on the event buffer, not the current one", functi
 	assert(ok, err)
 end)
 
+test("a later LspAttach keeps the buffer's inlay hint state", function()
+	local settings = require("core.settings")
+	local default = settings.lsp_inlayhints
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	vim.cmd.edit(dir .. "/a.txt")
+	local buf = vim.api.nvim_get_current_buf()
+	-- In-process server that only answers initialize with the given inlayHintProvider
+	local function attach(name, provider)
+		local function server()
+			local closing, id = false, 0
+			return {
+				request = function(method, _, callback)
+					id = id + 1
+					callback(nil, method == "initialize" and { capabilities = { inlayHintProvider = provider } } or {})
+					return true, id
+				end,
+				notify = function(method)
+					closing = closing or method == "exit"
+					return true
+				end,
+				is_closing = function()
+					return closing
+				end,
+				terminate = function()
+					closing = true
+				end,
+			}
+		end
+		local id = assert(vim.lsp.start({ name = name, cmd = server, root_dir = dir }, { bufnr = buf }))
+		assert(
+			vim.wait(2000, function()
+				return vim.lsp.buf_is_attached(buf, id)
+			end),
+			name .. " did not attach"
+		)
+	end
+	local function enabled()
+		return vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
+	end
+	settings.lsp_inlayhints = true
+	local ok, err = pcall(function()
+		attach("no-hints", false)
+		assert(not enabled(), "a server without inlay hints applied the default")
+		attach("hints", true)
+		assert(enabled(), "the first inlay hint server did not apply the default")
+		-- The user turns them off (<leader>lh); another server attaches afterwards.
+		vim.lsp.inlay_hint.enable(false, { bufnr = buf })
+		attach("late-hints", true)
+		assert(not enabled(), "a later LspAttach reset the user's inlay hint toggle")
+	end)
+	settings.lsp_inlayhints = default
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+		client:stop(true)
+	end
+	vim.api.nvim_buf_delete(buf, { force = true })
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 test("InsertLeave runs only stdin linters; reads and writes run every linter", function()
 	require("lazy.core.loader").load("nvim-lint", { cmd = "test" }, { force = true })
 	local lint = require("lint")
