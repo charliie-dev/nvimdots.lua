@@ -8,7 +8,6 @@ return {
 	end,
 	settings = {
 		["nil"] = {
-			testSetting = 42,
 			nix = { flake = { autoArchive = false } },
 		},
 	},
