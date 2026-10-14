@@ -5,7 +5,6 @@ return function()
 		misc = require("modules.utils.icons").get("misc", true),
 		ui = require("modules.utils.icons").get("ui", true),
 	}
-	local api = require("dropbar.api")
 	local utils = require("dropbar.utils")
 	local sources = require("dropbar.sources")
 	-- Custom source to display only the leaf filename in the dropbar
@@ -19,16 +18,11 @@ return function()
 	require("modules.utils").load_plugin("dropbar", {
 		menu = {
 			preview = true,
-		},
-		fzf = {
 			keymaps = {
-				["<Up>"] = api.fuzzy_find_prev,
-				["<Down>"] = api.fuzzy_find_next,
-				["<CR>"] = api.fuzzy_find_click,
+				-- Fuzzy finding needs fzf-lib, which is not installed; `i` would only report that.
+				-- <Nop> rather than false: an unmapped `i` enters Insert mode in the read-only menu.
+				["i"] = "<Nop>",
 			},
-			char_pattern = "[%w%p]",
-			retain_inner_spaces = true,
-			fuzzy_find_on_click = true,
 		},
 		bar = {
 			hover = false,
