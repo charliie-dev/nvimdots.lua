@@ -112,6 +112,45 @@ return function()
 		end,
 	}
 
+	-- terraform_validate: upstream's parser puts every diagnostic of the module into the linted
+	-- buffer, so errors from the module's other files land on line 1. Keep this file's diagnostics
+	-- at their range and module-wide ones (no range) on line 1; other files report their own
+	-- diagnostics when they are linted. The command and arguments stay upstream's.
+	local terraform_validate = lint.linters.terraform_validate
+	lint.linters.terraform_validate = function()
+		local linter = type(terraform_validate) == "function" and terraform_validate()
+			or vim.deepcopy(terraform_validate)
+		linter.parser = function(output, bufnr)
+			local ok, decoded = pcall(vim.json.decode, output)
+			if not ok or type(decoded) ~= "table" then
+				return {}
+			end
+			local severities = {
+				error = vim.diagnostic.severity.ERROR,
+				warning = vim.diagnostic.severity.WARN,
+				notice = vim.diagnostic.severity.INFO,
+			}
+			local file = vim.fs.basename(vim.api.nvim_buf_get_name(bufnr))
+			local diagnostics = {}
+			for _, item in ipairs(decoded.diagnostics or {}) do
+				local range = item.range
+				if range == nil or range.filename == file then
+					table.insert(diagnostics, {
+						lnum = range and range.start.line - 1 or 0,
+						col = range and range.start.column - 1 or 0,
+						end_lnum = range and range["end"].line - 1 or nil,
+						end_col = range and range["end"].column - 1 or nil,
+						severity = severities[item.severity],
+						message = item.detail and (item.summary .. " - " .. item.detail) or item.summary,
+						source = "terraform validate",
+					})
+				end
+			end
+			return diagnostics
+		end
+		return linter
+	end
+
 	lint.linters_by_ft = {
 		dockerfile = { "hadolint", "droast" },
 		go = { "golangcilint" },

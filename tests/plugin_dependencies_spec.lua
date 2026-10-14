@@ -547,6 +547,29 @@ test("InsertLeave runs only stdin linters; reads and writes run every linter", f
 	assert(ok, err)
 end)
 
+test("terraform_validate leaves other files' diagnostics out of the buffer", function()
+	require("lazy.core.loader").load("nvim-lint", { cmd = "test" }, { force = true })
+	local linter = require("lint").linters.terraform_validate
+	linter = type(linter) == "function" and linter() or linter
+	-- Real `terraform validate -json` output: one error in main.tf, one in other.tf, one module-wide.
+	local fixture = vim.fn.stdpath("config") .. "/tests/fixtures/terraform_validate.json"
+	local output = table.concat(vim.fn.readfile(fixture), "\n")
+	local buf = vim.api.nvim_create_buf(true, false)
+	vim.api.nvim_buf_set_name(buf, vim.fn.tempname() .. "/main.tf")
+	local ok, err = pcall(function()
+		local got = vim.tbl_map(function(d)
+			return { d.lnum, d.col, d.end_lnum, d.end_col, vim.split(d.message, " - ", { plain = true })[1] }
+		end, linter.parser(output, buf))
+		local expected = {
+			{ 1, 10, 1, 21, "Reference to undeclared input variable" },
+			{ 0, 0, nil, nil, "Missing required provider" },
+		}
+		assert(vim.deep_equal(got, expected), vim.inspect(got))
+	end)
+	vim.api.nvim_buf_delete(buf, { force = true })
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

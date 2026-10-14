@@ -1,0 +1,65 @@
+{
+  "format_version": "1.0",
+  "valid": false,
+  "error_count": 3,
+  "warning_count": 0,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "summary": "Reference to undeclared local value",
+      "detail": "A local value with the name \"nope\" has not been declared.",
+      "range": {
+        "filename": "other.tf",
+        "start": {
+          "line": 2,
+          "column": 7,
+          "byte": 15
+        },
+        "end": {
+          "line": 2,
+          "column": 17,
+          "byte": 25
+        }
+      },
+      "snippet": {
+        "context": "locals",
+        "code": "  y = local.nope",
+        "start_line": 2,
+        "highlight_start_offset": 6,
+        "highlight_end_offset": 16,
+        "values": []
+      }
+    },
+    {
+      "severity": "error",
+      "summary": "Reference to undeclared input variable",
+      "detail": "An input variable with the name \"missing\" has not been declared. This variable can be declared with a variable \"missing\" {} block.",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 2,
+          "column": 11,
+          "byte": 23
+        },
+        "end": {
+          "line": 2,
+          "column": 22,
+          "byte": 34
+        }
+      },
+      "snippet": {
+        "context": "output \"x\"",
+        "code": "  value = var.missing",
+        "start_line": 2,
+        "highlight_start_offset": 10,
+        "highlight_end_offset": 21,
+        "values": []
+      }
+    },
+    {
+      "severity": "error",
+      "summary": "Missing required provider",
+      "detail": "This configuration requires provider registry.terraform.io/hashicorp/null, but that provider isn't available. You may be able to install it automatically by running:\n  terraform init"
+    }
+  ]
+}
