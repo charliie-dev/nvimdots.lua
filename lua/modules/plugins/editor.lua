@@ -9,6 +9,12 @@ editor["sindrets/diffview.nvim"] = {
 editor["nvim-mini/mini.align"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
+	-- Also load on the first alignment key: before the first idle, `gea` was a native `ge` motion
+	-- followed by `a` (append). Keep in sync with the mappings in configs/editor/align.lua.
+	keys = {
+		{ "gea", mode = { "n", "x" }, desc = "edit: Align" },
+		{ "geA", mode = { "n", "x" }, desc = "edit: Align with preview" },
+	},
 	config = require("modules.configs.editor.align"),
 }
 editor["nvim-mini/mini.cursorword"] = {
@@ -68,7 +74,9 @@ editor["jmbuhr/otter.nvim"] = {
 
 editor["nemanjamalesija/smart-paste.nvim"] = {
 	lazy = true,
-	event = { "CursorHold", "CursorHoldI" },
+	-- TextYankPost loads it at the first yank or delete, before a paste can need it. Not lazy `keys`:
+	-- replaying `p` would drop the count and register of the first paste.
+	event = { "CursorHold", "CursorHoldI", "TextYankPost" },
 	config = require("modules.configs.editor.smart-paste"),
 }
 

@@ -59,18 +59,23 @@ set("x", "<C-a>", "<Esc>gg0vG$", { silent = true, desc = "edit: Select all" })
 set("n", "<leader><leader>x", "<Cmd>!chmod +x %<CR>", { silent = true, desc = "edit: chmod +x current file" })
 
 -- Plugin: dial
--- dial's visual <Plug> mappings use the default group; route Visual mode to the "visual" group and
--- reselect afterwards like the <Plug> mappings do.
-local function dial_visual(direction)
+-- Call dial.map instead of dial's <Plug> mappings: requiring it loads dial on first use (the <Plug>
+-- mappings only exist once CursorHold has loaded it), and Visual mode needs the "visual" augend
+-- group, which the <Plug> mappings never pass. Reselect afterwards like the <Plug> mappings do.
+local function dial(direction, visual)
 	return function()
-		require("dial.map").manipulate(direction, "visual", "visual")
-		vim.cmd.normal({ "gv", bang = true })
+		if visual then
+			require("dial.map").manipulate(direction, "visual", "visual")
+			vim.cmd.normal({ "gv", bang = true })
+		else
+			require("dial.map").manipulate(direction, "normal")
+		end
 	end
 end
-set("n", "<leader>=", "<Plug>(dial-increment)", { desc = "edit: Increment" })
-set("n", "<leader>-", "<Plug>(dial-decrement)", { desc = "edit: Decrement" })
-set("v", "<leader>=", dial_visual("increment"), { desc = "edit: Increment" })
-set("v", "<leader>-", dial_visual("decrement"), { desc = "edit: Decrement" })
+set("n", "<leader>=", dial("increment"), { desc = "edit: Increment" })
+set("n", "<leader>-", dial("decrement"), { desc = "edit: Decrement" })
+set("v", "<leader>=", dial("increment", true), { desc = "edit: Increment" })
+set("v", "<leader>-", dial("decrement", true), { desc = "edit: Decrement" })
 
 -- Plugin: flash
 set({ "n", "x", "o" }, "s", function()

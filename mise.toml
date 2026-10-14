@@ -29,6 +29,7 @@ nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage2_syntax_spec.lua
 nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage2_motions_spec.lua
 nvim --clean -u NONE -i NONE --headless -l tests/runtime_stage2_lsp_spec.lua
 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" --cmd "luafile tests/runtime_stage2_startup_spec.lua" -i NONE --headless mise.toml
+nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage2_first_idle_spec.lua" "+qa!"
 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage3_flash_spec.lua" "+qa!"
 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage3_dap_go_spec.lua" "+qa!"
 nvim -u init.lua --cmd "luafile tests/bootstrap.lua" -i NONE --headless "+luafile tests/runtime_stage3_dap_keys_spec.lua" "+qa!"
