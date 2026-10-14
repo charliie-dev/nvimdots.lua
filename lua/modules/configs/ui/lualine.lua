@@ -1,41 +1,10 @@
-local lsp_state = { progress = "" }
-local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥", "", "" }
+local lsp_progress = require("modules.utils.lsp_progress")
 
 vim.api.nvim_create_autocmd("LspProgress", {
 	group = vim.api.nvim_create_augroup("LualineLspProgress", { clear = true }),
 	pattern = { "begin", "report", "end" },
 	callback = function(args)
-		-- Get the payload
-		local data = args.data and args.data.params and args.data.params.value
-		if not data then
-			return
-		end
-
-		-- If it's the end event, clear; else build "<spinner> XX% <title> <loaded>"
-		if data.kind == "end" then
-			lsp_state.progress = ""
-		else
-			local pct = data.percentage or 0
-			local idx = 1 + ((pct - pct % 10) / 10)
-			local spinner = spinners[idx]
-
-			local progress = ""
-			if data.message then
-				local start, stop = data.message:find("^%d+/%d+")
-				if start then
-					progress = data.message:sub(start, stop)
-				end
-			end
-
-			lsp_state.progress = spinner
-				.. " "
-				.. tostring(pct)
-				.. "%% "
-				.. (data.title or "")
-				.. (progress ~= "" and " " .. progress or "")
-		end
-
-		-- Redraw statusline
+		lsp_progress.update(args.data)
 		pcall(vim.cmd.redrawstatus)
 	end,
 })
@@ -212,7 +181,7 @@ return function()
 						"%s[%s] %s",
 						icons.misc.LspAvailable,
 						table.concat(available_servers, ", "),
-						lsp_state.progress
+						lsp_progress.text()
 					)
 			end,
 			color = utils.gen_hl("blue", true, true, nil, "bold"),

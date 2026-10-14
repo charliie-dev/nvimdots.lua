@@ -143,6 +143,41 @@ test("load_plugin propagates a target-like runtime error", function()
 	assert_contains(err, "override exploded")
 end)
 
+test("LSP progress tracks each client task separately", function()
+	local progress = require("modules.utils.lsp_progress")
+	local get_client, running = vim.lsp.get_client_by_id, { [1] = true, [2] = true }
+	vim.lsp.get_client_by_id = function(id)
+		return running[id] and {
+			is_stopped = function()
+				return false
+			end,
+		} or nil
+	end
+	local function event(client_id, token, value)
+		progress.update({ client_id = client_id, params = { token = token, value = value } })
+	end
+	local function shows(expected)
+		local text = progress.text()
+		assert(text:find(expected, 1, true), string.format("expected %q in %q", expected, text))
+	end
+	local ok, err = pcall(function()
+		event(1, "a", { kind = "begin", title = "Indexing", percentage = 10 })
+		shows(" 10%% Indexing")
+		event(2, "b", { kind = "begin", title = "Loading", percentage = 50 })
+		shows(" 50%% Loading")
+		event(1, "a", { kind = "end" })
+		shows(" 50%% Loading")
+		-- `report` without a title keeps the task's title and shows the done/total count
+		event(2, "b", { kind = "report", percentage = 70, message = "3/7 files" })
+		shows(" 70%% Loading 3/7")
+		-- a client that exits without ending its task stops showing
+		running[2] = nil
+		assert(progress.text() == "", "stopped client still shows progress: " .. progress.text())
+	end)
+	vim.lsp.get_client_by_id = get_client
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
