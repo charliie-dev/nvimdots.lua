@@ -19,6 +19,18 @@ return function()
 		run_in_floaterm = false,
 	})
 
+	-- go.nvim's runner spawns in uvopts.cwd, but GoFix, the go mod commands and GoWork pass the
+	-- file's directory as opts.cwd, so they ran in Neovim's cwd, possibly another module
+	local runner = require("go.runner")
+	local runner_run = runner.run
+	runner.run = function(cmd, opts, uvopts)
+		uvopts = uvopts or {}
+		if uvopts.cwd == nil and opts and opts.cwd then
+			uvopts.cwd = opts.cwd
+		end
+		return runner_run(cmd, opts, uvopts)
+	end
+
 	-- go.nvim's tag commands run gomodifytags on the file on disk, write its output into whichever
 	-- buffer is current when it replies and :write it. gopls modifies the tags through an LSP edit
 	-- of this file's buffer instead, unsaved changes included, and leaves saving to you.

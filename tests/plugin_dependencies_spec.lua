@@ -2078,6 +2078,54 @@ test("Yazi renames keep unsaved changes, also onto a file that is already open",
 	assert(ok, err)
 end)
 
+test("go.nvim's go mod, go work and go fix commands run in the file's project", function()
+	require("lazy").load({ plugins = { "go.nvim" } })
+	local root = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	local x, y = root .. "/projX", root .. "/projY"
+	for _, dir in ipairs({ x, y }) do
+		vim.fn.mkdir(dir, "p")
+		vim.fn.writefile({ "module example.com/" .. vim.fs.basename(dir), "", "go 1.22" }, dir .. "/go.mod")
+		vim.fn.writefile({ "package main", "", "func main() {}" }, dir .. "/main.go")
+	end
+	vim.fn.writefile({ "go 1.22", "", "use ." }, x .. "/go.work")
+	-- Record the spawn instead of running go
+	local spawned, spawn = {}, vim.uv.spawn
+	vim.uv.spawn = function(cmd, options)
+		spawned[#spawned + 1] = { cmd = cmd, cwd = options.cwd }
+		return nil
+	end
+	local cwd, bufs = vim.fn.getcwd(), {}
+	local ok, err = pcall(function()
+		-- Neovim sits in project Y while the file belongs to project X
+		vim.cmd.cd(y)
+		for _, case in ipairs({
+			{ "go.mod", "GoModVendor" },
+			{ "go.mod", "GoModDnld" },
+			{ "go.work", "GoWork sync" },
+			{ "main.go", "GoFix" },
+		}) do
+			vim.cmd("noautocmd edit " .. vim.fn.fnameescape(x .. "/" .. case[1]))
+			bufs[#bufs + 1] = vim.api.nvim_get_current_buf()
+			local count = #spawned
+			vim.cmd(case[2])
+			assert(#spawned == count + 1, case[2] .. " spawned nothing")
+			local run = spawned[#spawned]
+			assert(run.cwd == x, ("%s ran %s in %s"):format(case[2], run.cmd, tostring(run.cwd)))
+		end
+	end)
+	vim.uv.spawn = spawn
+	vim.cmd.cd(cwd)
+	for _, buf in ipairs(bufs) do
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end
+	vim.fn.delete(root, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
