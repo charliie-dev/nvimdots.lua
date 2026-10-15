@@ -119,7 +119,7 @@ test("complete raw plugin manifest", function()
 		58,
 		"add33493761773247ed917a78564ef1ed904b67df8d073d42f2a65d889972a1d"
 	)
-	assert_manifest("nested manifest", nested, 34, "66129903f71d0e88c910c68630b2407d6cb32df3da81adf3a23932e23559c474")
+	assert_manifest("nested manifest", nested, 34, "f0ad5d4b3d87a5f58acaf24d0e6007ed5409d7b41fd80163d07458994b11ec69")
 end)
 
 local function dependency(spec, name)
@@ -162,7 +162,8 @@ test("approved dependency relationships are explicit", function()
 	end
 	local bqf = specs["kevinhwang91/nvim-bqf"]
 	assert_dependencies(bqf, { "junegunn/fzf" })
-	assert(dependency(bqf, "junegunn/fzf").build == ":call fzf#install()", "FZF build")
+	-- fzf's Vim API uses the fzf on PATH; no downloaded copy to fall out of date
+	assert(dependency(bqf, "junegunn/fzf").build == nil, "FZF build")
 	local quicker = specs["stevearc/quicker.nvim"]
 	assert(
 		quicker.lazy == true and quicker.ft == "qf" and type(quicker.opts) == "table" and next(quicker.opts) == nil,

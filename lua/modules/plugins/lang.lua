@@ -5,9 +5,8 @@ lang["kevinhwang91/nvim-bqf"] = {
 	lazy = true,
 	ft = "qf",
 	config = require("modules.configs.lang.bqf"),
-	dependencies = {
-		{ "junegunn/fzf", build = ":call fzf#install()" },
-	},
+	-- fzf's Vim API runs the fzf on PATH (installed by home-manager); no downloaded binary
+	dependencies = { "junegunn/fzf" },
 }
 lang["stevearc/quicker.nvim"] = {
 	lazy = true,
