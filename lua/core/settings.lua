@@ -212,6 +212,8 @@ settings["treesitter_deps"] = {
 	svelte = true,
 	typst = true,
 	vue = true,
+	-- nvim-ts-autotag closes and renames xml tags from this parser
+	xml = true,
 }
 
 -- Generated with https://github.com/TheZoraiz/ascii-image-converter
