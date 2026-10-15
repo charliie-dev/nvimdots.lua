@@ -10,8 +10,10 @@ return function()
 		-- Empty by default, useful if one of the "opts" global settings
 		-- doesn't work well in a specific filetype
 		per_filetype = {
+			-- The language server's linked editing renames html closing tags (core/event.lua)
 			["html"] = {
 				enable_close = true,
+				enable_rename = false,
 			},
 		},
 	})

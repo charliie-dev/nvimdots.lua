@@ -31,11 +31,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		-- buffer-local mappings below shadow them without needing a delete.
 		mapping.lsp(event.buf)
 
+		local client = vim.lsp.get_client_by_id(event.data.client_id)
+		-- HTML tag pairs: the server's linked editing renames the closing tag while the opening one
+		-- is edited; nvim-ts-autotag only closes html tags (configs/editor/ts-autotag.lua).
+		if
+			client
+			and vim.bo[event.buf].filetype == "html"
+			and client:supports_method("textDocument/linkedEditingRange")
+		then
+			vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
+		end
+
 		if not _G._debugging then
 			-- LSP Inlay Hints: apply the default once per buffer, at the first client that has them, so
 			-- a client attaching later keeps the state the user may have toggled with <leader>lh.
 			local inlayhints_enabled = require("core.settings").lsp_inlayhints
-			local client = vim.lsp.get_client_by_id(event.data.client_id)
 			if
 				client
 				and client:supports_method("textDocument/inlayHint")

@@ -1100,6 +1100,74 @@ test("an/in grow and shrink the selection by syntax node; mini.ai keeps al/il", 
 	assert(ok, err)
 end)
 
+test("html closing tags follow the server's linked editing; autotag only closes them", function()
+	require("lazy.core.loader").load("nvim-ts-autotag", { cmd = "test" }, { force = true })
+	local buffers, dir = {}, vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	local function html(line)
+		local buf = vim.api.nvim_create_buf(true, false)
+		buffers[#buffers + 1] = buf
+		vim.api.nvim_set_current_buf(buf)
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, { line })
+		vim.bo[buf].filetype = "html"
+		return buf
+	end
+	local function line(buf)
+		return vim.api.nvim_buf_get_lines(buf, 0, -1, false)[1]
+	end
+	local function rename(buf)
+		vim.api.nvim_win_set_cursor(0, { 1, 1 }) -- on `div`
+		feed("ciwnav<Esc>")
+		return line(buf)
+	end
+	local ok, err = pcall(function()
+		local plain = html("")
+		assert(#vim.lsp.get_clients({ bufnr = plain }) == 0, "a server attached to the scratch buffer")
+		feed("i<p><Esc>")
+		assert(line(plain) == "<p></p>", "autotag did not close the tag: " .. line(plain))
+		vim.api.nvim_buf_set_lines(plain, 0, -1, false, { "<div>x</div>" })
+		assert(rename(plain) == "<nav>x</div>", "autotag renamed the closing tag: " .. line(plain))
+
+		local function range(first, last)
+			return { start = { line = 0, character = first }, ["end"] = { line = 0, character = last } }
+		end
+		local linked = html("<div>x</div>")
+		attach_fake_client(linked, "linked", dir, { linkedEditingRangeProvider = true }, {
+			["textDocument/linkedEditingRange"] = { ranges = { range(1, 4), range(8, 11) } },
+		})
+		local function linked_ranges()
+			local count = 0
+			for name, ns in pairs(vim.api.nvim_get_namespaces()) do
+				if vim.startswith(name, "nvim.lsp.linked_editing_range:") then
+					count = count + #vim.api.nvim_buf_get_extmarks(linked, ns, 0, -1, {})
+				end
+			end
+			return count
+		end
+		vim.api.nvim_win_set_cursor(0, { 1, 1 })
+		vim.api.nvim_exec_autocmds("CursorMoved", { buffer = linked })
+		assert(
+			vim.wait(1000, function()
+				return linked_ranges() == 2
+			end),
+			"linked editing is not enabled for the html client"
+		)
+		-- Fed keys arrive without the pauses of real typing, so TextChangedI would not run per key:
+		-- make the change one typed character makes and fire TextChangedI as Insert mode does.
+		vim.api.nvim_buf_set_text(linked, 0, 4, 0, 4, { "s" })
+		vim.api.nvim_exec_autocmds("TextChangedI", { buffer = linked })
+		assert(line(linked) == "<divs>x</divs>", "linked editing did not rename the closing tag: " .. line(linked))
+	end)
+	for _, buf in ipairs(buffers) do
+		for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+			client:stop(true)
+		end
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")
