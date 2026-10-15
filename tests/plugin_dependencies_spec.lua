@@ -522,10 +522,31 @@ test("mini.snippets serves local and friendly snippets to Blink and Neogen", fun
 		require("lazy.core.loader").load("neogen", { cmd = "test" }, { force = true })
 		buffer("lua", { "local function add(a, b)", "\treturn a + b", "end" }, { 1, 0 })
 		vim.cmd("Neogen func")
-		-- mini.snippets enters Insert mode through typeahead before inserting
-		vim.api.nvim_feedkeys("", "xt", false)
-		assert(MiniSnippets.session.get() ~= nil, "Neogen did not start a mini.snippets session")
-		local tab = vim.fn.maparg("<Tab>", "i", false, true)
+		-- mini.snippets enters Insert mode through typeahead. "!" stays in Insert mode, as a user would,
+		-- and the feed returns once Insert mode ends. Blink maps the buffer's keys in a callback
+		-- scheduled on ModeChanged, so look for its <Tab> from a timer, then leave Insert mode.
+		local tab, session, done = {}, false, false
+		local started = vim.uv.now()
+		local timer = assert(vim.uv.new_timer())
+		timer:start(
+			20,
+			20,
+			vim.schedule_wrap(function()
+				if done then
+					return
+				end
+				session = session or MiniSnippets.session.get() ~= nil
+				tab = vim.fn.maparg("<Tab>", "i", false, true)
+				if tab.desc == "blink.cmp: Snippet Forward" or vim.uv.now() - started > 1000 then
+					done = true
+					timer:stop()
+					timer:close()
+					vim.cmd("stopinsert")
+				end
+			end)
+		)
+		vim.api.nvim_feedkeys("", "xt!", false)
+		assert(session, "Neogen did not start a mini.snippets session")
 		assert(
 			tab.buffer == 1 and tab.desc == "blink.cmp: Snippet Forward",
 			"the session buffer lacks Blink's <Tab>: " .. tostring(tab.desc)
