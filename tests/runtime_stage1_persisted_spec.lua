@@ -107,6 +107,67 @@ vim.api.nvim_create_autocmd("VimEnter", {
 					end, reads)
 					assert(b_reads == 1, "b.txt was read " .. b_reads .. " times: " .. vim.inspect(reads))
 				end)
+
+				test("the session picker loads the selected branch's session", function()
+					local repo = assert(vim.uv.fs_realpath((function()
+						local dir = vim.fn.tempname()
+						vim.fn.mkdir(dir, "p")
+						return dir
+					end)()))
+					local cwd, select = vim.uv.cwd(), vim.ui.select
+					local function git(...)
+						local cmd =
+							{ "git", "-C", repo, "-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false" }
+						vim.list_extend(cmd, { "-c", "user.name=t", "-c", "user.email=t@t", ... })
+						local result = vim.system(cmd, { text = true }):wait()
+						assert(result.code == 0, table.concat({ ... }, " ") .. ": " .. result.stderr)
+					end
+					local ok, err = pcall(function()
+						git("init", "-q", "-b", "one")
+						git("commit", "-q", "--allow-empty", "--no-verify", "-m", "x")
+						vim.fn.chdir(repo)
+						for _, branch in ipairs({ "one", "two" }) do
+							if branch == "two" then
+								git("checkout", "-q", "-b", "two")
+							end
+							vim.fn.writefile({ branch }, repo .. "/" .. branch .. ".txt")
+							vim.cmd("silent! %bwipeout!")
+							vim.cmd.edit(repo .. "/" .. branch .. ".txt")
+							persisted.save({ force = true })
+						end
+						-- Still on branch two: choose the session saved on branch one
+						vim.ui.select = function(items, _, on_choice)
+							for _, item in ipairs(items) do
+								if item.branch == "one" then
+									return on_choice(item)
+								end
+							end
+							error("no session for branch one: " .. vim.inspect(items))
+						end
+						local pick = vim.fn.maparg(",so", "n", false, true)
+						assert(pick.callback, "no session picker on ,so")
+						-- Persisted sources the session from vim.schedule; wait for LoadPost in short steps
+						local loaded = false
+						vim.api.nvim_create_autocmd("User", {
+							pattern = "PersistedLoadPost",
+							once = true,
+							callback = function()
+								loaded = true
+							end,
+						})
+						pick.callback()
+						local deadline = vim.uv.now() + 1000
+						while not loaded and vim.uv.now() < deadline do
+							vim.wait(20)
+						end
+						assert(loaded, "the chosen session was not loaded")
+						assert(vim.fn.expand("%:t") == "one.txt", "loaded the session with " .. vim.fn.expand("%:t"))
+					end)
+					vim.ui.select = select
+					vim.fn.chdir(cwd)
+					vim.fn.delete(repo, "rf")
+					assert(ok, err)
+				end)
 				persisted.stop()
 			end, debug.traceback)
 			if not ok then
