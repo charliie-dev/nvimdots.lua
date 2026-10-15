@@ -1972,6 +1972,112 @@ test("Go struct tag commands edit the struct through gopls, not the current buff
 	assert(ok, err)
 end)
 
+test("Yazi renames keep unsaved changes, also onto a file that is already open", function()
+	require("lazy.core.loader").load("yazi.nvim", { cmd = "test" }, { force = true })
+	local handling = require("yazi.event_handling.yazi_event_handling")
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	dir = assert(vim.uv.fs_realpath(dir))
+	local buffers, warnings, notify = {}, {}, vim.notify
+	vim.notify = function(msg, level)
+		if level == vim.log.levels.WARN then
+			warnings[#warnings + 1] = msg
+		end
+	end
+	local function open(name, unsaved)
+		local path = dir .. "/" .. name
+		vim.fn.writefile({ "on disk" }, path)
+		vim.cmd.edit(path)
+		local buf = vim.api.nvim_get_current_buf()
+		buffers[#buffers + 1] = buf
+		if unsaved then
+			vim.api.nvim_buf_set_lines(buf, 0, -1, false, { unsaved })
+		end
+		return buf, path
+	end
+	-- Yazi renamed the file on disk, then reports it
+	local function rename(from, to)
+		assert(vim.uv.fs_rename(from, to))
+		handling.process_event_emitted_from_yazi(
+			{ type = "rename", data = { from = from, to = to } },
+			require("yazi").config,
+			{}
+		)
+		-- Yazi reloads renamed buffers from scheduled callbacks; wait in short steps (EMFILE)
+		local done = false
+		vim.schedule(function()
+			vim.schedule(function()
+				done = true
+			end)
+		end)
+		local deadline = vim.uv.now() + 1000
+		while not done and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+	end
+	local ok, err = pcall(function()
+		local a, a_path = open("a.txt", "UNSAVED A")
+		local a_new = dir .. "/a-renamed.txt"
+		rename(a_path, a_new)
+		local lines = vim.api.nvim_buf_get_lines(a, 0, -1, false)
+		assert(vim.api.nvim_buf_get_name(a) == a_new, "A was not renamed: " .. vim.api.nvim_buf_get_name(a))
+		assert(
+			vim.deep_equal(lines, { "UNSAVED A" }) and vim.bo[a].modified,
+			"the rename dropped A's unsaved text: " .. vim.inspect(lines)
+		)
+		assert(vim.deep_equal(vim.fn.readfile(a_new), { "on disk" }), "the rename wrote A")
+		-- The buffer belongs to the new file: a plain :write works
+		vim.api.nvim_buf_call(a, function()
+			vim.cmd("silent write")
+		end)
+		assert(vim.deep_equal(vim.fn.readfile(a_new), { "UNSAVED A" }) and not vim.bo[a].modified, ":w failed")
+
+		local u, u_path = open("u.txt")
+		local u_new = dir .. "/u-renamed.txt"
+		rename(u_path, u_new)
+		assert(
+			vim.api.nvim_buf_get_name(u) == u_new
+				and vim.deep_equal(vim.api.nvim_buf_get_lines(u, 0, -1, false), { "on disk" })
+				and not vim.bo[u].modified,
+			"an unmodified buffer no longer follows its rename"
+		)
+
+		-- Renaming the parent directory moves its open buffers too
+		vim.fn.mkdir(dir .. "/sub", "p")
+		local d = open("sub/d.txt", "UNSAVED D")
+		rename(dir .. "/sub", dir .. "/moved")
+		assert(
+			vim.api.nvim_buf_get_name(d) == dir .. "/moved/d.txt"
+				and vim.deep_equal(vim.api.nvim_buf_get_lines(d, 0, -1, false), { "UNSAVED D" })
+				and vim.bo[d].modified,
+			"a directory rename dropped D's unsaved text"
+		)
+
+		local c, c_path = open("c.txt", "UNSAVED C")
+		local taken, taken_path = open("taken.txt")
+		rename(c_path, taken_path)
+		lines = vim.api.nvim_buf_get_lines(c, 0, -1, false)
+		assert(
+			vim.api.nvim_buf_is_valid(c) and vim.deep_equal(lines, { "UNSAVED C" }) and vim.bo[c].modified,
+			"renaming onto an open file dropped the unsaved text: " .. vim.inspect(lines)
+		)
+		assert(
+			vim.deep_equal(vim.api.nvim_buf_get_lines(taken, 0, -1, false), { "on disk" }),
+			"the already open target changed"
+		)
+		local warned = vim.iter(warnings):any(function(msg)
+			return msg:find("taken.txt", 1, true) ~= nil and msg:find("unsaved", 1, true) ~= nil
+		end)
+		assert(warned, "no warning about the clash: " .. vim.inspect(warnings))
+	end)
+	vim.notify = notify
+	for _, buf in ipairs(buffers) do
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
