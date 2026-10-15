@@ -422,6 +422,18 @@ test("helm_ls serves Helm charts and yamlls stays off templates", function()
 	assert(not vim.tbl_contains(vim.lsp.config.yamlls.filetypes, "helm"), "yamlls would parse Go templates")
 end)
 
+test("gopls sends semantic tokens and keeps the capability", function()
+	require("lazy.core.loader").load("nvim-lspconfig", { cmd = "test" }, { force = true })
+	local config = assert(vim.lsp.config.gopls, "gopls is not configured")
+	-- gopls v0.23 always advertises the provider but sends empty tokens unless this is set.
+	assert(vim.tbl_get(config, "settings", "gopls", "semanticTokens") == true, "gopls semanticTokens is not on")
+	local client = { server_capabilities = { semanticTokensProvider = { full = true } } }
+	if config.on_init then
+		config.on_init(client, {})
+	end
+	assert(client.server_capabilities.semanticTokensProvider, "on_init removes gopls semantic tokens")
+end)
+
 test("local snippet manifest entries point to valid snippet files", function()
 	local root = vim.fn.stdpath("config") .. "/snips"
 	local manifest = vim.json.decode(table.concat(vim.fn.readfile(root .. "/package.json"), "\n"))
