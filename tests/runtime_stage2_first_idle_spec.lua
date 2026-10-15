@@ -77,6 +77,49 @@ test("a go.work opened first loads go.nvim and its workspace commands", function
 	assert(ok, err)
 end)
 
+test("the first list buffers continue, renumber, indent and toggle bullets", function()
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	local leader = vim.g.mapleader
+	-- { file, lines, cursor, keys, expected lines }
+	local cases = {
+		{ "a.md", { "- item" }, { 1, 0 }, "A<CR>next<Esc>", { "- item", "- next" } },
+		{ "b.md", { "1. one" }, { 1, 0 }, "A<CR>two<Esc>", { "1. one", "2. two" } },
+		{ "c.md", { "- item" }, { 1, 0 }, "onext<Esc>", { "- item", "- next" } },
+		{ "d.md", { "- item", "- " }, { 2, 0 }, "A<CR><Esc>", { "- item", "" } },
+		{ "e.md", { "1. a", "5. b", "9. c" }, { 1, 0 }, "gN", { "1. a", "2. b", "3. c" } },
+		{ "f.md", { "- a", "- b" }, { 2, 0 }, ">>", { "- a", "    * b" } },
+		{ "g.md", { "1. a", "2. b", "3. c" }, { 2, 0 }, "Vj>", { "1. a", "    a. b", "    b. c" } },
+		{ "h.md", { "1. a", "\ta. b", "\tb. c" }, { 2, 0 }, "Vj<", { "1. a", "2. b", "3. c" } },
+		-- Visual changes in the middle of a list renumber the items after the selection too
+		{ "g2.md", { "1. a", "2. b", "3. c", "4. d" }, { 2, 0 }, "Vj>", { "1. a", "    a. b", "    b. c", "2. d" } },
+		{ "h2.md", { "1. a", "\ta. b", "\tb. c", "2. d" }, { 2, 0 }, "V<", { "1. a", "2. b", "\ta. c", "3. d" } },
+		{ "i.md", { "- a", "- b" }, { 2, 0 }, "A<C-t><Esc>", { "- a", "    * b" } },
+		{ "j.md", { "- [ ] task" }, { 1, 0 }, leader .. "x", { "- [X] task" } },
+		{ "k.txt", { "- item" }, { 1, 0 }, "A<CR>next<Esc>", { "- item", "- next" } },
+		{
+			"COMMIT_EDITMSG",
+			{ "subject", "", "- item" },
+			{ 3, 0 },
+			"A<CR>next<Esc>",
+			{ "subject", "", "- item", "- next" },
+		},
+	}
+	local ok, err = pcall(function()
+		for _, case in ipairs(cases) do
+			vim.cmd.edit(dir .. "/" .. case[1])
+			vim.api.nvim_buf_set_lines(0, 0, -1, false, case[2])
+			vim.api.nvim_win_set_cursor(0, case[3])
+			keys(case[4])
+			assert(vim.deep_equal(lines(), case[5]), ("%s %s: %s"):format(case[1], case[4], vim.inspect(lines())))
+			vim.bo.modified = false
+		end
+	end)
+	vim.cmd("silent! %bwipeout!")
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
