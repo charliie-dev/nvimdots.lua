@@ -66,9 +66,6 @@ local function manifest_row(path, spec)
 			reviewed[key] = value
 		end
 	end
-	if path == "ray-x/go.nvim>ray-x/guihua.lua" then
-		reviewed.build = "<platform-build>"
-	end
 	local dependencies = dependency_names(spec)
 	table.sort(dependencies)
 	return string.format("%s|dependencies={%s}|spec=%s", path, table.concat(dependencies, ","), canonical(reviewed))
@@ -119,7 +116,7 @@ test("complete raw plugin manifest", function()
 		58,
 		"d7a2f83169cbcad3a95d958700d86564766aa30a1261c26c2b64f7cfa99610f4"
 	)
-	assert_manifest("nested manifest", nested, 34, "f0ad5d4b3d87a5f58acaf24d0e6007ed5409d7b41fd80163d07458994b11ec69")
+	assert_manifest("nested manifest", nested, 34, "780ea594bd781ab31a359cae7d1fc7c26d8a71182756e9f7aaef1d2c3056e2b6")
 end)
 
 local function dependency(spec, name)
@@ -169,14 +166,9 @@ test("approved dependency relationships are explicit", function()
 		quicker.lazy == true and quicker.ft == "qf" and type(quicker.opts) == "table" and next(quicker.opts) == nil,
 		"Quicker contract"
 	)
+	-- guihua's fzy falls back to its pure-Lua matcher; nothing to compile
 	local guihua = dependency(specs["ray-x/go.nvim"], "ray-x/guihua.lua")
-	local expected_build
-	if require("core.global").is_windows then
-		expected_build = false
-	else
-		expected_build = "cd lua/fzy && make"
-	end
-	assert(guihua.build == expected_build, "Guihua platform build: " .. vim.inspect(guihua.build))
+	assert(guihua.build == nil, "Guihua build: " .. vim.inspect(guihua.build))
 	local dap = specs["mfussenegger/nvim-dap"]
 	assert_dependencies(dap, { "rcarriga/nvim-dap-ui" })
 	assert_dependencies(dependency(dap, "rcarriga/nvim-dap-ui"), { "nvim-neotest/nvim-nio" })

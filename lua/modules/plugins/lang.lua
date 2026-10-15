@@ -1,4 +1,3 @@
-local is_windows = require("core.global").is_windows
 local lang = {}
 
 lang["kevinhwang91/nvim-bqf"] = {
@@ -18,12 +17,8 @@ lang["ray-x/go.nvim"] = {
 	-- gowork: :GoWork, :GoModTidy and :GoGet also apply when go.work is the first file
 	ft = { "go", "gomod", "gosum", "gowork" },
 	config = require("modules.configs.lang.go"),
-	dependencies = {
-		{
-			"ray-x/guihua.lua",
-			build = not is_windows and "cd lua/fzy && make",
-		},
-	},
+	-- guihua's fzy matcher falls back to pure Lua without the native library, so nothing is compiled
+	dependencies = { "ray-x/guihua.lua" },
 }
 lang["bullets-vim/bullets.vim"] = {
 	lazy = true,
