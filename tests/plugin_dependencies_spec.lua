@@ -816,6 +816,11 @@ test("treesitter installs missing parser files and starts buffers opened before"
 	end
 	-- A filetype with no parser yet stands in for a buffer opened before its parser was installed;
 	-- registering it to the toml parser stands in for the install finishing.
+	-- toml plus any dependency whose parser file is really missing on this machine
+	local expected = vim.tbl_filter(function(lang)
+		return lang == "toml" or not vim.list_contains(get_installed("parsers"), lang)
+	end, vim.tbl_keys(require("core.settings").treesitter_deps))
+	table.sort(expected)
 	local buf = vim.api.nvim_create_buf(true, false)
 	local ok, err = pcall(function()
 		require("modules.configs.editor.treesitter")()
@@ -825,7 +830,7 @@ test("treesitter installs missing parser files and starts buffers opened before"
 			end),
 			"install was not requested"
 		)
-		assert(vim.deep_equal(requested, { "toml" }), "requested " .. vim.inspect(requested))
+		assert(vim.deep_equal(requested, expected), "requested " .. vim.inspect(requested))
 		assert(options and options.force, "missing parsers are not forced past leftover queries")
 		vim.api.nvim_set_current_buf(buf)
 		vim.bo[buf].filetype = "c12probe"
