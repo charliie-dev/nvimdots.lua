@@ -1571,6 +1571,66 @@ test("saving an edited quickfix list leaves the source file to a normal write", 
 	assert(ok, err)
 end)
 
+test("Bqf previews what an acwrite buffer holds, not its file on disk", function()
+	local dir = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	local secret, plain = dir .. "/secret.yaml", dir .. "/plain.txt"
+	vim.fn.writefile({ "key: ENC[first]" }, secret)
+	vim.fn.writefile({ "on disk" }, plain)
+	-- Stands in for sops.nvim: the buffer holds the decrypted text and :write encrypts it back
+	vim.cmd.edit(secret)
+	local src = vim.api.nvim_get_current_buf()
+	vim.api.nvim_buf_set_lines(src, 0, -1, false, { "key: decrypted" })
+	vim.bo[src].buftype = "acwrite"
+	vim.bo[src].modified = false
+	vim.api.nvim_create_autocmd("BufWriteCmd", {
+		buffer = src,
+		callback = function()
+			vim.fn.writefile({ "key: ENC[second]" }, secret)
+			vim.bo[src].modified = false
+		end,
+	})
+	local ok, err = pcall(function()
+		vim.fn.setqflist({ { bufnr = src, lnum = 1, text = "key" }, { filename = plain, lnum = 1, text = "on" } })
+		vim.cmd("copen")
+		local qwin = vim.api.nvim_get_current_win()
+		local handler = require("bqf.preview.handler")
+		local function preview(idx)
+			vim.api.nvim_win_set_cursor(qwin, { idx, 0 })
+			handler.close(qwin)
+			handler.showWindow(qwin)
+			local session = require("bqf.preview.session"):get(qwin)
+			return session and vim.api.nvim_buf_get_lines(session:floatBufnr(), 0, -1, false)
+		end
+		local function check(label, idx, expected)
+			local lines = preview(idx)
+			assert(vim.deep_equal(lines, expected), ("%s: preview %s"):format(label, vim.inspect(lines)))
+		end
+		check("unmodified", 1, { "key: decrypted" })
+		vim.api.nvim_buf_set_lines(src, 0, -1, false, { "key: edited" })
+		check("modified", 1, { "key: edited" })
+		vim.api.nvim_buf_call(src, function()
+			vim.cmd("silent write")
+		end)
+		assert(
+			not vim.bo[src].modified and vim.fn.readfile(secret)[1] == "key: ENC[second]",
+			"the stand-in save failed"
+		)
+		check("saved", 1, { "key: edited" })
+		check("ordinary file", 2, { "on disk" })
+	end)
+	pcall(require("bqf.preview.handler").close)
+	vim.cmd("silent! cclose")
+	vim.fn.setqflist({})
+	pcall(vim.api.nvim_buf_delete, src, { force = true })
+	pcall(vim.api.nvim_buf_delete, vim.fn.bufnr(plain), { force = true })
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
