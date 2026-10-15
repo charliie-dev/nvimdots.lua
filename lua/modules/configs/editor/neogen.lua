@@ -1,6 +1,6 @@
 return function()
 	require("modules.utils").load_plugin("neogen", {
-		snippet_engine = "luasnip",
+		snippet_engine = "mini",
 		enabled = true,
 		input_after_comment = true,
 		languages = {

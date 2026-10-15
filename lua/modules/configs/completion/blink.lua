@@ -185,7 +185,7 @@ local opts = {
 		},
 	},
 
-	snippets = { preset = "luasnip" },
+	snippets = { preset = "mini_snippets" },
 	fuzzy = { implementation = "prefer_rust_with_warning" },
 	signature = {
 		enabled = true,

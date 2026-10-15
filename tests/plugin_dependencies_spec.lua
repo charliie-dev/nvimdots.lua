@@ -114,9 +114,9 @@ test("complete raw plugin manifest", function()
 		"top-level manifest",
 		top_level,
 		58,
-		"4d08f5e373e434205a2d0b246fb3ddd6dde29877495f3520e0f2d6bccd61e047"
+		"ad7b889c0b740f60b4f407b2c5bcd66400a705d1907b66469650cd81110d2f89"
 	)
-	assert_manifest("nested manifest", nested, 34, "780ea594bd781ab31a359cae7d1fc7c26d8a71182756e9f7aaef1d2c3056e2b6")
+	assert_manifest("nested manifest", nested, 34, "3eb7b0ac86e402ce228e27d1551317a224a37861967ec199082e225fa8348c0a")
 end)
 
 local function dependency(spec, name)
@@ -478,6 +478,69 @@ test("local snippet manifest entries point to valid snippet files", function()
 		local ok, snippets = pcall(vim.json.decode, table.concat(vim.fn.readfile(path), "\n"))
 		assert(ok and type(snippets) == "table" and next(snippets), "invalid snippet file: " .. entry.path)
 	end
+end)
+
+test("mini.snippets serves local and friendly snippets to Blink and Neogen", function()
+	require("lazy.core.loader").load("blink.cmp", { cmd = "test" }, { force = true })
+	assert(require("blink.cmp.config").snippets.preset == "mini_snippets", "Blink does not use mini.snippets")
+	assert(_G.MiniSnippets, "mini.snippets is not set up")
+	local buffers = {}
+	local function buffer(ft, lines, cursor)
+		local buf = vim.api.nvim_create_buf(true, false)
+		buffers[#buffers + 1] = buf
+		vim.api.nvim_set_current_buf(buf)
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+		vim.bo[buf].filetype = ft
+		vim.api.nvim_win_set_cursor(0, cursor)
+		return buf
+	end
+	-- Prefixes Blink offers at the cursor (it lists them with this same call)
+	local function prefixes(ft, lines, cursor)
+		buffer(ft, lines or { "" }, cursor or { 1, 0 })
+		local found = {}
+		for _, snippet in ipairs(MiniSnippets.expand({ match = false, insert = false })) do
+			found[snippet.prefix] = true
+		end
+		return found
+	end
+	local ok, err = pcall(function()
+		for ft, prefix in pairs({
+			hcl = "tflint-version",
+			toml = "mise-tools",
+			pkl = "hk-header",
+			python = "env3",
+			go = "iferr",
+		}) do
+			assert(prefixes(ft)[prefix], ("%s lacks the local %s snippet"):format(ft, prefix))
+		end
+		assert(prefixes("go").ims, "go lacks the friendly-snippets ims snippet")
+		-- Markdown prose is Treesitter's markdown_inline language, not the filetype
+		assert(prefixes("markdown", { "some text" }, { 1, 2 }).todo, "markdown prose lacks local snippets")
+
+		-- Neogen inserts its annotation as a snippet session. In a buffer that was never in Insert
+		-- mode, the session must still get Blink's buffer <Tab> that walks its tabstops.
+		require("lazy.core.loader").load("neogen", { cmd = "test" }, { force = true })
+		buffer("lua", { "local function add(a, b)", "\treturn a + b", "end" }, { 1, 0 })
+		vim.cmd("Neogen func")
+		-- mini.snippets enters Insert mode through typeahead before inserting
+		vim.api.nvim_feedkeys("", "xt", false)
+		assert(MiniSnippets.session.get() ~= nil, "Neogen did not start a mini.snippets session")
+		local tab = vim.fn.maparg("<Tab>", "i", false, true)
+		assert(
+			tab.buffer == 1 and tab.desc == "blink.cmp: Snippet Forward",
+			"the session buffer lacks Blink's <Tab>: " .. tostring(tab.desc)
+		)
+	end)
+	if _G.MiniSnippets then
+		while MiniSnippets.session.get() do
+			MiniSnippets.session.stop()
+		end
+	end
+	vim.cmd("stopinsert")
+	for _, buf in ipairs(buffers) do
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end
+	assert(ok, err)
 end)
 
 test("VimResized equalizes every tab without leaving the current one", function()

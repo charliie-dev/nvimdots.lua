@@ -1,5 +1,4 @@
 {
-  "LuaSnip": { "branch": "master", "commit": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24" },
   "advanced-git-search.nvim": { "branch": "main", "commit": "cead1214709226bdef89093f0c58964fb65c81e8" },
   "blink-cmp-conventional-commits": { "branch": "main", "commit": "28f46593ef5e03ba7525bdf6075be0c56c6ceb55" },
   "blink-cmp-env": { "branch": "main", "commit": "6b147eca6fa5975d29f5508aff24e9a9acb6a1f5" },
@@ -33,6 +32,7 @@
   "mini.ai": { "branch": "main", "commit": "d73c36349aa7b0bab5f77ad71701a1d42211a1df" },
   "mini.align": { "branch": "main", "commit": "34efb28993933ba1bded1890ca81821bc1dfd258" },
   "mini.cursorword": { "branch": "main", "commit": "643e21d31210d1293ba70d60e7edc45dfcca518e" },
+  "mini.snippets": { "branch": "main", "commit": "4669506967da8109bf8cbf15c924fa43502cf312" },
   "mini.surround": { "branch": "main", "commit": "59ce0acf79e1d930756ef3a7cb4c2369560cf548" },
   "muster.nvim": { "branch": "main", "commit": "36e5f9df8222bb210d9d53cf1e0b22e0a966330b" },
   "neogen": { "branch": "main", "commit": "23e7e9f883d01289ebd90e98025acc860ea26366" },

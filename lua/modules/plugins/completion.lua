@@ -51,9 +51,8 @@ completion["saghen/blink.cmp"] = {
 	dependencies = {
 		"saghen/blink.lib",
 		{
-			"L3MON4D3/LuaSnip",
-			build = "make install_jsregexp",
-			config = require("modules.configs.completion.luasnip"),
+			"nvim-mini/mini.snippets",
+			config = require("modules.configs.completion.mini-snippets"),
 			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		"mikavilpas/blink-ripgrep.nvim",
