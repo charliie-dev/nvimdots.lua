@@ -1739,6 +1739,70 @@ test("K shows hover docs without replacing the Markdown highlight query", functi
 	assert(ok, err)
 end)
 
+test("saving a suda:// buffer formats it with stdin formatters only", function()
+	require("lazy").load({ plugins = { "conform.nvim", "vim-suda" } })
+	local conform = require("conform")
+	-- vim-suda's real read and write path, with `env` in place of sudo so no password is asked
+	local executable, noninteractive = vim.g["suda#executable"], vim.g["suda#noninteractive"]
+	vim.g["suda#executable"], vim.g["suda#noninteractive"] = "env", 1
+	-- Upper-cases and appends a line: suda writes the '[,'] range fixed before BufWritePre
+	conform.formatters.suda_stdin = {
+		command = "awk",
+		args = { '{ print toupper($0) } END { print "-- formatted" }' },
+	}
+	-- Writes through a temporary file beside the original
+	conform.formatters.suda_tmpfile = {
+		command = "sh",
+		args = { "-c", 'printf "formatted\\n" > "$1"', "sh", "$FILENAME" },
+		stdin = false,
+	}
+	conform.formatters_by_ft.sudastdin = { "suda_stdin" }
+	conform.formatters_by_ft.sudatmpfile = { "suda_tmpfile" }
+	local dir = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	local bufs = {}
+	local function save(name, filetype, lines)
+		local path = dir .. "/" .. name
+		if vim.fn.filereadable(path) == 0 then
+			vim.fn.writefile({ "original" }, path)
+			vim.cmd.edit("suda://" .. path)
+			bufs[#bufs + 1] = vim.api.nvim_get_current_buf()
+			assert(vim.bo.buftype == "acwrite", "suda did not open an acwrite buffer")
+			vim.bo.filetype = filetype
+		end
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+		vim.cmd("silent write")
+		assert(not vim.bo.modified, name .. ": suda did not save")
+		return vim.fn.readfile(path)
+	end
+	local ok, err = pcall(function()
+		local saved = save("a.txt", "sudastdin", { "hello", "world" })
+		assert(
+			vim.deep_equal(saved, { "HELLO", "WORLD", "-- formatted" }),
+			"stdin formatter on save: " .. vim.inspect(saved)
+		)
+		vim.b.disable_autoformat = true
+		saved = save("a.txt", "sudastdin", { "quiet" })
+		vim.b.disable_autoformat = nil
+		assert(vim.deep_equal(saved, { "quiet" }), "disable_autoformat was ignored: " .. vim.inspect(saved))
+		saved = save("b.txt", "sudatmpfile", { "secret" })
+		assert(vim.deep_equal(saved, { "secret" }), "temp-file formatter ran: " .. vim.inspect(saved))
+		local left = vim.fn.glob(dir .. "/.conform*", true, true)
+		assert(#left == 0, "temporary files left: " .. vim.inspect(left))
+	end)
+	for _, buf in ipairs(bufs) do
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end
+	conform.formatters.suda_stdin, conform.formatters.suda_tmpfile = nil, nil
+	conform.formatters_by_ft.sudastdin, conform.formatters_by_ft.sudatmpfile = nil, nil
+	vim.g["suda#executable"], vim.g["suda#noninteractive"] = executable, noninteractive
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)

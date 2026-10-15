@@ -186,6 +186,36 @@ return function()
 		return attempted and not has_error
 	end
 
+	---Decide whether and how to format a buffer on save
+	---@param bufnr integer
+	---@return table? @Format options, or nil to skip the buffer
+	local function format_on_save(bufnr)
+		-- Check disabled filetypes
+		if block_list[vim.bo[bufnr].filetype] == true then
+			return
+		end
+
+		-- Check disabled workspaces
+		if is_disabled_workspace(bufnr) then
+			return
+		end
+
+		-- Check global toggle
+		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+			return
+		end
+
+		-- Format only modified lines if enabled
+		if format_modifications_only then
+			if format_modifications(bufnr) then
+				return
+			end
+			-- Fall through to full format if no hunks found
+		end
+
+		return {}
+	end
+
 	require("modules.utils").load_plugin("conform", {
 		default_format_opts = {
 			timeout_ms = format_timeout,
@@ -244,33 +274,58 @@ return function()
 				stdin = true,
 			},
 		},
-		format_on_save = format_on_save_enabled and function(bufnr)
-			-- Check disabled filetypes
-			if block_list[vim.bo[bufnr].filetype] == true then
-				return
-			end
+		format_on_save = format_on_save_enabled and format_on_save or false,
+	}, false, setup_conform)
 
-			-- Check disabled workspaces
-			if is_disabled_workspace(bufnr) then
-				return
-			end
-
-			-- Check global toggle
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-				return
-			end
-
-			-- Format only modified lines if enabled
-			if format_modifications_only then
-				if format_modifications(bufnr) then
+	-- Conform's format-on-save skips every buffer with a buftype. vim-suda fires BufWritePre itself
+	-- before writing a suda:// buffer, so format file-backed acwrite buffers here with the same
+	-- gates. Formatters that work through a temporary file are skipped: beside a SOPS file that
+	-- file would hold the plaintext.
+	if format_on_save_enabled then
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			group = vim.api.nvim_create_augroup("ConformAcwrite", { clear = true }),
+			desc = "Format acwrite buffers on save",
+			callback = function(args)
+				local bufnr = args.buf
+				local name = vim.api.nvim_buf_get_name(bufnr)
+				if
+					vim.bo[bufnr].buftype ~= "acwrite"
+					or (name:find("^%a[%w+.-]*://") and not vim.startswith(name, "suda://"))
+				then
 					return
 				end
-				-- Fall through to full format if no hunks found
-			end
-
-			return {}
-		end or false,
-	}, false, setup_conform)
+				local conform = require("conform")
+				for _, formatter in ipairs((conform.list_formatters_to_run(bufnr))) do
+					local config = conform.get_formatter_config(formatter.name, bufnr)
+					if config and not config.stdin then
+						if format_notify then
+							vim.notify(
+								string.format(
+									"[Conform] Skipped %s: it formats through a temporary file.",
+									formatter.name
+								),
+								vim.log.levels.WARN,
+								{ title = "Conform" }
+							)
+						end
+						return
+					end
+				end
+				local opts = format_on_save(bufnr)
+				if not opts then
+					return
+				end
+				-- vim-suda writes the '[,'] range set before this event; keep it covering the whole buffer
+				local whole = vim.api.nvim_buf_get_mark(bufnr, "[")[1] <= 1
+					and vim.api.nvim_buf_get_mark(bufnr, "]")[1] >= vim.api.nvim_buf_line_count(bufnr)
+				conform.format(vim.tbl_extend("force", opts, { bufnr = bufnr, async = false }))
+				if whole then
+					vim.api.nvim_buf_set_mark(bufnr, "[", 1, 0, {})
+					vim.api.nvim_buf_set_mark(bufnr, "]", vim.api.nvim_buf_line_count(bufnr), 0, {})
+				end
+			end,
+		})
+	end
 
 	-- User commands
 	vim.api.nvim_create_user_command("Format", function(args)
