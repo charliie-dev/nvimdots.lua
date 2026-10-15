@@ -906,10 +906,18 @@ test("treesitter installs missing parser files and starts buffers opened before"
 	end, vim.tbl_keys(require("core.settings").treesitter_deps))
 	table.sort(expected)
 	local buf = vim.api.nvim_create_buf(true, false)
+	-- Short steps: an error from an LSP file watcher (EMFILE in the sandbox) ends vim.wait early
+	local function wait_for(condition)
+		local deadline = vim.uv.now() + 1000
+		while not condition() and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		return condition()
+	end
 	local ok, err = pcall(function()
 		require("modules.configs.editor.treesitter")()
 		assert(
-			vim.wait(1000, function()
+			wait_for(function()
 				return requested ~= nil
 			end),
 			"install was not requested"
@@ -922,7 +930,7 @@ test("treesitter installs missing parser files and starts buffers opened before"
 		vim.treesitter.language.register("toml", "c12probe")
 		finish(nil, true)
 		assert(
-			vim.wait(1000, function()
+			wait_for(function()
 				return vim.treesitter.highlighter.active[buf] ~= nil
 			end),
 			"buffer opened before the install did not start Treesitter"
