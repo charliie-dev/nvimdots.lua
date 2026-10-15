@@ -20,7 +20,13 @@ M.lsp_hover_or_dap = function()
 	if _G._debugging then
 		require("dapui").eval()
 	else
-		vim.cmd.Lspsaga("hover_doc")
+		-- Native hover: Saga's hover_doc replaces the Markdown highlight query for every buffer.
+		-- Size and border follow the old Saga hover
+		vim.lsp.buf.hover({
+			border = "single",
+			max_width = math.floor(vim.o.columns * 0.45),
+			max_height = math.floor(vim.o.lines * 0.7),
+		})
 	end
 end
 

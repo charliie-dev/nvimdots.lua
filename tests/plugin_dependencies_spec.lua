@@ -1695,6 +1695,50 @@ test("Saga does not track interface implementations", function()
 	assert(ok, err)
 end)
 
+test("K shows hover docs without replacing the Markdown highlight query", function()
+	-- The Saga scroll test above ran Saga's hover, which overrides the query for the whole session
+	vim.treesitter.query.set("markdown", "highlights", nil)
+	local function captures()
+		return vim.treesitter.query.get("markdown", "highlights").captures
+	end
+	local baseline = captures()
+	assert(#baseline > 1, "the Markdown highlight query is missing")
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	vim.cmd.edit(dir .. "/a.txt")
+	local buf = vim.api.nvim_get_current_buf()
+	local function hover_buf()
+		for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+			if vim.api.nvim_win_get_config(win).relative ~= "" then
+				return vim.api.nvim_win_get_buf(win)
+			end
+		end
+	end
+	local ok, err = pcall(function()
+		attach_fake_client(buf, "hover", dir, { hoverProvider = true }, {
+			["textDocument/hover"] = { contents = { kind = "markdown", value = "# Title\n\n```lua\nlocal doc\n```" } },
+		})
+		require("keymap.helpers").lsp_hover_or_dap()
+		assert(vim.wait(2000, hover_buf), "the hover did not open")
+		local text = table.concat(vim.api.nvim_buf_get_lines(hover_buf(), 0, -1, false), "\n")
+		assert(text:find("local doc", 1, true), "the hover does not show the docs: " .. text)
+		local after = captures()
+		assert(vim.deep_equal(after, baseline), "the hover replaced the query, captures now " .. vim.inspect(after))
+	end)
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+		client:stop(true)
+	end
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_win_get_config(win).relative ~= "" then
+			vim.api.nvim_win_close(win, true)
+		end
+	end
+	vim.api.nvim_buf_delete(buf, { force = true })
+	vim.treesitter.query.set("markdown", "highlights", nil)
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)

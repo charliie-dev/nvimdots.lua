@@ -55,10 +55,10 @@ local keyword_calls, hover_calls, evaluations = {}, {}, {}
 vim.api.nvim_create_user_command("Stage3Keyword", function()
 	keyword_calls[#keyword_calls + 1] = vim.api.nvim_get_current_buf()
 end, { nargs = "*" })
-vim.api.nvim_create_user_command("Lspsaga", function(opts)
-	assert(opts.args == "hover_doc", "unexpected Lspsaga command")
+local native_hover = vim.lsp.buf.hover
+vim.lsp.buf.hover = function()
 	hover_calls[#hover_calls + 1] = vim.api.nvim_get_current_buf()
-end, { nargs = "*", force = true })
+end
 
 require("lazy.core.loader").load("nvim-dap", { cmd = "test" }, { force = true })
 local dap, dapui = require("dap"), require("dapui")
@@ -321,6 +321,7 @@ end)
 for key, value in pairs(originals) do
 	dapui[key] = value
 end
+vim.lsp.buf.hover = native_hover
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
