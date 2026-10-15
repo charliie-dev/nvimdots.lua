@@ -1059,6 +1059,47 @@ test("LSP buffers jump to diagnostics with [d/]d and keep g[/g] for mini.ai", fu
 	assert(ok, err)
 end)
 
+test("an/in grow and shrink the selection by syntax node; mini.ai keeps al/il", function()
+	-- Checked first: mini.ai's an/in would wait for a textobject id below
+	for _, mode in ipairs({ "x", "o" }) do
+		assert(
+			vim.fn.maparg("an", mode, false, true).desc == "Select parent (outer) node",
+			mode .. " an is not Neovim's"
+		)
+		assert(
+			vim.fn.maparg("in", mode, false, true).desc == "Select child (inner) node",
+			mode .. " in is not Neovim's"
+		)
+		assert(vim.fn.maparg("al", mode, false, true).desc == "Around last textobject", mode .. " al is not mini.ai's")
+		assert(vim.fn.maparg("il", mode, false, true).desc == "Inside last textobject", mode .. " il is not mini.ai's")
+	end
+	local buf = vim.api.nvim_create_buf(true, false)
+	vim.api.nvim_set_current_buf(buf)
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "local value = call(first, second)" })
+	vim.bo[buf].filetype = "lua"
+	local function selection()
+		local from, to = vim.fn.getpos("v"), vim.fn.getpos(".")
+		return { from[3], to[3] }
+	end
+	local ok, err = pcall(function()
+		vim.api.nvim_win_set_cursor(0, { 1, 19 }) -- on `first`
+		feed("v")
+		local word = selection()
+		feed("an")
+		local parent = selection()
+		assert(parent[1] < word[1] or parent[2] > word[2], "an did not grow " .. vim.inspect(word))
+		feed("an")
+		local grandparent = selection()
+		assert(grandparent[1] <= parent[1] and grandparent[2] >= parent[2], "an shrank " .. vim.inspect(parent))
+		assert(not vim.deep_equal(grandparent, parent), "a second an did not grow " .. vim.inspect(parent))
+		feed("in")
+		assert(vim.deep_equal(selection(), parent), "in did not shrink back: " .. vim.inspect(selection()))
+	end)
+	feed("<Esc>")
+	vim.api.nvim_buf_delete(buf, { force = true })
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

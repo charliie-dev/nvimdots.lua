@@ -18,9 +18,10 @@ return function()
 			around = "a",
 			inside = "i",
 
-			-- Next/last textobjects
-			around_next = "an",
-			inside_next = "in",
+			-- Next/last textobjects. an/in stay Neovim's incremental selection (parent/child syntax
+			-- node); search_method below already falls back to the next textobject.
+			around_next = "",
+			inside_next = "",
 			around_last = "al",
 			inside_last = "il",
 
