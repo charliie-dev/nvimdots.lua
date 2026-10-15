@@ -53,7 +53,7 @@ return function()
 	-- blink.cmp adds its buffer keymaps (<Tab> snippet_forward, ...) when the buffer enters plain
 	-- Insert mode, but a session leaves Insert mode with complete() active ("ic"), which blink skips.
 	-- A session that is the buffer's first Insert mode (:Neogen in a fresh buffer) would then
-	-- start without them, so add them when it starts.
+	-- start without them, so add them when it starts (saghen/blink.cmp#2653).
 	vim.api.nvim_create_autocmd("User", {
 		group = vim.api.nvim_create_augroup("MiniSnippetsBlinkKeymaps", { clear = true }),
 		pattern = "MiniSnippetsSessionStart",
