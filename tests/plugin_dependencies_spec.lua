@@ -1631,6 +1631,70 @@ test("Bqf previews what an acwrite buffer holds, not its file on disk", function
 	assert(ok, err)
 end)
 
+test("Saga does not track interface implementations", function()
+	require("lazy").load({ plugins = { "lspsaga.nvim" } })
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	local requests = {}
+	local counter = vim.api.nvim_create_autocmd("LspRequest", {
+		callback = function(args)
+			local request = args.data.request
+			if request.type == "pending" then
+				requests[request.method] = (requests[request.method] or 0) + 1
+			end
+		end,
+	})
+	local range = { start = { line = 0, character = 5 }, ["end"] = { line = 0, character = 8 } }
+	local location = { uri = vim.uri_from_fname(dir .. "/impl.go"), range = range }
+	local bufs = {}
+	local ok, err = pcall(function()
+		-- Each buffer an implementation-capable client attaches to used to add another listener
+		for i = 1, 2 do
+			local buf = vim.api.nvim_create_buf(true, false)
+			bufs[i] = buf
+			vim.api.nvim_set_current_buf(buf)
+			vim.api.nvim_buf_set_name(buf, ("%s/f%d.go"):format(dir, i))
+			vim.cmd("noautocmd setlocal filetype=go")
+			vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "type Foo interface {}" })
+			attach_fake_client(buf, "implementations", dir, {
+				documentSymbolProvider = true,
+				implementationProvider = true,
+			}, {
+				["textDocument/documentSymbol"] = { { name = "Foo", kind = 11, range = range, selectionRange = range } },
+				["textDocument/implementation"] = { location },
+			})
+			local deadline = vim.uv.now() + 2000
+			while (requests["textDocument/documentSymbol"] or 0) < i and vim.uv.now() < deadline do
+				vim.wait(20)
+			end
+			assert((requests["textDocument/documentSymbol"] or 0) >= i, "Saga did not request the symbols")
+		end
+		-- Give a listener time to ask for implementations
+		local deadline = vim.uv.now() + 300
+		while vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		local listeners = vim.tbl_filter(function(autocmd)
+			return autocmd.desc == "[Lspsaga] Implement show"
+		end, vim.api.nvim_get_autocmds({ event = "User", pattern = "SagaSymbolUpdate" }))
+		local signs = vim.fn.sign_getplaced(bufs[2], { group = "SagaImpIcon" })[1].signs
+		assert(
+			#listeners == 0 and not requests["textDocument/implementation"] and #signs == 0,
+			("implement listeners=%d requests=%d signs=%d"):format(
+				#listeners,
+				requests["textDocument/implementation"] or 0,
+				#signs
+			)
+		)
+	end)
+	vim.api.nvim_del_autocmd(counter)
+	for _, buf in ipairs(bufs) do
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)

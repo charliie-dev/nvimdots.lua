@@ -106,11 +106,10 @@ return function()
 			open_browser = "silent !" .. require("core.settings").lspsaga_browser,
 		},
 		-- Impl: https://nvimdev.github.io/lspsaga/implement/
+		-- Off: every attached buffer adds another listener that requests implementations again, and a
+		-- sign stays after its implementations are gone. The Snacks implementations picker covers lookups
 		implement = {
-			enable = true,
-			sign = true,
-			virtual_text = false,
-			priority = 100,
+			enable = false,
 		},
 		-- LightBulb: https://nvimdev.github.io/lspsaga/lightbulb/
 		lightbulb = {
