@@ -270,6 +270,31 @@ test("codelldb runs attached only on Windows", function()
 	assert(ok, err)
 end)
 
+test("codelldb program arguments split like a shell command line", function()
+	require("tool.dap.clients.codelldb")()
+	local args = require("dap").configurations.c[2].args
+	local input = vim.fn.input
+	local ok, err = pcall(function()
+		for typed, expected in pairs({
+			[""] = {},
+			["   "] = {},
+			["a  b "] = { "a", "b" },
+			['"hello world" x'] = { "hello world", "x" },
+			["'single quoted'\ty"] = { "single quoted", "y" },
+			["a\\ b"] = { "a b" },
+			["'\\d+'"] = { "\\d+" },
+		}) do
+			vim.fn.input = function()
+				return typed
+			end
+			local actual = args()
+			assert(vim.deep_equal(actual, expected), ("%q gave %s"):format(typed, vim.inspect(actual)))
+		end
+	end)
+	vim.fn.input = input
+	assert(ok, err)
+end)
+
 test("custom highlights survive a colorscheme reload", function()
 	require("lazy.core.loader").load(
 		{ "flash.nvim", "mini.cursorword", "nvim-dap" },

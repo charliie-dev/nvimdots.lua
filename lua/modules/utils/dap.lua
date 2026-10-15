@@ -1,7 +1,9 @@
 local function input_args()
 	return function()
 		local argument_string = vim.fn.input("Program arg(s) (enter nothing to leave it null): ")
-		return vim.fn.split(argument_string, " ", true)
+		-- Shell-like: whitespace separates, quotes group, `\` escapes outside quotes. Inside double
+		-- quotes `\"` does not work; use single quotes for an argument that contains `"`.
+		return require("dap.utils").splitstr(argument_string)
 	end
 end
 
