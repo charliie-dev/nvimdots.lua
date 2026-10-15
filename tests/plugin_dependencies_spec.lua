@@ -1392,6 +1392,67 @@ test("AdvancedGitSearch opens GitHub commits through a GBrowse handler", functio
 	assert(vim.tbl_contains(urls, "https://github.com/owner/repo/commit/" .. commit), vim.inspect(urls))
 end)
 
+test("Yazi keeps a modified buffer whose file it deletes; unmodified ones still close", function()
+	require("lazy.core.loader").load("yazi.nvim", { cmd = "test" }, { force = true })
+	local handling = require("yazi.event_handling.yazi_event_handling")
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	-- Buffer names resolve symlinks (macOS /tmp); once the file is gone, Yazi matches paths verbatim
+	dir = assert(vim.uv.fs_realpath(dir))
+	local buffers, warnings, notify = {}, {}, vim.notify
+	vim.notify = function(msg, level)
+		if level == vim.log.levels.WARN then
+			warnings[#warnings + 1] = msg
+		end
+	end
+	local function open(name, unsaved)
+		local path = dir .. "/" .. name
+		vim.fn.writefile({ "on disk" }, path)
+		vim.cmd.edit(path)
+		local buf = vim.api.nvim_get_current_buf()
+		buffers[#buffers + 1] = buf
+		if unsaved then
+			vim.api.nvim_buf_set_lines(buf, 0, -1, false, { unsaved })
+		end
+		return buf, path
+	end
+	local ok, err = pcall(function()
+		local kept, kept_path = open("kept.txt", "UNSAVED")
+		local closed, closed_path = open("closed.txt")
+		-- Yazi deleted (or trashed) both files, then reports it
+		vim.fn.delete(kept_path)
+		vim.fn.delete(closed_path)
+		handling.process_delete_event(
+			{ type = "delete", data = { urls = { kept_path, closed_path } } },
+			require("yazi").config
+		)
+		-- Yazi deletes buffers from scheduled callbacks. Wait in short steps: an unrelated callback
+		-- error (an LSP file watcher hitting EMFILE in a sandbox) cuts a single vim.wait() short.
+		local deadline = vim.uv.now() + 1000
+		while vim.api.nvim_buf_is_valid(closed) and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		assert(not vim.api.nvim_buf_is_valid(closed), "the unmodified buffer of a deleted file was not closed")
+		assert(vim.api.nvim_buf_is_valid(kept), "the modified buffer of a deleted file was wiped")
+		local lines = vim.api.nvim_buf_get_lines(kept, 0, -1, false)
+		assert(
+			vim.deep_equal(lines, { "UNSAVED" }) and vim.bo[kept].modified,
+			"unsaved text lost: " .. vim.inspect(lines)
+		)
+		-- Other plugins may warn meanwhile (LSP clients from earlier tests); look for this one
+		local warned = vim.iter(warnings):any(function(msg)
+			return msg:find("kept.txt", 1, true) ~= nil and msg:find("unsaved", 1, true) ~= nil
+		end)
+		assert(warned, "no warning about the kept buffer: " .. vim.inspect(warnings))
+	end)
+	vim.notify = notify
+	for _, buf in ipairs(buffers) do
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
