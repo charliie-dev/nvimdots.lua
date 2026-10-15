@@ -190,7 +190,9 @@ return function()
 						guarded_enriched[key] = value
 					end
 					if guarded_enriched.pythonPath == nil and guarded_enriched.python == nil then
-						guarded_enriched.pythonPath = current_project_python()
+						-- debugpy's own field; it reads pythonPath only as a legacy spelling. Filling it here
+						-- also keeps nvim-dap-python from adding pythonPath, which debugpy rejects next to python.
+						guarded_enriched.python = { current_project_python() }
 					end
 					return enrich_config(guarded_enriched, function(final)
 						assert(type(final) == "table", "dap-python enriched configuration must be a table")
