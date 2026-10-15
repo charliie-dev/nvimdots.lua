@@ -114,7 +114,7 @@ test("complete raw plugin manifest", function()
 		"top-level manifest",
 		top_level,
 		58,
-		"ad7b889c0b740f60b4f407b2c5bcd66400a705d1907b66469650cd81110d2f89"
+		"5c88189bc7d59cae3a82aa9f01c7eb73f5bc1b62eb556ef8773470b94a511d80"
 	)
 	assert_manifest("nested manifest", nested, 34, "3eb7b0ac86e402ce228e27d1551317a224a37861967ec199082e225fa8348c0a")
 end)
@@ -163,7 +163,7 @@ test("approved dependency relationships are explicit", function()
 	assert(dependency(bqf, "junegunn/fzf").build == nil, "FZF build")
 	local quicker = specs["stevearc/quicker.nvim"]
 	assert(
-		quicker.lazy == true and quicker.ft == "qf" and type(quicker.opts) == "table" and next(quicker.opts) == nil,
+		quicker.lazy == true and quicker.ft == "qf" and vim.deep_equal(quicker.opts, { edit = { autosave = false } }),
 		"Quicker contract"
 	)
 	-- guihua's fzy falls back to its pure-Lua matcher; nothing to compile
@@ -1513,6 +1513,61 @@ test("rainbow delimiters follow the size and error thresholds as the buffer chan
 	for _, buf in ipairs(buffers) do
 		pcall(vim.api.nvim_buf_delete, buf, { force = true })
 	end
+	assert(ok, err)
+end)
+
+test("saving an edited quickfix list leaves the source file to a normal write", function()
+	local dir = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	local path = dir .. "/a.txt"
+	vim.fn.writefile({ "alpha", "beta" }, path)
+	vim.cmd.edit(path)
+	local src = vim.api.nvim_get_current_buf()
+	-- Stands in for the write hooks (Conform formatting, lint, SOPS encryption) a raw write skips
+	local hooks = 0
+	vim.api.nvim_create_autocmd("BufWritePre", {
+		buffer = src,
+		callback = function()
+			hooks = hooks + 1
+		end,
+	})
+	local ok, err = pcall(function()
+		vim.fn.setqflist({ { bufnr = src, lnum = 1, text = "alpha" } })
+		vim.cmd("copen")
+		local qf = vim.api.nvim_get_current_buf()
+		-- Quicker renders the list and installs its write handler a moment after the window opens
+		local function ready()
+			local line = vim.api.nvim_buf_get_lines(qf, 0, 1, false)[1] or ""
+			return #vim.api.nvim_get_autocmds({ event = "BufWriteCmd", buffer = qf }) > 0
+				and not line:find("|1|", 1, true)
+		end
+		local deadline = vim.uv.now() + 1000
+		while not ready() and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		assert(ready() and vim.bo[qf].modifiable, "Quicker did not make the list editable")
+		-- Edit only the item text: Quicker maps lines to items with extmarks
+		local line = vim.api.nvim_buf_get_lines(qf, 0, 1, false)[1]
+		vim.api.nvim_buf_set_text(qf, 0, #line - #"alpha", 0, #line, { "ALPHA" })
+		vim.cmd("silent write")
+		assert(vim.api.nvim_buf_get_lines(src, 0, 1, false)[1] == "ALPHA", "Quicker did not apply the edit")
+		assert(
+			vim.deep_equal(vim.fn.readfile(path), { "alpha", "beta" }) and vim.bo[src].modified,
+			("Quicker wrote a.txt itself, write hooks run: %d"):format(hooks)
+		)
+		vim.cmd("cclose")
+		vim.api.nvim_buf_call(src, function()
+			vim.cmd("silent update")
+		end)
+		assert(hooks == 1 and vim.deep_equal(vim.fn.readfile(path), { "ALPHA", "beta" }), "the normal write failed")
+	end)
+	vim.cmd("silent! cclose")
+	vim.fn.setqflist({})
+	pcall(vim.api.nvim_buf_delete, src, { force = true })
+	vim.fn.delete(dir, "rf")
 	assert(ok, err)
 end)
 

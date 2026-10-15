@@ -10,7 +10,11 @@ lang["kevinhwang91/nvim-bqf"] = {
 lang["stevearc/quicker.nvim"] = {
 	lazy = true,
 	ft = "qf",
-	opts = {},
+	opts = {
+		-- Leave edited source buffers modified; Quicker's own save uses `noautocmd update`, which
+		-- skips write hooks such as formatters and encrypted-file handlers
+		edit = { autosave = false },
+	},
 }
 lang["ray-x/go.nvim"] = {
 	lazy = true,
