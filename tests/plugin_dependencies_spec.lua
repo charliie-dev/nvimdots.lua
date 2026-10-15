@@ -964,6 +964,54 @@ test("Flash's t moves at once; tab commands live under <leader>t", function()
 	assert(ok, err)
 end)
 
+test("LSP buffers jump to diagnostics with [d/]d and keep g[/g] for mini.ai", function()
+	local dir = vim.fn.tempname()
+	vim.fn.mkdir(dir, "p")
+	vim.fn.writefile({ "call(a, b)", "next" }, dir .. "/a.txt")
+	vim.cmd.edit(dir .. "/a.txt")
+	local buf = vim.api.nvim_get_current_buf()
+	local ns = vim.api.nvim_create_namespace("c43_spec")
+	local ok, err = pcall(function()
+		attach_fake_client(buf, "diagnostics", dir, {})
+		for _, lhs in ipairs({ "g[", "g]" }) do
+			local map = vim.fn.maparg(lhs, "n", false, true)
+			assert(map.buffer ~= 1, lhs .. " is still buffer-local: " .. tostring(map.desc))
+		end
+		-- mini.ai: g[ ( goes to the left edge of the surrounding parentheses
+		vim.api.nvim_win_set_cursor(0, { 1, 6 })
+		feed("g[(")
+		assert(
+			vim.deep_equal(vim.api.nvim_win_get_cursor(0), { 1, 4 }),
+			"g[( moved to " .. vim.inspect(vim.api.nvim_win_get_cursor(0))
+		)
+		vim.diagnostic.set(
+			ns,
+			buf,
+			{ { lnum = 1, col = 0, message = "finding", severity = vim.diagnostic.severity.WARN } }
+		)
+		vim.api.nvim_win_set_cursor(0, { 1, 0 })
+		feed("]d")
+		assert(
+			vim.deep_equal(vim.api.nvim_win_get_cursor(0), { 2, 0 }),
+			"]d moved to " .. vim.inspect(vim.api.nvim_win_get_cursor(0))
+		)
+		assert(vim.fn.maparg("]d", "n", false, true).desc == "lsp: Next diagnostic", "]d is not the LSP mapping")
+		assert(vim.fn.maparg("[d", "n", false, true).desc == "lsp: Prev diagnostic", "[d is not the LSP mapping")
+	end)
+	vim.diagnostic.reset(ns, buf)
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+		client:stop(true)
+	end
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_win_get_config(win).relative ~= "" then
+			vim.api.nvim_win_close(win, true)
+		end
+	end
+	vim.api.nvim_buf_delete(buf, { force = true })
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 test("new and existing .tf files are Terraform", function()
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir, "p")

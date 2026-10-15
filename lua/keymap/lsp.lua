@@ -49,8 +49,10 @@ function M.lsp(buf)
 		"<Cmd>Trouble symbols toggle win.position=right<CR>",
 		{ silent = true, buf = buf, desc = "lsp: Toggle outline" }
 	)
-	set("n", "g[", "<Cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true, buf = buf, desc = "lsp: Prev diagnostic" })
-	set("n", "g]", "<Cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true, buf = buf, desc = "lsp: Next diagnostic" })
+	-- Shadow Neovim's own [d/]d with Saga's float and code actions. g[/g] stay mini.ai's goto in every
+	-- buffer and mode; non-LSP buffers keep the native [d/]d.
+	set("n", "[d", "<Cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true, buf = buf, desc = "lsp: Prev diagnostic" })
+	set("n", "]d", "<Cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true, buf = buf, desc = "lsp: Next diagnostic" })
 	local custom_hover = false
 	for _, map in ipairs(vim.api.nvim_buf_get_keymap(buf, "n")) do
 		if map.lhs == "K" and map.callback ~= vim.lsp.buf.hover then
