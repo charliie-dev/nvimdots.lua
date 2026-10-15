@@ -73,6 +73,8 @@
 
 ## ⚙️ Installation
 
+Requires Neovim 0.12 or later.
+
 ### Native (git clone)
 
 ```bash

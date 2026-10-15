@@ -133,11 +133,9 @@ function Lazy:load_lazy()
 					"spellfile",
 					"matchit",
 					"matchparen",
-					-- Do not load netrw (using oil.nvim instead)
-					"netrw",
+					-- Do not load netrw (using oil.nvim instead). netrw itself and tohtml are opt packages
+					-- (pack/dist/opt) since Neovim 0.12 and never load unless added.
 					"netrwPlugin",
-					-- Do not load tohtml.vim
-					"tohtml",
 					-- Do not load zipPlugin.vim, gzip.vim and tarPlugin.vim (all of these plugins are
 					-- related to reading files inside compressed containers)
 					"gzip",

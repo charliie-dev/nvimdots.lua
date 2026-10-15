@@ -217,6 +217,23 @@ test("startup-loaded set is preserved", function()
 	assert(table.concat(loaded, ",") == expected, "loaded: " .. table.concat(loaded, ","))
 end)
 
+-- lazy skips a $VIMRUNTIME/plugin file whose name matches an entry; an entry matching no file is
+-- dead, e.g. after Neovim moves a plugin into pack/dist/opt.
+test("every disabled runtime plugin names a file in $VIMRUNTIME/plugin", function()
+	local present = {}
+	for name in vim.fs.dir(vim.env.VIMRUNTIME .. "/plugin") do
+		present[(name:gsub("%.[^.]+$", ""))] = true
+	end
+	local dead = {}
+	for _, name in ipairs(require("lazy.core.config").options.performance.rtp.disabled_plugins) do
+		if not present[name] then
+			dead[#dead + 1] = name
+		end
+	end
+	assert(#dead == 0, "disabled_plugins entries match no runtime plugin: " .. table.concat(dead, ", "))
+	assert(vim.fn.exists(":Explore") == 0, "netrwPlugin was loaded")
+end)
+
 test("complete resolved lazy graph is acyclic", function()
 	assert(lazy_plugins, "manifest collection failed")
 	local state = {}
