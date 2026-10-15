@@ -15,7 +15,8 @@ lang["stevearc/quicker.nvim"] = {
 }
 lang["ray-x/go.nvim"] = {
 	lazy = true,
-	ft = { "go", "gomod", "gosum" },
+	-- gowork: :GoWork, :GoModTidy and :GoGet also apply when go.work is the first file
+	ft = { "go", "gomod", "gosum", "gowork" },
 	config = require("modules.configs.lang.go"),
 	dependencies = {
 		{
