@@ -2,24 +2,26 @@ return function()
 	---@param threshold number @Use global strategy if nr of lines exceeds this value
 	local function init_strategy(threshold)
 		return function(buf)
-			if vim.api.nvim_buf_line_count(buf) > threshold then
-				return "rainbow-delimiters.strategy.global"
-			end
-			return "rainbow-delimiters.strategy.local"
+			local strategy = vim.api.nvim_buf_line_count(buf) > threshold and "rainbow-delimiters.strategy.global"
+				or "rainbow-delimiters.strategy.local"
+			-- Remembered so a later change in size can be noticed (see the autocmd below)
+			vim.b[buf].rainbow_strategy = strategy
+			return strategy
 		end
 	end
 
-	vim.g.rainbow_delimiters = {
-		strategy = {
-			[""] = init_strategy(500),
-			c = init_strategy(300),
-			cpp = init_strategy(300),
-			lua = init_strategy(500),
-			vimdoc = init_strategy(300),
-			vim = init_strategy(300),
-		},
-		---@param buf number
-		condition = function(buf)
+	local strategy = {
+		[""] = init_strategy(500),
+		c = init_strategy(300),
+		cpp = init_strategy(300),
+		lua = init_strategy(500),
+		vimdoc = init_strategy(300),
+		vim = init_strategy(300),
+	}
+
+	---@param buf number
+	local function condition(buf)
+		local enabled = (function()
 			if vim.api.nvim_buf_line_count(buf) > 15000 then
 				return false
 			end
@@ -54,7 +56,14 @@ return function()
 				end
 			end)
 			return error_count <= error_limit
-		end,
+		end)()
+		vim.b[buf].rainbow_condition = enabled
+		return enabled
+	end
+
+	vim.g.rainbow_delimiters = {
+		strategy = strategy,
+		condition = condition,
 		query = {
 			[""] = "rainbow-delimiters",
 			javascript = "rainbow-delimiters-react",
@@ -71,4 +80,64 @@ return function()
 	}
 
 	require("modules.utils").load_plugin("rainbow_delimiters", nil, true)
+
+	-- rainbow-delimiters checks `condition` and picks a strategy only when a buffer gets its
+	-- filetype, so a file that grows or shrinks across a line limit, or whose parse errors get fixed,
+	-- kept the first decision. Check again shortly after the buffer changes. A buffer turned off by
+	-- hand stays off unless the condition itself changes.
+	local function recheck(buf)
+		if not vim.api.nvim_buf_is_valid(buf) or vim.b[buf].rainbow_condition == nil then
+			return
+		end
+		local rainbow = require("rainbow-delimiters")
+		local was_enabled = vim.b[buf].rainbow_condition
+		local enabled = condition(buf)
+		if enabled ~= was_enabled then
+			if enabled then
+				rainbow.enable(buf)
+			else
+				rainbow.disable(buf)
+			end
+			return
+		end
+		if not enabled or not rainbow.is_enabled(buf) then
+			return
+		end
+		local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+		local previous = vim.b[buf].rainbow_strategy
+		if (strategy[lang] or strategy[""])(buf) ~= previous then
+			rainbow.disable(buf)
+			rainbow.enable(buf)
+		end
+	end
+
+	local timers = {}
+	local group = vim.api.nvim_create_augroup("RainbowDelimitersThresholds", { clear = true })
+	vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufWritePost" }, {
+		group = group,
+		callback = function(args)
+			local buf = args.buf
+			-- Only buffers rainbow-delimiters considered (it calls `condition` for its languages)
+			if vim.b[buf].rainbow_condition == nil then
+				return
+			end
+			timers[buf] = timers[buf] or vim.uv.new_timer()
+			timers[buf]:start(
+				500,
+				0,
+				vim.schedule_wrap(function()
+					recheck(buf)
+				end)
+			)
+		end,
+	})
+	vim.api.nvim_create_autocmd("BufWipeout", {
+		group = group,
+		callback = function(args)
+			if timers[args.buf] then
+				timers[args.buf]:close()
+				timers[args.buf] = nil
+			end
+		end,
+	})
 end

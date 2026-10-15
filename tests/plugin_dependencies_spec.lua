@@ -1453,6 +1453,69 @@ test("Yazi keeps a modified buffer whose file it deletes; unmodified ones still 
 	assert(ok, err)
 end)
 
+test("rainbow delimiters follow the size and error thresholds as the buffer changes", function()
+	local lib = require("rainbow-delimiters.lib")
+	local names = {
+		[require("rainbow-delimiters.strategy.local")] = "local",
+		[require("rainbow-delimiters.strategy.global")] = "global",
+	}
+	local function state(buf)
+		local settings = lib.buffers[buf]
+		return settings and names[settings.strategy] or "off"
+	end
+	local function lines(n, text)
+		local out = {}
+		for i = 1, n do
+			out[i] = text:format(i, i)
+		end
+		return out
+	end
+	local buffers = {}
+	local function buffer(content)
+		local buf = vim.api.nvim_create_buf(true, false)
+		buffers[#buffers + 1] = buf
+		vim.api.nvim_set_current_buf(buf)
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
+		vim.bo[buf].filetype = "lua"
+		return buf
+	end
+	-- The thresholds are checked again a moment after the last change. Wait in short steps: an
+	-- unrelated callback error (an LSP file watcher hitting EMFILE in a sandbox) cuts vim.wait short.
+	local function settle(buf, expected)
+		vim.api.nvim_exec_autocmds("TextChanged", { buffer = buf })
+		local deadline = vim.uv.now() + 2000
+		while state(buf) ~= expected and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		return state(buf)
+	end
+	local ok, err = pcall(function()
+		local grow = buffer(lines(10, "local x%d = %d"))
+		assert(state(grow) == "local", "10 lines: " .. state(grow))
+		vim.api.nvim_buf_set_lines(grow, -1, -1, false, lines(1000, "local y%d = { %d }"))
+		assert(settle(grow, "global") == "global", "growing past 500 lines kept " .. state(grow))
+
+		local broken = buffer(lines(300, ") ( ] [ %d"))
+		assert(state(broken) == "off", "300 broken lines: " .. state(broken))
+		vim.api.nvim_buf_set_lines(broken, 0, -1, false, lines(10, "local z%d = %d"))
+		assert(settle(broken, "local") == "local", "the fixed file stayed " .. state(broken))
+
+		local huge = buffer(lines(10, "local w%d = %d"))
+		vim.api.nvim_buf_set_lines(huge, -1, -1, false, lines(16000, "local v%d = %d"))
+		assert(settle(huge, "off") == "off", "growing past 15000 lines stayed " .. state(huge))
+
+		-- A buffer turned off by hand stays off when it crosses the strategy threshold
+		local manual = buffer(lines(10, "local m%d = %d"))
+		require("rainbow-delimiters").disable(manual)
+		vim.api.nvim_buf_set_lines(manual, -1, -1, false, lines(1000, "local n%d = { %d }"))
+		assert(settle(manual, "global") == "off", "a disabled buffer was turned back on")
+	end)
+	for _, buf in ipairs(buffers) do
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
