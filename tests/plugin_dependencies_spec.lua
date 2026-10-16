@@ -2269,6 +2269,17 @@ test("picking a project opens its session, or its files when it has none", funct
 	assert(ok, err)
 end)
 
+test("sniprun keeps the virtual text of both OK and error results", function()
+	require("lazy").load({ plugins = { "sniprun" } })
+	local display = require("sniprun").config_values.display
+	-- sniprun sorts the modes, so with both suffixed ones the error pass clears an OK result's text
+	assert(
+		not (vim.list_contains(display, "VirtualTextOk") and vim.list_contains(display, "VirtualTextErr")),
+		"VirtualTextOk with VirtualTextErr drops OK virtual text: " .. vim.inspect(display)
+	)
+	assert(vim.list_contains(display, "VirtualText"), "results get no virtual text: " .. vim.inspect(display))
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)

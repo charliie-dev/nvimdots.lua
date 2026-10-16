@@ -5,8 +5,9 @@ return function()
 		interpreter_options = {},
 		display = {
 			"Classic", -- "display results in the command-line area
-			"VirtualTextOk", -- "display ok results as virtual text (multiline is shortened)
-			"VirtualTextErr", -- "display error results as virtual text
+			-- Ok and error results as virtual text (multiline is shortened). Not "VirtualTextOk" plus
+			-- "VirtualTextErr": sniprun sorts the modes and the error pass clears an OK result's text.
+			"VirtualText",
 			-- "TempFloatingWindow", -- "display results in a floating window
 			"LongTempFloatingWindow", -- "same as above, but only long results. To use with VirtualText
 			-- "Terminal"                 -- "display results in a vertical split
