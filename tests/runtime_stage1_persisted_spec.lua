@@ -116,19 +116,17 @@ vim.api.nvim_create_autocmd("VimEnter", {
 					end)()))
 					local cwd, select = vim.uv.cwd(), vim.ui.select
 					local function git(...)
-						local cmd =
-							{ "git", "-C", repo, "-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false" }
-						vim.list_extend(cmd, { "-c", "user.name=t", "-c", "user.email=t@t", ... })
-						local result = vim.system(cmd, { text = true }):wait()
+						local result = vim.system({ "git", "-C", repo, ... }, { text = true }):wait()
 						assert(result.code == 0, table.concat({ ... }, " ") .. ": " .. result.stderr)
 					end
 					local ok, err = pcall(function()
+						-- Persisted reads the branch with `git branch --show-current`, which an unborn
+						-- branch answers too: no commit, so no signing or hooks are involved
 						git("init", "-q", "-b", "one")
-						git("commit", "-q", "--allow-empty", "--no-verify", "-m", "x")
 						vim.fn.chdir(repo)
 						for _, branch in ipairs({ "one", "two" }) do
 							if branch == "two" then
-								git("checkout", "-q", "-b", "two")
+								git("symbolic-ref", "HEAD", "refs/heads/two")
 							end
 							vim.fn.writefile({ branch }, repo .. "/" .. branch .. ".txt")
 							vim.cmd("silent! %bwipeout!")
@@ -144,8 +142,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 							end
 							error("no session for branch one: " .. vim.inspect(items))
 						end
-						local pick = vim.fn.maparg(",so", "n", false, true)
-						assert(pick.callback, "no session picker on ,so")
+						assert(vim.fn.maparg(",so", "n") == "<Cmd>Persisted select<CR>", "no session picker on ,so")
 						-- Persisted sources the session from vim.schedule; wait for LoadPost in short steps
 						local loaded = false
 						vim.api.nvim_create_autocmd("User", {
@@ -155,7 +152,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 								loaded = true
 							end,
 						})
-						pick.callback()
+						vim.api.nvim_feedkeys(vim.keycode(",so"), "xt", false)
 						local deadline = vim.uv.now() + 1000
 						while not loaded and vim.uv.now() < deadline do
 							vim.wait(20)

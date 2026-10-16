@@ -147,19 +147,4 @@ end, { silent = true, desc = "edit: Repeat last move" })
 set("n", "<leader>ss", "<Cmd>Persisted save<CR>", { silent = true, desc = "session: Save" })
 set("n", "<leader>sl", "<Cmd>Persisted load<CR>", { silent = true, desc = "session: Load current" })
 set("n", "<leader>sd", "<Cmd>Persisted delete<CR>", { silent = true, desc = "session: Delete" })
--- `:Persisted select` changes to the chosen directory and then loads the session of the current git
--- branch, so a session saved on another branch loaded this branch's. Load the chosen file instead.
-set("n", "<leader>so", function()
-	local persisted = require("persisted")
-	persisted.handle_selected({
-		prompt = "Load a session: ",
-		handler = function(item)
-			persisted.fire("SelectPre")
-			if not item.name then
-				vim.fn.chdir(item.dir)
-			end
-			persisted.load({ session = item.session })
-			persisted.fire("SelectPost")
-		end,
-	})
-end, { silent = true, desc = "session: Select" })
+set("n", "<leader>so", "<Cmd>Persisted select<CR>", { silent = true, desc = "session: Select" })
