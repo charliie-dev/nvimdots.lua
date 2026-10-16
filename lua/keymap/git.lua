@@ -27,25 +27,20 @@ local M = {}
 function M.gitsigns(bufnr)
 	local gitsigns = require("gitsigns")
 
-	set("n", "]g", function()
-		if vim.wo.diff then
-			return "]c"
+	-- Jump synchronously, in the window the key was pressed in. A scheduled jump ran after the keys
+	-- that followed it (a macro's <C-w>w), and the greedy hunk search awaits a threaded diff before
+	-- reading the current window; greedy = false reuses the cached hunks instead.
+	local function nav(direction, diff_key)
+		return function()
+			if vim.wo.diff then
+				vim.cmd.normal({ vim.v.count1 .. diff_key, bang = true })
+			else
+				gitsigns.nav_hunk(direction, { greedy = false })
+			end
 		end
-		vim.schedule(function()
-			gitsigns.nav_hunk("next")
-		end)
-		return "<Ignore>"
-	end, { buf = bufnr, expr = true, desc = "git: Next hunk" })
-
-	set("n", "[g", function()
-		if vim.wo.diff then
-			return "[c"
-		end
-		vim.schedule(function()
-			gitsigns.nav_hunk("prev")
-		end)
-		return "<Ignore>"
-	end, { buf = bufnr, expr = true, desc = "git: Prev hunk" })
+	end
+	set("n", "]g", nav("next", "]c"), { buf = bufnr, desc = "git: Next hunk" })
+	set("n", "[g", nav("prev", "[c"), { buf = bufnr, desc = "git: Prev hunk" })
 
 	set("n", "<leader>gs", function()
 		gitsigns.stage_hunk()

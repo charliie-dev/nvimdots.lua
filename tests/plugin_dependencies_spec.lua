@@ -2126,6 +2126,86 @@ test("go.nvim's go mod, go work and go fix commands run in the file's project", 
 	assert(ok, err)
 end)
 
+test("]g and [g jump in the window they were pressed in, also from a macro", function()
+	local dir = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	-- Gitsigns diffs against the index, so staging the original is enough: no commit, no signing
+	local original = {}
+	for i = 1, 40 do
+		original[i] = "line " .. i
+	end
+	vim.fn.writefile(original, dir .. "/a.txt")
+	assert(vim.system({ "git", "init", "-q", dir }):wait().code == 0, "git init failed")
+	assert(vim.system({ "git", "-C", dir, "add", "a.txt" }):wait().code == 0, "git add failed")
+	local changed = vim.deepcopy(original)
+	changed[10], changed[20], changed[30] = "changed 10", "changed 20", "changed 30"
+	vim.fn.writefile(changed, dir .. "/a.txt")
+	vim.fn.writefile({ "other", "file" }, dir .. "/b.txt")
+	local function wait_for(condition, ms)
+		local deadline = vim.uv.now() + ms
+		while not condition() and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		return condition()
+	end
+	local function line(win)
+		return vim.api.nvim_win_get_cursor(win)[1]
+	end
+	local function keys(input)
+		vim.api.nvim_feedkeys(vim.keycode(input), "xt", false)
+	end
+	local tab = vim.api.nvim_get_current_tabpage()
+	local ok, err = pcall(function()
+		vim.cmd.tabnew(dir .. "/a.txt")
+		local a, wa = vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win()
+		assert(
+			wait_for(function()
+				return #(require("gitsigns").get_hunks(a) or {}) == 3
+			end, 5000),
+			"gitsigns did not find the three hunks"
+		)
+		vim.cmd("vsplit " .. vim.fn.fnameescape(dir .. "/b.txt"))
+		local wb = vim.api.nvim_get_current_win()
+		vim.api.nvim_set_current_win(wa)
+		vim.api.nvim_win_set_cursor(wa, { 1, 0 })
+
+		-- A macro or mapping delivers the keys as typeahead: ]g must finish in A before <C-w>w
+		keys("]g<C-w>w")
+		wait_for(function()
+			return line(wa) ~= 1
+		end, 500)
+		assert(vim.api.nvim_get_current_win() == wb, "<C-w>w did not move to B")
+		assert(line(wa) == 10 and line(wb) == 1, ("]g moved A to %d and B to %d"):format(line(wa), line(wb)))
+
+		vim.api.nvim_set_current_win(wa)
+		vim.api.nvim_win_set_cursor(wa, { 1, 0 })
+		keys("2]g")
+		wait_for(function()
+			return line(wa) ~= 1
+		end, 500)
+		assert(line(wa) == 20, "2]g moved A to " .. line(wa))
+		vim.api.nvim_win_set_cursor(wa, { 40, 0 })
+		keys("[g")
+		wait_for(function()
+			return line(wa) ~= 40
+		end, 500)
+		assert(line(wa) == 30, "[g moved A to " .. line(wa))
+	end)
+	pcall(vim.cmd.tabclose)
+	pcall(vim.api.nvim_set_current_tabpage, tab)
+	for _, name in ipairs({ "a.txt", "b.txt" }) do
+		local buf = vim.fn.bufnr(dir .. "/" .. name)
+		if buf > 0 then
+			pcall(vim.api.nvim_buf_delete, buf, { force = true })
+		end
+	end
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
