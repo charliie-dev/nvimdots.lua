@@ -2280,6 +2280,89 @@ test("sniprun keeps the virtual text of both OK and error results", function()
 	assert(vim.list_contains(display, "VirtualText"), "results get no virtual text: " .. vim.inspect(display))
 end)
 
+test("restarting lua_ls does not make lazydev scan each edit once more", function()
+	require("lazy").load({ plugins = { "lazydev.nvim" } })
+	local lazydev_buf = require("lazydev.buf")
+	local dir = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	vim.fn.writefile({ "local M = {}", "return M" }, dir .. "/init.lua")
+	-- No FileType: no real lua_ls joins the fake one
+	vim.cmd("noautocmd edit " .. vim.fn.fnameescape(dir .. "/init.lua"))
+	vim.cmd("noautocmd setlocal filetype=lua")
+	local buf = vim.api.nvim_get_current_buf()
+	local function server()
+		local closing, id = false, 0
+		return {
+			request = function(method, _, callback)
+				id = id + 1
+				callback(nil, method == "initialize" and { capabilities = {} } or vim.NIL)
+				return true, id
+			end,
+			notify = function(method)
+				closing = closing or method == "exit"
+				return true
+			end,
+			is_closing = function()
+				return closing
+			end,
+			terminate = function()
+				closing = true
+			end,
+		}
+	end
+	-- lazydev reacts to clients named lua_ls
+	local function start()
+		local id = assert(vim.lsp.start({ name = "lua_ls", cmd = server, root_dir = dir }, {
+			bufnr = buf,
+			reuse_client = function()
+				return false
+			end,
+		}))
+		local deadline = vim.uv.now() + 2000
+		while not vim.lsp.buf_is_attached(buf, id) and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		assert(vim.lsp.buf_is_attached(buf, id), "the fake lua_ls did not attach")
+		return id
+	end
+	local scans, on_lines = {}, lazydev_buf.on_lines
+	lazydev_buf.on_lines = function(b, first, last)
+		if b == buf then
+			scans[#scans + 1] = { first, last }
+		end
+		return on_lines(b, first, last)
+	end
+	local ok, err = pcall(function()
+		local id = start()
+		for _ = 1, 3 do
+			-- A restart: the old client leaves, a new one attaches and must get a full rescan
+			vim.lsp.buf_detach_client(buf, id)
+			scans = {}
+			id = start()
+			local lines = vim.api.nvim_buf_line_count(buf)
+			assert(
+				vim.iter(scans):any(function(s)
+					return s[1] == 0 and s[2] == lines
+				end),
+				"the new client got no rescan: " .. vim.inspect(scans)
+			)
+		end
+		scans = {}
+		vim.api.nvim_buf_set_lines(buf, 1, 1, false, { "M.x = require('lazy')" })
+		assert(#scans == 1, ("one edit was scanned %d times after 3 restarts"):format(#scans))
+	end)
+	lazydev_buf.on_lines = on_lines
+	for _, client in ipairs(vim.lsp.get_clients({ name = "lua_ls" })) do
+		client:stop(true)
+	end
+	pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	vim.fn.delete(dir, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)
