@@ -2206,6 +2206,69 @@ test("]g and [g jump in the window they were pressed in, also from a macro", fun
 	assert(ok, err)
 end)
 
+test("picking a project opens its session, or its files when it has none", function()
+	require("lazy").load({ plugins = { "snacks.nvim", "persisted.nvim" } })
+	local Snacks, persisted, config = require("snacks"), require("persisted"), require("persisted.config")
+	local root = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	-- Keep the real session directory out of it
+	local save_dir, cwd = config.save_dir, vim.fn.getcwd()
+	config.save_dir = root .. "/sessions/"
+	vim.fn.mkdir(config.save_dir, "p")
+	local a, b, other = root .. "/projA", root .. "/projB", root .. "/other"
+	for _, dir in ipairs({ a, b, other }) do
+		vim.fn.mkdir(dir, "p")
+	end
+	vim.fn.chdir(a)
+	vim.fn.writefile({ "let g:c26_session = 'projA'" }, persisted.current())
+	vim.fn.chdir(cwd)
+	-- Resolve the confirm action the way the picker does: configured actions, then the built-ins
+	local action = require("snacks.picker.config").get({ source = "projects" }).actions.load_session
+		or require("snacks.picker.actions").load_session
+	local picker = {
+		close = function() end,
+	}
+	local opened, files = {}, Snacks.picker.files
+	Snacks.picker.files = function(opts)
+		opened[#opened + 1] = (opts and opts.cwd) or vim.fn.getcwd()
+	end
+	local function listeners()
+		return #vim.api.nvim_get_autocmds({ event = "SessionLoadPost" })
+	end
+	local function settle(condition)
+		local deadline = vim.uv.now() + 1000
+		while not (condition and condition()) and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+	end
+	local ok, err = pcall(function()
+		local before = listeners()
+		-- No session: the files picker opens in that project, even if the cwd changes right after
+		action(picker, { file = b })
+		vim.cmd.cd(other)
+		settle()
+		assert(#opened == 1 and opened[1] == b, "files picker opened in " .. vim.inspect(opened))
+		assert(listeners() == before, "a SessionLoadPost listener was left behind")
+		-- A session: Persisted loads it and no files picker opens
+		action(picker, { file = a })
+		settle(function()
+			return vim.g.c26_session ~= nil
+		end)
+		assert(vim.g.c26_session == "projA" and #opened == 1, "the projA session did not load")
+	end)
+	-- Loading started a session: stop it so exiting does not save the test's state
+	persisted.stop()
+	Snacks.picker.files = files
+	config.save_dir = save_dir
+	vim.g.c26_session = nil
+	vim.cmd.cd(cwd)
+	vim.fn.delete(root, "rf")
+	assert(ok, err)
+end)
+
 if #failures > 0 then
 	vim.api.nvim_err_writeln(table.concat(failures, "\n"))
 	vim.cmd.cquit(1)

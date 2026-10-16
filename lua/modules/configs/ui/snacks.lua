@@ -162,6 +162,27 @@ return function()
 						end,
 					})
 				end,
+				-- Projects (and zoxide) confirm. Snacks waits 100 ms for SessionLoadPost before opening
+				-- the files picker in whatever cwd is current by then, leaving the listener behind on a
+				-- miss. Decide from the session file instead, the way persisted.load() looks it up.
+				load_session = function(picker, item)
+					picker:close()
+					if not item then
+						return
+					end
+					local dir = item.file
+					vim.fn.chdir(dir)
+					local persisted = require("persisted")
+					local session = persisted.current()
+					if vim.fn.filereadable(session) == 0 then
+						session = persisted.current({ branch = false })
+					end
+					if vim.fn.filereadable(session) == 1 then
+						persisted.load()
+					else
+						require("snacks").picker.files({ cwd = dir })
+					end
+				end,
 			},
 		},
 		-- Disable unused setup modules
