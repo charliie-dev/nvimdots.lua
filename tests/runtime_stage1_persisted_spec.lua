@@ -119,7 +119,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 						local result = vim.system({ "git", "-C", repo, ... }, { text = true }):wait()
 						assert(result.code == 0, table.concat({ ... }, " ") .. ": " .. result.stderr)
 					end
-					local ok, err = pcall(function()
+					local picked, pick_err = pcall(function()
 						-- Persisted reads the branch with `git branch --show-current`, which an unborn
 						-- branch answers too: no commit, so no signing or hooks are involved
 						git("init", "-q", "-b", "one")
@@ -163,7 +163,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 					vim.ui.select = select
 					vim.fn.chdir(cwd)
 					vim.fn.delete(repo, "rf")
-					assert(ok, err)
+					assert(picked, pick_err)
 				end)
 				persisted.stop()
 			end, debug.traceback)

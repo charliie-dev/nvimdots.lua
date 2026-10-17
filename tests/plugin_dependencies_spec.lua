@@ -498,7 +498,7 @@ test("mini.snippets serves local and friendly snippets to Blink and Neogen", fun
 	local function prefixes(ft, lines, cursor)
 		buffer(ft, lines or { "" }, cursor or { 1, 0 })
 		local found = {}
-		for _, snippet in ipairs(MiniSnippets.expand({ match = false, insert = false })) do
+		for _, snippet in ipairs(_G.MiniSnippets.expand({ match = false, insert = false })) do
 			found[snippet.prefix] = true
 		end
 		return found
@@ -535,7 +535,7 @@ test("mini.snippets serves local and friendly snippets to Blink and Neogen", fun
 				if done then
 					return
 				end
-				session = session or MiniSnippets.session.get() ~= nil
+				session = session or _G.MiniSnippets.session.get() ~= nil
 				tab = vim.fn.maparg("<Tab>", "i", false, true)
 				if tab.desc == "blink.cmp: Snippet Forward" or vim.uv.now() - started > 1000 then
 					done = true
@@ -553,8 +553,8 @@ test("mini.snippets serves local and friendly snippets to Blink and Neogen", fun
 		)
 	end)
 	if _G.MiniSnippets then
-		while MiniSnippets.session.get() do
-			MiniSnippets.session.stop()
+		while _G.MiniSnippets.session.get() do
+			_G.MiniSnippets.session.stop()
 		end
 	end
 	vim.cmd("stopinsert")
