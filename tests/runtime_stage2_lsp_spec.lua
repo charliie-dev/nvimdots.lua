@@ -180,7 +180,8 @@ test("restart with no active clients is a no-op", function()
 	assert(#vim.lsp.get_clients() == 0, "restart unexpectedly started a client")
 end)
 
-test("legacy restart command executes when the native command is unavailable", function()
+-- Neovim 0.12 is the minimum, so :lsp always exists; the mapping never checks for it
+test("restart never falls back to the legacy LspRestart command", function()
 	local exists = vim.fn.exists
 	vim.fn.exists = function(name)
 		return name == ":lsp" and 0 or exists(name)
@@ -191,7 +192,7 @@ test("legacy restart command executes when the native command is unavailable", f
 		assert(exists(":LspRestart") == 2, "upstream legacy command was not registered")
 		require("keymap.lsp").lsp(buf)
 		local legacy = restart_commands()
-		assert(#legacy == 1 and legacy[1].cmd == "LspRestart", "legacy fallback was not dispatched")
+		assert(#legacy == 0, "restart dispatched " .. vim.inspect(legacy))
 	end, debug.traceback)
 	vim.fn.exists = exists
 	require("keymap.lsp").lsp(buf)

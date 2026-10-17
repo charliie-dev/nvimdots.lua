@@ -88,8 +88,8 @@ return function()
 	---@param bufnr integer
 	---@return TSNode?
 	local function struct_at_cursor(bufnr)
-		local ok, parser = pcall(vim.treesitter.get_parser, bufnr, "go")
-		if not ok or not parser then
+		local parser = vim.treesitter.get_parser(bufnr, "go")
+		if not parser then
 			return
 		end
 		-- Parse first: the tree can predate the latest edits, or not exist without highlighting

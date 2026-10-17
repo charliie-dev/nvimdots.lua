@@ -84,10 +84,6 @@ function M.lsp(buf)
 	-- LSP settings
 	set("n", "<leader>li", "<Cmd>checkhealth vim.lsp<CR>", { silent = true, buf = buf, desc = "lsp: Info" })
 	set("n", "<leader>lr", function()
-		if vim.fn.exists(":lsp") ~= 2 then
-			vim.cmd.LspRestart()
-			return
-		end
 		-- Native restart without names is buffer-local.
 		local names = {}
 		for _, client in ipairs(vim.lsp.get_clients()) do

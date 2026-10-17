@@ -1538,6 +1538,13 @@ test("rainbow delimiters follow the size and error thresholds as the buffer chan
 		require("rainbow-delimiters").disable(manual)
 		vim.api.nvim_buf_set_lines(manual, -1, -1, false, lines(1000, "local n%d = { %d }"))
 		assert(settle(manual, "global") == "off", "a disabled buffer was turned back on")
+
+		-- A language without a parser is off, without an error
+		local plain = buffer({ "no parser here" })
+		vim.bo[plain].filetype = "rainbow_no_parser"
+		assert(vim.treesitter.get_parser(plain) == nil, "the test language has a parser")
+		assert(vim.g.rainbow_delimiters.condition(plain) == false, "a buffer without a parser was turned on")
+		assert(vim.b[plain].rainbow_condition == false, "the condition was not remembered")
 	end)
 	for _, buf in ipairs(buffers) do
 		pcall(vim.api.nvim_buf_delete, buf, { force = true })

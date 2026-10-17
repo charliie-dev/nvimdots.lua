@@ -25,9 +25,8 @@ return function()
 			if vim.api.nvim_buf_line_count(buf) > 15000 then
 				return false
 			end
-			-- pcall handles both nvim 0.11 (throws) and 0.12+ (returns nil)
-			local ok, parser = pcall(vim.treesitter.get_parser, buf)
-			if not ok or not parser then
+			local parser = vim.treesitter.get_parser(buf)
+			if not parser then
 				return false
 			end
 			local parse_ok, trees = pcall(parser.parse, parser, true)
