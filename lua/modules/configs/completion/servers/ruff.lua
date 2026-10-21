@@ -13,6 +13,10 @@ return {
 					-- enable: isort
 					"I",
 				},
+				ignore = {
+					-- disable: line too long (formatter handles line length)
+					"E501",
+				},
 			},
 			-- the same line length as black
 			lineLength = 88,
