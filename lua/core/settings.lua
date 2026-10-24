@@ -99,6 +99,7 @@ settings["lsp_deps"] = {
 	{ name = "jsonls", command = "vscode-json-language-server" },
 	"lua_ls",
 	"marksman",
+	"mise", -- `mise lsp` for mise config files; tombi skips those files
 	"neocmake",
 	"nil_ls",
 	"nixd",
