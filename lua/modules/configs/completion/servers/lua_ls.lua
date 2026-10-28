@@ -4,7 +4,8 @@ return {
 		Lua = {
 			runtime = { version = "LuaJIT" },
 			diagnostics = {
-				globals = { "vim" },
+				-- rex: Rex 的 init.lua 與 rex do 腳本的全域 API
+				globals = { "vim", "rex" },
 				disable = { "different-requires", "undefined-field" },
 			},
 			workspace = {
