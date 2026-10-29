@@ -6,3 +6,6 @@ globals:
     any: true
   _debugging:
     any: true
+  # rex: Rex 的 init.lua 與 rex do 腳本的全域 API(同 lua_ls 的 globals)
+  rex:
+    any: true
