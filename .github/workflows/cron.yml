@@ -50,7 +50,12 @@ jobs:
         timeout-minutes: 5
         run: |
           set -euo pipefail
-          cp lazy-lock.json lazy-lock.json.before
+          # Move (not copy) the lockfile aside: startup install honours the lockfile, so with it
+          # present every plugin is built at the locked commit and rebuilt after `Lazy! update`
+          # moves it. blink.cmp (main branch, no prebuilt binary) compiles via cargo for ~2 min,
+          # and two builds overrun the 5-minute step timeout. Without the lockfile, install
+          # checks out the latest commit and update leaves it untouched, so it builds once.
+          mv lazy-lock.json lazy-lock.json.before
           XDG_CONFIG_HOME="$(dirname "$GITHUB_WORKSPACE")" \
           NVIM_APPNAME="$(basename "$GITHUB_WORKSPACE")" \
             nvim --headless "+Lazy! update" +qa
