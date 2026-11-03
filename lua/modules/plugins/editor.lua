@@ -152,7 +152,14 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 	lazy = false,
 	-- event = "BufReadPre",
 	branch = "main",
-	build = ":TSUpdate",
+	build = function()
+		local toolchain = require("modules.utils.treesitter")
+		if toolchain.can_build_parsers() then
+			vim.cmd("TSUpdate")
+		else
+			toolchain.notify_unbuildable()
+		end
+	end,
 	config = require("modules.configs.editor.treesitter"),
 	dependencies = {
 		{

@@ -54,6 +54,13 @@ return function()
 		if #missing == 0 then
 			return
 		end
+		-- Only a missing parser needs the toolchain; without one, warn once instead of failing per
+		-- parser on every startup.
+		local toolchain = require("modules.utils.treesitter")
+		if not toolchain.can_build_parsers() then
+			toolchain.notify_unbuildable()
+			return
+		end
 		table.sort(missing)
 		ts.install(missing, { force = true }):await(function()
 			vim.schedule(function()
