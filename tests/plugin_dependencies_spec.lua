@@ -2163,6 +2163,11 @@ test("]g and [g jump in the window they were pressed in, also from a macro", fun
 		vim.api.nvim_feedkeys(vim.keycode(input), "xt", false)
 	end
 	local tab = vim.api.nvim_get_current_tabpage()
+	-- Let callbacks earlier tests scheduled run first, then check only this test's errors; the
+	-- earlier ones go back into v:errmsg for the end-of-run check
+	vim.wait(50)
+	local earlier = vim.v.errmsg
+	vim.v.errmsg = ""
 	local ok, err = pcall(function()
 		vim.cmd.tabnew(dir .. "/a.txt")
 		local a, wa = vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win()
@@ -2208,7 +2213,15 @@ test("]g and [g jump in the window they were pressed in, also from a macro", fun
 		end
 	end
 	vim.fn.delete(dir, "rf")
+	-- Gitsigns runs `silent! foldopen!` after each jump, which sets E490 where there is no fold.
+	-- That message is expected here; any other one fails the test.
+	local errmsg = vim.v.errmsg
+	if errmsg == "E490: No fold found" then
+		errmsg = ""
+	end
+	vim.v.errmsg = earlier
 	assert(ok, err)
+	assert(errmsg == "", "unexpected error: " .. errmsg)
 end)
 
 test("picking a project opens its session, or its files when it has none", function()
