@@ -1445,6 +1445,9 @@ test("Yazi keeps a modified buffer whose file it deletes; unmodified ones still 
 		end
 		return buf, path
 	end
+	-- Let callbacks earlier tests scheduled run first, so v:errmsg only holds this test's errors
+	vim.wait(50)
+	vim.v.errmsg = ""
 	local ok, err = pcall(function()
 		local kept, kept_path = open("kept.txt", "UNSAVED")
 		local closed, closed_path = open("closed.txt")
@@ -1479,7 +1482,14 @@ test("Yazi keeps a modified buffer whose file it deletes; unmodified ones still 
 		pcall(vim.api.nvim_buf_delete, buf, { force = true })
 	end
 	vim.fn.delete(dir, "rf")
+	-- Wiping closed.txt shows kept.txt in its window, and entering a buffer whose file is gone makes
+	-- Neovim report E211. That message is expected here; leave v:errmsg for anything else.
+	local errmsg = vim.v.errmsg
+	if errmsg:find('^E211: File ".*/kept%.txt" no longer available$') then
+		vim.v.errmsg = ""
+	end
 	assert(ok, err)
+	assert(vim.v.errmsg == "", "unexpected error: " .. vim.v.errmsg)
 end)
 
 test("rainbow delimiters follow the size and error thresholds as the buffer changes", function()
