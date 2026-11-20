@@ -1677,6 +1677,40 @@ test("Bqf previews what an acwrite buffer holds, not its file on disk", function
 	assert(ok, err)
 end)
 
+test("closing a quickfix window that bqf enhanced leaves no error behind", function()
+	local dir = assert(vim.uv.fs_realpath((function()
+		local d = vim.fn.tempname()
+		vim.fn.mkdir(d, "p")
+		return d
+	end)()))
+	local path = dir .. "/a.txt"
+	vim.fn.writefile({ "on disk" }, path)
+	-- Let callbacks earlier tests scheduled run first, then check only this test's errors; the
+	-- earlier ones go back into v:errmsg for the end-of-run check
+	vim.wait(50)
+	local earlier = vim.v.errmsg
+	vim.v.errmsg = ""
+	local ok, err = pcall(function()
+		vim.fn.setqflist({ { filename = path, lnum = 1, text = "on" }, { filename = path, lnum = 1, text = "disk" } })
+		vim.cmd("copen")
+		local deadline = vim.uv.now() + 1000
+		while not vim.w.bqf_enabled and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		assert(vim.w.bqf_enabled, "bqf did not enhance the quickfix window")
+		vim.cmd("cclose")
+	end)
+	vim.fn.setqflist({})
+	vim.wait(100)
+	pcall(vim.api.nvim_buf_delete, vim.fn.bufnr(path), { force = true })
+	vim.fn.delete(dir, "rf")
+	local errmsg = vim.v.errmsg
+	vim.v.errmsg = earlier
+	assert(ok, err)
+	-- bqf runs `silent! au! BqfFilterFzf * <buffer>` on close, which sets E216 until the group exists
+	assert(errmsg == "", "closing the window left " .. errmsg)
+end)
+
 test("Saga does not track interface implementations", function()
 	require("lazy").load({ plugins = { "lspsaga.nvim" } })
 	local dir = vim.fn.tempname()

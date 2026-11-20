@@ -12,6 +12,11 @@ return function()
 		vim.bo[to].modified = false
 	end
 
+	-- Bqf runs `silent! au! BqfFilterFzf * <buffer>` whenever a quickfix window closes, but only
+	-- creates that group the first time the fzf filter runs; until then each close sets v:errmsg to
+	-- E216. An empty group of that name lets the command find it.
+	vim.api.nvim_create_augroup("BqfFilterFzf", { clear = false })
+
 	require("modules.utils").load_plugin("bqf", {
 		preview = {
 			border = "single",
