@@ -1839,9 +1839,8 @@ test("saving a suda:// buffer formats it with stdin formatters only", function()
 	assert(ok, err)
 end)
 
-test("Go struct tag commands edit the struct through gopls, not the current buffer", function()
+test("Go struct tag commands apply gomodifytags' reply to the buffer they ran in", function()
 	require("lazy").load({ plugins = { "go.nvim" } })
-	-- go.nvim's own tag path would first fetch gomodifytags
 	local install = require("go.install")
 	local install_tool = install.install
 	install.install = function() end
@@ -1850,127 +1849,82 @@ test("Go struct tag commands edit the struct through gopls, not the current buff
 		vim.fn.mkdir(d, "p")
 		return d
 	end)()))
-	local a_path, b_path = dir .. "/a.go", dir .. "/b.go"
+	local a_path, b_path, args_path = dir .. "/a.go", dir .. "/b.go", dir .. "/args"
 	local a_disk = { "package t", "", "type Alpha struct {", "\tDiskA string", "}" }
 	local b_disk = { "package t", "", "type Beta struct {", "\tKeepB int", "}" }
-	vim.fn.writefile(a_disk, a_path)
-	vim.fn.writefile(b_disk, b_path)
-	-- Without autocmds: no FileType, so no real gopls joins the fake one
-	local function open(path)
-		vim.cmd("noautocmd edit " .. vim.fn.fnameescape(path))
+	local tagged = '\tDiskA string `json:"disk_a"`'
+	-- A slow stand-in for gomodifytags: records its arguments, then replies like `-format json`
+	vim.fn.mkdir(dir .. "/bin", "p")
+	vim.fn.writefile({
+		"#!/bin/sh",
+		'printf "%s\\n" "$@" > "$GOMODIFY_ARGS"',
+		"sleep 0.5",
+		[[printf '%s\n' '{"start":3,"end":5,"lines":["type Alpha struct {","\tDiskA string `json:\"disk_a\"`","}"]}']],
+	}, dir .. "/bin/gomodifytags")
+	vim.fn.setfperm(dir .. "/bin/gomodifytags", "rwxr-xr-x")
+	local path = vim.env.PATH
+	vim.env.PATH = dir .. "/bin:" .. path
+	vim.env.GOMODIFY_ARGS = args_path
+	-- Without autocmds: no FileType, so no gopls starts
+	local function open(file)
+		vim.cmd("noautocmd edit " .. vim.fn.fnameescape(file))
 		vim.cmd("noautocmd setlocal filetype=go")
 		return vim.api.nvim_get_current_buf()
 	end
-	local requests, dispatchers = {}, nil
-	local function server(d)
-		dispatchers = d
-		local closing, id = false, 0
-		return {
-			request = function(method, params, callback)
-				id = id + 1
-				if method == "workspace/executeCommand" then
-					requests[#requests + 1] = params
-				end
-				callback(nil, method == "initialize" and {
-					capabilities = { executeCommandProvider = { commands = { "gopls.modify_tags" } } },
-				} or vim.NIL)
-				return true, id
-			end,
-			notify = function(method)
-				closing = closing or method == "exit"
-				return true
-			end,
-			is_closing = function()
-				return closing
-			end,
-			terminate = function()
-				closing = true
-			end,
-		}
+	local function settle(cond)
+		local deadline = vim.uv.now() + 3000
+		while not cond() and vim.uv.now() < deadline do
+			vim.wait(20)
+		end
+		vim.wait(100)
 	end
 	local a, b
 	local ok, err = pcall(function()
+		vim.fn.writefile(a_disk, a_path)
+		vim.fn.writefile(b_disk, b_path)
 		a = open(a_path)
-		local client = assert(vim.lsp.start({ name = "gopls", cmd = server, root_dir = dir }, { bufnr = a }))
-		assert(
-			vim.wait(2000, function()
-				return vim.lsp.buf_is_attached(a, client)
-			end),
-			"the fake gopls did not attach"
-		)
-		vim.api.nvim_buf_set_lines(a, 3, 4, false, { "\tUnsavedA string" })
 		vim.api.nvim_win_set_cursor(0, { 4, 1 })
-		local function run(cmd)
-			local count = #requests
-			vim.cmd(cmd)
-			assert(#requests == count + 1, cmd .. " sent no gopls.modify_tags request")
-			local request = requests[#requests]
-			assert(request.command == "gopls.modify_tags", cmd .. " sent " .. tostring(request.command))
-			return request.arguments[1]
-		end
-
-		local args = run("GoAddTag")
-		assert(args.URI == vim.uri_from_bufnr(a), "the request is not for A: " .. tostring(args.URI))
-		assert(
-			args.Range.start.line == 2 and args.Range["end"].line == 4,
-			"range is not the struct: " .. vim.inspect(args.Range)
-		)
-		assert(
-			args.Add == "json" and args.AddOptions == "json=omitempty" and args.Transform == nil,
-			"GoAddTag arguments: " .. vim.inspect(args)
-		)
-
-		-- C28: the reply arrives after switching to B; the edit must still land in A, unsaved
+		vim.cmd("GoAddTag")
+		-- C28: the reply arrives after switching to B; it must still land in A
 		b = open(b_path)
-		local reply = dispatchers.server_request("workspace/applyEdit", {
-			edit = {
-				documentChanges = {
-					{
-						-- gopls versions its edits with the buffer version it last saw
-						textDocument = { uri = args.URI, version = vim.lsp.util.buf_versions[a] },
-						edits = {
-							{
-								range = { start = { line = 3, character = 0 }, ["end"] = { line = 3, character = 16 } },
-								newText = '\tUnsavedA string `json:"unsaved_a,omitempty"`',
-							},
-						},
-					},
-				},
-			},
-		})
-		assert(reply and reply.applied, "applyEdit was refused: " .. vim.inspect(reply))
-		assert(
-			vim.api.nvim_buf_get_lines(a, 3, 4, false)[1] == '\tUnsavedA string `json:"unsaved_a,omitempty"`',
-			"the edit missed A"
-		)
+		settle(function()
+			return vim.fn.readfile(a_path)[4] == tagged
+		end)
+		local args = vim.fn.readfile(args_path)
+		assert(vim.list_contains(args, "-struct") and vim.list_contains(args, "Alpha"), vim.inspect(args))
+		assert(vim.list_contains(args, "-add-tags"), "GoAddTag arguments: " .. vim.inspect(args))
+		assert(vim.api.nvim_buf_get_lines(a, 3, 4, false)[1] == tagged, "the tags missed A")
+		assert(vim.fn.readfile(a_path)[4] == tagged, "A was not written")
 		assert(vim.deep_equal(vim.api.nvim_buf_get_lines(b, 0, -1, false), b_disk), "B changed")
-		assert(vim.deep_equal(vim.fn.readfile(a_path), a_disk), "A was written")
 		assert(vim.deep_equal(vim.fn.readfile(b_path), b_disk), "B was written")
-		assert(vim.bo[a].modified, "A lost its unsaved state")
+		assert(not vim.bo[b].modified, "B was modified")
 
+		-- An edit while gomodifytags runs drops the reply instead of overwriting the edit
+		vim.fn.writefile(a_disk, a_path)
 		vim.api.nvim_set_current_buf(a)
+		vim.cmd("noautocmd edit!")
 		vim.api.nvim_win_set_cursor(0, { 4, 1 })
-		args = run("GoAddTag json,xml -transform camelcase")
-		assert(args.Add == "json,xml" and args.Transform == "camelcase", "GoAddTag options: " .. vim.inspect(args))
-		args = run("GoRmTag xml")
-		assert(args.Remove == "xml" and args.Add == nil, "GoRmTag arguments: " .. vim.inspect(args))
-		args = run("GoClearTag")
-		assert(args.Clear == true, "GoClearTag arguments: " .. vim.inspect(args))
-		args = run("GoModifyTag -add-tags yaml -override -skip-unexported")
-		assert(
-			args.Add == "yaml" and args.Overwrite == true and args.SkipUnexportedFields == true,
-			"GoModifyTag arguments: " .. vim.inspect(args)
-		)
+		vim.fn.delete(args_path)
+		vim.cmd("GoAddTag")
+		vim.api.nvim_buf_set_lines(a, -1, -1, false, { "// typed while it ran" })
+		settle(function()
+			return vim.fn.filereadable(args_path) == 1
+		end)
+		vim.wait(800)
+		assert(vim.api.nvim_buf_get_lines(a, 3, 4, false)[1] == "\tDiskA string", "the reply overwrote A")
+		assert(vim.api.nvim_buf_get_lines(a, -2, -1, false)[1] == "// typed while it ran", "the edit was lost")
+		assert(vim.deep_equal(vim.fn.readfile(a_path), a_disk), "A was written")
+		vim.bo[a].modified = false
 
-		-- Outside a struct nothing is sent
+		-- Outside a struct nothing runs
+		vim.fn.delete(args_path)
 		vim.api.nvim_win_set_cursor(0, { 1, 0 })
-		local count = #requests
 		pcall(vim.cmd, "GoAddTag")
-		assert(#requests == count, "a request was sent outside a struct")
+		vim.wait(200)
+		assert(vim.fn.filereadable(args_path) == 0, "gomodifytags ran outside a struct")
 	end)
-	for _, client in ipairs(vim.lsp.get_clients({ name = "gopls" })) do
-		client:stop(true)
-	end
+	vim.env.PATH = path
+	vim.env.GOMODIFY_ARGS = nil
 	for _, buf in ipairs({ a, b }) do
 		pcall(vim.api.nvim_buf_delete, buf, { force = true })
 	end
