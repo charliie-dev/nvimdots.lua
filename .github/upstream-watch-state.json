@@ -11,13 +11,11 @@
     },
     "issue folke/lazydev.nvim#145": {
       "comments": 2,
-      "labels": [
-        "stale"
-      ],
+      "labels": [],
       "last_comment": "charliie-dev 2026-11-20T18:47:20Z",
       "state": "open",
       "state_reason": "",
-      "updated_at": "2026-11-20T18:47:21Z"
+      "updated_at": "2026-11-21T08:26:41Z"
     },
     "issue saghen/blink.cmp#2655": {
       "comments": 1,
