@@ -1,0 +1,69 @@
+{
+  "topics": [
+    {
+      "id": "bullets-visual-renumber",
+      "title": "bullets.nvim: Visual promote and demote renumber only the selected lines",
+      "note": "lua/modules/plugins/lang.lua runs :RenumberList after BulletDemoteVisual and BulletPromoteVisual. Once fixed: map the two x-mode indent keys back to the plugin's bullets-demote and bullets-promote Plug mappings, then check the Visual cases (g.md, h.md, g2.md, h2.md) in tests/runtime_stage2_first_idle_spec.lua.",
+      "watch": [
+        { "kind": "issue", "repo": "bullets-vim/bullets.nvim", "number": 31 },
+        { "kind": "path", "repo": "bullets-vim/bullets.nvim", "path": "lua/bullets" }
+      ]
+    },
+    {
+      "id": "sops-write-autocmds",
+      "title": "sops.nvim: saving a SOPS file fires neither BufWritePre nor BufWritePost (C35)",
+      "note": "No workaround: SOPS files are not formatted on save. Once fixed: add a save test with a fake sops binary on PATH (no real keys) and confirm the ConformAcwrite handler in lua/modules/configs/completion/conform.lua formats the plaintext without leaving a .conform.* file.",
+      "watch": [
+        { "kind": "issue", "repo": "trixnz/sops.nvim", "number": 15 },
+        { "kind": "path", "repo": "trixnz/sops.nvim", "path": "lua/sops" }
+      ]
+    },
+    {
+      "id": "blink-accept-buffer",
+      "title": "blink.cmp: accept edits the current buffer instead of the one the completion started in (C01)",
+      "note": "No workaround, by decision. The maintainer linked it to his open PR 2022, also watched here. Once fixed: rerun the C01 repro from the upstream issue. The maintainer asks for human-written issue and PR text, so write any reply there yourself.",
+      "watch": [
+        { "kind": "issue", "repo": "saghen/blink.cmp", "number": 2655 },
+        { "kind": "pr", "repo": "saghen/blink.cmp", "number": 2022 },
+        { "kind": "path", "repo": "saghen/blink.cmp", "path": "lua/blink/cmp/completion/accept" }
+      ]
+    },
+    {
+      "id": "lazydev-restart-listeners",
+      "title": "lazydev.nvim: each lua_ls restart adds another buffer listener (C11)",
+      "note": "lua/modules/configs/completion/lazydev.lua wraps lazydev's on_attach (commit 8580e0a). Once fixed: drop the wrapper and keep the test 'restarting lua_ls does not make lazydev scan each edit once more' in tests/plugin_dependencies_spec.lua. The repo's stale bot closes issues 7 days after marking them stale; comment if it is about to close.",
+      "watch": [
+        { "kind": "issue", "repo": "folke/lazydev.nvim", "number": 145 },
+        { "kind": "path", "repo": "folke/lazydev.nvim", "path": "lua/lazydev/buf.lua" }
+      ]
+    },
+    {
+      "id": "autotag-filetype-change",
+      "title": "nvim-ts-autotag: changing the filetype keeps the first filetype's setup (C17)",
+      "note": "No workaround. The repo's stale bot marks issues after 60 quiet days and closes them 7 days later; the fix diff is in the issue body if a PR is needed. Once fixed: rerun the repro from the issue with the real config.",
+      "watch": [
+        { "kind": "issue", "repo": "windwp/nvim-ts-autotag", "number": 266 },
+        { "kind": "path", "repo": "windwp/nvim-ts-autotag", "path": "lua/nvim-ts-autotag" }
+      ]
+    },
+    {
+      "id": "neovim-lsp-wiped-buffer",
+      "title": "Neovim 0.12: lsp.enable starts a client for a wiped buffer (Invalid buffer id)",
+      "note": "Fixed on master by Neovim PR 42488 but not backported to release-0.12; no workaround. Once a release with the fix is installed: run tests/plugin_dependencies_spec.lua and check that 'vim/fs:483: Invalid buffer id' no longer shows up in v:errmsg.",
+      "watch": [
+        { "kind": "search", "query": "repo:neovim/neovim is:pr base:release-0.12 in:body 42488" },
+        { "kind": "path", "repo": "neovim/neovim", "ref": "release-0.12", "path": "runtime/lua/vim/lsp.lua" },
+        { "kind": "release", "repo": "neovim/neovim" }
+      ]
+    },
+    {
+      "id": "quicker-stale-virt-text",
+      "title": "quicker.nvim: stale virtual text raises Invalid 'col': out of range (our PR)",
+      "note": "Our PR from the fix/stale-virt-text branch of charliie-dev/quicker.nvim. If the maintainer asks for changes, push them to that branch. Once merged: run tests/plugin_dependencies_spec.lua and check that the quicker error no longer shows up in v:errmsg.",
+      "watch": [
+        { "kind": "pr", "repo": "stevearc/quicker.nvim", "number": 78 },
+        { "kind": "path", "repo": "stevearc/quicker.nvim", "path": "lua/quicker/display.lua" }
+      ]
+    }
+  ]
+}

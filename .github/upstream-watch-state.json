@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "watches": {
+    "issue bullets-vim/bullets.nvim#31": {
+      "comments": 0,
+      "labels": [],
+      "last_comment": "",
+      "state": "open",
+      "state_reason": "",
+      "updated_at": "2026-10-15T07:28:38Z"
+    },
+    "issue folke/lazydev.nvim#145": {
+      "comments": 2,
+      "labels": [
+        "stale"
+      ],
+      "last_comment": "charliie-dev 2026-11-20T18:47:20Z",
+      "state": "open",
+      "state_reason": "",
+      "updated_at": "2026-11-20T18:47:21Z"
+    },
+    "issue saghen/blink.cmp#2655": {
+      "comments": 1,
+      "labels": [],
+      "last_comment": "saghen 2026-10-15T18:03:00Z",
+      "state": "open",
+      "state_reason": "",
+      "updated_at": "2026-10-15T18:03:01Z"
+    },
+    "issue trixnz/sops.nvim#15": {
+      "comments": 0,
+      "labels": [],
+      "last_comment": "",
+      "state": "open",
+      "state_reason": "",
+      "updated_at": "2026-10-15T13:49:17Z"
+    },
+    "issue windwp/nvim-ts-autotag#266": {
+      "comments": 0,
+      "labels": [],
+      "last_comment": "",
+      "state": "open",
+      "state_reason": "",
+      "updated_at": "2026-10-17T14:47:38Z"
+    },
+    "path bullets-vim/bullets.nvim:lua/bullets": {
+      "date": "2026-06-22T00:43:44Z",
+      "sha": "308c5b6a75a9",
+      "subject": "docs: add config type annotations (#28)"
+    },
+    "path folke/lazydev.nvim:lua/lazydev/buf.lua": {
+      "date": "2026-03-14T13:54:56Z",
+      "sha": "ff2cbcba459b",
+      "subject": "fix(lua_ls): only debounce config updates in the same tick. Closes #136"
+    },
+    "path neovim/neovim@release-0.12:runtime/lua/vim/lsp.lua": {
+      "date": "2026-08-07T20:49:12Z",
+      "sha": "1ab773296292",
+      "subject": "backport: feat(lsp): pass target buffer to `reuse_client` predicate #\u2026 (#41221)"
+    },
+    "path saghen/blink.cmp:lua/blink/cmp/completion/accept": {
+      "date": "2026-10-25T22:04:54Z",
+      "sha": "1e4cb39b9200",
+      "subject": "refactor: improve Lua type annotations"
+    },
+    "path stevearc/quicker.nvim:lua/quicker/display.lua": {
+      "date": "2026-03-10T05:33:21Z",
+      "sha": "063cc44da1ee",
+      "subject": "fix: recalculate filename widths when max width option changes (#67)"
+    },
+    "path trixnz/sops.nvim:lua/sops": {
+      "date": "2026-09-12T16:25:34Z",
+      "sha": "26592d8fab2a",
+      "subject": "feat: adding support for .env files (#13)"
+    },
+    "path windwp/nvim-ts-autotag:lua/nvim-ts-autotag": {
+      "date": "2026-10-03T02:19:17Z",
+      "sha": "d7220b55e16e",
+      "subject": "feat: Add ocaml mlx (#265)"
+    },
+    "pr saghen/blink.cmp#2022": {
+      "comments": 1,
+      "draft": false,
+      "head": "e477d4c37489",
+      "labels": [],
+      "last_comment": "geril07 2025-07-24T20:26:19Z",
+      "merged": false,
+      "requested_reviewers": [],
+      "review_comments": 1,
+      "reviews": [
+        "geril07 COMMENTED"
+      ],
+      "state": "open",
+      "updated_at": "2026-02-03T15:43:23Z"
+    },
+    "pr stevearc/quicker.nvim#78": {
+      "comments": 0,
+      "draft": false,
+      "head": "76273c7a9784",
+      "labels": [],
+      "last_comment": "",
+      "merged": false,
+      "requested_reviewers": [
+        "stevearc"
+      ],
+      "review_comments": 0,
+      "reviews": [],
+      "state": "open",
+      "updated_at": "2026-11-20T18:05:59Z"
+    },
+    "release neovim/neovim": {
+      "published_at": "2026-10-09T15:43:25Z",
+      "tag": "v0.12.6"
+    },
+    "search repo:neovim/neovim is:pr base:release-0.12 in:body 42488": {
+      "items": [],
+      "total_count": 0
+    }
+  }
+}

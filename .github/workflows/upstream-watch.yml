@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: "Cron: upstream watch"
+on:
+  workflow_dispatch: # allows manual triggering
+  schedule:
+    # Runs weekly on Friday at UTC 21:00 (= Saturday 05:00 UTC+8)
+    - cron: "0 21 * * 5"
+  push:
+    branches: [main]
+    paths:
+      - ".github/upstream-watch.json"
+      - ".github/scripts/upstream_watch.py"
+      - ".github/scripts/test_upstream_watch.py"
+      - ".github/workflows/upstream-watch.yml"
+  pull_request:
+    paths:
+      - ".github/upstream-watch.json"
+      - ".github/scripts/upstream_watch.py"
+      - ".github/scripts/test_upstream_watch.py"
+      - ".github/workflows/upstream-watch.yml"
+
+permissions: {}
+
+jobs:
+  # Runs on every trigger. On a push or pull request it also checks the watch list against the
+  # live API without side effects, so a broken watch shows up on the change that introduced it;
+  # scheduled and manual runs leave that to the watch job.
+  test:
+    if: github.repository_owner == 'charliie-dev'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
+
+      - name: Check the watch list (no issue, no commit)
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/upstream_watch.py --dry-run --report "$RUNNER_TEMP/upstream-watch.md"
+
+  # Scheduled or manual runs on main: open an issue when a tracked item changed, then record the
+  # new state so the same change is reported once. The issue comes first on purpose: if recording
+  # the state fails, next week's run reports the change again rather than never.
+  watch:
+    needs: test
+    if: >-
+      github.repository_owner == 'charliie-dev'
+      && github.ref == 'refs/heads/main'
+      && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    permissions:
+      contents: write
+      issues: write
+    concurrency:
+      group: upstream-watch-state
+      cancel-in-progress: false # never abort between opening the issue and recording the state
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check upstream
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/upstream_watch.py --report "$RUNNER_TEMP/upstream-watch.md"
+
+      - name: Open an issue for the changes
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TITLE: ${{ steps.check.outputs.title }}
+          ASSIGNEE: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          gh label create upstream-watch --force --color 0e8a16 \
+            --description "Changes in tracked upstream issues and pull requests"
+          gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/upstream-watch.md" \
+            --label upstream-watch --assignee "$ASSIGNEE"
+
+      - name: Commit the recorded state (server-signed Verified)
+        uses: ./.github/actions/commit-file
+        with:
+          path: .github/upstream-watch-state.json
+          message: "chore(upstream-watch): record upstream state"
+          branch: main
