@@ -59,7 +59,7 @@
   "python-copy-reference.vim": { "branch": "main", "commit": "8172d0ce83d730820d9497fd2e988046022d0b99" },
   "quicker.nvim": { "branch": "master", "commit": "4a6883cb13fe097a20a046eb55f6dffd239276e3" },
   "rainbow-delimiters.nvim": { "branch": "master", "commit": "65734f76783705255d9ede8a6e4692e1572801a5" },
-  "schemastore.nvim": { "branch": "main", "commit": "c01d3d7026af6347b03b05dc5972c072a7ed37af" },
+  "schemastore.nvim": { "branch": "main", "commit": "56b010e943cce0ddd13fa062f447e66e072a6b16" },
   "smart-paste.nvim": { "branch": "main", "commit": "dc70a09bd61266744526557944c5f0b084f0f4f8" },
   "smart-splits.nvim": { "branch": "master", "commit": "e96b23e4ce660c95133f0080a6e488b96644ec0c" },
   "snacks.nvim": { "branch": "main", "commit": "882c996cf28183f4d63640de0b4c02ec886d01f2" },
